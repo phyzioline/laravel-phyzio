@@ -106,8 +106,7 @@
 
       <div class="footer-bottom  text-center clearfix">
         <p class="mb-0">
-          Designed and developed by <a href="https://brmja.tech/" target="_blank" style="color:#02767F;">Brmja Tech</a>
-          . 2025
+          Designed and developed by <a href="https://phyzioline.com/" target="_blank" style="color:#02767F;">Phyzioline</a> . 2025
         </p>
 
       </div>

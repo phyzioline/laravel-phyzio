@@ -58,7 +58,7 @@ class Product extends Model
 
     public function orderItems()
     {
-        return $this->hasMany(OrderItem::class, 'product_id', 'id');
+        return $this->hasMany(ItemsOrder::class, 'product_id', 'id');
     }
 
     protected static function boot()
