@@ -27,22 +27,32 @@
         <!-- slider-section - end
        ================================================== -->
 
-        <!-- promotion-section - start
+        <!-- search-section - start
        ================================================== -->
         <section class="mt-5">
             <div class="container">
                 <div class="row d-flex justify-content-center">
-                    <div class="col-md-12">
-                        <div class="d-flex justify-content-between align-items-center border-promotion">
-                            <span class="main-color promotion-text ">Join as a Supplier</span>
-                            <a href="{{ route('login') }}" class="main-color border-btn px-5 py-2 mx-3">Join</a>
-                        </div>
+                    <div class="col-md-10">
+                        <form action="{{ route('web.shop.search') }}" method="GET" class="search-bar-form">
+                            <div class="search-bar-wrapper d-flex align-items-center">
+                                <input type="search" 
+                                       name="search" 
+                                       value="{{ old('search') }}"
+                                       placeholder="Search for products, categories..." 
+                                       class="form-control search-input-main" 
+                                       style="flex: 1; padding: 15px 20px; font-size: 16px; border: 2px solid #02767F; border-radius: 50px 0 0 50px; border-right: none;" />
+                                <button type="submit" class="search-submit-btn-main" 
+                                        style="padding: 15px 30px; background: #02767F; color: white; border: 2px solid #02767F; border-radius: 0 50px 50px 0; cursor: pointer; transition: all 0.3s ease;">
+                                    <i class="las la-search" style="font-size: 20px;"></i> Search
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- promotion-section - end
+        <!-- search-section - end
        ================================================== -->
 
         <!-- shop-section - start
@@ -59,17 +69,20 @@
                     </div>
                 </div>
 
-                <div class="tabs-nav ul-li-center clearfix">
-                    <ul class="nav d-flex justify-content-center" role="tablist">
-                        @foreach ($categories as $index => $category)
-                            <li>
-                                <a class="nav-link {{ $index == 0 ? 'active' : '' }} mt-3" id="tab-{{ $category->id }}-tab"
-                                    data-toggle="tab" href="#tab-{{ $category->id }}" role="tab">
+                <div class="row mb-4">
+                    <div class="col-md-6 mx-auto">
+                        <label for="categoryFilter" class="form-label fw-semibold" style="font-size: 18px; color: #36415a; display: block; margin-bottom: 10px;">
+                            <i class="las la-filter"></i> Filter by Category
+                        </label>
+                        <select id="categoryFilter" class="form-select category-dropdown" style="padding: 12px; font-size: 16px; border: 2px solid #02767F; border-radius: 8px; cursor: pointer;">
+                            <option value="">All Categories</option>
+                            @foreach ($categories as $category)
+                                <option value="tab-{{ $category->id }}">
                                     {{ $category->{'name_' . app()->getLocale()} }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="tab-content">
@@ -212,6 +225,30 @@
             });
         });
 
+        // Order Now button handler (اطلب الآن)
+        $(document).off('click', '.btn-order-now').on('click', '.btn-order-now', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('product-id');
+
+            $.ajax({
+                url: '{{ route('carts.store') }}',
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    product_id: productId,
+                    quantity: 1
+                },
+                success: function (response) {
+                    toastr.success('تمت إضافة المنتج إلى السلة');
+                    // Redirect to cart page
+                    window.location.href = '{{ route('carts.index') }}';
+                },
+                error: function () {
+                    toastr.error('حدث خطأ أثناء الإضافة للسلة');
+                }
+            });
+        });
+
     });
 </script>
 
@@ -223,7 +260,13 @@
                                                         {{ $product->{'product_name_' . app()->getLocale()} }}
                                                     </a>
                                                 </h3>
-                                                <span class="item-price physio-product-price">{{ $product->product_price }}</span>
+                                                <div class="price-order-wrapper d-flex justify-content-between align-items-center mb-3">
+                                                    <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
+                                                    <button type="button" class="btn btn-order-now" data-product-id="{{ $product->id }}" 
+                                                            style="background: linear-gradient(135deg, #02767F, #04b8c4); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 13px; white-space: nowrap;">
+                                                        <i class="las la-shopping-cart"></i> اطلب الآن
+                                                    </button>
+                                                </div>
                                                 <div class="rating-star ul-li-center clearfix">
                                                     <ul class="clearfix">
                                                         <li class="active"><i class="las la-star"></i></li>
@@ -324,6 +367,36 @@
                 }
             }
         });
+    });
+
+    // Category Dropdown Handler
+    document.addEventListener("DOMContentLoaded", function() {
+        const categoryFilter = document.getElementById('categoryFilter');
+        
+        if (categoryFilter) {
+            categoryFilter.addEventListener('change', function() {
+                const selectedTab = this.value;
+                const tabPanes = document.querySelectorAll('.tab-pane');
+                
+                // Hide all tab panes
+                tabPanes.forEach(function(pane) {
+                    pane.classList.remove('show', 'active');
+                });
+                
+                if (selectedTab === '') {
+                    // Show first tab if "All Categories" selected
+                    if (tabPanes.length > 0) {
+                        tabPanes[0].classList.add('show', 'active');
+                    }
+                } else {
+                    // Show selected tab
+                    const selectedPane = document.getElementById(selectedTab);
+                    if (selectedPane) {
+                        selectedPane.classList.add('show', 'active');
+                    }
+                }
+            });
+        }
     });
 </script>
 

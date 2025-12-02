@@ -877,7 +877,7 @@ background : none !important;
                                                             {{ $product->{'product_name_' . app()->getLocale()} }}
                                                         </a>
                                                     </h3>
-                                                    <span class="item-price physio-product-price">{{ $product->product_price }}</span>
+                                                    <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
                                                     <div class="rating-star ul-li-center clearfix">
                                                         <ul class="clearfix">
                                                             <li class="active"><i class="las la-star"></i></li>
@@ -965,7 +965,7 @@ background : none !important;
                                                             {{ Str::limit($product->{'product_name_' . app()->getLocale()}, 20) }}
                                                         </a>
                                                     </h3>
-                                                    <span class="item-price physio-product-price">{{ $product->product_price }}</span>
+                                                    <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
                                                     <div class="rating-star ul-li-center clearfix">
                                                         <ul class="clearfix">
                                                             <li class="active"><i class="las la-star"></i></li>
@@ -1064,7 +1064,7 @@ background : none !important;
                                                     <a
                                                         href="{{ route('product.show', $product->id) }}">{{ $product->{'product_name_' . app()->getLocale()} }}</a>
                                                 </h3>
-                                                <span class="item-price mb-2">{{ $product->product_price }}</span>
+                                                <span class="item-price mb-2">{{ $product->product_price }} EGP</span>
                                                 <p class="mb-30">
                                                     {{ $product->{'short_description_' . app()->getLocale()} }}
                                                 </p>

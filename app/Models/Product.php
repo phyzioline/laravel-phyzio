@@ -56,6 +56,11 @@ class Product extends Model
     return $this->hasOne(Favorite::class)->where('user_id', auth()->id());
 }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'product_id', 'id');
+    }
+
     protected static function boot()
     {
         parent::boot();

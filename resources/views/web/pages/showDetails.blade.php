@@ -63,7 +63,7 @@
                                 </ul>
                                 <span class="review-text">(12 Reviews)</span>
                             </div>
-                            <span class="physio-item-price mb-30 price-animated">{{ $product->product_price }}</span>
+                            <span class="physio-item-price mb-30 price-animated">{{ $product->product_price }} EGP</span>
                             <p class="mb-40 description-text">
                                 {{ $product->{'short_description_' . app()->getLocale()} }}
                             </p>
@@ -291,7 +291,7 @@
                                             {{ $product->{'product_name_' . app()->getLocale()} }}
                                         </a>
                                     </h3>
-                                    <span class="physio-item-price physio-product-price">{{ $product->product_price }}</span>
+                                    <span class="physio-item-price physio-product-price">{{ $product->product_price }} EGP</span>
                                     <div class="rating-star ul-li-center clearfix">
                                         <ul class="clearfix">
                                             <li class="active"><i class="las la-star"></i></li>

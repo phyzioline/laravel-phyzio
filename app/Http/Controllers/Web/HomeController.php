@@ -13,13 +13,26 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $categories = Category::where('status', 'active')->get();
-        $products = Product::where('status', 'active')->get();
+        
+        // Get products with order count for sorting by best selling
+        $productsQuery = Product::where('status', 'active')
+            ->withCount(['orderItems' => function($query) {
+                $query->selectRaw('COALESCE(SUM(quantity), 0)');
+            }])
+            ->orderByDesc('order_items_count');
+        
+        // Search functionality
         if ($request->has('search')) {
             $search = $request->input('search');
-            $products = $products->filter(function ($product) use ($search) {
-                return str_contains(strtolower($product->product_name), strtolower($search));
+            $productsQuery->where(function($query) use ($search) {
+                $query->where('product_name_en', 'LIKE', "%{$search}%")
+                      ->orWhere('product_name_ar', 'LIKE', "%{$search}%");
             });
         }
+        
+        // Paginate with 50 products per page
+        $products = $productsQuery->paginate(50);
+        
         return view('web.pages.index', compact('categories','products'));
     }
 }
