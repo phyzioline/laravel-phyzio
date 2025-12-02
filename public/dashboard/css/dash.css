@@ -1,0 +1,414 @@
+
+
+.balance-content{
+    background-color:#006EC4;
+    border-radius:10px;
+    
+}
+.balance-content p{
+    font-size:23px;
+    font-weight:500;
+    
+}
+
+.balance-rating{
+    background-color:#C7FFA5;
+    border-radius:10px;
+
+}
+.invest-content{
+    background-color:#2C2C2C;
+    color:#fff;
+    border-radius:10px;
+    width:90%;
+    
+}
+.invest-content p{
+    font-weight:500;
+    font-size:23px;
+}
+.amount h5{
+    font-size:14px;
+    font-weight:500;
+    margin-top:4px;
+}
+.amount-content{
+    background-color:#006EC4;
+    color:#fff;
+    border-radius:10px;
+    width:80%;
+}
+
+.tesla p{
+    font-weight:500;
+    font-size:14px;
+}
+.tesla-content p{
+    font-size:14px;
+    font-weight:400;
+}
+.tesla-content h6{
+    font-size:14px;
+    font-weight:400;
+    color:#77B900;
+}
+
+.Invested-Value p{
+    font-size:14px;
+    font-weight:400;
+    color:#838383;
+}
+.Invested-Value h6{
+    font-size:16px;
+    font-weight:500;
+    color:#2C2C2C;
+}
+
+.NASDAQ-content h6{
+    font-size:14px;
+    font-weight:500;
+    color:#838383;
+}
+.Prev-close p{
+    font-size:14px;
+    font-weight:400;
+    color:#838383;
+}
+
+.Prev-close h6{
+    font-size:16px;
+    font-weight:500;
+    color:##2C2C2C;
+}
+
+.Day-rating p{
+    font-size:16px;
+    font-weight:500;
+    color:#2C2C2C;
+    margin:0;
+}
+.Day-rating h6{
+    font-size:14px;
+    font-weight:400;
+    color:#838383;
+}
+
+
+.icon-container{
+    position:absolute;
+    top:-3%;
+    left:12%;
+    z-index:657498;
+}
+
+.p-container p{
+    font-size:14px;
+    font-weight:500;
+    
+}
+.p-container h6{
+    font-size:16px;
+    font-weight:400;
+    
+}
+.p-container {
+   
+    position:absolute;
+    top:51%;
+    left:15%;
+    z-index:657498;
+    width:70%
+}
+
+
+
+/* dash2 */
+
+   
+    .investment-section {
+        border: 1px solid #d9e2e8;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        background-color:#fff;
+
+      }
+
+      .investment-section:hover{
+        border:2px solid #006EC4;
+      }
+  
+      
+      .custom-switch {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+  
+      .custom-toggle {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 25px;
+      }
+  
+      .custom-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+  
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        border-radius: 34px;
+      }
+  
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background-color: white;
+        top: 2px;
+        left: 4px;
+        transition: 0.4s;
+      }
+  
+      input:checked + .slider {
+        background-color: #7BBC5E;
+      }
+  
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+  
+      
+      .invest-btn {
+        background-color: #006EC4;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 20px;
+        
+      }
+
+      .target-content{
+        font-size:23px;
+        font-weight:500;
+        border-radius:10px;
+      }
+
+      .label-content{
+        font-size:16px;
+        font-weight:500;
+        color:#2C2C2C;
+      }
+      .label-font{
+        font-size:17px;
+        font-weight:300;
+        color:#16151C;
+      }
+
+      @media(max-width:425px){
+        .btn-invest-now{
+            font-size: 11px;
+            text-align:center;
+        }
+      }
+  
+
+      /* dash 3 payment */
+
+      .payment-header {
+        font-weight: bold;
+      }
+      .payment-amount {
+        color: #4CAF50;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .form-check-label {
+        margin-left: 5px;
+      }
+      .btn-pay {
+        background-color: #4CAF50;
+        color: #fff;
+        font-weight: bold;
+      }
+      .btn-pay:hover {
+        background-color: #45a049;
+      }
+
+      /* dash4 */
+      .table-container {
+        padding: 10px;
+        background-color: #fff;
+        
+      }
+      .table thead th {
+        background: linear-gradient(180deg, #02767F 0%, #04D5E5 100%);
+        color: white;
+        text-align: center;
+        /* border-radius: 10px; */
+        padding: 10px;
+      }
+      .table td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .table td, .table th {
+        border-left: none;
+        border-right: none;
+    }
+
+      /* dashbord5 */
+      .sidebar-content a {
+        color: #333;
+        text-decoration: none;
+        padding: 10px;
+        display: block;
+        border-radius: 5px;
+      }
+      .sidebar-content a:hover {
+        background-color: #e9ecef;
+      }
+
+      .sidebar-content h6{
+        font-size:20px;
+        font-weight:500;
+        width:170px;
+      }
+
+      .menu-title-content {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+    
+    .menu-title-content a {
+        text-decoration: none;
+        color: #333;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .arrow-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    .menu-bar-content {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: none; 
+        transition: all 0.3s ease;
+    }
+    
+    .menu-bar-content li {
+        padding: 0 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .menu-bar-content p {
+        font-size: 14px;
+        font-weight: 400;
+        margin: 0;
+    }
+    
+    .menu-bar-content span {
+        font-size: 11px;
+        font-weight: 400;
+        color: #777;
+    }
+    
+    .extra-content {
+        padding: 20px;
+        font-size: 14px;
+        display: block; 
+    }
+
+
+    .menu-content {
+      list-style: none;
+      padding: 0;
+      margin-left: 16px;
+  }
+  
+  .menu-content li {
+      padding: 0 15px;
+      border-bottom: 1px solid #eee;
+  }
+  
+  .menu-content p {
+      font-size: 14px;
+      font-weight: 400;
+      margin: 0;
+  }
+  
+  .menu-content span {
+      font-size: 11px;
+      font-weight: 400;
+      color: #777;
+  }
+    
+  .profile-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.profile-icon {
+    font-size: 80px;
+    color: #ccc;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+.social-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.Secure-account{
+  border:1.43px solid #EAEAEA ;
+  padding: 30px 50px ;
+  border-radius:10px
+}
+.Secure-account h6{
+  color:#019F37;
+  font-size:18px;
+  font-weight:400;
+}
+.Secure-account h6{
+  color:#00000080;
+  font-size:15px;
+  font-weight:300;
+}
+.btn-primary{
+  background: linear-gradient(90deg, #02767F 0%, #04D5E5 100%);
+
+}
+.form-group{
+  padding-bottom: 5px;
+}
+
+

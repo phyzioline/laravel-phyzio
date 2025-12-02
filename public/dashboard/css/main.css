@@ -1,0 +1,50 @@
+ 
+  .text-singin {
+    color: #D3C312;
+  }
+  
+  .btn-singin {
+    background: linear-gradient(270deg, #D3C312 0%, #0FA98A 100%);
+
+;
+    color: #fff !important;
+  }
+  
+  .bg-sing {
+    background: linear-gradient(to left, #D3C312 0%, #0FA98A 50%, #fff 50%);
+
+  }
+  
+  
+  body, html {
+    overflow-x: hidden;
+  }
+  
+  @media (max-width: 767px) {
+    
+    .bg-sing {
+      background: linear-gradient(to bottom, #0FA98A
+ 50%, #fff 50%);
+    }
+  
+  
+    .col-md-6 {
+      width: 100% !important;
+      margin-bottom: 20px;
+    }
+  
+    .mx-auto img-fluid {
+      max-width: 30%; 
+    }
+  
+    .text-singin {
+      font-size: 18px;
+    }
+  
+    .btn-singin {
+      width: 100%; 
+    }
+    .img-fluid{
+        width: 40% !important;
+    }
+  }

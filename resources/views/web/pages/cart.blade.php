@@ -1,0 +1,370 @@
+@extends('web.layouts.app')
+
+@section('content')
+    <!-- main body - start -->
+    <main>
+        <!-- breadcrumb-section - start -->
+        <section id="slider-section" class="slider-section clearfix">
+            <div class="item d-flex align-items-center" data-background="{{ asset('web/assets/images/hero-bg.png') }}"
+                style="height: 70vh; background-size: cover; background-position: center;">
+                <div class="container">
+                    <div class="text-center mt-5 mb-5">
+                        <h1 class="text-white fw-bold" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">CART</h1>
+                        <p class="text-white-50">Review your items and complete your order</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- breadcrumb-section - end -->
+
+        <!-- cart-section - start -->
+        <section id="cart-section" class="cart-section sec-ptb-100 clearfix" style="background-color: #f8f9fa;">
+            <div class="container">
+                <!-- Cart Items Table -->
+                <div class="table-wrap bg-white rounded shadow-sm p-4 mb-4">
+                    <h4 class="mb-4 text-primary fw-bold">
+                        <i class="las la-shopping-cart me-2"></i>Shopping Cart Items
+                    </h4>
+                    
+                    @if(count($items) > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="border-0">Product</th>
+                                        <th class="border-0 text-center">Price</th>
+                                        <th class="border-0 text-center">Quantity</th>
+                                        <th class="border-0 text-center">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($items as $item)
+                                        <tr data-item-id="{{ $item->id }}" data-price="{{ $item->product->product_price }}" 
+                                            class="align-middle">
+                                            <td>
+                                                <div class="product-info d-flex align-items-center">
+                                                    <form action="{{ route('carts.destroy', $item->id) }}" method="POST"
+                                                        class="remove-form me-3">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="id" value="{{ $item->id }}">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm remove-btn" 
+                                                                title="Remove item">
+                                                            <i class="las la-times"></i>
+                                                        </button>
+                                                    </form>
+                                                    
+                                                    <div class="product-image me-3">
+                                                        <img style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
+                                                            src="{{ asset($item->product->productImages->first()->image) }}"
+                                                            alt="Product Image" class="img-fluid">
+                                                    </div>
+                                                    
+                                                    <div class="product-details">
+                                                        <h6 class="mb-1 fw-bold text-dark">
+                                                            {{ $item->product->{'product_name_' . app()->getLocale()} }}
+                                                        </h6>
+                                                        <small class="text-muted">Available: {{ $item->product->amount }} units</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <span class="item-price fw-bold text-success">
+                                                    ${{ number_format($item->product->product_price, 2) }}
+                                                </span>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <div class="quantity-input d-flex align-items-center justify-content-center">
+                                                    <input type="number"
+                                                           class="form-control text-center mx-2 input-number-1"
+                                                           style="width: 80px; border-radius: 20px;"
+                                                           value="{{ $item->quantity }}"
+                                                           min="1"
+                                                           max="{{ $item->product->amount }}"
+                                                           name="quantity"
+                                                           data-id="{{ $item->id }}
+                                                </div>
+                                            </td>
+                                            
+                                            <td class="text-center">
+                                                <strong class="item-subtotal text-primary fs-5">
+                                                    ${{ number_format($item->product->product_price * $item->quantity, 2) }}
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="text-center py-5">
+                            <i class="las la-shopping-cart fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Your cart is empty</h5>
+                            <p class="text-muted">Add some products to get started!</p>
+                        </div>
+                    @endif
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="cuponcode-form mb-4">
+                    <div class="row justify-content-end">
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="d-flex justify-content-end">
+                                <a href="{{ route('carts.flush') }}" class="btn btn-outline-danger" 
+                                   onclick="return confirm('Are you sure you want to empty your cart?')">
+                                    <i class="las la-trash me-2"></i>Empty Cart
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary and Checkout -->
+                <div class="row justify-content-center">
+                    <!-- Total Cost -->
+                    <div class="col-lg-5 col-md-6 col-sm-12 mb-4">
+                        <div class="total-cost-bar bg-white rounded shadow-sm p-4">
+                            <h4 class="title-text mb-4 text-white text-center fw-bold" 
+                                style="background-color: #02767F; padding: 15px; border-radius: 8px;">
+                                <i class="las la-calculator me-2"></i>Order Summary
+                            </h4>
+                            
+                            <div class="total-cost d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                <strong class="fs-5 text-dark">Total Amount:</strong>
+                                <span id="cart-total" class="fs-4 fw-bold text-primary">
+                                    ${{ number_format($total, 2) }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Form -->
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="total-cost-bar bg-white rounded shadow-sm p-4">
+                            <h4 class="title-text mb-4 text-white text-center fw-bold" 
+                                style="background-color: #02767F; padding: 15px; border-radius: 8px;">
+                                <i class="las la-credit-card me-2"></i>Complete Order
+                            </h4>
+                            
+                            <form action="{{ route('order.store') }}" method="POST" class="needs-validation" novalidate>
+                                @csrf
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="payment_method" class="form-label fw-bold">
+                                            <i class="las la-credit-card me-1"></i>Payment Method
+                                        </label>
+                                        <select name="payment_method" id="payment_method" class="form-select" required>
+                                            <option value="" disabled selected>Select Payment Method</option>
+                                            <option value="card">💳 Credit/Debit Card</option>
+                                            <option value="cash">💰 Cash on Delivery</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please select a payment method.</div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="Name" class="form-label fw-bold">
+                                            <i class="las la-user me-1"></i>Full Name
+                                        </label>
+                                        <input type="text" id="Name" name="name" class="form-control" 
+                                               placeholder="Enter your full name" required>
+                                        <div class="invalid-feedback">Please enter your name.</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label fw-bold">
+                                            <i class="las la-phone me-1"></i>Phone Number
+                                        </label>
+                                        <input type="tel" id="phone" name="phone" class="form-control" 
+                                               placeholder="Enter phone number" required>
+                                        <div class="invalid-feedback">Please enter a valid phone number.</div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="address" class="form-label fw-bold">
+                                            <i class="las la-map-marker me-1"></i>Delivery Address
+                                        </label>
+                                        <input type="text" id="address" name="address" class="form-control" 
+                                               placeholder="Enter delivery address" required>
+                                        <div class="invalid-feedback">Please enter your address.</div>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5" 
+                                            style="background-color: #02767F; border-color: #02767F;">
+                                        <i class="las la-paper-plane me-2"></i>Place Order
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- cart-section - end -->
+
+        <script>
+            $(document).ready(function() {
+                // Form validation
+                const forms = document.querySelectorAll('.needs-validation');
+                Array.from(forms).forEach(form => {
+                    form.addEventListener('submit', event => {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+
+                function updateQuantity(itemId, quantity) {
+                    $.ajax({
+                        url: '/update_cart/' + itemId,
+                        method: 'PUT',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            quantity: quantity
+                        },
+                        success: function(res) {
+                            console.log('Quantity updated on server');
+                            updateTotal();
+                            // Show success message
+                            showNotification('Quantity updated successfully!', 'success');
+                        },
+                        error: function() {
+                            showNotification('Error updating quantity. Please try again.', 'error');
+                        }
+                    });
+                }
+
+                function updateTotal() {
+                    $.ajax({
+                        url: '{{ route('carts.total') }}',
+                        method: 'GET',
+                        success: function(res) {
+                            $('#cart-total').text('$' + res.total);
+                        },
+                        error: function() {
+                            console.error('Error loading total');
+                        }
+                    });
+                }
+
+                function showNotification(message, type) {
+                    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+                    const alertHtml = `
+                        <div class="alert ${alertClass} alert-dismissible fade show position-fixed" 
+                             style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                            <i class="las ${type === 'success' ? 'la-check-circle' : 'la-exclamation-circle'} me-2"></i>
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    $('body').append(alertHtml);
+                    
+                    // Auto remove after 3 seconds
+                    setTimeout(() => {
+                        $('.alert').fadeOut();
+                    }, 3000);
+                }
+
+                $('.input-number-1').off('change').on('change', function() {
+                    var itemId = $(this).data('id');
+                    var newQty = parseInt($(this).val());
+                    var maxQty = parseInt($(this).attr('max'));
+                    
+                    if (newQty < 1 || isNaN(newQty)) {
+                        newQty = 1;
+                        $(this).val(1);
+                    }
+                    
+                    if (newQty > maxQty) {
+                        newQty = maxQty;
+                        $(this).val(maxQty);
+                        showNotification(`Maximum available quantity is ${maxQty}`, 'error');
+                    }
+
+                    updateQuantity(itemId, newQty);
+
+                    var $row = $(this).closest('tr');
+                    var price = parseFloat($row.data('price'));
+                    var newSubtotal = price * newQty;
+
+                    $row.find('strong.item-subtotal').text('$' + newSubtotal.toFixed(2));
+                });
+
+                // Remove item confirmation
+                $('.remove-form').on('submit', function(e) {
+                    if (!confirm('Are you sure you want to remove this item from your cart?')) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        </script>
+
+        <style>
+            .table th {
+                font-weight: 600;
+                color: #495057;
+                border-bottom: 2px solid #dee2e6;
+            }
+            
+            .table td {
+                vertical-align: middle;
+                border-color: #f8f9fa;
+            }
+            
+            .form-control, .form-select {
+                border-radius: 8px;
+                border: 1px solid #ced4da;
+                transition: all 0.3s ease;
+            }
+            
+            .form-control:focus, .form-select:focus {
+                border-color: #02767F;
+                box-shadow: 0 0 0 0.2rem rgba(2, 118, 127, 0.25);
+            }
+            
+            .btn {
+                border-radius: 8px;
+                font-weight: 500;
+                transition: all 0.3s ease;
+            }
+            
+            .btn:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+            
+            .product-details h6 {
+                color: #2c3e50;
+                line-height: 1.4;
+            }
+            
+            .quantity-input input {
+                border: 2px solid #e9ecef;
+            }
+            
+            .quantity-input input:focus {
+                border-color: #02767F;
+                box-shadow: 0 0 0 0.2rem rgba(2, 118, 127, 0.25);
+            }
+            
+            .alert {
+                border-radius: 8px;
+                border: none;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+                                                                                           .item-image img{
+                                                                                           width : 100% !important;
+                                                                                           height : 100% !important;
+                                                                                           }
+        </style>
+    </main>
+    <!-- main body - end -->
+@endsection

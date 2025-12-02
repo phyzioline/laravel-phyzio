@@ -1,0 +1,117 @@
+<?php
+namespace App\Services\Dashboard;
+
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\SubCategory;
+use App\Models\Tag;
+
+class ProductService
+{
+
+    public function __construct(public Product $model)
+    {}
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        return $this->model->where('user_id' , auth()->user()->id)->paginate();
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $categories     = Category::where('status', 'active')->get();
+        $sub_categories = SubCategory::where('status', 'active')->get();
+        $tags           = Tag::where('status', 'active')->get();
+        return view('dashboard.pages.product.create', compact('categories', 'sub_categories', 'tags'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store($data)
+    {
+        $data['user_id'] = auth()->user()->id;
+        $product         = $this->model->create($data);
+
+        if (! empty($data['images']) && is_array($data['images'])) {
+            $imagesData = [];
+
+            foreach ($data['images'] as $image) {
+                $fileName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/products'), $fileName);
+
+                $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+            }
+
+            $product->productImages()->createMany($imagesData);
+        }
+
+        if (! empty($data['tags']) && is_array($data['tags'])) {
+            $product->tags()->attach($data['tags']);
+        }
+
+        return $product;
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+
+        return $this->show($id);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update($id, $data)
+    {
+        $product = $this->model->findOrFail($id);
+
+        $product->update($data);
+
+        if (! empty($data['images']) && is_array($data['images'])) {
+            $product->productImages()->delete();
+
+             $imagesData = [];
+
+            foreach ($data['images'] as $image) {
+                $fileName = time() . '_' . $image->getClientOriginalName();
+                $image->move(public_path('uploads/products'), $fileName);
+
+                $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+            }
+
+            $product->productImages()->createMany($imagesData);
+        }
+
+        if (! empty($data['tags']) && is_array($data['tags'])) {
+            $product->tags()->sync($data['tags']);
+        }
+
+        return $product;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        $product = $this->show($id);
+        return $product->delete();
+    }
+}
