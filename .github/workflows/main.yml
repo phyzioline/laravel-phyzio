@@ -3,7 +3,7 @@ name: Laravel Deploy via SSH
 on:
   push:
     branches:
-      - main  # يمكنك تغيير 'main' إلى الفرع الذي تستخدمه للنشر
+      - main  # ⬅️ تأكد أن هذا هو الفرع الذي تدفع إليه التحديثات
 
 jobs:
   deploy:
@@ -14,32 +14,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. إعداد بيئة PHP وإضافة المفتاح الخاص لـ SSH
-      - name: Setup SSH and PHP
+      # 2. إعداد بيئة PHP (غيّر الإصدار إذا لزم الأمر)
+      - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2' # ⬅️ غيّر هذا إلى إصدار PHP الخاص بالسيرفر
+          php-version: '8.2' # ⬅️ غيّر إلى إصدار PHP الخاص بسيرفرك
 
-      # 3. إعداد الاتصال الآمن بـ SSH
+      # 3. إعداد الاتصال الآمن بـ SSH باستخدام المفتاح الخاص
       - name: Setup SSH Agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      # 4. النشر الفعلي عبر SSH (تم تعديل الأمر لإضافة المنفذ)
+          
+      # 4. النشر الفعلي (Deployment)
       - name: Deploy to Server
         run: |
-          echo "Starting deployment to ${{ secrets.SSH_HOST }}..."
+          echo "Starting deployment to ${{ secrets.SSH_HOST }} on port ${{ secrets.SSH_PORT }}..."
           
-          # الاتصال بالسيرفر على المنفذ المحدد (SSH_PORT) وتنفيذ أوامر Git و Laravel
+          # الاتصال بالسيرفر على المنفذ المحدد وتنفيذ أوامر Git و Laravel
           ssh -o StrictHostKeyChecking=no -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "
+            
             # الانتقال إلى مسار المشروع
             cd ${{ secrets.SERVER_PATH }}
             
             # سحب التحديثات من Git
             git pull origin main
             
-            # (خطوات Laravel الضرورية)
+            # (خطوات Laravel)
             composer install --no-dev --prefer-dist
             php artisan migrate --force
             php artisan config:cache
