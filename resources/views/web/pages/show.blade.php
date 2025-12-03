@@ -1,4 +1,18 @@
 @extends('web.layouts.app')
+
+@section('title', 'Physical Therapy Products & Medical Equipment Shop | PhyzioLine')
+
+@push('meta')
+    <meta name="description" content="Shop high-quality physical therapy products, medical equipment, and rehabilitation supplies. Browse our extensive collection of professional physiotherapy tools and devices.">
+    <meta name="keywords" content="physical therapy products, physiotherapy equipment, medical supplies, rehabilitation equipment, therapy products, medical devices">
+    <meta property="og:title" content="Physical Therapy Products Shop | PhyzioLine">
+    <meta property="og:description" content="Professional physical therapy equipment and medical supplies for therapists and clinics.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Physical Therapy Products Shop">
+    <meta name="twitter:description" content="Professional physical therapy equipment and medical supplies.">
+@endpush
+
 @section('content')
     <main>
 
@@ -228,8 +242,10 @@
                 .physio-product-img {
                     width: 100%;
                     height: 100%;
-                    object-fit: cover;
+                    object-fit: contain;
                     transition: transform 0.3s ease;
+                    padding: 10px;
+                    background: #fff;
                 }
 
                 .physio-product-card:hover .physio-product-img {
@@ -394,6 +410,41 @@
                     opacity: 1;
                 }
 
+                /* 5-Column Desktop Grid */
+                .col-lg-2dot4 {
+                    position: relative;
+                    width: 100%;
+                    padding-right: 15px;
+                    padding-left: 15px;
+                }
+
+                @media (min-width: 992px) {
+                    .col-lg-2dot4 {
+                        flex: 0 0 20%;
+                        max-width: 20%;
+                    }
+                }
+
+                /* Product Card Size Adjustments for 5-column */
+                @media (min-width: 992px) {
+                    .physio-product-card {
+                        height: 380px;
+                    }
+                    
+                    .physio-image-container {
+                        height: 170px;
+                    }
+                    
+                    .physio-product-title {
+                        font-size: 13px;
+                        min-height: 32px;
+                    }
+                    
+                    .physio-product-price {
+                        font-size: 15px;
+                    }
+                }
+
                 /* Responsive Design */
                 @media (max-width: 768px) {
                     #slider-section .item {
@@ -449,13 +500,16 @@
                     }
                 }
 
+                /* Mobile Single Column */
                 @media (max-width: 576px) {
+                    .product-item {
+                        flex: 0 0 100% !important;
+                        max-width: 100% !important;
+                    }
+                    
                     .physio-product-card {
                         margin-bottom: 20px;
-                    }
-
-                    .product-item {
-                        margin-bottom: 20px;
+                        height: 420px;
                     }
 
                     .has-column-2 .product-item {
@@ -463,26 +517,26 @@
                     }
 
                     .physio-image-container {
-                        height: 150px;
+                        height: 200px;
                     }
                     
                     .physio-content-wrapper {
-                        padding: 10px;
+                        padding: 15px;
                     }
                     
                     .physio-product-title {
-                        font-size: 12px;
-                        min-height: 28px;
+                        font-size: 14px;
+                        min-height: 36px;
                     }
 
                     .physio-product-price {
-                        font-size: 14px;
+                        font-size: 16px;
                     }
 
                     .physio-product-card .add-to-cart,
                     .physio-product-card .add-to-favorite {
-                        width: 24px;
-                        height: 24px;
+                        width: 28px;
+                        height: 28px;
                     }
                 }
 
@@ -665,7 +719,7 @@ background : none !important;
                 style="height: 30vh">
                 <div class="container">
                     <div class="text-center mt-5 mb-5">
-                        <h1 style="margin-top : 90px">SHOP</h1>
+                         <h1 style="margin-top : 90px">Physical Therapy Products Shop</h1>
                     </div>
                 </div>
             </div>
@@ -701,19 +755,7 @@ background : none !important;
         <!-- hero-slider-section - end
            ================================================== -->
 
-        <section class="mt-5">
-            <div class="container">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-6">
-                        <div class="d-flex justify-content-between align-items-center border-promotion">
-                            <span class="main-color promotion-text ">Join as a Supplier</span>
-                            <a href="{{ route('login') }}" class="main-color border-btn px-5 py-2 mx-3">Join</a>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- shop-section - start
            ================================================== -->
@@ -729,6 +771,13 @@ background : none !important;
                                         placeholder="Search your Product">
                                     <button type="submit"><i class="las la-search"></i></button>
                                 </form>
+                            </div>
+
+                            <div class="widget">
+                                <div class="d-flex justify-content-between align-items-center border-promotion" style="padding: 15px; background-color: #f5f5f5; border-radius: 8px; margin-bottom: 20px;">
+                                    <span class="main-color promotion-text" style="font-size: 14px; font-weight: 600;">Join as a Supplier</span>
+                                    <a href="{{ route('login') }}" class="main-color border-btn px-4 py-2" style="font-size: 13px;">Join</a>
+                                </div>
                             </div>
 
                             <div class="widget products-category ul-li-block">
@@ -824,7 +873,7 @@ background : none !important;
                             <div id="column-3-tab" class="tab-pane active">
                                 <div class="row mb-70 justify-content-center">
                                     @foreach ($products as $index => $product)
-                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 product-item"
+                                        <div class="col-lg-2dot4 col-md-4 col-sm-12 col-xs-12 product-item"
                                             data-name="{{ Str::lower($product->{'product_name_' . app()->getLocale()}) }}">
                                             <div class="product-grid text-center clearfix physio-product-card">
                                                 <div class="item-image physio-image-container">
@@ -835,7 +884,7 @@ background : none !important;
                                                                     <a href="{{ route('product.show', $product->id) }}"
                                                                         class="image-wrap">
                                                                         <img src="{{ asset($img->image) }}"
-                                                                            alt="image_not_found" class="physio-product-img" />
+                                                                            alt="{{ $product->{'product_name_' . app()->getLocale()} }} - Physical Therapy Equipment" class="physio-product-img" />
                                                                     </a>
                                                                 </div>
                                                             @endforeach
@@ -912,7 +961,7 @@ background : none !important;
                             <div id="column-2-tab" class="tab-pane fade">
                                 <div class="row has-column-2 mb-70 justify-content-center">
                                     @foreach ($products as $index => $product)
-                                        <div class="col-lg-6 col-md-4 col-sm-6 col-xs-12 product-item"
+                                        <div class="col-lg-6 col-md-4 col-sm-12 col-xs-12 product-item"
                                             data-name="{{ Str::lower($product->{'product_name_' . app()->getLocale()}) }}">
                                             <div class="product-grid text-center clearfix physio-product-card">
                                                 <div class="item-image physio-image-container">
@@ -923,7 +972,7 @@ background : none !important;
                                                                     <a href="{{ route('product.show', $product->id) }}"
                                                                         class="image-wrap">
                                                                         <img src="{{ asset($img->image) }}"
-                                                                            alt="image_not_found" class="physio-product-img" />
+                                                                            alt="{{ $product->{'product_name_' . app()->getLocale()} }} - Physical Therapy Equipment" class="physio-product-img" />
                                                                     </a>
                                                                 </div>
                                                             @endforeach

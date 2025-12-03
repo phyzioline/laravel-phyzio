@@ -14,7 +14,7 @@ class ShowService
                 $query->where('status', 'active');
             }])
             ->get();
-        $products      = Product::where('amount','>' ,'0')->where('status', 'active')->paginate();
+        $products      = Product::where('amount','>' ,'0')->where('status', 'active')->paginate(50);
         $count_product = Product::where('amount','>' ,'0')->where('status', 'active')->count();
         return view('web.pages.show', compact('categories', 'products', 'count_product'));
     }
@@ -34,7 +34,7 @@ class ShowService
     {
         $products = Product::where('sub_category_id', $id)
             ->where('amount','>' ,'0')->where('status', 'active')
-            ->paginate(12)
+            ->paginate(50)
             ->withQueryString();
         $count_product = Product::where('amount','>' ,'0')->where('sub_category_id', $id)->where('status','active')->count();
 

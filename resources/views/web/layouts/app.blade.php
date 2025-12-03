@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-  <title>Phyzioline</title>
+  <title>@yield('title', 'Physioline - Physical Therapy Products & Medical Equipment')</title>
+  @stack('meta')
   <link rel="shortcut icon" href="{{ asset('web/assets/images/logo.png')}}" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

@@ -17,14 +17,25 @@ class ShowController extends Controller
 {
     $keyword = $request->input('search');
 
-    $products = Product::where('product_name_en', 'LIKE', "%$keyword%")
-        ->orWhere('product_name_ar', 'LIKE', "%$keyword%")
-      
-        ->paginate(10);
+    $products = Product::where('status', 'active')
+        ->where('amount', '>', '0')
+        ->where(function($query) use ($keyword) {
+            $query->where('product_name_en', 'LIKE', "%$keyword%")
+                  ->orWhere('product_name_ar', 'LIKE', "%$keyword%");
+        })
+        ->paginate(50);
+
+    $count_product = Product::where('status', 'active')
+        ->where('amount', '>', '0')
+        ->where(function($query) use ($keyword) {
+            $query->where('product_name_en', 'LIKE', "%$keyword%")
+                  ->orWhere('product_name_ar', 'LIKE', "%$keyword%");
+        })
+        ->count();
 
     $categories = Category::with('subcategories')->get();
 
-    return view('web.pages.show', compact('products', 'categories'));
+    return view('web.pages.show', compact('products', 'categories', 'count_product'));
 }
 
     public function show()
