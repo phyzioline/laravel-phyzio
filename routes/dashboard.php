@@ -37,6 +37,13 @@ Route::group(
             Route::resource('orders', OrderController::class);
             Route::get('order_cash', [OrderController::class, 'orderCash'])->name('order_cash');
 
+            // Ecosystem Management
+            Route::resource('therapist_profiles', \App\Http\Controllers\Dashboard\TherapistProfileController::class);
+            Route::resource('appointments', \App\Http\Controllers\Dashboard\AppointmentController::class);
+            Route::resource('clinic_profiles', \App\Http\Controllers\Dashboard\ClinicProfileController::class);
+            Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
+            Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
+
             // Settings
             Route::get('settings', [SettingController::class, 'show'])->name('settings.show');
             Route::post('settings', [SettingController::class, 'update'])->name('settings.update');

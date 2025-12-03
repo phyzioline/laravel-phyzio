@@ -175,10 +175,10 @@
                     <nav class="main-menu ul-li-center clearfix">
                         <ul class="clearfix">
                             <li><a href="{{ route('show') }}" class="text-decoration-none">Shop</a></li>
-                            <li><a href="{{ route('home') }}#privateCases" class="text-decoration-none">Private Cases</a></li>
-                            <li><a href="{{ route('home') }}#System" class="text-decoration-none">Our System</a></li>
-                            <li><a href="{{ route('home') }}#jobs" class="text-decoration-none">Jobs</a></li>
-                            <li><a href="{{ route('home') }}#courses" class="text-decoration-none">Courses</a></li>
+                            <li><a href="{{ route('web.appointments.index') }}" class="text-decoration-none">Appointments</a></li>
+                            <li><a href="{{ route('web.erp.index') }}" class="text-decoration-none">Clinic ERP</a></li>
+                            <li><a href="{{ route('web.courses.index') }}" class="text-decoration-none">Courses</a></li>
+                            <li><a href="{{ route('web.datahub.index') }}" class="text-decoration-none">Data Hub</a></li>
                            	 @if (Auth::check())
                                   <li>
                                       <a href="{{ route('history_order.index') }}" class="text-decoration-none">History

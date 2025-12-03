@@ -59,6 +59,12 @@ Route::get('/', [HomeController::class, 'index'])
      
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name('web.shop.category');
 
+        // Ecosystem Routes
+        Route::get('/appointments', [App\Http\Controllers\Web\AppointmentController::class, 'index'])->name('web.appointments.index');
+        Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
+        Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
+        Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
+
 
 
 

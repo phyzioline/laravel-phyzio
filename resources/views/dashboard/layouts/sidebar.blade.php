@@ -98,6 +98,27 @@
                   </li>
               @endcan
 
+              {{-- Ecosystem Management --}}
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="material-icons-outlined">public</i>
+                      </div>
+                      <div class="menu-title">Ecosystem</div>
+                  </a>
+                  <ul>
+                      <li> <a href="{{ route('dashboard.therapist_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>Therapists</a>
+                      </li>
+                      <li> <a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>Appointments</a>
+                      </li>
+                      <li> <a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>Clinics</a>
+                      </li>
+                      <li> <a href="{{ route('dashboard.courses.index') }}"><i class="bi bi-arrow-right-short"></i>Courses</a>
+                      </li>
+                      <li> <a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>Data Points</a>
+                      </li>
+                  </ul>
+              </li>
+
                 @can('setting-update')
                     <li>
                         <a href="{{ route('dashboard.settings.show') }}">

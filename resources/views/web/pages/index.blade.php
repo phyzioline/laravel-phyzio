@@ -27,6 +27,66 @@
         <!-- slider-section - end
        ================================================== -->
 
+        <!-- Ecosystem Section - Start -->
+        <section class="ecosystem-section py-5" style="background-color: #f8f9fa;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="font-weight-bold" style="color: #36415A;">Our Ecosystem</h2>
+                    <p class="text-muted">Comprehensive solutions for the physiotherapy community</p>
+                </div>
+                <div class="row">
+                    <!-- Appointments -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                                <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
+                            </div>
+                            <h5 class="font-weight-bold mb-3">Home Visits</h5>
+                            <p class="text-muted small mb-4">Book certified physiotherapists for home sessions.</p>
+                            <a href="{{ route('web.appointments.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Book Now</a>
+                        </div>
+                    </div>
+
+                    <!-- Clinic ERP -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                                <i class="las la-clinic-medical" style="font-size: 32px; color: #04b8c4;"></i>
+                            </div>
+                            <h5 class="font-weight-bold mb-3">Clinic ERP</h5>
+                            <p class="text-muted small mb-4">Manage your clinic with our complete software solution.</p>
+                            <a href="{{ route('web.erp.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Manage Clinic</a>
+                        </div>
+                    </div>
+
+                    <!-- Learning -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                                <i class="las la-graduation-cap" style="font-size: 32px; color: #04b8c4;"></i>
+                            </div>
+                            <h5 class="font-weight-bold mb-3">Learning Hub</h5>
+                            <p class="text-muted small mb-4">Advance your career with specialized courses.</p>
+                            <a href="{{ route('web.courses.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Start Learning</a>
+                        </div>
+                    </div>
+
+                    <!-- Data Hub -->
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                                <i class="las la-globe" style="font-size: 32px; color: #04b8c4;"></i>
+                            </div>
+                            <h5 class="font-weight-bold mb-3">Data Hub</h5>
+                            <p class="text-muted small mb-4">Global insights and licensing requirements.</p>
+                            <a href="{{ route('web.datahub.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Explore Data</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Ecosystem Section - End -->
+
         <!-- search-section - start
        ================================================== -->
         <section class="mt-5">
