@@ -35,6 +35,7 @@ Route::group(
             Route::resource('tags', TagController::class);
             Route::resource('products', ProductController::class);
             Route::resource('orders', OrderController::class);
+            Route::get('orders/{id}/print-label', [OrderController::class, 'printLabel'])->name('orders.print-label');
             Route::get('order_cash', [OrderController::class, 'orderCash'])->name('order_cash');
 
             // Ecosystem Management

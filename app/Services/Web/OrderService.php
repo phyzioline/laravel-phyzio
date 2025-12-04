@@ -61,6 +61,13 @@ class OrderService
             }
         }
         Cart::where('user_id', $user->id)->delete();
+        
+        // Send notification to all admins
+        $admins = \App\Models\User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\OrderCreatedNotification($order));
+        }
+        
         Session::flash('message', ['type' => 'success', 'text' => __('تم إنشاء الطلب بنجاح')]);
         return redirect()->route('carts.index')->with('success', 'تم إنشاء الطلب بنجاح');
     }
@@ -161,6 +168,12 @@ class OrderService
                     'total'    => $item->price * $item->quantity,
                 ]
             );
+        }
+
+        // Send notification to all admins
+        $admins = \App\Models\User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\OrderCreatedNotification($order));
         }
 
         if (! $paymentKeyResponse->successful()) {

@@ -47,4 +47,10 @@ class OrderController extends Controller
         $this->orderService->destroy($id);
         return redirect()->route('dashboard.orders.index')->with('success', 'Order deleted successfully.');
     }
+
+    public function printLabel(string $id)
+    {
+        $order = $this->orderService->show($id);
+        return view('dashboard.pages.order.print-label', compact('order'));
+    }
 }

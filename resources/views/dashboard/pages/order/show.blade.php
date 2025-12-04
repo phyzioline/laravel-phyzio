@@ -6,7 +6,12 @@
             <div class="row mb-5">
                 <div class="col-12 col-xl-10 mx-auto">
                     <div class="card shadow-sm p-4 border-0">
-                        <h4 class="mb-4 text-primary border-bottom pb-2">{{ __('Order Details') }}</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                            <h4 class="text-primary mb-0">{{ __('Order Details') }}</h4>
+                            <a href="{{ route('dashboard.orders.print-label', $order->id) }}" target="_blank" class="btn btn-success">
+                                <i class="fa fa-print"></i> {{ __('Print Shipping Label') }}
+                            </a>
+                        </div>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
