@@ -123,6 +123,35 @@
 .btn.bg-default-black:hover {
     background: #000;
 }
+
+/* Hero Background for Header - All Pages */
+#header-section {
+    background-image: url('{{ asset('web/assets/images/hero-bg.png') }}');
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    padding: 2px 0; /* Reduced from default */
+}
+
+#header-section .content-wrap {
+    padding: 0px 0; /* Reduced padding */
+}
+
+#header-section.stuck {
+    background-image: url('{{ asset('web/assets/images/hero-bg.png') }}');
+    background-position: center top;
+}
+
+/* Make header and hero section blend seamlessly */
+#slider-section,
+.slider-section {
+    margin-top: 3 !important;
+}
+
+#slider-section .item,
+.slider-section .item {
+    background-position: center bottom !important;
+}
 </style>
 
 <header id="header-section" class="header-section header-primary sticky-header clearfix">

@@ -1,93 +1,161 @@
 @extends('web.layouts.app')
 
-@section('title', 'Book Home Physiotherapy Appointments | PhyzioLine')
-
 @section('content')
 <main>
     <!-- Hero Section -->
-    <section class="hero-section position-relative pt-150 pb-100" style="background-color: #02767F; margin-top: 80px;">
+    <section class="hero-section py-5" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 120px !important;">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="mb-4 display-4 font-weight-bold text-white">Expert Physiotherapy at Your Doorstep</h1>
-                    <p class="lead mb-5 text-white-50">Book certified physiotherapists for home visits. Personalized care, professional treatment, and convenient scheduling.</p>
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="text-white font-weight-bold mb-4">Book a Home Visit Physiotherapist</h1>
+                    <p class="text-white lead mb-5">Professional care in the comfort of your home</p>
                     
                     <!-- Search Box -->
-                    <div class="search-box bg-white p-4 rounded shadow-lg">
-                        <form action="#" class="row">
+                    <div class="bg-white p-4 rounded shadow-lg">
+                        <form action="{{ url('/appointments') }}" method="GET" class="row">
                             <div class="col-md-4 mb-3 mb-md-0">
-                                <div class="form-group mb-0">
-                                    <label class="small font-weight-bold text-muted">Specialty</label>
-                                    <select class="form-control border-0 bg-light">
-                                        <option>All Specialties</option>
-                                        <option>Sports Injury</option>
-                                        <option>Post-Surgery</option>
-                                        <option>Geriatric</option>
-                                        <option>Pediatric</option>
-                                    </select>
-                                </div>
+                                <select name="specialization" class="form-control border-0 bg-light" style="height: 50px;">
+                                    <option value="">Select Specialization</option>
+                                    @foreach($specializations as $spec)
+                                        <option value="{{ $spec }}" {{ request('specialization') == $spec ? 'selected' : '' }}>{{ $spec }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
-                                <div class="form-group mb-0">
-                                    <label class="small font-weight-bold text-muted">Location</label>
-                                    <input type="text" class="form-control border-0 bg-light" placeholder="Area or City">
-                                </div>
+                                <select name="area" class="form-control border-0 bg-light" style="height: 50px;">
+                                    <option value="">Select Area</option>
+                                    @foreach($areas as $area)
+                                        <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>{{ $area }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-primary btn-block h-100 font-weight-bold" style="background-color: #04b8c4; border-color: #04b8c4;">
-                                    Find Therapist
+                                <button type="submit" class="btn btn-block text-white font-weight-bold" style="background-color: #04b8c4; height: 50px;">
+                                    Search Therapists
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
-                <div class="col-lg-6 d-none d-lg-block">
-                    <img src="https://img.freepik.com/free-photo/physiotherapist-doing-healing-treatment-patient_23-2149099613.jpg" alt="Home Physiotherapy" class="img-fluid rounded-lg shadow-lg" style="border-radius: 20px;">
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- How it Works -->
-    <section class="py-100 bg-white">
+    <!-- Therapists List -->
+    <section class="py-5 bg-light">
         <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="font-weight-bold" style="color: #36415A;">How It Works</h2>
-                <p class="text-muted">Simple steps to get the care you need</p>
-            </div>
             <div class="row">
-                <div class="col-md-4 text-center mb-4">
-                    <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: rgba(4, 184, 196, 0.1);">
-                        <i class="las la-search" style="font-size: 32px; color: #04b8c4;"></i>
+                <!-- Filters Sidebar -->
+                <div class="col-lg-3 mb-4">
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <h5 class="font-weight-bold mb-4">Filters</h5>
+                        <form action="{{ url('/appointments') }}" method="GET">
+                            <div class="form-group">
+                                <label class="font-weight-bold">Gender</label>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="male">
+                                    <label class="custom-control-label" for="male">Male</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="female">
+                                    <label class="custom-control-label" for="female">Female</label>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="form-group">
+                                <label class="font-weight-bold">Availability</label>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="today">
+                                    <label class="custom-control-label" for="today">Available Today</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="tomorrow">
+                                    <label class="custom-control-label" for="tomorrow">Available Tomorrow</label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-block btn-outline-primary mt-4">Apply Filters</button>
+                        </form>
                     </div>
-                    <h4 class="font-weight-bold mb-3">Search</h4>
-                    <p class="text-muted">Find the best physiotherapist based on specialty, location, and reviews.</p>
                 </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: rgba(4, 184, 196, 0.1);">
-                        <i class="las la-calendar-check" style="font-size: 32px; color: #04b8c4;"></i>
+
+                <!-- Results -->
+                <div class="col-lg-9">
+                    @forelse($therapists as $therapist)
+                    <div class="card border-0 shadow-sm mb-4 hover-card">
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <div class="col-md-3 text-center mb-3 mb-md-0">
+                                    <img src="{{ $therapist->user->image ?? asset('web/assets/images/default-user.png') }}" 
+                                         class="rounded-circle img-fluid mb-2" 
+                                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #f8f9fa;">
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="font-weight-bold mb-1">
+                                        <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="text-dark text-decoration-none">
+                                            {{ $therapist->user->name }}
+                                        </a>
+                                    </h4>
+                                    <p class="text-muted mb-2">{{ $therapist->specialization }}</p>
+                                    
+                                    <div class="mb-2">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="las la-star {{ $i <= $therapist->rating ? 'text-warning' : 'text-muted' }}"></i>
+                                        @endfor
+                                        <span class="text-muted small">({{ $therapist->total_reviews }} reviews)</span>
+                                    </div>
+                                    
+                                    <p class="mb-2 small text-muted">
+                                        <i class="las la-map-marker text-primary"></i> 
+                                        Available in: {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 3)) }}
+                                        {{ count($therapist->available_areas ?? []) > 3 ? '+'.(count($therapist->available_areas)-3).' more' : '' }}
+                                    </p>
+                                    
+                                    <p class="mb-0 small">
+                                        {{ Str::limit($therapist->bio, 100) }}
+                                    </p>
+                                </div>
+                                <div class="col-md-3 text-center border-left">
+                                    <div class="mb-3">
+                                        <span class="d-block text-muted small">Home Visit Fees</span>
+                                        <span class="h4 font-weight-bold text-primary">{{ $therapist->home_visit_rate }} EGP</span>
+                                    </div>
+                                    
+                                    <a href="{{ url('/appointments/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2" style="background-color: #ea3d2f;">
+                                        Book Now
+                                    </a>
+                                    <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-secondary btn-sm">
+                                        View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h4 class="font-weight-bold mb-3">Book</h4>
-                    <p class="text-muted">Choose a convenient time for your home visit and book instantly.</p>
-                </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="icon-box mb-4 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 80px; height: 80px; background-color: rgba(4, 184, 196, 0.1);">
-                        <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
+                    @empty
+                    <div class="text-center py-5">
+                        <img src="{{ asset('web/assets/images/no-results.svg') }}" style="width: 150px; opacity: 0.5;" class="mb-3">
+                        <h4>No therapists found</h4>
+                        <p class="text-muted">Try adjusting your search filters</p>
                     </div>
-                    <h4 class="font-weight-bold mb-3">Treat</h4>
-                    <p class="text-muted">Receive professional care in the comfort of your home.</p>
+                    @endforelse
+
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $therapists->links() }}
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="py-100" style="background-color: #36415A;">
-        <div class="container text-center text-white">
-            <h2 class="font-weight-bold mb-4">Are you a Physiotherapist?</h2>
-            <p class="lead mb-5">Join our network of professionals and grow your practice.</p>
-            <a href="{{ route('register') }}" class="btn btn-light btn-lg px-5 font-weight-bold" style="color: #36415A;">Join as a Therapist</a>
         </div>
     </section>
 </main>
+
+<style>
+.hover-card {
+    transition: transform 0.2s;
+}
+.hover-card:hover {
+    transform: translateY(-5px);
+}
+</style>
 @endsection

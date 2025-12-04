@@ -47,7 +47,7 @@
                 }
 
                 .hero-slider {
-                    height: 60vh;
+                    height: 35vh;
                     position: relative;
                     overflow: hidden;
                 }
@@ -58,7 +58,7 @@
                 }
 
                 .slide-content {
-                    height: 60vh;
+                    height: 40vh;
                     background-size: cover;
                     background-position: center;
                     background-repeat: no-repeat;
@@ -204,14 +204,15 @@
                     height: 400px;
                     display: flex;
                     flex-direction: column;
-                    border: 1px solid #e0e0e0;
-                    border-radius: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
                     overflow: hidden;
                     transition: all 0.3s ease;
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                    box-shadow: none;
                     animation: slideInFromBottom 0.8s ease-out;
                     animation-fill-mode: both;
-                    margin-bottom: 30px;
+                    margin-bottom: 20px;
+                    background: #fff;
                 }
 
                 .physio-product-card:nth-child(1) { animation-delay: 0.1s; }
@@ -220,8 +221,9 @@
                 .physio-product-card:nth-child(4) { animation-delay: 0.4s; }
 
                 .physio-product-card:hover {
-                    transform: translateY(-5px) scale(1.02);
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    border-color: #04b8c4;
                 }
 
                 .physio-product-card:hover .physio-product-img {
@@ -236,15 +238,16 @@
                     position: relative;
                     height: 180px;
                     overflow: hidden;
-                    background: #f8f9fa;
+                    background: #fff;
+                    border-bottom: 1px solid #e7e7e7;
                 }
 
                 .physio-product-img {
                     width: 100%;
                     height: 100%;
-                    object-fit: contain;
+                    object-fit: cover;
                     transition: transform 0.3s ease;
-                    padding: 10px;
+                    padding: 0;
                     background: #fff;
                 }
 
@@ -448,19 +451,19 @@
                 /* Responsive Design */
                 @media (max-width: 768px) {
                     #slider-section .item {
-                        height: 35vh !important;
+                        height: 15vh !important;
                     }
                     
                     #slider-section h1 {
-                        font-size: 2.8rem;
+                        font-size: 2rem;
                     }
                     
                     .hero-slider {
-                        height: 45vh;
+                        height: 30vh;
                     }
                     
                     .slide-content {
-                        height: 45vh;
+                        height: 30vh;
                     }
 
                     /* Product Cards Responsive */
@@ -709,6 +712,156 @@
             .swiper-button-next, .swiper-button-prev {
 background : none !important;
 }
+
+/* Amazon-Style Category Bar */
+.category-dropdown-bar {
+    background: #fff;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    padding: 0;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.category-dropdown-bar .dropdown {
+    display: inline-block;
+    width: 100%;
+}
+
+.category-dropdown-bar .dropdown-toggle {
+    width: 100%;
+    background: #fff;
+    border: none;
+    padding: 12px 20px;
+    text-align: left;
+    color: #333;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+}
+
+.category-dropdown-bar .dropdown-toggle:hover {
+    background: #f8f9fa;
+}
+
+.category-dropdown-bar .dropdown-toggle::after {
+    content: '\f107';
+    font-family: 'Line Awesome Free';
+    font-weight: 900;
+    border: none;
+    vertical-align: middle;
+}
+
+.category-dropdown-bar .dropdown-menu {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #e7e7e7;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 8px 0;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.category-dropdown-bar .dropdown-item {
+    padding: 10px 20px;
+    color: #333;
+    transition: all 0.2s;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+}
+
+.category-dropdown-bar .dropdown-item:hover {
+    background: #f0f7f8;
+    color: #04b8c4;
+    border-left-color: #04b8c4;
+    padding-left: 23px;
+}
+
+.category-dropdown-bar .dropdown-divider {
+    margin: 4px 0;
+    border-color: #e7e7e7;
+}
+
+.subcategory-item {
+    padding-left: 40px !important;
+    font-size: 14px;
+    font-weight: 400;
+    color: #666;
+}
+
+.subcategory-item:hover {
+    color: #04b8c4;
+    background: #f8f9fa;
+}
+
+/* Compact Filter Bar */
+.filter-wrap {
+    padding: 12px 0 !important;
+    margin-bottom: 15px !important;
+    border-bottom: 2px solid #e7e7e7 !important;
+}
+
+.filter-wrap .result-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 36px;
+}
+
+.filter-wrap .result-text span {
+    color: #04b8c4;
+    font-weight: 600;
+}
+
+.layout-tab ul {
+    margin: 0;
+    padding: 0;
+}
+
+.layout-tab ul li a {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    transition: all 0.2s;
+    background: #fff;
+}
+
+.layout-tab ul li a:hover,
+.layout-tab ul li a.active {
+    background: #04b8c4;
+    border-color: #04b8c4;
+}
+
+.layout-tab ul li a:hover svg path,
+.layout-tab ul li a.active svg path {
+    fill: #fff;
+}
+
+/* Product Grid Spacing */
+.shop-section {
+    padding: 30px 0 50px;
+}
+
+.mb-70 {
+    margin-bottom: 40px !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .category-dropdown-bar {
+        margin-bottom: 15px;
+    }
+    
+    .filter-wrap {
+        padding: 10px 0 !important;
+    }
+}
                           
             </style>
         @endpush
@@ -716,10 +869,10 @@ background : none !important;
            ================================================== -->
         <section id="slider-section" class="slider-section clearfix">
             <div class="item d-flex align-items-center" data-background="{{ asset('web/assets/images/hero-bg.png') }}"
-                style="height: 30vh">
+                style="height: 20vh">
                 <div class="container">
                     <div class="text-center mt-5 mb-5">
-                         <h1 style="margin-top : 90px">Physical Therapy Products Shop</h1>
+                         <h1 style="margin-top : 60px">Physical Therapy Products Shop</h1>
                     </div>
                 </div>
             </div>
@@ -761,53 +914,39 @@ background : none !important;
            ================================================== -->
         <section class="shop-section sec-ptb-100 mb-3 decoration-wrap clearfix">
             <div class="container">
-                <div class="row justify-content-lg-between justify-content-md-center justify-content-sm-center">
-
-                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-                        <aside id="sidebar-section" class="sidebar-section clearfix">
-                            <div class="widget sidebar-search">
-                                <form action="{{ route('web.shop.search') }}" method="GET">
-                                    <input type="search" value="{{ old('search') }}" name="search"
-                                        placeholder="Search your Product">
-                                    <button type="submit"><i class="las la-search"></i></button>
-                                </form>
-                            </div>
-
-                            <div class="widget">
-                                <div class="d-flex justify-content-between align-items-center border-promotion" style="padding: 15px; background-color: #f5f5f5; border-radius: 8px; margin-bottom: 20px;">
-                                    <span class="main-color promotion-text" style="font-size: 14px; font-weight: 600;">Join as a Supplier</span>
-                                    <a href="{{ route('login') }}" class="main-color border-btn px-4 py-2" style="font-size: 13px;">Join</a>
-                                </div>
-                            </div>
-
-                            <div class="widget products-category ul-li-block">
-                                <h3 class="widget-title" style="color: #36415A;">Categories</h3>
-                                <ul class="clearfix">
-                                    @foreach ($categories as $category)
-                                        <li>
-                                            <a href="javascript:void(0)">{{ $category->{'name_' . app()->getLocale()} }}</a>
-                                            <ul>
-                                                @foreach ($category->subcategories as $subcategory)
-                                                    <li><a href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}">{{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
-                                                    {{-- <li><a
-                                                            href="">{{ $subcategory->{'name_' . app()->getLocale()} }}</a>
-                                                    </li> --}}
-                                                @endforeach
-
-
-                                            </ul>
-                                        </li>
-                                    @endforeach
-
-
-                                </ul>
-                            </div>
-
-                        </aside>
+                <!-- Category Dropdown Bar -->
+                <div class="category-dropdown-bar">
+                    <div class="dropdown">
+                        <button class="dropdown-toggle" type="button" id="categoryDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 15px;">
+                            <span><i class="las la-th-large" style="margin-right: 8px;"></i>All Categories</span>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="categoryDropdown">
+                            <a class="dropdown-item" href="{{ route('show') }}">
+                                <i class="las la-border-all" style="margin-right: 8px;"></i>All Products
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            @foreach ($categories as $category)
+                                <h6 class="dropdown-header" style="color: #04b8c4; font-weight: 600; font-size: 13px;">
+                                    {{ $category->{'name_' . app()->getLocale()} }}
+                                </h6>
+                                @foreach ($category->subcategories as $subcategory)
+                                    <a class="dropdown-item subcategory-item" href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}">
+                                        {{ $subcategory->{'name_' . app()->getLocale()} }}
+                                    </a>
+                                @endforeach
+                                @if (!$loop->last)
+                                    <div class="dropdown-divider"></div>
+                                @endif
+                            @endforeach
+                        </div>
                     </div>
-                    <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12 ">
+                </div>
+
+                <!-- Filter Bar and Products -->
+                <div class="row">
+                    <div class="col-12">
                         <div class="filter-wrap border-bottom clearfix">
-                            <div class="row">
+                            <div class="row align-items-center">
                                 <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
                                     <div class="layout-tab ul-li clearfix">
                                         <ul class="nav" role="tablist">
@@ -851,20 +990,13 @@ background : none !important;
                                 </div>
 
                                 <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
-                                    <div class="dropdown select-option float-right">
-
-                                        {{-- <button class="dropdown-toggle" type="button" id="filter-options"
-                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="las la-bars"></i> Default sorting
-                                        </button> --}}
-                                        <div aria-labelledby="filter-options" class="dropdown-menu ul-li-block clearfix">
-                                            <ul class="clearfix">
-                                                <li><a href="#!">Option 1</a></li>
-                                                <li><a href="#!">Option 2</a></li>
-                                                <li><a href="#!">Option 3</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <form action="{{ route('web.shop.search') }}" method="GET" class="d-flex">
+                                        <input type="search" value="{{ old('search') }}" name="search"
+                                            placeholder="Search products..." class="form-control form-control-sm" style="border-radius: 4px; border: 1px solid #e7e7e7; padding: 8px 12px; font-size: 14px;">
+                                        <button type="submit" class="btn btn-sm ml-2" style="background: #04b8c4; color: white; border-radius: 4px; padding: 8px 16px;">
+                                            <i class="las la-search"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

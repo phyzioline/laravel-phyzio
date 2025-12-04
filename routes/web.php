@@ -61,6 +61,12 @@ Route::get('/', [HomeController::class, 'index'])
 
         // Ecosystem Routes
         Route::get('/appointments', [App\Http\Controllers\Web\AppointmentController::class, 'index'])->name('web.appointments.index');
+        Route::get('/appointments/therapist/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'show'])->name('web.appointments.show');
+        Route::get('/appointments/book/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'book'])->name('web.appointments.book');
+        Route::post('/appointments/book', [App\Http\Controllers\Web\AppointmentController::class, 'store'])->name('web.appointments.store');
+        Route::get('/appointments/payment/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'payment'])->name('web.appointments.payment');
+        Route::post('/appointments/payment/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'processPayment'])->name('web.appointments.process_payment');
+        Route::get('/appointments/success/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'success'])->name('web.appointments.success');
         Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
         Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');

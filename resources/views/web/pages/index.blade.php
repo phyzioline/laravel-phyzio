@@ -1,5 +1,23 @@
 @extends('web.layouts.app')
 
+@push('css')
+<style>
+    /* Make header transparent to show hero background image */
+    #header-section {
+        background: transparent !important;
+        position: absolute;
+        width: 100%;
+        z-index: 999;
+        top: 0;
+    }
+    
+    #header-section.stuck {
+        background: #02767F !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+</style>
+@endpush
+
 @section('content')
     <main>
         <!-- slider-section - start
@@ -31,14 +49,14 @@
         <section class="ecosystem-section py-5" style="background-color: #f8f9fa;">
             <div class="container">
                 <div class="text-center mb-5">
-                    <h2 class="font-weight-bold" style="color: #36415A;">Our Ecosystem</h2>
+                    <h2 class="font-weight-bold" style="color: #04b8c4;">Our Ecosystem</h2>
                     <p class="text-muted">Comprehensive solutions for the physiotherapy community</p>
                 </div>
                 <div class="row">
                     <!-- Appointments -->
                     <div class="col-lg-3 col-md-6 mb-4">
                         <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(8, 204, 219, 0.1);">
                                 <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
                             <h5 class="font-weight-bold mb-3">Home Visits</h5>
@@ -74,7 +92,7 @@
                     <!-- Data Hub -->
                     <div class="col-lg-3 col-md-6 mb-4">
                         <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
+                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(20, 179, 191, 0.1);">
                                 <i class="las la-globe" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
                             <h5 class="font-weight-bold mb-3">Data Hub</h5>
