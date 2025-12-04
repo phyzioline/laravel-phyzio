@@ -35,6 +35,16 @@ class HomeController extends Controller
             $query->where('user_id', auth()->user()->id);
         })->count();
 
-        return view('dashboard.pages.index', compact('user', 'vendor', 'buyer', 'product', 'order', 'order_card','order_cash','category', 'sub_category', 'tag','order__card_only','order__cash_only'));
+        // Ecosystem Counts
+        $therapist_count = \App\Models\TherapistProfile::count();
+        $clinic_count = \App\Models\ClinicProfile::count();
+        $appointment_count = \App\Models\Appointment::count();
+        $course_count = \App\Models\Course::count();
+
+        return view('dashboard.pages.index', compact(
+            'user', 'vendor', 'buyer', 'product', 'order', 'order_card','order_cash',
+            'category', 'sub_category', 'tag','order__card_only','order__cash_only',
+            'therapist_count', 'clinic_count', 'appointment_count', 'course_count'
+        ));
     }
 }
