@@ -45,6 +45,33 @@ Route::group(
             Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
 
+            // Inventory Management
+            Route::prefix('inventory')->as('inventory.')->group(function () {
+                Route::get('/manage', [\App\Http\Controllers\Dashboard\InventoryController::class, 'manage'])->name('manage');
+                Route::get('/stock-levels', [\App\Http\Controllers\Dashboard\InventoryController::class, 'stockLevels'])->name('stock-levels');
+                Route::get('/reports', [\App\Http\Controllers\Dashboard\InventoryController::class, 'reports'])->name('reports');
+                Route::post('/update-stock', [\App\Http\Controllers\Dashboard\InventoryController::class, 'updateStock'])->name('update-stock');
+            });
+
+            // Pricing Management
+            Route::prefix('pricing')->as('pricing.')->group(function () {
+                Route::get('/manage', [\App\Http\Controllers\Dashboard\PricingController::class, 'manage'])->name('manage');
+                Route::get('/rules', [\App\Http\Controllers\Dashboard\PricingController::class, 'rules'])->name('rules');
+                Route::post('/update-price', [\App\Http\Controllers\Dashboard\PricingController::class, 'updatePrice'])->name('update-price');
+            });
+
+            // Business Reports & Analytics
+            Route::prefix('reports')->as('reports.')->group(function () {
+                Route::get('/sales-dashboard', [\App\Http\Controllers\Dashboard\ReportsController::class, 'salesDashboard'])->name('sales-dashboard');
+                Route::get('/sales', [\App\Http\Controllers\Dashboard\ReportsController::class, 'sales'])->name('sales');
+                Route::get('/traffic', [\App\Http\Controllers\Dashboard\ReportsController::class, 'traffic'])->name('traffic');
+                Route::get('/product-performance', [\App\Http\Controllers\Dashboard\ReportsController::class, 'productPerformance'])->name('product-performance');
+                Route::get('/customers', [\App\Http\Controllers\Dashboard\ReportsController::class, 'customers'])->name('customers');
+                Route::get('/customer-insights', [\App\Http\Controllers\Dashboard\ReportsController::class, 'customerInsights'])->name('customer-insights');
+                Route::get('/orders', [\App\Http\Controllers\Dashboard\ReportsController::class, 'orders'])->name('orders');
+            });
+
+
             // Settings
             Route::get('settings', [SettingController::class, 'show'])->name('settings.show');
             Route::post('settings', [SettingController::class, 'update'])->name('settings.update');

@@ -1,5 +1,29 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Roles'))
+@section('title', __('Products'))
+
+@push('styles')
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
+    <style>
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            border-radius: 4px;
+            padding: 0.375rem 0.75rem;
+        }
+        tfoot input, tfoot select {
+            width: 100%;
+            padding: 4px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        tfoot th {
+            padding: 8px;
+        }
+    </style>
+@endpush
 
 @section('content')
     <!--start main wrapper-->
@@ -75,10 +99,22 @@
                                             </tr>
                                         @endforelse
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>{{ __('ID') }}</th>
+                                            <th>{{ __('Image') }}</th>
+                                            <th>{{ __('Category') }}</th>
+                                            <th>{{ __('Sub Category') }}</th>
+                                            <th>{{ __('Product Name') }}</th>
+                                            <th>{{ __('Price') }}</th>
+                                            <th>{{ __('Amount') }}</th>
+                                            <th>{{ __('SKU') }}</th>
+                                            <th>{{ __('Status') }}</th>
+                                            <th>{{ __('Actions') }}</th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
-                                <div style="padding:5px;direction: ltr;">
-                                    {!! $data->withQueryString()->links('pagination::bootstrap-5') !!}
-                                </div>
+                                <!-- Pagination handled by DataTables -->
                             </div>
                         </div>
                     </div>
@@ -90,44 +126,108 @@
 @endsection
 
 @push('scripts')
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelectorAll('.delete-country-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    let id = this.getAttribute('data-id');
-
-                    Swal.fire({
-                        title: '{{ __('Are you sure?') }}',
-                        text: "{{ __('Do you want to delete this item') }}",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#DC143C',
-                        cancelButtonColor: '#696969',
-                        cancelButtonText: "{{ __('Cancel') }}",
-                        confirmButtonText: '{{ __('Yes, delete it!') }}'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            let form = document.createElement('form');
-                            form.action = '{{ url('/dashboard/products') }}/' + id;
-                            form.method = 'POST';
-                            form.style.display = 'none';
-
-                            let csrfInput = document.createElement('input');
-                            csrfInput.type = 'hidden';
-                            csrfInput.name = '_token';
-                            csrfInput.value = '{{ csrf_token() }}';
-
-                            let methodInput = document.createElement('input');
-                            methodInput.type = 'hidden';
-                            methodInput.name = '_method';
-                            methodInput.value = 'DELETE';
-
-                            form.appendChild(csrfInput);
-                            form.appendChild(methodInput);
-                            document.body.appendChild(form);
-                            form.submit();
+        $(document).ready(function() {
+            // Initialize DataTable
+            var table = $('#example2').DataTable({
+                responsive: true,
+                order: [[0, 'asc']],
+                pageLength: 10,
+                columnDefs: [
+                    { orderable: false, targets: [1, 9] }, // Image and Actions columns not sortable
+                ],
+                language: {
+                    @if(app()->getLocale() == 'ar')
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/ar.json'
+                    @endif
+                },
+                initComplete: function () {
+                    // Add column filters
+                    this.api().columns().every(function (index) {
+                        var column = this;
+                        var title = $(column.header()).text();
+                        
+                        // Skip Image and Actions columns
+                        if (index === 1 || index === 9) {
+                            $(column.footer()).html('');
+                            return;
                         }
+                        
+                        // For Category and Sub Category columns, use select dropdown
+                        if (index === 2 || index === 3) {
+                            var select = $('<select><option value="">{{ __('All') }}</option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            });
+                            return;
+                        }
+                        
+                        // For Status column, use select dropdown
+                        if (index === 8) {
+                            var select = $('<select><option value="">{{ __('All') }}</option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+
+                            column.data().unique().sort().each(function (d, j) {
+                                select.append('<option value="' + d + '">' + d + '</option>');
+                            });
+                            return;
+                        }
+                        
+                        // For other columns, use text input
+                        var input = $('<input type="text" placeholder="{{ __('Search') }} ' + title + '" />')
+                            .appendTo($(column.footer()).empty())
+                            .on('keyup change clear', function () {
+                                if (column.search() !== this.value) {
+                                    column.search(this.value).draw();
+                                }
+                            });
                     });
+                }
+            });
+
+            // Delete button functionality
+            $('#example2').on('click', '.delete-country-btn', function() {
+                let id = $(this).data('id');
+
+                Swal.fire({
+                    title: '{{ __('Are you sure?') }}',
+                    text: "{{ __('Do you want to delete this item') }}",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#DC143C',
+                    cancelButtonColor: '#696969',
+                    cancelButtonText: "{{ __('Cancel') }}",
+                    confirmButtonText: '{{ __('Yes, delete it!') }}'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let form = $('<form>', {
+                            'action': '{{ url('/dashboard/products') }}/' + id,
+                            'method': 'POST',
+                            'style': 'display:none'
+                        });
+
+                        form.append($('<input>', {'type': 'hidden', 'name': '_token', 'value': '{{ csrf_token() }}'}));
+                        form.append($('<input>', {'type': 'hidden', 'name': '_method', 'value': 'DELETE'}));
+                        
+                        $('body').append(form);
+                        form.submit();
+                    }
                 });
             });
         });

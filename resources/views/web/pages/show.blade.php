@@ -199,16 +199,16 @@
                     z-index: 10;
                 }
 
-                /* Physio Product Cards - Same as index.html */
+                /* Physio Product Cards - Noon.com Inspired */
                 .physio-product-card {
                     height: 400px;
                     display: flex;
                     flex-direction: column;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
+                    border: 1px solid #e7e7e7;
+                    border-radius: 6px;
                     overflow: hidden;
                     transition: all 0.3s ease;
-                    box-shadow: none;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
                     animation: slideInFromBottom 0.8s ease-out;
                     animation-fill-mode: both;
                     margin-bottom: 20px;
@@ -221,8 +221,8 @@
                 .physio-product-card:nth-child(4) { animation-delay: 0.4s; }
 
                 .physio-product-card:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    transform: translateY(-3px);
+                    box-shadow: 0 4px 12px rgba(4,184,196,0.15);
                     border-color: #04b8c4;
                 }
 
@@ -238,8 +238,8 @@
                     position: relative;
                     height: 180px;
                     overflow: hidden;
-                    background: #fff;
-                    border-bottom: 1px solid #e7e7e7;
+                    background: #fafafa;
+                    border-bottom: 1px solid #f0f0f0;
                 }
 
                 .physio-product-img {
@@ -256,7 +256,7 @@
                 }
 
                 .physio-content-wrapper {
-                    padding: 15px;
+                    padding: 16px;
                     flex: 1;
                     display: flex;
                     flex-direction: column;
@@ -266,14 +266,15 @@
 
                 .physio-product-title {
                     font-size: 14px;
-                    font-weight: 600;
+                    font-weight: 500;
                     margin-bottom: 8px;
-                    line-height: 1.3;
-                    min-height: 36px;
+                    line-height: 1.4;
+                    min-height: 38px;
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
+                    color: #333;
                 }
 
                 .physio-product-title a {
@@ -330,8 +331,8 @@
                 .physio-product-card .add-to-favorite:hover {
                     background: #04b8c4;
                     color: white;
-                    transform: scale(1.1);
-                    box-shadow: 0 4px 12px rgba(4, 184, 196, 0.4);
+                    transform: scale(1.15);
+                    box-shadow: 0 4px 12px rgba(4, 184, 196, 0.35);
                 }
 
                 /* Buy Now Button - Special Golden/Orange Color */
@@ -713,14 +714,14 @@
 background : none !important;
 }
 
-/* Amazon-Style Category Bar */
+/* Modern Category Dropdown - Noon.com Style */
 .category-dropdown-bar {
     background: #fff;
-    border: 1px solid #e7e7e7;
-    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
     padding: 0;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .category-dropdown-bar .dropdown {
@@ -732,18 +733,19 @@ background : none !important;
     width: 100%;
     background: #fff;
     border: none;
-    padding: 12px 20px;
+    padding: 14px 20px;
     text-align: left;
     color: #333;
     font-weight: 500;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.2s;
+    transition: all 0.25s ease;
+    border-radius: 6px;
 }
 
 .category-dropdown-bar .dropdown-toggle:hover {
-    background: #f8f9fa;
+    background: #f7f7f7;
 }
 
 .category-dropdown-bar .dropdown-toggle::after {
@@ -756,12 +758,13 @@ background : none !important;
 
 .category-dropdown-bar .dropdown-menu {
     width: 100%;
-    border-radius: 4px;
-    border: 1px solid #e7e7e7;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
     padding: 8px 0;
     max-height: 500px;
     overflow-y: auto;
+    margin-top: 4px;
 }
 
 .category-dropdown-bar .dropdown-item {
@@ -776,7 +779,7 @@ background : none !important;
     background: #f0f7f8;
     color: #04b8c4;
     border-left-color: #04b8c4;
-    padding-left: 23px;
+    padding-left: 22px;
 }
 
 .category-dropdown-bar .dropdown-divider {
@@ -796,11 +799,15 @@ background : none !important;
     background: #f8f9fa;
 }
 
-/* Compact Filter Bar */
+/* Modern Filter Bar - Noon.com Style */
 .filter-wrap {
-    padding: 12px 0 !important;
-    margin-bottom: 15px !important;
-    border-bottom: 2px solid #e7e7e7 !important;
+    padding: 16px 0 !important;
+    margin-bottom: 20px !important;
+    border-bottom: 1px solid #e7e7e7 !important;
+    background: #fafafa;
+    border-radius: 6px;
+    padding: 16px 20px !important;
+    margin-bottom: 24px !important;
 }
 
 .filter-wrap .result-text {
@@ -813,34 +820,6 @@ background : none !important;
 .filter-wrap .result-text span {
     color: #04b8c4;
     font-weight: 600;
-}
-
-.layout-tab ul {
-    margin: 0;
-    padding: 0;
-}
-
-.layout-tab ul li a {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #e7e7e7;
-    border-radius: 4px;
-    transition: all 0.2s;
-    background: #fff;
-}
-
-.layout-tab ul li a:hover,
-.layout-tab ul li a.active {
-    background: #04b8c4;
-    border-color: #04b8c4;
-}
-
-.layout-tab ul li a:hover svg path,
-.layout-tab ul li a.active svg path {
-    fill: #fff;
 }
 
 /* Product Grid Spacing */
@@ -947,52 +926,17 @@ background : none !important;
                     <div class="col-12">
                         <div class="filter-wrap border-bottom clearfix">
                             <div class="row align-items-center">
-                                <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
-                                    <div class="layout-tab ul-li clearfix">
-                                        <ul class="nav" role="tablist">
-                                            <li>
-                                                <a class="active" data-toggle="tab" href="#column-3-tab">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 16 16" fill="000000">
-                                                        <path id="_3_Grid" data-name="3 Grid" class="cls-1"
-                                                            d="M675,571h3.812v3.812H675V571Zm0,6.094h3.812v3.812H675v-3.812Zm0,6.093h3.812V587H675v-3.813ZM681.094,571h3.812v3.812h-3.812V571Zm0,6.094h3.812v3.812h-3.812v-3.812Zm0,6.093h3.812V587h-3.812v-3.813ZM687.188,571H691v3.812h-3.812V571Zm0,6.094H691v3.812h-3.812v-3.812Zm0,6.093H691V587h-3.812v-3.813Z"
-                                                            transform="translate(-675 -571)" />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#column-2-tab">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 16 16" fill="000000">
-                                                        <path id="_2_Grid" data-name="2 Grid" class="cls-1"
-                                                            d="M707,580h7v7h-7v-7Zm10,1h6v6h-6v-6Zm-10-10h7v7h-7v-7Zm9,9h7v7h-7v-7Zm1-9h6v6h-6v-6Zm-1,0h7v7h-7v-7Z"
-                                                            transform="translate(-707 -571)" />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a data-toggle="tab" href="#list-layout-tab">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                        viewBox="0 0 16 16" fill="000000">
-                                                        <path id="_1_Grid" data-name="1 Grid" class="cls-1"
-                                                            d="M738,571h4v4h-4v-4Zm0,6h4v4h-4v-4Zm0,6h4v4h-4v-4Zm6-12h10v4H744v-4Zm0,6h10v4H744v-4Zm0,6h10v4H744v-4Z"
-                                                            transform="translate(-738 -571)" />
-                                                    </svg>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <!-- View Switcher Removed - Fixed Grid Layout -->
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <p class="result-text mb-0" style="padding-top: 8px;">
+                                        We found <span style="font-weight: 700; color: #04b8c4;">{{ $count_product ?? App\Models\Product::where('amount','>','0')->count() }}</span> physical therapy products for you
+                                    </p>
                                 </div>
 
-                                <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 text-center">
-                                    <p class="result-text">We found <span>{{ $count_product ?? App\Models\Product::where('amount','>','0')->count() }}</span> products are available
-                                        for you</p>
-                                </div>
-
-                                <div class="col-lg-4 col-md-3 col-sm-12 col-xs-12">
-                                    <form action="{{ route('web.shop.search') }}" method="GET" class="d-flex">
+                                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                    <form action="{{ route('web.shop.search') }}" method="GET" class="d-flex justify-content-end">
                                         <input type="search" value="{{ old('search') }}" name="search"
-                                            placeholder="Search products..." class="form-control form-control-sm" style="border-radius: 4px; border: 1px solid #e7e7e7; padding: 8px 12px; font-size: 14px;">
+                                            placeholder="Search products..." class="form-control form-control-sm" style="border-radius: 4px; border: 1px solid #e7e7e7; padding: 8px 12px; font-size: 14px; max-width: 300px;">
                                         <button type="submit" class="btn btn-sm ml-2" style="background: #04b8c4; color: white; border-radius: 4px; padding: 8px 16px;">
                                             <i class="las la-search"></i>
                                         </button>
@@ -1001,9 +945,9 @@ background : none !important;
                             </div>
                         </div>
 
-                        <div class="tab-content">
-                            <div id="column-3-tab" class="tab-pane active">
-                                <div class="row mb-70 justify-content-center">
+                        <!-- Products Grid - Fixed 5 Columns -->
+                        <div class="product-grid-wrapper mt-4">
+                            <div class="row mb-70 justify-content-center">
                                     @foreach ($products as $index => $product)
                                         <div class="col-lg-2dot4 col-md-4 col-sm-12 col-xs-12 product-item"
                                             data-name="{{ Str::lower($product->{'product_name_' . app()->getLocale()}) }}">
