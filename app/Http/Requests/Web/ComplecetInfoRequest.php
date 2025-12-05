@@ -25,11 +25,13 @@ class ComplecetInfoRequest extends FormRequest
            
             'phone' => 'required|string|unique:users,phone,id',
             'image' => 'nullable|image',
-            'type' => 'required|in:vendor,buyer',
-            'account_statement' => 'required_if:type,vendor|file',
-            'commercial_register' => 'required_if:type,vendor|file',
-            'tax_card' => 'required_if:type,vendor|file',
-            'card_image' => 'required_if:type,vendor|file',
+            'type' => 'required|in:vendor,buyer,therapist',
+            'account_statement' => 'required_if:type,vendor|nullable|file',
+            'commercial_register' => 'required_if:type,vendor|nullable|file',
+            'tax_card' => 'required_if:type,vendor|nullable|file',
+            'card_image' => 'required_if:type,vendor|nullable|file',
+            'license_document' => 'required_if:type,therapist|nullable|file',
+            'id_document' => 'required_if:type,therapist|nullable|file',
         ];
     }
 }

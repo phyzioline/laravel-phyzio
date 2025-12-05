@@ -23,7 +23,7 @@ class ShowController extends Controller
             $query->where('product_name_en', 'LIKE', "%$keyword%")
                   ->orWhere('product_name_ar', 'LIKE', "%$keyword%");
         })
-        ->paginate(50);
+        ->paginate(25);
 
     $count_product = Product::where('status', 'active')
         ->where('amount', '>', '0')

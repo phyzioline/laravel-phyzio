@@ -39,8 +39,9 @@
                                                 <div class="form-group">
                                                     <select name="type" class="form-style" id="userType" required>
                                                         <option value="" disabled {{ old('type') ? '' : 'selected' }}>Select User Type</option>
-                                                        <option value="vendor" {{ old('type') == 'vendor' ? 'selected' : '' }}>vendor</option>
-                                                        <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>buyer</option>
+                                                        <option value="vendor" {{ old('type') == 'vendor' ? 'selected' : '' }}>Vendor</option>
+                                                        <option value="therapist" {{ old('type') == 'therapist' ? 'selected' : '' }}>Therapist</option>
+                                                        <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>Buyer</option>
                                                     </select>
                                                     <i class="input-icon material-icons">account_circle</i>
                                                     @error('type')
@@ -129,6 +130,27 @@
                                                     </div>
                                                 </div>
 
+                                                <!-- Therapist Fields -->
+                                                <div id="therapistFields" style="{{ old('type') == 'therapist' ? '' : 'display: none;' }}">
+                                                    <div class="form-group">
+                                                        <label class="label">Professional License Document</label>
+                                                        <input type="file" name="license_document" class="form-style">
+                                                        <i class="input-icon material-icons">verified_user</i>
+                                                        @error('license_document')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="label">National ID Document</label>
+                                                        <input type="file" name="id_document" class="form-style">
+                                                        <i class="input-icon material-icons">badge</i>
+                                                        @error('id_document')
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+
                                                 <!-- Submit -->
                                                 <button type="submit" class="btn">Sign Up</button>
                                             </form>
@@ -144,18 +166,27 @@
         </div>
     </section>
 
-    <!-- Script to Show/Hide Vendor Fields -->
+    <!-- Script to Show/Hide Vendor/Therapist Fields -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const userTypeSelect = document.getElementById('userType');
             const vendorFields = document.getElementById('vendorFields');
+            const therapistFields = document.getElementById('therapistFields');
 
-            function toggleVendorFields() {
-                vendorFields.style.display = (userTypeSelect.value === 'vendor') ? 'block' : 'none';
+            function toggleFields() {
+                // Hide all first
+                vendorFields.style.display = 'none';
+                therapistFields.style.display = 'none';
+
+                if (userTypeSelect.value === 'vendor') {
+                    vendorFields.style.display = 'block';
+                } else if (userTypeSelect.value === 'therapist') {
+                    therapistFields.style.display = 'block';
+                }
             }
 
-            userTypeSelect.addEventListener('change', toggleVendorFields);
-            toggleVendorFields(); // Run on page load
+            userTypeSelect.addEventListener('change', toggleFields);
+            toggleFields(); // Run on page load
         });
     </script>
 

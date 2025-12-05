@@ -87,12 +87,31 @@ class LoginService
         if (isset($data['card_image'])) {
             $data['card_image'] = $this->saveImage($data['card_image'], 'user');
         }
+        if (isset($data['license_document'])) {
+            $data['license_document'] = $this->saveImage($data['license_document'], 'therapist');
+        }
+        if (isset($data['id_document'])) {
+            $data['id_document'] = $this->saveImage($data['id_document'], 'therapist');
+        }
+
         if ($data['type'] === 'vendor') {
             $user->assignRole('vendor');
         }
         if ($data['type'] === 'buyer') {
             $user->status = 'active';
         }
+        
+        if ($data['type'] === 'therapist') {
+            $user->assignRole('therapist');
+            // Create Therapist Profile
+            \App\Models\TherapistProfile::create([
+                'user_id' => $user->id,
+                'license_document' => $data['license_document'] ?? null,
+                'id_document' => $data['id_document'] ?? null,
+                'status' => 'pending', // Default status for approval
+            ]);
+        }
+
         $user->update($data);
 
         return redirect()->route('home');
