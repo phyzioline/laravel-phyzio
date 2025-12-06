@@ -23,15 +23,17 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,id',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8',
-            'phone' => 'required|string|unique:users,phone,id',
-            'image' => 'nullable|image',
-            'type' => 'required|in:vendor,buyer',
- 			'account_statement' => 'required_if:type,vendor|file|mimes:png,jpg,pdf',
-            'commercial_register' => 'required_if:type,vendor|file|mimes:png,jpg,pdf',
-            'tax_card' => 'required_if:type,vendor|file|mimes:png,jpg,pdf',
-            'card_image' => 'required_if:type,vendor|file|mimes:png,jpg,pdf',
+            'phone' => 'required|string|unique:users,phone',
+            'image' => 'nullable|image|max:10240',
+            'type' => 'required|in:vendor,buyer,therapist',
+            'account_statement' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
+            'commercial_register' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
+            'tax_card' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
+            'card_image' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
+            'license_document' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
+            'id_document' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
         ];
     }
 }

@@ -65,7 +65,7 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('view_login');
+        return redirect()->route('home')->with('success', __('Welcome! Your account has been verified.'));
     }
 
 }
