@@ -22,16 +22,15 @@ class ComplecetInfoRequest extends FormRequest
     public function rules(): array
     {
         return [
-           
-            'phone' => 'required|string|unique:users,phone,id',
-            'image' => 'nullable|image',
+            'phone' => 'required|string|unique:users,phone,' . auth()->id(),
+            'image' => 'nullable|image|max:10240',
             'type' => 'required|in:vendor,buyer,therapist',
-            'account_statement' => 'required_if:type,vendor|nullable|file',
-            'commercial_register' => 'required_if:type,vendor|nullable|file',
-            'tax_card' => 'required_if:type,vendor|nullable|file',
-            'card_image' => 'required_if:type,vendor|nullable|file',
-            'license_document' => 'required_if:type,therapist|nullable|file',
-            'id_document' => 'required_if:type,therapist|nullable|file',
+            'account_statement' => 'nullable|file|max:10240',
+            'commercial_register' => 'nullable|file|max:10240',
+            'tax_card' => 'nullable|file|max:10240',
+            'card_image' => 'nullable|file|max:10240',
+            'license_document' => 'nullable|file|max:10240',
+            'id_document' => 'nullable|file|max:10240',
         ];
     }
 }
