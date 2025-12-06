@@ -108,9 +108,15 @@ class OrderService
         ]);
 
         if (! $orderResponse->successful()) {
+            Log::error('Paymob Order Creation Error:', [
+                'status' => $orderResponse->status(),
+                'body' => $orderResponse->body(),
+                'json' => $orderResponse->json(),
+            ]);
             return response()->json([
                 'status'  => false,
                 'message' => __('فشل في إنشاء الطلب في Paymob'),
+                'details' => $orderResponse->json(),
             ], 404);
         }
 
