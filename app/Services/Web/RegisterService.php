@@ -44,6 +44,13 @@ class RegisterService
             $data['card_image'] = $this->saveImage($data['card_image'], 'user');
         }
 
+        if (isset($data['license_document'])) {
+            $data['license_document'] = $this->saveImage($data['license_document'], 'therapist');
+        }
+        if (isset($data['id_document'])) {
+            $data['id_document'] = $this->saveImage($data['id_document'], 'therapist');
+        }
+
         $data['password']  = Hash::make($data['password']);
         $data['code']      = rand(1000, 9999);
         $data['expire_at'] = Carbon::now()->addMinutes(5);
@@ -53,12 +60,22 @@ class RegisterService
         Session::put('email', $data['email']);
 
         $user = $this->model->create($data);
+        
         if ($data['type'] === 'vendor') {
             $user->assignRole('vendor');
         }
         if ($data['type'] === 'buyer') {
             $user->update([
                 'status' => 'active'
+            ]);
+        }
+        if ($data['type'] === 'therapist') {
+            $user->assignRole('therapist');
+            \App\Models\TherapistProfile::create([
+                'user_id' => $user->id,
+                'license_document' => $data['license_document'] ?? null,
+                'id_document' => $data['id_document'] ?? null,
+                'status' => 'pending',
             ]);
         }
 

@@ -42,8 +42,9 @@
                                         <div class="form-group">
                                             <select name="type" class="form-style" id="userType" required onchange="handleUserTypeChange()">
                                                 <option value="" disabled {{ old('type') ? '' : 'selected' }}>Select User Type</option>
-                                                <option value="vendor" {{ old('type') == 'vendor' ? 'selected' : '' }}>vendor</option>
-                                                <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>buyer</option>
+                                                <option value="vendor" {{ old('type') == 'vendor' ? 'selected' : '' }}>Vendor</option>
+                                                <option value="therapist" {{ old('type') == 'therapist' ? 'selected' : '' }}>Therapist</option>
+                                                <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>Buyer</option>
                                             </select>
                                             <i class="input-icon material-icons">account_circle</i>
                                             @error('type')
@@ -140,6 +141,27 @@
                                             </div>
                                         </div>
 
+                                        <!-- Therapist Fields Only -->
+                                        <div id="therapistFields" style="{{ old('type') == 'therapist' ? '' : 'display:none;' }}">
+                                            <div class="form-group">
+                                                <label style="margin-bottom: 10px; display: block">Professional License Document</label>
+                                                <input type="file" name="license_document" class="form-style">
+                                                <i class="input-icon material-icons">verified_user</i>
+                                                @error('license_document')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label style="margin-bottom: 10px; display: block">National ID Document</label>
+                                                <input type="file" name="id_document" class="form-style">
+                                                <i class="input-icon material-icons">badge</i>
+                                                @error('id_document')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <button type="submit" class="btn">Sign Up</button>
                                     </form>
 
@@ -162,13 +184,20 @@
     function handleUserTypeChange() {
         const userType = document.getElementById('userType').value;
         const vendorFields = document.getElementById('vendorFields');
+        const therapistFields = document.getElementById('therapistFields');
         const formWrapper = document.getElementById('formWrapper');
+
+        // Hide all first
+        vendorFields.style.display = 'none';
+        therapistFields.style.display = 'none';
 
         if (userType === 'vendor') {
             vendorFields.style.display = 'block';
             formWrapper.style.minHeight = '1200px';
+        } else if (userType === 'therapist') {
+            therapistFields.style.display = 'block';
+            formWrapper.style.minHeight = '800px';
         } else {
-            vendorFields.style.display = 'none';
             formWrapper.style.minHeight = '800px';
         }
     }
