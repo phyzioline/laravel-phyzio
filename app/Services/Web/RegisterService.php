@@ -25,30 +25,35 @@ class RegisterService
 
     public function register($data)
     {
+        // Process all files FIRST before email (to prevent temp file cleanup)
+        try {
+            if (isset($data['image'])) {
+                $data['image'] = $this->saveImage($data['image'], 'user');
+            } else {
+                $data['image'] = asset('default/default.png');
+            }
+            if (isset($data['account_statement'])) {
+                $data['account_statement'] = $this->saveImage($data['account_statement'], 'user');
+            }
+            if (isset($data['commercial_register'])) {
+                $data['commercial_register'] = $this->saveImage($data['commercial_register'], 'user');
+            }
+            if (isset($data['tax_card'])) {
+                $data['tax_card'] = $this->saveImage($data['tax_card'], 'user');
+            }
+            if (isset($data['card_image'])) {
+                $data['card_image'] = $this->saveImage($data['card_image'], 'user');
+            }
 
-        if (isset($data['image'])) {
-            $data['image'] = $this->saveImage($data['image'], 'user');
-        } else {
-            $data['image'] = asset('default/default.png');
-        }
-        if (isset($data['account_statement'])) {
-            $data['account_statement'] = $this->saveImage($data['account_statement'], 'user');
-        }
-        if (isset($data['commercial_register'])) {
-            $data['commercial_register'] = $this->saveImage($data['commercial_register'], 'user');
-        }
-        if (isset($data['tax_card'])) {
-            $data['tax_card'] = $this->saveImage($data['tax_card'], 'user');
-        }
-        if (isset($data['card_image'])) {
-            $data['card_image'] = $this->saveImage($data['card_image'], 'user');
-        }
-
-        if (isset($data['license_document'])) {
-            $data['license_document'] = $this->saveImage($data['license_document'], 'therapist');
-        }
-        if (isset($data['id_document'])) {
-            $data['id_document'] = $this->saveImage($data['id_document'], 'therapist');
+            if (isset($data['license_document'])) {
+                $data['license_document'] = $this->saveImage($data['license_document'], 'therapist');
+            }
+            if (isset($data['id_document'])) {
+                $data['id_document'] = $this->saveImage($data['id_document'], 'therapist');
+            }
+        } catch (\Exception $e) {
+            Session::flash('message', ['type' => 'error', 'text' => __('File upload error: ') . $e->getMessage()]);
+            return redirect()->back()->withInput();
         }
 
         $data['password']  = Hash::make($data['password']);
