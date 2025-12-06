@@ -18,6 +18,11 @@ class OrderController extends Controller
         $method   = $orderRequest->payment_method == 'cash' ? 'cashOrder' : 'store';
         $response = $this->orderService->$method($orderRequest->validated());
 
+        // If response is JsonResponse (error from service), return it directly
+        if ($response instanceof \Illuminate\Http\JsonResponse) {
+            return $response;
+        }
+
         if ($orderRequest->payment_method === 'card') {
             return view('web.pages.payment-frame', [
                 'iframe_url' => $response['redirect_url'],
