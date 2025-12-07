@@ -16,7 +16,16 @@ class ProductService
      */
     public function index()
     {
-        return $this->model->where('user_id' , auth()->user()->id)->paginate();
+        // For admin users, show all products. For vendors, show only their products.
+        $query = $this->model->with(['category', 'sub_category', 'productImages']);
+        
+        if (auth()->user()->hasRole('admin')) {
+            // Admin sees all products - no filter needed
+            return $query->get();
+        } else {
+            // Vendor sees only their products
+            return $query->where('user_id', auth()->user()->id)->get();
+        }
     }
 
     /**

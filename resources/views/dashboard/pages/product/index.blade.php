@@ -22,6 +22,25 @@
         tfoot th {
             padding: 8px;
         }
+        .dataTables_wrapper .dataTables_paginate {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+            margin: 0 2px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #0d6efd;
+            color: white !important;
+            border-color: #0d6efd;
+        }
+        .dataTables_wrapper .dataTables_info {
+            padding-top: 15px;
+        }
     </style>
 @endpush
 
@@ -59,7 +78,7 @@
                                     <tbody>
                                         @forelse($data as $product)
                                             <tr>
-                                                <td>{{ $loop->index + 1 }}</td>
+                                                <td>{{ $product->id }}</td>
                                                 <td>
                                                     <img src="{{ asset($product->productImages->first()?->image) }}"
                                                         alt="صورة المنتج" width="80">
@@ -139,6 +158,9 @@
                 responsive: true,
                 order: [[0, 'asc']],
                 pageLength: 10,
+                paging: true,
+                paginationType: 'full_numbers',
+                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 columnDefs: [
                     { orderable: false, targets: [1, 9] }, // Image and Actions columns not sortable
                 ],

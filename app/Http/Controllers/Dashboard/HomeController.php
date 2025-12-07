@@ -13,7 +13,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $user         = User::count();
+        // Exclude admin users from total count to match the users table
+        $user         = User::whereDoesntHave('roles', function($query) {
+            $query->where('name', 'admin');
+        })->count();
         $vendor       = User::where('type', 'vendor')->count();
         $buyer        = User::where('type', 'buyer')->count();
         $product      = Product::count();

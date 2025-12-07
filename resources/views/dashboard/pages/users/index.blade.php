@@ -7,11 +7,21 @@
         <div class="main-content">
             <h6 class="mb-0 text-uppercase">User</h6>
             <hr>
+            @if($users->total() > 0)
+                <div class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle"></i> 
+                    {{ __('Showing :from-:to of :total users. Admin users are excluded from this list.', [
+                        'from' => $users->firstItem() ?? 0,
+                        'to' => $users->lastItem() ?? 0,
+                        'total' => $users->total()
+                    ]) }}
+                </div>
+            @endif
             <div class="card">
                 <div class="card-body">
 
                     <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <table class="table table-striped table-bordered" style="width:100%">
 
                             <thead>
                                 <tr>
@@ -27,11 +37,21 @@
                             <tbody>
                                 @forelse($users as $user)
                                     <tr>
-                                        <td>{{ $loop->index + 1 }}</td>
+                                        <td>{{ $user->id }}</td>
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->phone }}</td>
-                                        <td>{{ $user->type }}</td>
+                                        <td>
+                                            @if($user->type)
+                                                {{ $user->type }}
+                                            @elseif($user->hasRole('therapist'))
+                                                therapist
+                                            @elseif($user->hasRole('admin'))
+                                                admin
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>{{ $user->status }}</td>
                                         <td>
                                             @can('users-delete')
@@ -55,6 +75,13 @@
 
                         </table>
                     </div>
+                    @if($users->hasPages())
+                        <div class="card-footer">
+                            <div style="padding:5px;direction: ltr;">
+                                {!! $users->withQueryString()->links('pagination::bootstrap-5') !!}
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
 
