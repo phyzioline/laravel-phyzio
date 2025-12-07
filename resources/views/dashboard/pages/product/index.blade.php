@@ -80,8 +80,11 @@
                                             <tr>
                                                 <td>{{ $product->id }}</td>
                                                 <td>
-                                                    <img src="{{ asset($product->productImages->first()?->image) }}"
-                                                        alt="صورة المنتج" width="80">
+                                                    <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 8px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
+                                                        <img src="{{ asset($product->productImages->first()?->image) }}"
+                                                            alt="Product"
+                                                            style="width: 100%; height: 100%; object-fit: contain;">
+                                                    </div>
                                                 </td>
                                                 <td>{{ $product->category->{'name_' . app()->getLocale()} }}</td>
                                                 <td>{{ $product->sub_category->{'name_' . app()->getLocale()} }}</td>
@@ -119,18 +122,6 @@
                                         @endforelse
                                     </tbody>
                                     <tfoot>
-                                        <tr>
-                                            <th>{{ __('ID') }}</th>
-                                            <th>{{ __('Image') }}</th>
-                                            <th>{{ __('Category') }}</th>
-                                            <th>{{ __('Sub Category') }}</th>
-                                            <th>{{ __('Product Name') }}</th>
-                                            <th>{{ __('Price') }}</th>
-                                            <th>{{ __('Amount') }}</th>
-                                            <th>{{ __('SKU') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Actions') }}</th>
-                                        </tr>
                                     </tfoot>
                                 </table>
                                 <!-- Pagination handled by DataTables -->

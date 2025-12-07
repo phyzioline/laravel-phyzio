@@ -9,20 +9,26 @@ class OrderService
     {}
     public function index()
     {
-        if (auth()->user()->hasRole('admin')) {
-          return $this->model
-            ->with(['items.product'])->where('payment_method', 'card')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-        }
-        return $this->model
-            ->whereHas('items.product', function ($query) {
-                $query->where('user_id', auth()->id());
-            })
-            ->with(['items.product'])->where('payment_method', 'card')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = $this->model->with(['items.product']);
 
+        // Check ownership if not admin
+        if (!auth()->user()->hasRole('admin')) {
+            $query->whereHas('items.product', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        // Apply Status Filter
+        if (request()->has('status')) {
+            $query->where('status', request('status'));
+        }
+
+        // Apply Payment Method Filter
+        if (request()->has('payment_method')) {
+            $query->where('payment_method', request('payment_method'));
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(10);
     }
 
     public function orderCash()

@@ -124,6 +124,7 @@
               @endcan
 
               <!-- Ecosystem Management -->
+              @role('admin')
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="material-icons-outlined">public</i></div>
@@ -137,6 +138,7 @@
                       <li><a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>Data Points</a></li>
                   </ul>
               </li>
+              @endrole
 
               <!-- Settings -->
               <li>
@@ -167,7 +169,7 @@
 
           <div id="footer-section" style="padding-top: 300px;" class="text-center">
               <p class="mb-1 p-0">Copyright © 2024. All right reserved.</p>
-              <p>Developed by<a href="https://brmja.tech/" target="_blank"> brmja.tech</a></p>
+              <p>Developed by<a href="https://phyzioline.com/" target="_blank"> phyzioline</a></p>
           </div>
 
           <!--end navigation-->

@@ -16,6 +16,35 @@
                             @endcan
                         </div> --}}
                         <div class="card-body">
+                            <!-- Order Tabs -->
+                            <ul class="nav nav-tabs mb-4">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ !request('status') && !request('payment_method') ? 'active' : '' }}" href="{{ route('dashboard.orders.index') }}">
+                                        {{ __('All Orders') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request('status') == 'pending' ? 'active' : '' }}" href="{{ route('dashboard.orders.index', ['status' => 'pending']) }}">
+                                        {{ __('Pending') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request('status') == 'completed' ? 'active' : '' }}" href="{{ route('dashboard.orders.index', ['status' => 'completed']) }}">
+                                        {{ __('Shipped') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request('status') == 'cancelled' ? 'active' : '' }}" href="{{ route('dashboard.orders.index', ['status' => 'cancelled']) }}">
+                                        {{ __('Cancelled') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ request('payment_method') == 'cash' ? 'active' : '' }}" href="{{ route('dashboard.orders.index', ['payment_method' => 'cash']) }}">
+                                        {{ __('Cash Orders') }}
+                                    </a>
+                                </li>
+                            </ul>
+
                             <div class="table-responsive text-center">
                                 <table id="example2" class="table table-striped table-bordered">
                                     <thead>
