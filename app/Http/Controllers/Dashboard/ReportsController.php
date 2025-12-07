@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
-use App\Models\OrderItem;
+use App\Models\ItemsOrder;
 use App\Models\Category;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,10 +25,10 @@ class ReportsController extends Controller
 
         // KPIs
         $stats = [
-            'total_order_items' => OrderItem::whereBetween('created_at', [$startDate, $endDate])->count(),
-            'units_ordered' => OrderItem::whereBetween('created_at', [$startDate, $endDate])->sum('quantity'),
+            'total_order_items' => ItemsOrder::whereBetween('created_at', [$startDate, $endDate])->count(),
+            'units_ordered' => ItemsOrder::whereBetween('created_at', [$startDate, $endDate])->sum('quantity'),
             'ordered_product_sales' => Order::whereBetween('created_at', [$startDate, $endDate])->sum('total'),
-            'avg_units_per_order' => round(OrderItem::whereBetween('created_at', [$startDate, $endDate])->avg('quantity'), 2),
+            'avg_units_per_order' => round(ItemsOrder::whereBetween('created_at', [$startDate, $endDate])->avg('quantity'), 2),
             'avg_sales_per_order' => round(Order::whereBetween('created_at', [$startDate, $endDate])->avg('total'), 2),
         ];
 
@@ -40,17 +40,17 @@ class ReportsController extends Controller
         $compareSales = [
             'today' => [
                 'orders' => Order::whereDate('created_at', $today)->count(),
-                'units' => OrderItem::whereDate('created_at', $today)->sum('quantity'),
+                'units' => ItemsOrder::whereDate('created_at', $today)->sum('quantity'),
                 'revenue' => Order::whereDate('created_at', $today)->sum('total'),
             ],
             'yesterday' => [
                 'orders' => Order::whereDate('created_at', $yesterday)->count(),
-                'units' => OrderItem::whereDate('created_at', $yesterday)->sum('quantity'),
+                'units' => ItemsOrder::whereDate('created_at', $yesterday)->sum('quantity'),
                 'revenue' => Order::whereDate('created_at', $yesterday)->sum('total'),
             ],
             'same_day_last_week' => [
                 'orders' => Order::whereDate('created_at', $lastWeek)->count(),
-                'units' => OrderItem::whereDate('created_at', $lastWeek)->sum('quantity'),
+                'units' => ItemsOrder::whereDate('created_at', $lastWeek)->sum('quantity'),
                 'revenue' => Order::whereDate('created_at', $lastWeek)->sum('total'),
             ],
         ];
@@ -110,7 +110,7 @@ class ReportsController extends Controller
         $endDate = $request->input('end_date', Carbon::now());
 
         // Top selling products
-        $topProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'), DB::raw('SUM(total) as total_revenue'))
+        $topProducts = ItemsOrder::select('product_id', DB::raw('SUM(quantity) as total_sold'), DB::raw('SUM(total) as total_revenue'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('product_id')
             ->orderBy('total_sold', 'desc')
@@ -119,7 +119,7 @@ class ReportsController extends Controller
             ->get();
 
         // Low stock bestsellers
-        $lowStockBestsellers = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
+        $lowStockBestsellers = ItemsOrder::select('product_id', DB::raw('SUM(quantity) as total_sold'))
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('product_id')
             ->orderBy('total_sold', 'desc')
@@ -147,7 +147,9 @@ class ReportsController extends Controller
         // Top customers by orders
         $topCustomers = User::select('users.*', DB::raw('COUNT(orders.id) as order_count'), DB::raw('SUM(orders.total) as total_spent'))
             ->leftJoin('orders', 'users.id', '=', 'orders.user_id')
-            ->where('users.role', '!=', 'admin')
+            ->whereDoesntHave('roles', function ($q) {
+                $q->where('name', 'admin');
+            })
             ->groupBy('users.id')
             ->orderBy('total_spent', 'desc')
             ->limit(20)

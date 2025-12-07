@@ -162,10 +162,14 @@
                             <tr>
                                 <td>
                                     @if($product->productImages->first())
-                                        <img src="{{ asset($product->productImages->first()->image) }}" alt="{{ $product->{'product_name_' . app()->getLocale()} }}">
+                                        <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 4px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
+                                            <img src="{{ asset($product->productImages->first()->image) }}" 
+                                                 alt="{{ $product->{'product_name_' . app()->getLocale()} }}"
+                                                 style="width: 100%; height: 100%; object-fit: contain;">
+                                        </div>
                                     @else
-                                        <div class="bg-light" style="width:60px;height:60px;display:flex;align-items:center;justify-content:center;">
-                                            <i class="bi bi-image"></i>
+                                        <div class="bg-light" style="width:60px;height:60px;display:flex;align-items:center;justify-content:center; border-radius: 4px; border: 1px solid #eee;">
+                                            <i class="bi bi-image text-muted"></i>
                                         </div>
                                     @endif
                                 </td>
