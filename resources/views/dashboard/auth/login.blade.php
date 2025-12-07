@@ -68,7 +68,7 @@
                             <div class="d-flex justify-content-center">
                                 <img style="max-width: 100%;" src="{{ asset('dashboard/images/Frame 131.svg') }}" width="200px" alt="">
                             </div>
-                            <h4 style="color: #02767F;" class="text-center my-3">Login as Supplier</h4>
+                            <h4 style="color: #02767F;" class="text-center my-3">Dashboard Login</h4>
                             <form class="form w-100" action="{{ route('loginAction') }}" method="post"
                                 data-kt-redirect-url="#" action="#">
                                 @csrf
@@ -86,8 +86,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-center">
-                                    <button style="background-color:#02767F ; color: #fff;" class="btn">Sign
-                                        Up</button>
+                                    <button style="background-color:#02767F ; color: #fff;" class="btn">Login</button>
                                 </div>
                             </form>
                                                         
