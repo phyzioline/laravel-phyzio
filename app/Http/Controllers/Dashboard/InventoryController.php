@@ -56,7 +56,11 @@ class InventoryController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        $products = $query->paginate(50);
+        if (!auth()->user()->hasRole('admin')) {
+            $query->where('user_id', auth()->id());
+        }
+
+        $products = $query->paginate(100);
         $categories = Category::where('status', 'active')->get();
 
         $stats = [

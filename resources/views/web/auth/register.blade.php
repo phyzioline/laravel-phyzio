@@ -180,86 +180,53 @@
     </div>
 </div>
 
-<script>
-    function handleUserTypeChange() {
-        const userType = document.getElementById('userType').value;
-        const vendorFields = document.getElementById('vendorFields');
-        const therapistFields = document.getElementById('therapistFields');
-        const formWrapper = document.getElementById('formWrapper');
-
-        // Hide all first
-        vendorFields.style.display = 'none';
-        therapistFields.style.display = 'none';
-
-        if (userType === 'vendor') {
-            vendorFields.style.display = 'block';
-            formWrapper.style.minHeight = '1200px';
-        } else if (userType === 'therapist') {
-            therapistFields.style.display = 'block';
-            formWrapper.style.minHeight = '800px';
-        } else {
-            formWrapper.style.minHeight = '800px';
-        }
-    }
-
-    // Optional: Trigger on load if user had old('type') saved
-    window.addEventListener('DOMContentLoaded', handleUserTypeChange);
-</script>
-
-
-
-    <!-- Script to Show/Hide Vendor Fields -->
+    <!-- Toastr & Logic -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const userTypeSelect = document.getElementById('userType');
-            const vendorFields = document.getElementById('vendorFields');
-
-            function toggleVendorFields() {
-                vendorFields.style.display = (userTypeSelect.value === 'vendor') ? 'block' : 'none';
-            }
-
-            userTypeSelect.addEventListener('change', toggleVendorFields);
-            toggleVendorFields(); // Run on page load
+            handleUserTypeChange(); // Ensure correct fields show on load (e.g. after validation error)
         });
+
+        $(document).ready(function() {
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000",
+            };
+
+            @if(Session::has('message'))
+                var type = "{{ Session::get('message')['type'] }}";
+                var text = "{!! Session::get('message')['text'] !!}";
+                toastr[type](text);
+            @endif
+
+            @if($errors->any())
+                @foreach($errors->all() as $error)
+                    toastr.error("{{ $error }}");
+                @endforeach
+            @endif
+        });
+
+        function handleUserTypeChange() {
+            const userType = document.getElementById('userType').value;
+            const vendorFields = document.getElementById('vendorFields');
+            const therapistFields = document.getElementById('therapistFields');
+            const formWrapper = document.getElementById('formWrapper');
+
+            // Hide all first
+            vendorFields.style.display = 'none';
+            therapistFields.style.display = 'none';
+            formWrapper.style.minHeight = '800px'; 
+
+            if (userType === 'vendor') {
+                vendorFields.style.display = 'block';
+                formWrapper.style.minHeight = '1200px';
+            } else if (userType === 'therapist') {
+                therapistFields.style.display = 'block';
+                formWrapper.style.minHeight = '900px';
+            }
+        }
     </script>
-
-      </script>
-   @if (\Session::has('message'))
-        <script type="text/javascript">
-            $(function() {
-                toastr["{{ \Session::get('message')['type'] }}"]('{!! \Session::get('message')['text'] !!}',
-                    "{{ ucfirst(\Session::get('message')['type']) }}!");
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": false,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
-                }
-            });
-        </script>
-        <?php echo \Session::forget('message'); ?>
-    @endif
-
-    @if ($errors->any())
-        <script type="text/javascript">
-            $(function() {
-                toastr["error"]('{{ $errors->first() }}', "Error!");
-            });
-        </script>
-    @endif
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 </body>
-
 </html>
