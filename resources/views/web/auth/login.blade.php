@@ -27,13 +27,19 @@
                       <form method="post" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">
-                          <input type="email"  name="email" class="form-style" placeholder="Your Email" autocomplete="off">
+                          <input type="email" name="email" class="form-style" placeholder="Your Email" autocomplete="off" value="{{ old('email') }}">
                           <i class="input-icon material-icons">alternate_email</i>
                         </div>
+                        @error('email')
+                            <span class="text-danger" style="color: #ff6b6b; font-size: 12px; display: block; margin-top: 5px;">{{ $message }}</span>
+                        @enderror
                         <div class="form-group">
                           <input type="password" name="password" class="form-style" placeholder="Your Password" autocomplete="off">
                           <i class="input-icon material-icons">lock</i>
                         </div>
+                        @error('password')
+                            <span class="text-danger" style="color: #ff6b6b; font-size: 12px; display: block; margin-top: 5px;">{{ $message }}</span>
+                        @enderror
                         <button type="submit" class="btn">Login</button>
                       </form>
                       <p class="text-center">

@@ -167,8 +167,8 @@
                                 <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="logo_not_found" />
                             </a>
 
-                            @if (Auth::check() && (Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->hasRole('therapist')))
-                                <a href="{{ route('dashboard.home') }}" class="btn btn-sm btn-primary text-white" style="margin-left: 10px; border-radius: 20px; padding: 5px 15px;">
+                            @if (Auth::check() && (Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist'))
+                                <a href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}" class="btn btn-sm btn-primary text-white" style="margin-left: 10px; border-radius: 20px; padding: 5px 15px;">
                                     <i class="las la-tachometer-alt"></i>
                                     Dashboard
                                 </a>
