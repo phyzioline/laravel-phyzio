@@ -299,9 +299,20 @@
                             {{-- Login/Logout --}}
                             <li class="dropdown">
                                 @if (Auth::check())
-                                    <a style="color: #fff;" href="{{ route('logout') }}">
-                                        <button class="btn-cart btn-login px-4 py-1">Logout</button>
-                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                                        @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->hasRole('therapist'))
+                                            <a class="dropdown-item" href="{{ route('dashboard.home') }}">
+                                                <i class="las la-tachometer-alt mr-2"></i> Dashboard
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                        @endif
+                                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
+                                            <i class="las la-sign-out-alt mr-2"></i> Logout
+                                        </a>
+                                    </div>
+                                    <button class="btn-cart btn-login px-4 py-1" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ Auth::user()->name }} <i class="las la-angle-down"></i>
+                                    </button>
                                 @else
                                     <a style="color: #fff;" href="{{ route('view_login') }}">
                                         <button class="btn-cart btn-login px-4 py-1">Login</button>

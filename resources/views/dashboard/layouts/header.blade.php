@@ -12,9 +12,39 @@
 
 
             <div class="notify-list">
-
-
-
+              <a class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="javascript:;">
+                <i class="material-icons-outlined">notifications</i>
+                @if(auth()->user()->unreadNotifications->count() > 0)
+                    <span class="badge bg-danger rounded-pill notify-count" style="position: absolute; top: -5px; right: -5px; padding: 2px 6px; font-size: 10px;">{{ auth()->user()->unreadNotifications->count() }}</span>
+                @endif
+              </a>
+              <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                <div class="notify-header d-flex align-items-center justify-content-between border-bottom px-3 py-2">
+                   <h6 class="mb-0">Notifications</h6>
+                   <!-- <a href="javascript:;" class="text-secondary small">Mark all as read</a> -->
+                </div>
+                <div class="notify-body">
+                   @forelse(auth()->user()->unreadNotifications as $notification)
+                       <a class="dropdown-item border-bottom py-2" href="{{ isset($notification->data['order_id']) ? route('dashboard.orders.show', $notification->data['order_id']) : 'javascript:;' }}">
+                           <div class="d-flex align-items-center gap-2">
+                               <div class="notify-icon bg-light-primary text-primary rounded-circle p-1">
+                                   <i class="material-icons-outlined">shopping_bag</i>
+                               </div>
+                               <div class="flex-grow-1">
+                                  <h6 class="mb-0 small fw-bold">Order #{{ $notification->data['order_id'] ?? 'N/A' }}</h6>
+                                  <p class="mb-0 small text-secondary">New order from {{ $notification->data['customer_name'] ?? 'Guest' }}</p>
+                                  <p class="mb-0 small text-muted" style="font-size: 10px;">{{ $notification->created_at->diffForHumans() }}</p>
+                               </div>
+                           </div>
+                       </a>
+                   @empty
+                       <div class="text-center p-3 text-secondary">
+                           <i class="material-icons-outlined fs-3">notifications_off</i>
+                           <p class="mb-0">No new notifications</p>
+                       </div>
+                   @endforelse
+                </div>
+              </div>
             </div>
         </li>
         <li class="nav-item dropdown">

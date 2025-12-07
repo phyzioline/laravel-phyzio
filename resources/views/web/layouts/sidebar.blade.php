@@ -90,6 +90,37 @@
                 </div>
             </div>
 
+            <div class="card">
+                <div class="card-header" id="heading-two">
+                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-two" aria-expanded="false" aria-controls="collapse-two">
+                        <i class="las la-th-large"></i>
+                        Categories
+                    </button>
+                </div>
+                <div id="collapse-two" class="collapse" aria-labelledby="heading-two" data-parent="#mobile-accordion">
+                    <div class="card-body">
+                        <div class="card-list-widget">
+                            <ul class="list-unstyled">
+                                <li><a href="{{ route('show') }}">All Products</a></li>
+                                @foreach (App\Models\Category::where('status', 'active')->get() as $category)
+                                    <li>
+                                        <a href="#category-{{ $category->id }}" data-toggle="collapse" aria-expanded="false" class="d-flex justify-content-between align-items-center">
+                                            {{ $category->{'name_' . app()->getLocale()} }}
+                                            <i class="las la-angle-down"></i>
+                                        </a>
+                                        <ul class="collapse list-unstyled pl-3" id="category-{{ $category->id }}">
+                                            @foreach ($category->subcategories as $subcategory)
+                                                <li><a href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}" class="text-muted" style="font-size: 13px;">- {{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
+                                            @endforeach
+                                        </ul>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
 
@@ -99,7 +130,7 @@
             <ul style="height: 100vh;" class="clearfix">
                 <li class="active"><a href="{{ route('home') }}">Home</a></li>
                 <li><a href="{{ route('show') }}">Shop</a></li>
-                <li><a href="{{ route('home') }}#privateCases">Private Cases</a></li>
+                <li><a href="{{ route('web.appointments.index') }}">Appointments</a></li>
                 <li><a href="{{ route('home') }}#System">Our System</a></li>
                 <li><a href="{{ route('home') }}#jobs">Jobs</a></li>
                 <li><a href="{{ route('home') }}#courses">Courses</a></li>

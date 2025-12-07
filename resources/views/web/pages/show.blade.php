@@ -834,6 +834,8 @@ background : none !important;
 /* Responsive adjustments */
 @media (max-width: 991px) {
     .category-dropdown-bar {
+        display: none !important; 
+        /* Hidden on mobile in favor of sidebar menu */
         margin-bottom: 15px;
     }
     

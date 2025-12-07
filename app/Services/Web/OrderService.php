@@ -67,6 +67,42 @@ class OrderService
         foreach ($admins as $admin) {
             $admin->notify(new \App\Notifications\OrderCreatedNotification($order));
         }
+
+        // 1. Send Confirmation to Customer
+        try {
+            if ($user->email) {
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\OrderConfirmationMail($order));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send customer confirmation email: ' . $e->getMessage());
+        }
+
+        // 2. Send Notifications to Vendors (Suppliers)
+        try {
+            // Group items by vendor (product->user_id)
+            $vendorItems = [];
+            foreach ($order->items as $item) {
+                if ($item->product && $item->product->user_id) {
+                    $vendorId = $item->product->user_id;
+                    if (!isset($vendorItems[$vendorId])) {
+                        $vendorItems[$vendorId] = [];
+                    }
+                    $vendorItems[$vendorId][] = $item;
+                }
+            }
+
+            // Send email to each vendor with their specific items
+            foreach ($vendorItems as $vendorId => $items) {
+                $vendor = \App\Models\User::find($vendorId);
+                // Don't send if vendor is missing or is the current user (unless admin wants copy? assuming distinct)
+                if ($vendor && $vendor->email) {
+                     \Illuminate\Support\Facades\Mail::to($vendor->email)->send(new \App\Mail\SupplierOrderMail($order, $items));
+                }
+            }
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send vendor notification email: ' . $e->getMessage());
+        }
         
         Session::flash('message', ['type' => 'success', 'text' => __('تم إنشاء الطلب بنجاح')]);
         return redirect()->route('carts.index')->with('success', 'تم إنشاء الطلب بنجاح');
@@ -180,6 +216,39 @@ class OrderService
         $admins = \App\Models\User::role('admin')->get();
         foreach ($admins as $admin) {
             $admin->notify(new \App\Notifications\OrderCreatedNotification($order));
+        }
+
+        // 1. Send Confirmation to Customer
+        try {
+            if ($user->email) {
+                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\OrderConfirmationMail($order));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send customer confirmation email: ' . $e->getMessage());
+        }
+
+         // 2. Send Notifications to Vendors (Suppliers)
+         try {
+            $vendorItems = [];
+            foreach ($order->items as $item) {
+                if ($item->product && $item->product->user_id) {
+                    $vendorId = $item->product->user_id;
+                    if (!isset($vendorItems[$vendorId])) {
+                        $vendorItems[$vendorId] = [];
+                    }
+                    $vendorItems[$vendorId][] = $item;
+                }
+            }
+
+            foreach ($vendorItems as $vendorId => $items) {
+                $vendor = \App\Models\User::find($vendorId);
+                if ($vendor && $vendor->email) {
+                     \Illuminate\Support\Facades\Mail::to($vendor->email)->send(new \App\Mail\SupplierOrderMail($order, $items));
+                }
+            }
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send vendor notification email: ' . $e->getMessage());
         }
 
         if (! $paymentKeyResponse->successful()) {

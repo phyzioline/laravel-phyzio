@@ -31,6 +31,7 @@
                                     <th>{{ __('Phone') }}</th>
                                     <th>{{ __('Type') }}</th>
                                     <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Joined Date') }}</th>
                                     <th>{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
@@ -53,6 +54,7 @@
                                             @endif
                                         </td>
                                         <td>{{ $user->status }}</td>
+                                        <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                         <td>
                                             @can('users-delete')
                                                 <button type="button" class="btn btn-danger delete-country-btn"

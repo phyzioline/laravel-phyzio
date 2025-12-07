@@ -16,7 +16,7 @@ class UserService
     public function index()
     {
 
-        return $this->user->whereNot('id', auth()->user()->id)->latest()->paginate(10);
+        return $this->user->whereNot('id', auth()->user()->id)->latest()->paginate(100);
     }
 
     public function create()

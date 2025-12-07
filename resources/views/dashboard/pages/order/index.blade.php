@@ -97,6 +97,10 @@
                                                             class="btn btn-info w-25">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
+                                                        <a href="{{ route('dashboard.orders.print-label', $order->id) }}" target="_blank"
+                                                            class="btn btn-secondary w-25" title="Print Label">
+                                                            <i class="fas fa-print"></i>
+                                                        </a>
                                                     @endcan
                                                 </td>
                                             </tr>
