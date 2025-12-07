@@ -507,8 +507,10 @@
                 /* Mobile Single Column */
                 @media (max-width: 576px) {
                     .product-item {
-                        flex: 0 0 100% !important;
-                        max-width: 100% !important;
+                        flex: 0 0 50% !important;
+                        max-width: 50% !important;
+                        padding-right: 5px;
+                        padding-left: 5px;
                     }
                     
                     .physio-product-card {
@@ -834,8 +836,7 @@ background : none !important;
 /* Responsive adjustments */
 @media (max-width: 991px) {
     .category-dropdown-bar {
-        display: none !important; 
-        /* Hidden on mobile in favor of sidebar menu */
+        /* display: none !important; */
         margin-bottom: 15px;
     }
     

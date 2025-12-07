@@ -57,7 +57,7 @@
               <h3 class="widget-title" style="color: #36415A;">Phyzioline</h3>
               <ul class="clearfix">
                 <li><a href="{{ route('show') }}">Shop</a></li>
-                <li><a href="#privateCases">Private Cases</a></li>
+                <li><a href="{{ route('web.appointments.index') }}">Appointments</a></li>
                 <li><a href="#System">Our System</a></li>
                 <li><a href="#jobs">Jobs</a></li>
                 <li><a href="#courses">Courses</a></li>
