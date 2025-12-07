@@ -1,3 +1,4 @@
+<?php
 
 Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'as' => 'therapist.'], function () {
     Route::get('/dashboard', [\App\Http\Controllers\Therapist\DashboardController::class, 'index'])->name('dashboard');

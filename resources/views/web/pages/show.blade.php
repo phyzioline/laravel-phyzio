@@ -472,7 +472,7 @@
                 <span class="category-icon-name">All Products</span>
             </a>
             @foreach ($categories as $category)
-                <a href="{{ route('web.shop.category', ['id' => $category->subCategories->first()->id ?? '']) }}" 
+                <a href="{{ route('show', ['category' => $category->id]) }}" 
                    class="category-icon-item {{ request('category') == $category->id ? 'active' : '' }}"
                    data-category-id="{{ $category->id }}">
                     <div class="category-icon-circle">
