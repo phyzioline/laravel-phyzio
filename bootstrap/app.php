@@ -25,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'notification'          => CheckNotification::class,
             'web_auth'              => RedirectIfNotAuthenticated::class,
             'admin'                 => AdminMiddleware::class,
+            'therapist'             => \App\Http\Middleware\TherapistMiddleware::class,
             /**** OTHER MIDDLEWARE ALIASES ****/
             'localize'              => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
             'localizationRedirect'  => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,

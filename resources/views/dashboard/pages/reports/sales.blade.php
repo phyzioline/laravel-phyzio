@@ -37,7 +37,7 @@
                         <div class="card bg-primary text-white">
                             <div class="card-body">
                                 <h5 class="card-title text-white">Total Revenue</h5>
-                                <h3 class="mb-0 text-white">${{ number_format($totalRevenue, 2) }}</h3>
+                                <h3 class="mb-0 text-white">{{ number_format($totalRevenue, 2) }} EGP</h3>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                                     <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
                                     <td>{{ $order->name }}</td>
                                     <td>{{ $order->items->count() }}</td>
-                                    <td>${{ number_format($order->total, 2) }}</td>
+                                    <td>{{ number_format($order->total, 2) }} EGP</td>
                                     <td><span class="badge bg-{{ $order->status == 'completed' ? 'success' : ($order->status == 'pending' ? 'warning' : 'danger') }}">{{ ucfirst($order->status) }}</span></td>
                                 </tr>
                             @empty

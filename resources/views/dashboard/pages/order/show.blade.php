@@ -65,24 +65,24 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>${{ number_format($item->price, 2) }}</td>
+                                            <td>{{ number_format($item->price, 2) }} EGP</td>
                                             <td>{{ $item->quantity }}</td>
-                                            <td class="text-end fw-bold">${{ number_format($item->total, 2) }}</td>
+                                            <td class="text-end fw-bold">{{ number_format($item->total, 2) }} EGP</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
                                 <tfoot class="table-light">
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Subtotal</td>
-                                        <td class="text-end">${{ number_format($order->total, 2) }}</td>
+                                        <td class="text-end">{{ number_format($order->total, 2) }} EGP</td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Shipping</td>
-                                        <td class="text-end">$0.00</td>
+                                        <td class="text-end">0.00 EGP</td>
                                     </tr>
                                     <tr>
                                         <td colspan="3" class="text-end fw-bold">Grand Total</td>
-                                        <td class="text-end text-primary h5 mb-0">${{ number_format($order->total, 2) }}</td>
+                                        <td class="text-end text-primary h5 mb-0">{{ number_format($order->total, 2) }} EGP</td>
                                     </tr>
                                 </tfoot>
                             </table>

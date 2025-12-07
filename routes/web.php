@@ -90,6 +90,9 @@ Route::get('/', [HomeController::class, 'index'])
         Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
         Route::post('favorites', [FavoriteController::class, 'store'])->name('favorites.store');
         Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.delete');
+        Route::get('compare', [App\Http\Controllers\Web\CompareController::class, 'index'])->name('compare.index');
+        Route::post('compare', [App\Http\Controllers\Web\CompareController::class, 'store'])->name('compare.store');
+        Route::delete('/compare/{id}', [App\Http\Controllers\Web\CompareController::class, 'destroy'])->name('compare.delete');
         Route::get('history_order',[HistoryOrderController::class, 'index'])->name('history_order.index');
 
             // logout
@@ -118,6 +121,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 });
 
 require __DIR__ . '/dashboard.php';
+require __DIR__ . '/therapist.php';
 
 
  

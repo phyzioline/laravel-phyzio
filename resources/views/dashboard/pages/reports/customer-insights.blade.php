@@ -9,7 +9,7 @@
                 <div class="card">
                     <div class="card-body text-center">
                         <h6 class="text-muted">Average Order Value</h6>
-                        <h2 class="text-primary">${{ number_format($avgOrderValue, 2) }}</h2>
+                        <h2 class="text-primary">{{ number_format($avgOrderValue, 2) }} EGP</h2>
                     </div>
                 </div>
             </div>

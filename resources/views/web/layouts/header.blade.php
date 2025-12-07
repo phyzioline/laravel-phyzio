@@ -271,7 +271,7 @@
                                                         </div>
                                                         <div class="item-content">
                                                             <span class="item-title">{{ $cart->product->{'product_name_' . app()->getLocale()} }}</span>
-                                                            <span class="item-price">${{ $cart->product->product_price }}</span>
+                                                            <span class="item-price">{{ number_format($cart->product->product_price, 2) }} EGP</span>
                                                         </div>
                                                         <form action="{{ route('carts.destroy', $cart->id) }}" method="POST" class="remove-cart-form">
                                                             @csrf

@@ -23,7 +23,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-secondary">Total Inventory Value</p>
-                                <h4 class="my-1">${{ number_format($totalValue, 2) }}</h4>
+                                <h4 class="my-1">{{ number_format($totalValue, 2) }} EGP</h4>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
                                 <i class="bi bi-currency-dollar"></i>

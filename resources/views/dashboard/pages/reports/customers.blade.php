@@ -45,7 +45,7 @@
                                     <td>{{ $customer->name }}</td>
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->order_count }}</td>
-                                    <td>${{ number_format($customer->total_spent, 2) }}</td>
+                                    <td>{{ number_format($customer->total_spent, 2) }} EGP</td>
                                     <td>{{ $customer->created_at->format('Y-m-d') }}</td>
                                 </tr>
                             @endforeach

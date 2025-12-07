@@ -71,7 +71,7 @@
                                             
                                             <td class="text-center">
                                                 <span class="item-price fw-bold text-success">
-                                                    ${{ number_format($item->product->product_price, 2) }}
+                                                    {{ number_format($item->product->product_price, 2) }} EGP
                                                 </span>
                                             </td>
                                             
@@ -90,7 +90,7 @@
                                             
                                             <td class="text-center">
                                                 <strong class="item-subtotal text-primary fs-5">
-                                                    ${{ number_format($item->product->product_price * $item->quantity, 2) }}
+                                                    {{ number_format($item->product->product_price * $item->quantity, 2) }} EGP
                                                 </strong>
                                             </td>
                                         </tr>
@@ -134,7 +134,7 @@
                             <div class="total-cost d-flex justify-content-between align-items-center p-3 bg-light rounded">
                                 <strong class="fs-5 text-dark">Total Amount:</strong>
                                 <span id="cart-total" class="fs-4 fw-bold text-primary">
-                                    ${{ number_format($total, 2) }}
+                                    {{ number_format($total, 2) }} EGP
                                 </span>
                             </div>
                         </div>
@@ -247,7 +247,7 @@
                         url: '{{ route('carts.total') }}',
                         method: 'GET',
                         success: function(res) {
-                            $('#cart-total').text('$' + res.total);
+                            $('#cart-total').text(res.total + ' EGP');
                         },
                         error: function() {
                             console.error('Error loading total');
@@ -295,7 +295,7 @@
                     var price = parseFloat($row.data('price'));
                     var newSubtotal = price * newQty;
 
-                    $row.find('strong.item-subtotal').text('$' + newSubtotal.toFixed(2));
+                    $row.find('strong.item-subtotal').text(newSubtotal.toFixed(2) + ' EGP');
                 });
 
                 // Remove item confirmation
