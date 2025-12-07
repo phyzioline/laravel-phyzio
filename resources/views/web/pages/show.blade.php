@@ -109,14 +109,14 @@
                 }
 
                 .products-category li {
-                    margin-bottom: 10px;
+                    margin-bottom: 15px;
                 }
 
                 .products-category>ul>li>a {
                     display: block;
                     padding: 10px 14px;
                     background-color: #f5f5f5;
-                    color: #36415A;
+                    color: #0b9792ff;
                     text-decoration: none;
                     border-radius: 4px;
                     transition: background-color 0.3s ease;
@@ -145,7 +145,7 @@
                 .products-category li ul a {
                     display: block;
                     padding: 8px 16px;
-                    color: #36415A;
+                    color: #148591ff;
                     text-decoration: none;
                     background-color: transparent;
                     transition: background-color 0.3s;
@@ -178,7 +178,7 @@
 
                 .item-image {
                     position: relative;
-                    height: 250px;
+                    height: 180px;
                     overflow: hidden;
                 }
 
@@ -236,9 +236,9 @@
 
                 .physio-image-container {
                     position: relative;
-                    height: 180px;
+                    height: 210px;
                     overflow: hidden;
-                    background: #fafafa;
+                    background: #fff;
                     border-bottom: 1px solid #f0f0f0;
                 }
 
@@ -265,7 +265,7 @@
                 }
 
                 .physio-product-title {
-                    font-size: 14px;
+                    font-size: 13x;
                     font-weight: 500;
                     margin-bottom: 8px;
                     line-height: 1.4;
@@ -294,10 +294,21 @@
                 }
 
                 .physio-product-card .btns-group {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
+                    position: relative;
+                    margin: 5px 0 10px;
                     z-index: 10;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .physio-product-card .btns-group ul {
+                     display: flex;
+                     gap: 8px;
+                     justify-content: center;
+                }
+                
+                .physio-product-card .btns-group li {
+                    margin-bottom: 0;
                 }
 
                 .physio-product-card .btns-group ul {
@@ -335,7 +346,7 @@
                     box-shadow: 0 4px 12px rgba(4, 184, 196, 0.35);
                 }
 
-                /* Buy Now Button - Special Golden/Orange Color */
+                / Buy Now Button - Special Golden/Orange Color */
                 .physio-product-card .buy-now-btn:hover {
                     background: linear-gradient(135deg, #FF6B35, #F7931E);
                     color: white;
@@ -428,6 +439,13 @@
                         max-width: 20%;
                     }
                 }
+                
+                @media (min-width: 1200px) {
+                    .col-lg-2dot4 {
+                        flex: 0 0 20%;
+                        max-width: 20%;
+                    }
+                }
 
                 /* Product Card Size Adjustments for 5-column */
                 @media (min-width: 992px) {
@@ -438,6 +456,7 @@
                     .physio-image-container {
                         height: 170px;
                     }
+                    
                     
                     .physio-product-title {
                         font-size: 13px;
@@ -515,7 +534,8 @@
                     
                     .physio-product-card {
                         margin-bottom: 20px;
-                        height: 420px;
+                        height: auto; /* Allow height to fit content */
+                        min-height: 260px;
                     }
 
                     .has-column-2 .product-item {
@@ -523,20 +543,22 @@
                     }
 
                     .physio-image-container {
-                        height: 200px;
+                        height: 140px; /* Reduced from 200px */
                     }
                     
                     .physio-content-wrapper {
-                        padding: 15px;
+                        padding: 10px;
                     }
                     
                     .physio-product-title {
-                        font-size: 14px;
-                        min-height: 36px;
+                        font-size: 12px;
+                        min-height: 28px;
+                        margin-bottom: 4px;
                     }
 
                     .physio-product-price {
-                        font-size: 16px;
+                        font-size: 14px;
+                        margin-bottom: 5px;
                     }
 
                     .physio-product-card .add-to-cart,
@@ -826,7 +848,7 @@ background : none !important;
 
 /* Product Grid Spacing */
 .shop-section {
-    padding: 30px 0 50px;
+    padding: 10px 0 30px;
 }
 
 .mb-70 {
@@ -851,10 +873,10 @@ background : none !important;
            ================================================== -->
         <section id="slider-section" class="slider-section clearfix">
             <div class="item d-flex align-items-center" data-background="{{ asset('web/assets/images/hero-bg.png') }}"
-                style="height: 20vh">
+                style="height: 12vh; min-height: 120px;">
                 <div class="container">
-                    <div class="text-center mt-5 mb-5">
-                         <h1 style="margin-top : 60px">Physical Therapy Products Shop</h1>
+                    <div class="text-center mt-3 mb-3">
+                         <h1 style="margin-top : 30px; font-size: 1.8rem;">Physical Therapy Products Shop</h1>
                     </div>
                 </div>
             </div>
@@ -1005,6 +1027,26 @@ background : none !important;
                                                             {{ $product->{'product_name_' . app()->getLocale()} }}
                                                         </a>
                                                     </h3>
+                                                    
+                                                    <!-- Icons Moved Here -->
+                                                    <div class="btns-group ul-li-center clearfix">
+                                                        <ul class="clearfix">
+                                                            <li>
+                                                                <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}"
+                                                                    data-toggle="tooltip" data-placement="top" title="Add To Cart">
+                                                                    <i class="las la-shopping-basket" style="font-size:18px"></i>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button type="button" class="add-to-favorite border-0 bg-transparent" data-product-id="{{ $product->id }}"
+                                                                    data-toggle="tooltip" data-placement="top" title="Add To Favorite">
+                                                                    <i class="fa-heart favorite-icon {{ $product->favorite && $product->favorite->favorite_type ? 'fas' : 'far' }}"
+                                                                       style="font-size:18px; color: {{ $product->favorite && $product->favorite->favorite_type ? 'red' : 'inherit' }};"></i>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+
                                                     <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
                                                     <div class="rating-star ul-li-center clearfix">
                                                         <ul class="clearfix">
