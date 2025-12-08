@@ -34,21 +34,29 @@
    ============================================ */
 
 /* Top Header - Match Website Teal Color */
+/* Top Header - White Background (User Request) */
 [data-bs-theme=blue-theme] body .top-header {
-    background-color: #0d9488 !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #ffffff !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
 [data-bs-theme=blue-theme] body .top-header .navbar {
-    background-color: #0d9488 !important;
+    background-color: #ffffff !important;
 }
 
-/* Header Icons and Text - White */
+/* Header Icons and Text - Teal/Dark for White Background */
 [data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .material-icons-outlined,
 [data-bs-theme=blue-theme] .top-header .navbar .btn-toggle i,
 [data-bs-theme=blue-theme] .top-header .navbar button,
 [data-bs-theme=blue-theme] .top-header .navbar a {
-    color: #ffffff !important;
+    color: #0d9488 !important;
+    /* Teal color for icons */
+}
+
+[data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .user-info .user-name {
+    color: #333333 !important;
+    /* Dark text for username */
+    font-weight: 600;
 }
 
 /* ============================================
@@ -130,4 +138,120 @@
 
 [data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.5);
+}
+
+/* ============================================
+   THERAPIST DASHBOARD SPECIFIC STYLES
+   ============================================ */
+
+/* Main Container */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f6f9;
+}
+
+/* Sidebar Background - Teal Gradient */
+.dashboard-container .sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%) !important;
+    color: #ffffff !important;
+    padding: 20px;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar Logo Area */
+.dashboard-container .sidebar .text-center {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Logo Image - Invert to White */
+.dashboard-container .sidebar img {
+    filter: brightness(0) invert(1);
+    opacity: 1;
+    max-width: 70% !important;
+    transition: all 0.3s ease;
+}
+
+/* Nav Links - White Text */
+.dashboard-container .sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 12px 15px;
+    display: block;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-container .sidebar .nav-link i {
+    margin-right: 12px;
+    font-size: 1.2rem;
+}
+
+/* Hover State */
+.dashboard-container .sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+    padding-left: 20px;
+}
+
+/* Active State */
+.dashboard-container .sidebar .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logout Link */
+.dashboard-container .sidebar .nav-link.text-danger {
+    color: #ffcccc !important;
+    margin-top: 20px;
+}
+
+.dashboard-container .sidebar .nav-link.text-danger:hover {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ffffff !important;
+}
+
+/* Main Content Area */
+.dashboard-container .main-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Header Bar inside Main Content */
+.dashboard-container .header-bar {
+    background: #ffffff;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid #0d9488;
+    /* Teal Accent */
+}
+
+/* Cards */
+.card-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s ease;
+}
+
+.card-box:hover {
+    transform: translateY(-5px);
 }
