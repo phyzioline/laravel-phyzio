@@ -1,41 +1,61 @@
-/* Teal Dashboard Theme Override - Enhanced Visibility */
+/* Teal Dashboard Theme Override - Complete & Enhanced */
 
-/* Sidebar Background - Darker Teal for Better Contrast */
+/* ============================================
+   SIDEBAR STYLING
+   ============================================ */
+
+/* Sidebar Background - Teal Gradient */
 [data-bs-theme=blue-theme] body .sidebar-wrapper {
     background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%) !important;
     color: #ffffff !important;
 }
 
-/* Sidebar Header - Even Darker Teal */
+/* Sidebar Header - White Background with Dark Logo */
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header {
-    background-color: #115e59 !important;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    background-color: #ffffff !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
     padding: 20px 15px;
 }
 
-/* Logo Styling - Make it Visible */
+/* Logo Text - Dark on White Header */
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name {
-    color: #ffffff !important;
+    color: #0f766e !important;
     font-weight: bold;
 }
 
+/* Logo Image - Show Original Colors (No Filter) */
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img {
-    filter: brightness(0) invert(1);
-    /* Make logo white */
+    filter: none !important;
     opacity: 1 !important;
 }
 
-/* Top Header - Teal with White Text */
+/* ============================================
+   TOP HEADER STYLING
+   ============================================ */
+
+/* Top Header - Match Website Teal Color */
 [data-bs-theme=blue-theme] body .top-header {
-    background-color: #0f766e !important;
+    background-color: #0d9488 !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-bs-theme=blue-theme] body .top-header .navbar {
-    background-color: #0f766e !important;
+    background-color: #0d9488 !important;
 }
 
-/* Menu Items - White Text for Visibility */
+/* Header Icons and Text - White */
+[data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .material-icons-outlined,
+[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle i,
+[data-bs-theme=blue-theme] .top-header .navbar button,
+[data-bs-theme=blue-theme] .top-header .navbar a {
+    color: #ffffff !important;
+}
+
+/* ============================================
+   MENU ITEMS STYLING
+   ============================================ */
+
+/* Main Menu Items - White Text on Teal */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a {
     color: #ffffff !important;
     font-weight: 500;
@@ -50,7 +70,7 @@
     color: #ffffff !important;
 }
 
-/* Hover State - Light Teal Background */
+/* Hover State - Light Background */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a:hover {
     background-color: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
@@ -78,7 +98,10 @@
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Footer Text */
+/* ============================================
+   FOOTER STYLING
+   ============================================ */
+
 [data-bs-theme=blue-theme] .sidebar-wrapper #footer-section {
     color: rgba(255, 255, 255, 0.7) !important;
 }
@@ -88,13 +111,10 @@
     font-weight: bold;
 }
 
-/* Header Icons and Text - White */
-[data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .material-icons-outlined,
-[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle i {
-    color: #ffffff !important;
-}
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
 
-/* Scrollbar Styling for Sidebar */
 [data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar {
     width: 6px;
 }
