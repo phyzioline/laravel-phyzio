@@ -21,7 +21,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be populated here -->
+                    <tbody>
+                        @foreach($courses as $course)
+                        <tr>
+                            <td>{{ $course->id }}</td>
+                            <td>{{ $course->title }}</td>
+                            <td>{{ $course->instructor->user->name ?? 'N/A' }}</td>
+                            <td>{{ $course->price }} SAR</td>
+                            <td>
+                                <span class="badge badge-{{ $course->status == 'published' ? 'success' : ($course->status == 'pending' ? 'warning' : 'secondary') }}">
+                                    {{ ucfirst($course->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-info btn-sm">View</a>
+                                <form action="{{ route('dashboard.courses.update', $course->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    @if($course->status == 'pending')
+                                        <input type="hidden" name="status" value="published">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    @elseif($course->status == 'published')
+                                        <input type="hidden" name="status" value="draft">
+                                        <button class="btn btn-warning btn-sm">Unpublish</button>
+                                    @endif
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

@@ -12,7 +12,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        return view('dashboard.courses.index');
+        $courses = \App\Models\Course::with('instructor.user')->get();
+        return view('dashboard.courses.index', compact('courses'));
     }
 
     /**

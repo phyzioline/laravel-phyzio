@@ -8,7 +8,7 @@
 
 
 
-            @if (auth()->user()->hasRole('admin'))
+            @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6 col-sm-12">
                         <div class="card rounded-4">
