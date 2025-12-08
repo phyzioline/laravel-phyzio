@@ -141,6 +141,30 @@ Route::get('/callback', [OrderController::class, 'callback']);
 Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social.')->group(function(){
     Route::get('{provider}/redirect','redirect')->name('redirect');
     Route::get('{provider}/callback','callback')->name('callback');
+    Route::get('{provider}/redirect','redirect')->name('redirect');
+    Route::get('{provider}/callback','callback')->name('callback');
+});
+
+// Generic Dashboard Redirect
+Route::group(
+[
+	'prefix' => LaravelLocalization::setLocale(),
+	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath', 'auth' ]
+], function(){
+    Route::get('/dashboard', function () {
+        $user = Auth::user();
+        if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
+            return redirect()->route('dashboard.home');
+        } elseif ($user->type === 'therapist') { // Using type column based on previous context
+            return redirect()->route('therapist.dashboard');
+        } elseif ($user->hasRole('instructor')) { // Assuming role or type, checking previous code
+            return redirect()->route('instructor.dashboard');
+        } elseif ($user->hasRole('clinic')) {
+            return redirect()->route('clinic.dashboard');
+        } else {
+            return redirect()->route('history_order.index'); // User dashboard
+        }
+    })->name('dashboard');
 });
 
 require __DIR__ . '/dashboard.php';
