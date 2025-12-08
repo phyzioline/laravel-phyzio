@@ -1,36 +1,113 @@
-/* Teal Dashboard Theme Override */
+/* Teal Dashboard Theme Override - Enhanced Visibility */
+
+/* Sidebar Background - Darker Teal for Better Contrast */
 [data-bs-theme=blue-theme] body .sidebar-wrapper {
-    background-color: #0d9488 !important;
+    background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%) !important;
+    color: #ffffff !important;
 }
 
+/* Sidebar Header - Even Darker Teal */
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header {
+    background-color: #115e59 !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    padding: 20px 15px;
+}
+
+/* Logo Styling - Make it Visible */
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img {
+    filter: brightness(0) invert(1);
+    /* Make logo white */
+    opacity: 1 !important;
+}
+
+/* Top Header - Teal with White Text */
+[data-bs-theme=blue-theme] body .top-header {
     background-color: #0f766e !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-bs-theme=blue-theme] body .top-header {
-    background-color: #0d9488 !important;
-}
-
 [data-bs-theme=blue-theme] body .top-header .navbar {
-    background-color: #0d9488 !important;
+    background-color: #0f766e !important;
 }
 
-/* Menu items - improve visibility on teal background */
+/* Menu Items - White Text for Visibility */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a {
+    color: #ffffff !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a .parent-icon {
     color: #ffffff !important;
 }
 
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a .menu-title {
+    color: #ffffff !important;
+}
+
+/* Hover State - Light Teal Background */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-radius: 8px;
+    transform: translateX(5px);
+}
+
+/* Active Link - Bright Highlight */
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu .mm-active>a,
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a.mm-active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-left: 4px solid #ffffff;
+    font-weight: 600;
+}
+
+/* Submenu Items */
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    padding-left: 50px;
+}
+
+[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a:hover {
+    color: #ffffff !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu .mm-active > a {
-    background-color: rgba(255, 255, 255, 0.15) !important;
+/* Footer Text */
+[data-bs-theme=blue-theme] .sidebar-wrapper #footer-section {
+    color: rgba(255, 255, 255, 0.7) !important;
 }
 
-/* Active link styling */
-[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a.mm-active {
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    border-left: 3px solid #ffffff;
+[data-bs-theme=blue-theme] .sidebar-wrapper #footer-section a {
+    color: #ffffff !important;
+    font-weight: bold;
+}
+
+/* Header Icons and Text - White */
+[data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .material-icons-outlined,
+[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle i {
+    color: #ffffff !important;
+}
+
+/* Scrollbar Styling for Sidebar */
+[data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar {
+    width: 6px;
+}
+
+[data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+[data-bs-theme=blue-theme] .sidebar-wrapper ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
