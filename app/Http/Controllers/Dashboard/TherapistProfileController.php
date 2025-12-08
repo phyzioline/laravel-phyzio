@@ -37,7 +37,8 @@ class TherapistProfileController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $profile = \App\Models\TherapistProfile::with('user')->findOrFail($id);
+        return view('dashboard.therapist_profiles.show', compact('profile'));
     }
 
     /**

@@ -21,7 +21,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be populated here -->
+                    <tbody>
+                        @foreach($appointments as $appointment)
+                        <tr>
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->patient->name ?? 'N/A' }}</td>
+                            <td>{{ $appointment->therapist->name ?? 'N/A' }}</td>
+                            <td>{{ $appointment->appointment_date }} <br> <small>{{ $appointment->appointment_time }}</small></td>
+                            <td>
+                                <span class="badge badge-{{ $appointment->status == 'completed' ? 'success' : ($appointment->status == 'pending' ? 'warning' : 'danger') }}">
+                                    {{ ucfirst($appointment->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-info btn-sm">View</a>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

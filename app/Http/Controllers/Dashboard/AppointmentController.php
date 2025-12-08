@@ -12,7 +12,8 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        return view('dashboard.appointments.index');
+        $appointments = \App\Models\Appointment::with(['patient', 'therapist'])->get();
+        return view('dashboard.appointments.index', compact('appointments'));
     }
 
     /**

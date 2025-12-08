@@ -12,7 +12,8 @@ class ClinicProfileController extends Controller
      */
     public function index()
     {
-        return view('dashboard.clinic_profiles.index');
+        $clinic_profiles = \App\Models\ClinicProfile::all();
+        return view('dashboard.clinic_profiles.index', compact('clinic_profiles'));
     }
 
     /**

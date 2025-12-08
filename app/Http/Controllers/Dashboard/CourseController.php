@@ -21,7 +21,7 @@ class CourseController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.courses.create');
     }
 
     /**
@@ -29,7 +29,17 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'category_id' => 'nullable|exists:categories,id',
+            'level' => 'required|in:beginner,intermediate,advanced',
+            'status' => 'required|in:draft,pending,published',
+        ]);
+
+        \App\Models\Course::create($request->all());
+        return redirect()->route('dashboard.courses.index')->with('message', ['type' => 'success', 'text' => 'Course created successfully!']);
     }
 
     /**
@@ -45,7 +55,8 @@ class CourseController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $course = \App\Models\Course::findOrFail($id);
+        return view('dashboard.courses.edit', compact('course'));
     }
 
     /**
@@ -53,7 +64,15 @@ class CourseController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $course = \App\Models\Course::findOrFail($id);
+        
+        $request->validate([
+            'title' => 'sometimes|string|max:255',
+            'status' => 'sometimes|in:draft,pending,published',
+        ]);
+
+        $course->update($request->all());
+        return redirect()->route('dashboard.courses.index')->with('message', ['type' => 'success', 'text' => 'Course updated successfully!']);
     }
 
     /**

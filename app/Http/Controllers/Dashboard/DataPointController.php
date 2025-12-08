@@ -12,7 +12,8 @@ class DataPointController extends Controller
      */
     public function index()
     {
-        return view('dashboard.data_points.index');
+        $data_points = \App\Models\DataPoint::all();
+        return view('dashboard.data_points.index', compact('data_points'));
     }
 
     /**
@@ -20,7 +21,7 @@ class DataPointController extends Controller
      */
     public function create()
     {
-        //
+        return view('dashboard.data_points.create');
     }
 
     /**
@@ -28,7 +29,16 @@ class DataPointController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'country' => 'required|string|max:255',
+            'total_therapists' => 'required|integer',
+            'average_salary' => 'required|numeric',
+            'employment_rate' => 'nullable|numeric',
+            'year' => 'required|integer',
+        ]);
+
+        \App\Models\DataPoint::create($request->all());
+        return redirect()->route('dashboard.data_points.index')->with('message', ['type' => 'success', 'text' => 'Data Point created successfully!']);
     }
 
     /**
@@ -44,7 +54,8 @@ class DataPointController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data_point = \App\Models\DataPoint::findOrFail($id);
+        return view('dashboard.data_points.edit', compact('data_point'));
     }
 
     /**
@@ -52,7 +63,9 @@ class DataPointController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $data_point = \App\Models\DataPoint::findOrFail($id);
+        $data_point->update($request->all());
+        return redirect()->route('dashboard.data_points.index')->with('message', ['type' => 'success', 'text' => 'Data Point updated successfully!']);
     }
 
     /**

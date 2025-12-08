@@ -32,6 +32,7 @@
   <link href="{{ asset('dashboard/sass/bordered-theme.css')}}" rel="stylesheet">
   <link href="{{ asset('dashboard/sass/responsive.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('dashboard/css/dash.css')}}">
+  <link rel="stylesheet" href="{{ asset('dashboard/css/teal-theme.css')}}">
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
    <!-- swiper -->

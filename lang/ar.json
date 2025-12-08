@@ -203,5 +203,19 @@
     "All set!": "كل شيء جاهز!",
     "Your course \"Advanced Manual Therapy Techniques\" is ready for submission.": "دورتك \"تقنيات العلاج اليدوي المتقدمة\" جاهزة للإرسال.",
     "It will be sent to the Phyzioline team for approval (approx. 24-48 hours).": "سيتم إرسالها إلى فريق فيزيولاين للموافقة (خلال 24-48 ساعة تقريباً).",
-    "Submit for Review": "إرسال للمراجعة"
+    "Submit for Review": "إرسال للمراجعة",
+    "Dashboard": "لوحة التحكم",
+    "Catalog": "الكتالوج",
+    "Inventory": "المخزون",
+    "Pricing": "التسعير",
+    "Orders": "الطلبات",
+    "Business Reports": "تقارير الأعمال",
+    "Customers": "العملاء",
+    "Ecosystem": "النظام البيئي",
+    "Therapists": "المعالجين",
+    "Appointments": "المواعيد",
+    "Clinics": "العيادات",
+    "Courses": "الدورات",
+    "Data Points": "بيانات الإحصائيات",
+    "Settings": "الإعدادات"
 }

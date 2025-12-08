@@ -36,6 +36,19 @@
     text-align: center;
 }
 
+/* Admin Dashboard Button Styling */
+.admin-dashboard-btn {
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    padding: 6px 14px !important;
+    transition: all 0.3s ease;
+}
+
+.admin-dashboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
 /* الصندوق المنسدل */
 .cart-dropdown {
     width: 320px;
@@ -130,11 +143,18 @@
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
-    padding: 2px 0; /* Reduced from default */
+    padding: 0px 0; /* Minimized padding for reduced height */
 }
 
 #header-section .content-wrap {
     padding: 0px 0; /* Reduced padding */
+}
+
+/* Admin/Dashboard Button Enhancement */
+.admin-dashboard-btn {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    padding: 6px 18px !important;
 }
 
 #header-section.stuck {
@@ -164,13 +184,13 @@
                     <div class="brand-logo clearfix">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <a href="{{ route('home') }}" class="brand-link">
-                                <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="logo_not_found" />
+                                <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="PhyzioLine Logo" style="max-height: 45px; object-fit: contain;" />
                             </a>
 
                             @if (Auth::check() && (Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist'))
-                                <a href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}" class="btn btn-sm btn-primary text-white" style="margin-left: 10px; border-radius: 20px; padding: 5px 15px;">
+                                <a href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}" class="btn btn-sm btn-primary text-white admin-dashboard-btn" style="margin-left: 10px; border-radius: 20px;">
                                     <i class="las la-tachometer-alt"></i>
-                                    {{ __('Dashboard') }}
+                                    {{ __("Dashboard") }}
                                 </a>
                             @endif
                         </div>
@@ -323,7 +343,7 @@
                                             <i class="las la-sign-out-alt mr-2"></i> {{ __('Logout') }}
                                         </a>
                                     </div>
-                                    <button class="btn-cart btn-login px-4 py-1" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn-cart btn-login px-4 py-1" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 15px; font-weight: 700;">
                                         {{ Auth::user()->name }} <i class="las la-angle-down"></i>
                                     </button>
                                 @else

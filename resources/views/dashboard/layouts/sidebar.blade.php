@@ -17,7 +17,7 @@
               <li>
                   <a href="{{ route('dashboard.home') }}">
                       <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
-                      <div class="menu-title">Dashboard</div>
+                      <div class="menu-title">{{ __("Dashboard") }}</div>
                   </a>
               </li>
 
@@ -26,7 +26,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-grid-3x3-gap"></i></div>
-                      <div class="menu-title">Catalog</div>
+                      <div class="menu-title">{{ __("Catalog") }}</div>
                   </a>
                   <ul>
                       @can('products-index')
@@ -53,7 +53,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-boxes"></i></div>
-                      <div class="menu-title">Inventory</div>
+                      <div class="menu-title">{{ __("Inventory") }}</div>
                   </a>
                   <ul>
                       <li><a href="{{ route('dashboard.inventory.manage') }}"><i class="bi bi-arrow-right-short"></i>Manage Inventory</a></li>
@@ -68,7 +68,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-tag"></i></div>
-                      <div class="menu-title">Pricing</div>
+                      <div class="menu-title">{{ __("Pricing") }}</div>
                   </a>
                   <ul>
                       <li><a href="{{ route('dashboard.pricing.manage') }}"><i class="bi bi-arrow-right-short"></i>Manage Pricing</a></li>
@@ -82,7 +82,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-cart-check"></i></div>
-                      <div class="menu-title">Orders</div>
+                      <div class="menu-title">{{ __("Orders") }}</div>
                   </a>
                   <ul>
                       <li><a href="{{ route('dashboard.orders.index') }}"><i class="bi bi-arrow-right-short"></i>Manage Orders</a></li>
@@ -98,7 +98,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-graph-up-arrow"></i></div>
-                      <div class="menu-title">Business Reports</div>
+                      <div class="menu-title">{{ __("Business Reports") }}</div>
                   </a>
                   <ul>
                       <li><a href="{{ route('dashboard.reports.sales-dashboard') }}"><i class="bi bi-arrow-right-short"></i>Sales Dashboard</a></li>
@@ -114,7 +114,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-people"></i></div>
-                      <div class="menu-title">Customers</div>
+                      <div class="menu-title">{{ __("Customers") }}</div>
                   </a>
                   <ul>
                       <li><a href="{{ route('dashboard.users.index') }}"><i class="bi bi-arrow-right-short"></i>Manage Users</a></li>
@@ -128,14 +128,14 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="material-icons-outlined">public</i></div>
-                      <div class="menu-title">Ecosystem</div>
+                      <div class="menu-title">{{ __("Ecosystem") }}</div>
                   </a>
                   <ul>
-                      <li><a href="{{ route('dashboard.therapist_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>Therapists</a></li>
-                      <li><a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>Appointments</a></li>
-                      <li><a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>Clinics</a></li>
-                      <li><a href="{{ route('dashboard.courses.index') }}"><i class="bi bi-arrow-right-short"></i>Courses</a></li>
-                      <li><a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>Data Points</a></li>
+                      <li><a href="{{ route('dashboard.therapist_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Therapists") }}</a></li>
+                      <li><a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Appointments") }}</a></li>
+                      <li><a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Clinics") }}</a></li>
+                      <li><a href="{{ route('dashboard.courses.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Courses") }}</a></li>
+                      <li><a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Data Points") }}</a></li>
                   </ul>
               </li>
               @endrole
@@ -144,7 +144,7 @@
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-gear"></i></div>
-                      <div class="menu-title">Settings</div>
+                      <div class="menu-title">{{ __("Settings") }}</div>
                   </a>
                   <ul>
                       @can('roles-index')

@@ -20,7 +20,22 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be populated here -->
+                    <tbody>
+                        @foreach($clinic_profiles as $clinic)
+                        <tr>
+                            <td>{{ $clinic->id }}</td>
+                            <td>{{ $clinic->name }}</td>
+                            <td>{{ $clinic->plan ?? 'Standard' }}</td>
+                            <td>
+                                <span class="badge badge-{{ $clinic->status == 'active' ? 'success' : 'secondary' }}">
+                                    {{ ucfirst($clinic->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-info btn-sm">View</a>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
