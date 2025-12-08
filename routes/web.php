@@ -23,6 +23,11 @@ use App\Http\Controllers\Web\SocialLoginController;
 //     return view('welcome');
 // });
 
+// Root redirect to localized URL
+Route::get('/', function () {
+    return redirect(LaravelLocalization::getLocalizedURL());
+});
+
 Route::group(
 [
 	'prefix' => LaravelLocalization::setLocale(),
