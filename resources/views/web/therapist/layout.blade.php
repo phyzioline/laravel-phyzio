@@ -8,17 +8,10 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/bootstrap.min.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/line-awesome.min.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}" />
+    <link href="{{ asset('dashboard/css/teal-theme.css')}}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet">
     <style>
         body { background-color: #f4f6f9; font-family: 'Alexandria', sans-serif; }
-        .dashboard-container { display: flex; min-height: 100vh; }
-        .sidebar { width: 250px; background: #fff; box-shadow: 2px 0 5px rgba(0,0,0,0.05); padding: 20px; }
-        .sidebar .nav-link { color: #555; padding: 10px 15px; display: block; border-radius: 5px; margin-bottom: 5px; text-decoration: none; }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active { background: #f0f9ff; color: #007bff; font-weight: bold; }
-        .sidebar .nav-link i { margin-right: 10px; }
-        .main-content { flex: 1; padding: 30px; }
-        .card-box { background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     </style>
     @stack('css')
 </head>
