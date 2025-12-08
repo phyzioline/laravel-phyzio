@@ -9,6 +9,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        return view('therapist.dashboard');
+        return view('web.therapist.dashboard');
     }
 }

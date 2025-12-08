@@ -224,6 +224,20 @@
                     <div class="btns-group ul-li-right clearfix">
                         <ul class="clearfix">
 
+                            {{-- Language Switcher --}}
+                            <li class="dropdown">
+                                <button class="btn-cart" id="lang-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="las la-globe"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="lang-dropdown">
+                                    @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                        <a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                                            {{ $properties['native'] }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </li>
+
                             {{-- Wishlist --}}
                             <li>
                                 <button type="button">
@@ -315,7 +329,7 @@
                                     </button>
                                 @else
                                     <a style="color: #fff;" href="{{ route('view_login') }}">
-                                        <button class="btn-cart btn-login px-4 py-1">Login</button>
+                                        <button class="btn-cart btn-login px-4 py-1">Log In</button>
                                     </a>
                                 @endif
                             </li>

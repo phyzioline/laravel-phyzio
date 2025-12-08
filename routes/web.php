@@ -69,7 +69,10 @@ Route::get('/', [HomeController::class, 'index'])
         Route::get('/appointments/success/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'success'])->name('web.appointments.success');
         Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
         Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
+        Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
+        Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name('web.datahub.dashboard');
+        Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name('web.datahub.licensing');
 
 
 
@@ -79,6 +82,21 @@ Route::get('/', [HomeController::class, 'index'])
           Route::resources([
             'carts' => CartController::class ,
         ]);
+
+        // Instructor Routes
+        Route::prefix('instructor')->name('instructor.')->group(function () {
+            Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
+            Route::get('/courses/create', [App\Http\Controllers\Instructor\DashboardController::class, 'create'])->name('courses.create');
+            Route::post('/courses', [App\Http\Controllers\Instructor\DashboardController::class, 'store'])->name('courses.store');
+        });
+
+        // Clinic ERP Routes
+        Route::prefix('clinic')->name('clinic.')->group(function () {
+            Route::get('/dashboard', [App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
+            Route::get('/patients', [App\Http\Controllers\Clinic\PatientController::class, 'index'])->name('patients.index');
+            Route::get('/patients/create', [App\Http\Controllers\Clinic\PatientController::class, 'create'])->name('patients.create');
+            Route::post('/patients', [App\Http\Controllers\Clinic\PatientController::class, 'store'])->name('patients.store');
+        });
         
           Route::get('complecet_info_view',[LoginController::class, 'complecet_info_view'])->name('complecet_info_view');
         Route::post('complecet_info',[LoginController::class, 'complecet_info'])->name('complecet_info');

@@ -11,4 +11,14 @@ class DataHubController extends Controller
     {
         return view('web.pages.datahub.index');
     }
+
+    public function dashboard()
+    {
+        return view('web.pages.datahub.dashboard');
+    }
+
+    public function licensing()
+    {
+        return view('web.pages.datahub.licensing');
+    }
 }
