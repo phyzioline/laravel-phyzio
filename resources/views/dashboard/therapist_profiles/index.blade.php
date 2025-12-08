@@ -20,7 +20,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data will be populated here -->
+                        @foreach($profiles as $profile)
+                        <tr>
+                            <td>{{ $profile->id }}</td>
+                            <td>{{ $profile->user->name ?? 'N/A' }} <br><small>{{ $profile->user->email ?? '' }}</small></td>
+                            <td>{{ $profile->specialization }}</td>
+                            <td>
+                                <span class="badge badge-{{ $profile->status == 'approved' ? 'success' : 'warning' }}">
+                                    {{ ucfirst($profile->status) }}
+                                </span>
+                            </td>
+                            <td>
+                                <form action="{{ route('dashboard.therapist_profiles.update', $profile->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    @if($profile->status != 'approved')
+                                        <input type="hidden" name="status" value="approved">
+                                        <button class="btn btn-success btn-sm">Approve</button>
+                                    @else
+                                        <input type="hidden" name="status" value="pending">
+                                        <button class="btn btn-warning btn-sm">Suspend</button>
+                                    @endif
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

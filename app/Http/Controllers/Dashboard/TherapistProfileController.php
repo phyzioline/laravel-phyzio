@@ -12,7 +12,8 @@ class TherapistProfileController extends Controller
      */
     public function index()
     {
-        return view('dashboard.therapist_profiles.index');
+        $profiles = \App\Models\TherapistProfile::with('user')->get();
+        return view('dashboard.therapist_profiles.index', compact('profiles'));
     }
 
     /**
