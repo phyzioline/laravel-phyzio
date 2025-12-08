@@ -1,45 +1,68 @@
 @extends('web.layouts.app')
 
-@section('title', 'PhyzioLine Data Hub')
+@section('title', __('PhyzioLine Data Hub'))
 
 @section('content')
-<div class="data-hub-landing" style="background: linear-gradient(135deg, #004d40 0%, #00695c 100%); color: white; min-height: 80vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 50px 0;">
+<div class="datahub-landing py-5" style="background-color: #f8f9fa;">
     <div class="container">
-        <h1 class="display-3 font-weight-bold mb-4" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">PhyzioLine Data Hub</h1>
-        <p class="lead mb-5" style="font-size: 1.5rem; opacity: 0.9;">The World's Most Comprehensive Physical Therapy Intelligence Platform.</p>
-        
-        <div class="row justify-content-center">
-            <div class="col-md-5 mb-4">
-                <a href="{{ route('web.datahub.dashboard') }}" class="card-link text-decoration-none">
-                    <div class="card bg-white text-dark shadow-lg border-0 h-100 transform-hover" style="transition: transform 0.3s;">
-                        <div class="card-body p-5">
-                            <i class="las la-globe-americas display-2 text-primary mb-3"></i>
-                            <h3 class="card-title font-weight-bold">Global Dashboard</h3>
-                            <p class="card-text text-muted">Explore the global landscape of Physical Therapy. Population, therapists, schools, and metrics for 100+ countries.</p>
-                        </div>
-                    </div>
-                </a>
+        <div class="row justify-content-center mb-5">
+            <div class="col-md-8 text-center">
+                <h1 class="display-4 font-weight-bold text-teal-700 mb-3" style="color: #0d9488;">{{ __('PhyzioLine Data Hub') }}</h1>
+                <p class="lead text-muted">{{ __('Your central resource for global physical therapy insights and professional licensing guidance.') }}</p>
             </div>
-            
-            <div class="col-md-5 mb-4">
-                <a href="{{ route('web.datahub.licensing') }}" class="card-link text-decoration-none">
-                    <div class="card bg-white text-dark shadow-lg border-0 h-100 transform-hover" style="transition: transform 0.3s;">
-                        <div class="card-body p-5">
-                            <i class="las la-certificate display-2 text-success mb-3"></i>
-                            <h3 class="card-title font-weight-bold">Licensing Guide</h3>
-                            <p class="card-text text-muted">Navigate professional equivalence, licensing exams, and requirements for working abroad.</p>
+        </div>
+
+        <div class="row">
+            <!-- Global Landscape Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 hover-lift">
+                    <div class="card-body p-5 text-center">
+                        <div class="icon-wrapper mb-4 text-teal-600" style="color: #0d9488; font-size: 3rem;">
+                            <i class="las la-globe-americas"></i>
                         </div>
+                        <h3 class="card-title font-weight-bold mb-3">{{ __('Global Physical Therapy Landscape') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ __('Explore interactive data on therapists, rehabilitation centers, and educational institutions across 100+ countries.') }}
+                        </p>
+                        <a href="{{ route('web.datahub.dashboard') }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
+                            {{ __('Explore Dashboard') }}
+                        </a>
                     </div>
-                </a>
+                </div>
+            </div>
+
+            <!-- Licensing Guide Card -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 hover-lift">
+                    <div class="card-body p-5 text-center">
+                        <div class="icon-wrapper mb-4 text-teal-600" style="color: #0d9488; font-size: 3rem;">
+                            <i class="las la-graduation-cap"></i>
+                        </div>
+                        <h3 class="card-title font-weight-bold mb-3">{{ __('Professional Equivalence & Licensing Guide') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ __('Navigate the requirements for practicing physical therapy in renewed countries. Check equivalence and licensing steps.') }}
+                        </p>
+                        <a href="{{ route('web.datahub.licensing') }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
+                            {{ __('Start Guide') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-    .transform-hover:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0,0,0,0.2) !important;
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .btn-teal:hover {
+        background-color: #0f766e !important;
+        border-color: #0f766e !important;
     }
 </style>
 @endsection

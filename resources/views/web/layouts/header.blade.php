@@ -170,7 +170,7 @@
                             @if (Auth::check() && (Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist'))
                                 <a href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}" class="btn btn-sm btn-primary text-white" style="margin-left: 10px; border-radius: 20px; padding: 5px 15px;">
                                     <i class="las la-tachometer-alt"></i>
-                                    Dashboard
+                                    {{ __('Dashboard') }}
                                 </a>
                             @endif
                         </div>
@@ -203,18 +203,17 @@
                 <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                     <nav class="main-menu ul-li-center clearfix">
                         <ul class="clearfix">
-                            <li><a href="{{ route('show') }}" class="text-decoration-none">Shop</a></li>
-                            <li><a href="{{ route('web.appointments.index') }}" class="text-decoration-none">Appointments</a></li>
-                            <li><a href="{{ route('web.erp.index') }}" class="text-decoration-none">Clinic ERP</a></li>
-                            <li><a href="{{ route('web.courses.index') }}" class="text-decoration-none">Courses</a></li>
-                            <li><a href="{{ route('web.datahub.index') }}" class="text-decoration-none">Data Hub</a></li>
+                            <li><a href="{{ route('show') }}" class="text-decoration-none">{{ __('Shop') }}</a></li>
+                            <li><a href="{{ route('web.appointments.index') }}" class="text-decoration-none">{{ __('Appointments') }}</a></li>
+                            <li><a href="{{ route('web.erp.index') }}" class="text-decoration-none">{{ __('Clinic ERP') }}</a></li>
+                            <li><a href="{{ route('web.courses.index') }}" class="text-decoration-none">{{ __('Courses') }}</a></li>
+                            <li><a href="{{ route('web.datahub.index') }}" class="text-decoration-none">{{ __('Data Hub') }}</a></li>
                            	 @if (Auth::check())
                                   <li>
-                                      <a href="{{ route('history_order.index') }}" class="text-decoration-none">History
-                                          Order</a>
+                                      <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Order History') }}</a>
                                   </li>
                               @endif
-                            <li><a href="{{ route('home') }}#about" class="text-decoration-none">About Us</a></li>
+                            <li><a href="{{ route('home') }}#about" class="text-decoration-none">{{ __('About Us') }}</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -241,7 +240,7 @@
                             {{-- Wishlist --}}
                             <li>
                                 <button type="button">
-                                    <a style="color: #fff;" href="{{ route('favorites.index') }}" data-placement="top" title="To Wishlist">
+                                    <a style="color: #fff;" href="{{ route('favorites.index') }}" data-placement="top" title="{{ __('To Wishlist') }}">
                                         <i class="la la-heart"></i>
                                     </a>
                                 </button>
@@ -270,9 +269,9 @@
 
                                 <div class="cart-dropdown dropdown-menu py-3" aria-labelledby="cart-dropdown">
                                     @if(Auth::check())
-                                        <span class="title-text">Cart Items:- {{ App\Models\Cart::where('user_id', auth()->user()->id)->count() ?? 0 }}</span>
+                                        <span class="title-text">{{ __('Cart Items') }}:- {{ App\Models\Cart::where('user_id', auth()->user()->id)->count() ?? 0 }}</span>
                                     @else
-                                        <span class="title-text">Cart Items:- 0</span>
+                                        <span class="title-text">{{ __('Cart Items') }}:- 0</span>
                                     @endif
 
                                     <div class="cart-items-list ul-li-block clearfix">
@@ -303,7 +302,7 @@
                                     <div class="btns-group ul-li clearfix">
                                         <ul class="clearfix">
                                             <li>
-                                                <a href="{{ route('carts.index') }}" class="btn bg-default-black w-100">View Cart</a>
+                                                <a href="{{ route('carts.index') }}" class="btn bg-default-black w-100">{{ __('View Cart') }}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -316,12 +315,12 @@
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                                         @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->hasRole('therapist'))
                                             <a class="dropdown-item" href="{{ route('dashboard.home') }}">
-                                                <i class="las la-tachometer-alt mr-2"></i> Dashboard
+                                                <i class="las la-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
                                             </a>
                                             <div class="dropdown-divider"></div>
                                         @endif
                                         <a class="dropdown-item text-danger" href="{{ route('logout') }}">
-                                            <i class="las la-sign-out-alt mr-2"></i> Logout
+                                            <i class="las la-sign-out-alt mr-2"></i> {{ __('Logout') }}
                                         </a>
                                     </div>
                                     <button class="btn-cart btn-login px-4 py-1" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -329,7 +328,7 @@
                                     </button>
                                 @else
                                     <a style="color: #fff;" href="{{ route('view_login') }}">
-                                        <button class="btn-cart btn-login px-4 py-1">Log In</button>
+                                        <button class="btn-cart btn-login px-4 py-1">{{ __('Log In') }}</button>
                                     </a>
                                 @endif
                             </li>
@@ -348,7 +347,7 @@
             <div class="container">
                 <form action="{{ route('web.shop.search') }}" method="GET">
                     <div class="form-item">
-                        <input type="search" id="searchInput" value="{{ old('search') }}" name="search" placeholder="Search your Product" />
+                        <input type="search" id="searchInput" value="{{ old('search') }}" name="search" placeholder="{{ __('Search your Product') }}" />
                         <button type="submit" class="submit-btn">
                             <i class="la la-search"></i>
                         </button>
