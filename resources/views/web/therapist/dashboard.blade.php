@@ -10,7 +10,7 @@
         </div>
         <div class="d-flex align-items-center">
             <button class="btn btn-white shadow-sm mr-3"><i class="las la-bell text-warning"></i> <span class="badge badge-danger">3</span></button>
-            <a href="{{ route('therapist.profile') }}" class="btn btn-primary shadow-sm"><i class="las la-user-cog"></i> {{ __('Settings') }}</a>
+            <a href="{{ route('therapist.profile.edit') }}" class="btn btn-primary shadow-sm"><i class="las la-user-cog"></i> {{ __('Settings') }}</a>
         </div>
     </div>
 
