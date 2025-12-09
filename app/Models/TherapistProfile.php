@@ -26,7 +26,9 @@ class TherapistProfile extends Model
         'platform_balance',
         'bank_name',
         'bank_account_number',
-        'bank_account_name'
+        'bank_account_name',
+        'can_access_clinic',
+        'can_access_instructor'
     ];
 
     protected $casts = [

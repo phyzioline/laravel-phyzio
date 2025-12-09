@@ -9,6 +9,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Load therapist profile if it exists
+        $user = Auth::user();
+        $user->load('therapistProfile');
+        
         return view('web.therapist.dashboard');
     }
 }

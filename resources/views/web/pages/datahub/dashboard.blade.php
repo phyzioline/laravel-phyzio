@@ -124,53 +124,61 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Mock Data ---
-        // Enhanced mock data covering more regions as requested
+        // --- Enhanced Mock Data (Global Coverage) ---
         const rawData = [
+            // North America
             { country: 'USA', continent: 'north_america', therapists: 230000, population: 331000000, schools: 260, centers: 15000 },
+            { country: 'Canada', continent: 'north_america', therapists: 28000, population: 38000000, schools: 15, centers: 1400 },
+            { country: 'Mexico', continent: 'north_america', therapists: 15000, population: 126000000, schools: 40, centers: 800 },
+            
+            // Europe
             { country: 'Germany', continent: 'europe', therapists: 185000, population: 83000000, schools: 90, centers: 8500 },
+            { country: 'UK', continent: 'europe', therapists: 60000, population: 67000000, schools: 45, centers: 3200 },
+            { country: 'France', continent: 'europe', therapists: 90000, population: 65000000, schools: 50, centers: 6200 },
+            { country: 'Italy', continent: 'europe', therapists: 65000, population: 60000000, schools: 35, centers: 4000 },
+            { country: 'Spain', continent: 'europe', therapists: 55000, population: 47000000, schools: 40, centers: 3500 },
+            { country: 'Netherlands', continent: 'europe', therapists: 22000, population: 17000000, schools: 12, centers: 1800 },
+            { country: 'Sweden', continent: 'europe', therapists: 14000, population: 10000000, schools: 8, centers: 900 },
+            
+            // Asia
             { country: 'Japan', continent: 'asia', therapists: 120000, population: 126000000, schools: 110, centers: 4000 },
-            { country: 'Brazil', continent: 'south_america', therapists: 240000, population: 212000000, schools: 200, centers: 6000 },
-            { country: 'Egypt', continent: 'africa', therapists: 45000, population: 102000000, schools: 25, centers: 1200 },
+            { country: 'China', continent: 'asia', therapists: 85000, population: 1400000000, schools: 80, centers: 3500 },
+            { country: 'India', continent: 'asia', therapists: 95000, population: 1380000000, schools: 300, centers: 5500 },
+            { country: 'South Korea', continent: 'asia', therapists: 30000, population: 51000000, schools: 45, centers: 1200 },
             { country: 'Saudi Arabia', continent: 'asia', therapists: 12000, population: 34000000, schools: 15, centers: 800 },
             { country: 'UAE', continent: 'asia', therapists: 4500, population: 9800000, schools: 5, centers: 350 },
             { country: 'Jordan', continent: 'asia', therapists: 6000, population: 10200000, schools: 8, centers: 250 },
-            { country: 'Morocco', continent: 'africa', therapists: 8000, population: 36000000, schools: 6, centers: 450 },
-            { country: 'UK', continent: 'europe', therapists: 60000, population: 67000000, schools: 45, centers: 3200 },
-            { country: 'Australia', continent: 'oceania', therapists: 35000, population: 25000000, schools: 22, centers: 1800 },
-            { country: 'India', continent: 'asia', therapists: 95000, population: 1380000000, schools: 300, centers: 5500 },
-            { country: 'China', continent: 'asia', therapists: 55000, population: 1400000000, schools: 60, centers: 2500 }, // Lower density example
-            { country: 'Nigeria', continent: 'africa', therapists: 5000, population: 206000000, schools: 8, centers: 150 },
+            { country: 'Philippines', continent: 'asia', therapists: 18000, population: 109000000, schools: 30, centers: 600 },
+            { country: 'Thailand', continent: 'asia', therapists: 8000, population: 69000000, schools: 12, centers: 400 },
+            
+            // South America
+            { country: 'Brazil', continent: 'south_america', therapists: 240000, population: 212000000, schools: 200, centers: 6000 },
+            { country: 'Argentina', continent: 'south_america', therapists: 35000, population: 45000000, schools: 25, centers: 1200 },
+            { country: 'Colombia', continent: 'south_america', therapists: 12000, population: 50000000, schools: 18, centers: 700 },
+            
+            // Africa
+            { country: 'Egypt', continent: 'africa', therapists: 45000, population: 102000000, schools: 25, centers: 1200 },
             { country: 'South Africa', continent: 'africa', therapists: 8500, population: 59000000, schools: 12, centers: 500 },
-             { country: 'Canada', continent: 'north_america', therapists: 28000, population: 38000000, schools: 15, centers: 1400 },
-            { country: 'France', continent: 'europe', therapists: 90000, population: 65000000, schools: 50, centers: 6200 },
-             { country: 'Italy', continent: 'europe', therapists: 65000, population: 60000000, schools: 35, centers: 4000 },
+            { country: 'Nigeria', continent: 'africa', therapists: 5000, population: 206000000, schools: 8, centers: 150 },
+            { country: 'Morocco', continent: 'africa', therapists: 8000, population: 36000000, schools: 6, centers: 450 },
+            { country: 'Kenya', continent: 'africa', therapists: 2500, population: 53000000, schools: 4, centers: 120 },
+            
+            // Oceania
+            { country: 'Australia', continent: 'oceania', therapists: 35000, population: 25000000, schools: 22, centers: 1800 },
+            { country: 'New Zealand', continent: 'oceania', therapists: 6000, population: 5000000, schools: 4, centers: 400 }
         ];
 
         let chartInstance = null;
         let currentMetric = 'therapists';
-        let currentGradient = null;
 
         const ctx = document.getElementById('landscapeChart').getContext('2d');
 
         // Color Palettes
         const colors = {
-            therapists: { 
-                bg: 'rgba(13, 148, 136, 0.7)', // Teal
-                border: '#0d9488'
-            },
-            population: { 
-                bg: 'rgba(59, 130, 246, 0.7)', // Blue
-                border: '#3b82f6'
-            },
-            schools: {
-                bg: 'rgba(245, 158, 11, 0.7)', // Amber
-                border: '#f59e0b'
-            },
-            centers: {
-                bg: 'rgba(16, 185, 129, 0.7)', // Emerald
-                border: '#10b981'
-            }
+            therapists: { bg: 'rgba(13, 148, 136, 0.7)', border: '#0d9488' },
+            population: { bg: 'rgba(59, 130, 246, 0.7)', border: '#3b82f6' },
+            schools: { bg: 'rgba(245, 158, 11, 0.7)', border: '#f59e0b' },
+            centers: { bg: 'rgba(16, 185, 129, 0.7)', border: '#10b981' }
         };
 
         function initChart(data) {
@@ -185,17 +193,13 @@
                 chartInstance.destroy();
             }
 
+            // Using Chart.js 3.x / 4.x Syntax
             chartInstance = new Chart(ctx, {
-                type: 'horizontalBar', // Note: Chart.js 2.x syntax used in existing project? Checking version... assuming 2.9.4 as wrapper for 2.x is common in older setups, OR 3.x if new. Let's assume standard 'bar' with indexAxis 'y' for newer versions or 'horizontalBar' for older. 
-                // Detection: if 'chart.js' is CDN link from newer versions (3+), 'type: bar', indexAxis: 'y'
-                 // Let's use 'bar' and handle config for version compatibility if needed. The layout implies horizontal.
-                 // Assuming Chart.js 2.9 based on simple include, using 'horizontalBar' explicitly. 
-                 // If 3.x, use 'bar' + indexAxis: 'y'. Let's try 2.x syntax first as it's safer for 'horizontalBar'.
-                type: 'horizontalBar', 
+                type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: '{{ __('Count') }}',
+                        label: '{{ __('Count') }}', // This might need escaping if handled by blade
                         data: values,
                         backgroundColor: colors[currentMetric].bg,
                         borderColor: colors[currentMetric].border,
@@ -204,18 +208,35 @@
                     }]
                 },
                 options: {
+                    indexAxis: 'y', // Horizontal Bar Chart in Chart.js 3+
                     responsive: true,
                     maintainAspectRatio: false,
-                    legend: { display: false },
-                    title: { display: false },
+                    plugins: { // 3.x Namespacing
+                        legend: { display: false },
+                        title: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += context.parsed.x.toLocaleString();
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        xAxes: [{
-                            ticks: { beginAtZero: true }
-                        }]
+                        x: { // 3.x Scale ID
+                            beginAtZero: true
+                        }
                     },
                     onClick: (e, elements) => {
                         if (elements.length > 0) {
-                            const index = elements[0]._index;
+                            const index = elements[0].index; // 3.x element index
                             const countryData = topCountries[index];
                             showCountryDetail(countryData);
                         }
@@ -276,8 +297,7 @@
             });
         });
 
-        // Initialize
-        // Set initial active button style manually since CSS classes might not fully apply immediately
+        // Initialize with better default styling safety
         const activeBtn = document.querySelector('.metric-btn.active');
         if(activeBtn) {
             activeBtn.classList.remove('btn-outline-teal');
@@ -299,6 +319,7 @@
     .btn-outline-teal {
         border-color: #0d9488;
         color: #0d9488;
+        background-color: transparent;
     }
     .btn-outline-teal:hover {
         background-color: #0d9488;

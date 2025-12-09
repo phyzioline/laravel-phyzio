@@ -15,10 +15,18 @@ return new class extends Migration
             $table->id();
             $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->text('subtitle')->nullable(); // Short description
+            $table->text('description')->nullable(); // HTML Detailed
             $table->decimal('price', 10, 2)->default(0);
-            $table->string('thumbnail')->nullable();
-            $table->string('status')->default('draft'); // draft, published
+            $table->decimal('discount_price', 10, 2)->nullable();
+            $table->string('thumbnail')->nullable(); // Cover Image
+            $table->string('trailer_url')->nullable(); // Preview Video
+            $table->string('status')->default('draft'); // draft, review, published
+            $table->string('level')->default('All Levels'); // Beginner, Intermediate, Advanced
+            $table->string('language')->default('English'); // Arabic, English
+            $table->json('requirements')->nullable(); // ["Basics of Biology", "Laptop"]
+            $table->json('outcomes')->nullable(); // ["What you will learn 1", "outcome 2"]
+            $table->text('refund_policy')->nullable();
             $table->integer('duration_minutes')->nullable();
             $table->timestamps();
         });

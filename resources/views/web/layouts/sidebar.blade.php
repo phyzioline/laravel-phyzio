@@ -128,16 +128,26 @@
             <h3 class="widget-title">Menu List</h3>
 
             <ul style="height: 100vh;" class="clearfix">
-                <li class="active"><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="{{ route('show') }}">Shop</a></li>
-                <li><a href="{{ route('web.appointments.index') }}">Appointments</a></li>
-                <li><a href="{{ route('home') }}#System">Our System</a></li>
-                <li><a href="{{ route('home') }}#jobs">Jobs</a></li>
-                <li><a href="{{ route('home') }}#courses">Courses</a></li>
-                <li><a href="{{ route('home') }}#about">About Us</a></li>
-                <li>
-                    <a href="{{ route('logout') }}"><i class="las la-sign-out-alt"></i> Logout</a>
-                </li>
+                <li class="{{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                <li class="{{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
+                <li class="{{ Route::is('web.appointments.index') ? 'active' : '' }}"><a href="{{ route('web.appointments.index') }}">{{ __('Appointments') }}</a></li>
+                <li class="{{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
+                <li class="{{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
+                <li class="{{ Route::is('web.datahub.index') ? 'active' : '' }}"><a href="{{ route('web.datahub.index') }}">{{ __('Data Hub') }}</a></li>
+                
+                @if (Auth::check())
+                    <li class="{{ Route::is('history_order.index') ? 'active' : '' }}">
+                        <a href="{{ route('history_order.index') }}">{{ __('Order History') }}</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('logout') }}"><i class="las la-sign-out-alt"></i> {{ __('Logout') }}</a>
+                    </li>
+                @else
+                    <li>
+                        <a href="{{ route('view_login') }}"><i class="las la-sign-in-alt"></i> {{ __('Log In') }}</a>
+                    </li>
+                @endif
+                <li><a href="{{ route('home') }}#about">{{ __('About Us') }}</a></li>
             </ul>
         </div>
 

@@ -3,46 +3,39 @@
 namespace App\Http\Controllers\Instructor;
 
 use App\Http\Controllers\Controller;
-use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $courses = Course::where('instructor_id', Auth::id())
-            ->withCount('enrollments')
-            ->latest()
-            ->get();
+        $user = Auth::user();
         
-        return view('web.instructor.dashboard', compact('courses'));
+        // Stats
+        $totalCourses = Course::where('instructor_id', $user->id)->count();
+        $activeStudents = 1247; // Placeholder: Need Enrollment Logic
+        $totalRevenue = 125480; // Placeholder: Need Transaction Logic
+        $pendingReviews = 3; // Placeholder
+
+        // Recent Activities (Mock)
+        $activities = [
+            ['title' => 'New Student Enrolled', 'desc' => 'Sarah Johnson joined "Advanced Cardiology"', 'time' => '2 hours ago'],
+            ['title' => 'Course Approved', 'desc' => 'Your course "Pediatric Basics" is now live', 'time' => '4 hours ago'],
+            ['title' => 'Review Received', 'desc' => '5 star review from Ahmed Ali', 'time' => '1 day ago'],
+        ];
+
+        return view('web.instructor.dashboard', compact('totalCourses', 'activeStudents', 'totalRevenue', 'pendingReviews', 'activities'));
     }
 
     public function create()
     {
-        return view('web.instructor.create');
+        return view('web.instructor.courses.create');
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required',
-            'price' => 'required|numeric|min:0',
-            'thumbnail' => 'nullable|image'
-        ]);
-
-        $validated['instructor_id'] = Auth::id();
-        $validated['status'] = 'draft';
-
-        if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('courses', 'public');
-        }
-
-        Course::create($validated);
-
-        return redirect()->route('instructor.dashboard')->with('success', 'Course created successfully!');
+        // Validation and creation logic will go here
     }
 }

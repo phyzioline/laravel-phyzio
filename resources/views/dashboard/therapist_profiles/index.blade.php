@@ -16,6 +16,8 @@
                             <th>User</th>
                             <th>Specialization</th>
                             <th>Status</th>
+                            <th>Clinic Access</th>
+                            <th>Instructor Access</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -29,6 +31,30 @@
                                 <span class="badge badge-{{ $profile->status == 'approved' ? 'success' : 'warning' }}">
                                     {{ ucfirst($profile->status) }}
                                 </span>
+                            </td>
+                            <td>
+                                <form action="{{ route('dashboard.therapist_profiles.update', $profile->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="field" value="can_access_clinic">
+                                    <input type="hidden" name="value" value="{{ $profile->can_access_clinic ? '0' : '1' }}">
+                                    <button class="btn btn-sm btn-{{ $profile->can_access_clinic ? 'success' : 'secondary' }}" type="submit">
+                                        <i class="las la-{{ $profile->can_access_clinic ? 'check' : 'times' }}"></i>
+                                        {{ $profile->can_access_clinic ? 'Enabled' : 'Disabled' }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form action="{{ route('dashboard.therapist_profiles.update', $profile->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    @method('PUT')
+                                    <input type="hidden" name="field" value="can_access_instructor">
+                                    <input type="hidden" name="value" value="{{ $profile->can_access_instructor ? '0' : '1' }}">
+                                    <button class="btn btn-sm btn-{{ $profile->can_access_instructor ? 'success' : 'secondary' }}" type="submit">
+                                        <i class="las la-{{ $profile->can_access_instructor ? 'check' : 'times' }}"></i>
+                                        {{ $profile->can_access_instructor ? 'Enabled' : 'Disabled' }}
+                                    </button>
+                                </form>
                             </td>
                             <td>
                                 <form action="{{ route('dashboard.therapist_profiles.update', $profile->id) }}" method="POST" class="d-inline">

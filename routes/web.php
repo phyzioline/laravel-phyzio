@@ -89,18 +89,25 @@ Route::get('/', [HomeController::class, 'index'])
         ]);
 
         // Instructor Routes
+        // Instructor Routes
         Route::prefix('instructor')->name('instructor.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/courses/create', [App\Http\Controllers\Instructor\DashboardController::class, 'create'])->name('courses.create');
-            Route::post('/courses', [App\Http\Controllers\Instructor\DashboardController::class, 'store'])->name('courses.store');
+            
+            // Course Wizard Routes
+            Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])->name('courses.create');
+            Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name('courses.store');
+            Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name('courses.edit');
+            Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name('courses.update');
+            Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name('courses.destroy');
         });
 
         // Clinic ERP Routes
         Route::prefix('clinic')->name('clinic.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/patients', [App\Http\Controllers\Clinic\PatientController::class, 'index'])->name('patients.index');
-            Route::get('/patients/create', [App\Http\Controllers\Clinic\PatientController::class, 'create'])->name('patients.create');
-            Route::post('/patients', [App\Http\Controllers\Clinic\PatientController::class, 'store'])->name('patients.store');
+            Route::resource('patients', App\Http\Controllers\Clinic\PatientController::class);
+            Route::resource('appointments', App\Http\Controllers\Clinic\AppointmentController::class);
+            Route::resource('plans', App\Http\Controllers\Clinic\TreatmentPlanController::class);
+            Route::resource('invoices', App\Http\Controllers\Clinic\InvoiceController::class);
         });
         
           Route::get('complecet_info_view',[LoginController::class, 'complecet_info_view'])->name('complecet_info_view');

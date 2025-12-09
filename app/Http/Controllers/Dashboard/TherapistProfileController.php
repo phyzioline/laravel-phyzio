@@ -54,7 +54,27 @@ class TherapistProfileController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $profile = \App\Models\TherapistProfile::findOrFail($id);
+        
+        // Handle status updates
+        if ($request->has('status')) {
+            $profile->update(['status' => $request->status]);
+            return redirect()->back()->with('success', 'Therapist status updated successfully.');
+        }
+        
+        // Handle module permission updates
+        if ($request->has('field') && $request->has('value')) {
+            $field = $request->field;
+            $value = $request->value;
+            
+            // Validate field
+            if (in_array($field, ['can_access_clinic', 'can_access_instructor'])) {
+                $profile->update([$field => (bool)$value]);
+                return redirect()->back()->with('success', 'Permission updated successfully.');
+            }
+        }
+        
+        return redirect()->back()->with('error', 'Invalid request.');
     }
 
     /**

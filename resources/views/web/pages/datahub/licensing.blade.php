@@ -24,6 +24,13 @@
                                 <option value="jordan">{{ __('Jordan') }}</option>
                                 <option value="india">{{ __('India') }}</option>
                                 <option value="philippines">{{ __('Philippines') }}</option>
+                                <option value="pakistan">{{ __('Pakistan') }}</option>
+                                <option value="sudan">{{ __('Sudan') }}</option>
+                                <option value="nigeria">{{ __('Nigeria') }}</option>
+                                <option value="syria">{{ __('Syria') }}</option>
+                                <option value="lebanon">{{ __('Lebanon') }}</option>
+                                <option value="palestine">{{ __('Palestine') }}</option>
+                                <option value="other">{{ __('Other (Rest of World)') }}</option>
                             </select>
                         </div>
                     </div>
@@ -43,8 +50,15 @@
                                 <option value="oman">{{ __('Oman') }}</option>
                                 <option value="saudi_arabia">{{ __('Saudi Arabia') }}</option>
                                 <option value="uae">{{ __('UAE') }}</option>
+                                <option value="qatar">{{ __('Qatar') }}</option>
+                                <option value="kuwait">{{ __('Kuwait') }}</option>
+                                <option value="bahrain">{{ __('Bahrain') }}</option>
                                 <option value="usa">{{ __('USA') }}</option>
                                 <option value="uk">{{ __('UK') }}</option>
+                                <option value="canada">{{ __('Canada') }}</option>
+                                <option value="australia">{{ __('Australia') }}</option>
+                                <option value="ireland">{{ __('Ireland') }}</option>
+                                <option value="germany">{{ __('Germany') }}</option>
                             </select>
                         </div>
                     </div>
@@ -93,7 +107,7 @@
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span><i class="las la-check-circle text-success mr-2"></i> {{ __('DataFlow Verification Report') }}</span>
-                                            <a href="#" class="text-teal-600 font-weight-bold" style="color: #0d9488;">{{ __('Go to DataFlow') }}</a>
+                                            <a href="https://corp.dataflowgroup.com/" target="_blank" class="text-teal-600 font-weight-bold" style="color: #0d9488;">{{ __('Go to DataFlow') }} <i class="las la-external-link-alt"></i></a>
                                         </li>
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             <span><i class="las la-check-circle text-success mr-2"></i> {{ __('Police Clearance Certificate') }}</span>
@@ -191,7 +205,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            <a href="#" class="btn btn-teal btn-block text-white" style="background-color: #0d9488;">{{ __('Register for Exam') }}</a>
+                                            <a href="https://www.prometric.com/test-takers/search" target="_blank" class="btn btn-teal btn-block text-white" style="background-color: #0d9488;">{{ __('Register for Exam (Prometric)') }} <i class="las la-external-link-alt"></i></a>
                                         </div>
                                         <div class="col-md-4 border-left">
                                             <h6 class="text-center font-weight-bold mb-3">{{ __('Success Rate') }}</h6>

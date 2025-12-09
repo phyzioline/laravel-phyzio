@@ -1,160 +1,195 @@
 @extends('web.layouts.app')
 
-@section('title', __('Courses'))
+@section('title', 'Phyzioline Academy - Browse Courses')
 
 @section('content')
-<div class="courses-page-wrapper bg-light">
-    
-    <!-- 1. Header Section: Search & Filters -->
-    <div class="courses-header bg-white shadow-sm py-4">
-        <div class="container">
-            <h2 class="text-teal-700 font-weight-bold mb-4" style="color: #0d9488;">{{ __('Explore Our Courses') }}</h2>
-            
-            <form action="{{ route('web.courses.index') }}" method="GET">
-                <div class="row g-3">
-                    <!-- Search Bar -->
-                    <div class="col-lg-5 col-md-12 mb-2">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0" style="border-color: #0d9488;"><i class="las la-search text-teal-600"></i></span>
-                            </div>
-                            <input type="text" name="search" class="form-control border-left-0 border-teal" placeholder="{{ __('Search courses, specialties, instructors...') }}" value="{{ request('search') }}" style="border-color: #0d9488;">
+<div class="bg-light py-5">
+    <div class="container">
+        <!-- Header & Search -->
+        <div class="row mb-5 align-items-center">
+            <div class="col-lg-6">
+                <h1 class="font-weight-bold" style="color: #00897b;">{{ __('Start Your Learning Journey') }}</h1>
+                <p class="lead text-muted">{{ __('Explore hundreds of expert-led courses in physical therapy.') }}</p>
+            </div>
+            <div class="col-lg-6">
+                <form action="{{ route('web.courses.index') }}" method="GET">
+                    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
+                        <input type="text" name="search" class="form-control border-0 pl-4" placeholder="{{ __('Search for courses, topic, or instructor...') }}" value="{{ request('search') }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary px-4" type="submit" style="background-color: #00897b; border-color: #00897b;">
+                                <i class="las la-search"></i>
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Category Filter -->
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <select name="category" class="form-control border-teal" style="border-color: #0d9488;">
-                            <option value="">{{ __('All Categories') }}</option>
-                            <!-- Dynamic Categories would go here -->
-                            <option value="1" {{ request('category') == '1' ? 'selected' : '' }}>Orthopedic</option>
-                            <option value="2" {{ request('category') == '2' ? 'selected' : '' }}>Neurology</option>
-                            <option value="3" {{ request('category') == '3' ? 'selected' : '' }}>Pediatrics</option>
-                            <option value="4" {{ request('category') == '4' ? 'selected' : '' }}>Sports</option>
-                        </select>
-                    </div>
-
-                    <!-- Sort -->
-                    <div class="col-lg-3 col-md-6 mb-2">
-                        <select name="sort" class="form-control border-teal" style="border-color: #0d9488;">
-                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Newest') }}</option>
-                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>{{ __('Price: Low to High') }}</option>
-                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>{{ __('Price: High to Low') }}</option>
-                        </select>
-                    </div>
-
-                    <!-- Submit -->
-                    <div class="col-lg-1 col-md-12 mb-2">
-                        <button type="submit" class="btn btn-teal w-100 text-white" style="background-color: #0d9488;">{{ __('Go') }}</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- 2. Featured Courses Banner (Carousel) -->
-    @if($featuredCourses->count() > 0)
-    <div class="featured-section py-5">
-        <div class="container">
-            <h4 class="font-weight-bold mb-4 text-dark">{{ __('Featured Courses') }}</h4>
-            <div id="featuredCarousel" class="carousel slide shadow rounded overflow-hidden" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    @foreach($featuredCourses as $key => $course)
-                        <li data-target="#featuredCarousel" data-slide-to="{{ $key }}" class="{{ $key == 0 ? 'active' : '' }}"></li>
-                    @endforeach
-                </ol>
-                <div class="carousel-inner">
-                    @foreach($featuredCourses as $key => $course)
-                    <div class="carousel-item {{ $key == 0 ? 'active' : '' }}">
-                        <div class="d-flex bg-white" style="min-height: 300px;">
-                            <div class="w-50 d-none d-md-block" style="background-image: url('{{ $course->thumbnail ? asset('storage/'.$course->thumbnail) : asset('web/assets/images/course-placeholder.jpg') }}'); background-size: cover; background-position: center;"></div>
-                            <div class="w-100 w-md-50 p-5 d-flex flex-column justify-content-center">
-                                <span class="badge badge-teal mb-2 w-auto" style="background-color: #0d9488; color: white; width: fit-content;">{{ $course->category->name ?? __('General') }}</span>
-                                <h2 class="font-weight-bold mb-2">{{ $course->title }}</h2>
-                                <p class="text-muted mb-3">{{ Str::limit($course->description, 100) }}</p>
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="mr-3">
-                                        <i class="las la-user-circle text-muted" style="font-size: 1.5rem;"></i>
-                                        <span class="font-weight-bold">{{ $course->instructor->name ?? __('Instructor') }}</span>
-                                    </div>
-                                    <h4 class="text-teal-700 m-0 font-weight-bold" style="color: #0d9488;">{{ $course->price > 0 ? $course->price . ' EGP' : __('Free') }}</h4>
+        <!-- Featured Carousel (Only if not searching) -->
+        @if(!request()->has('search'))
+            <div class="mb-5">
+                <h4 class="font-weight-bold mb-3">{{ __('Featured Courses') }}</h4>
+                <!-- Simple Row for now, replace with owl-carousel if JS available -->
+                <div class="row flex-nowrap overflow-auto pb-3" style="scroll-behavior: smooth;">
+                    @foreach($featuredCourses as $feat)
+                        <div class="col-lg-4 col-md-6 mb-3" style="min-width: 300px;">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="position-relative">
+                                    <img src="{{ $feat->thumbnail ? Storage::url($feat->thumbnail) : 'https://via.placeholder.com/600x400?text=Course' }}" class="card-img-top" alt="{{ $feat->title }}" style="height: 180px; object-fit: cover;">
+                                    @if($feat->discount_price)
+                                        <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px;">{{ __('Sale') }}</span>
+                                    @endif
                                 </div>
-                                <a href="{{ route('web.courses.show', $course->id) }}" class="btn btn-teal btn-lg text-white" style="background-color: #0d9488; width: fit-content;">{{ __('View Details') }}</a>
+                                <div class="card-body">
+                                    <span class="badge badge-light text-primary mb-2">{{ $feat->level }}</span>
+                                    <h5 class="card-title font-weight-bold">
+                                        <a href="{{ route('web.courses.show', $feat->id) }}" class="text-dark text-decoration-none">{{ $feat->title }}</a>
+                                    </h5>
+                                    <p class="text-muted small mb-2"><i class="las la-chalkboard-teacher"></i> {{ $feat->instructor->name ?? 'Instructor' }}</p>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="text-warning small">
+                                            <i class="las la-star"></i> 4.8 (120)
+                                        </span>
+                                        <h5 class="font-weight-bold mb-0 text-primary">
+                                            @if($feat->discount_price)
+                                                {{ $feat->discount_price }} <small class="text-muted"><del>{{ $feat->price }}</del></small>
+                                            @elseif($feat->price > 0)
+                                                {{ $feat->price }} EGP
+                                            @else
+                                                {{ __('Free') }}
+                                            @endif
+                                        </h5>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     @endforeach
                 </div>
-                <a class="carousel-control-prev" href="#featuredCarousel" role="button" data-slide="prev">
-                    <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control-next" href="#featuredCarousel" role="button" data-slide="next">
-                    <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a>
             </div>
-        </div>
-    </div>
-    @endif
+        @endif
 
-    <!-- 3. Courses Grid -->
-    <div class="courses-grid py-5">
-        <div class="container">
-            <div class="row">
-                @forelse($courses as $course)
-                <div class="col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100 border-0 shadow-sm hover-card">
-                        <div class="position-relative">
-                             <img src="{{ $course->thumbnail ? asset('storage/'.$course->thumbnail) : asset('web/assets/images/course-placeholder.jpg') }}" class="card-img-top" alt="{{ $course->title }}" style="height: 180px; object-fit: cover;">
-                             <span class="badge badge-light position-absolute m-2" style="top:0; right:0;">{{ $course->level ?? 'All Levels' }}</span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title font-weight-bold mb-2">
-                                <a href="{{ route('web.courses.show', $course->id) }}" class="text-dark text-decoration-none">{{ Str::limit($course->title, 50) }}</a>
-                            </h5>
-                            <small class="text-muted mb-2">
-                                <i class="las la-user"></i> {{ $course->instructor->name ?? __('Unknown') }}
-                            </small>
-                            <div class="mb-3">
-                                <i class="las la-star text-warning"></i> 4.5 <small class="text-muted">(120)</small>
+        <div class="row">
+            <!-- Sidebar Filters -->
+            <div class="col-lg-3 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white font-weight-bold">
+                        <i class="las la-filter mr-1"></i> {{ __('Filter Results') }}
+                    </div>
+                    <div class="card-body p-0">
+                        <form action="{{ route('web.courses.index') }}" method="GET" id="filterForm">
+                            @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
+                            
+                            <!-- Categories -->
+                            <div class="p-3 border-bottom">
+                                <h6 class="font-weight-bold mb-2">{{ __('Category') }}</h6>
+                                @foreach($categories as $cat)
+                                    <div class="custom-control custom-radio mb-1">
+                                        <input type="radio" id="cat{{ $cat->id }}" name="category" value="{{ $cat->id }}" class="custom-control-input" onchange="this.form.submit()" {{ request('category') == $cat->id ? 'checked' : '' }}>
+                                        <label class="custom-control-label small" for="cat{{ $cat->id }}">{{ $cat->name }}</label>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="h5 m-0 font-weight-bold text-teal-700" style="color: #0d9488;">{{ $course->price > 0 ? $course->price . ' EGP' : __('Free') }}</span>
-                                <a href="{{ route('web.courses.show', $course->id) }}" class="btn btn-outline-teal btn-sm rounded-pill" style="color: #0d9488; border-color: #0d9488;">{{ __('Enroll Now') }}</a>
+
+                            <!-- Level -->
+                            <div class="p-3 border-bottom">
+                                <h6 class="font-weight-bold mb-2">{{ __('Level') }}</h6>
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" name="level" value="Beginner" class="custom-control-input" onchange="this.form.submit()" {{ request('level') == 'Beginner' ? 'checked' : '' }} id="lvl1">
+                                    <label class="custom-control-label small" for="lvl1">{{ __('Beginner') }}</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" name="level" value="Intermediate" class="custom-control-input" onchange="this.form.submit()" {{ request('level') == 'Intermediate' ? 'checked' : '' }} id="lvl2">
+                                    <label class="custom-control-label small" for="lvl2">{{ __('Intermediate') }}</label>
+                                </div>
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" name="level" value="Advanced" class="custom-control-input" onchange="this.form.submit()" {{ request('level') == 'Advanced' ? 'checked' : '' }} id="lvl3">
+                                    <label class="custom-control-label small" for="lvl3">{{ __('Advanced') }}</label>
+                                </div>
                             </div>
-                        </div>
+                            
+                            <!-- Submit Button (Hidden but functional for reset) -->
+                             <div class="p-3 text-center">
+                                 <a href="{{ route('web.courses.index') }}" class="btn btn-sm btn-outline-secondary btn-block">{{ __('Clear Filters') }}</a>
+                             </div>
+                        </form>
                     </div>
                 </div>
-                @empty
-                <div class="col-12 text-center py-5">
-                    <i class="las la-search text-muted mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
-                    <h3 class="text-muted">{{ __('No courses found matching your criteria.') }}</h3>
-                    <a href="{{ route('web.courses.index') }}" class="btn btn-link text-teal-700" style="color: #0d9488;">{{ __('Clear Filters') }}</a>
-                </div>
-                @endforelse
             </div>
 
-            <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-4">
-                {{ $courses->withQueryString()->links() }}
+            <!-- Course Grid -->
+            <div class="col-lg-9">
+                <!-- Sorting Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <p class="mb-0 text-muted">{{ $courses->total() }} {{ __('results found') }}</p>
+                    <div>
+                         <select class="custom-select custom-select-sm" style="width: 180px;" onchange="window.location.href=this.value">
+                             <option value="{{ request()->fullUrlWithQuery(['sort' => 'newest']) }}" {{ request('sort') == 'newest' ? 'selected' : '' }}>{{ __('Newest First') }}</option>
+                             <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_low']) }}" {{ request('sort') == 'price_low' ? 'selected' : '' }}>{{ __('Price: Low to High') }}</option>
+                             <option value="{{ request()->fullUrlWithQuery(['sort' => 'price_high']) }}" {{ request('sort') == 'price_high' ? 'selected' : '' }}>{{ __('Price: High to Low') }}</option>
+                             <option value="{{ request()->fullUrlWithQuery(['sort' => 'rating']) }}" {{ request('sort') == 'rating' ? 'selected' : '' }}>{{ __('Highest Rated') }}</option>
+                         </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    @forelse($courses as $course)
+                        <div class="col-md-4 mb-4">
+                            <div class="card border-0 shadow-sm h-100 hover-shadow transition-all">
+                                <a href="{{ route('web.courses.show', $course->id) }}" class="text-decoration-none">
+                                    <div class="position-relative">
+                                        <img src="{{ $course->thumbnail ? Storage::url($course->thumbnail) : 'https://via.placeholder.com/600x400?text=Phyzioline' }}" class="card-img-top" alt="{{ $course->title }}" style="height: 180px; object-fit: cover;">
+                                        <div class="position-absolute" style="bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); padding: 20px 15px 5px;">
+                                             <small class="text-white"><i class="las la-clock"></i> {{ $course->duration_minutes ?? 60 }} mins</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6 class="font-weight-bold text-dark mb-1" style="line-height: 1.4; height: 42px; overflow: hidden;">{{ Str::limit($course->title, 50) }}</h6>
+                                        <p class="text-muted small mb-2">{{ $course->instructor->name }}</p>
+                                        
+                                        <div class="d-flex align-items-center small mb-3">
+                                            <span class="text-warning mr-1">4.5</span>
+                                            <div class="text-warning">
+                                                <i class="las la-star"></i><i class="las la-star"></i><i class="las la-star"></i><i class="las la-star"></i><i class="las la-star-half-alt"></i>
+                                            </div>
+                                            <span class="text-muted ml-1">(42)</span>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                                            <h5 class="font-weight-bold text-primary mb-0">
+                                                {{ $course->price > 0 ? $course->price . ' EGP' : 'Free' }}
+                                            </h5>
+                                            <span class="text-primary"><i class="las la-arrow-right"></i></span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12 text-center py-5">
+                             <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-search-result-2563364-2136005.png" width="200" class="opacity-50">
+                             <h4 class="mt-3">{{ __('No courses found') }}</h4>
+                             <p class="text-muted">{{ __('Try adjusting your filters or search query.') }}</p>
+                             <a href="{{ route('web.courses.index') }}" class="btn btn-primary mt-2">{{ __('View All Courses') }}</a>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $courses->appends(request()->query())->links() }}
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
 <style>
-    .hover-card {
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .hover-card:hover {
+    .hover-shadow:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
     }
-    .btn-teal:hover {
-        background-color: #0f766e !important;
+    .transition-all {
+        transition: all 0.3s ease;
     }
-    .text-teal-600 { color: #0d9488 !important; }
 </style>
 @endsection

@@ -60,4 +60,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    /**
+     * Get the therapist profile associated with the user.
+     */
+    public function therapistProfile()
+    {
+        return $this->hasOne(\App\Models\TherapistProfile::class);
+    }
 }

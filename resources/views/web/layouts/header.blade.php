@@ -202,16 +202,23 @@
                                         <i class="las la-bars"></i>
                                     </button>
                                 </li>
-                                <li>
-                                    <button class="mobile-btn-cart">
-                                        <i class="las la-shopping-bag"></i>
-                                        <small class="cart-counter bg-light-green">03</small>
+                                {{-- Mobile Language Switcher --}}
+                                <li class="dropdown">
+                                    <button class="mobile-btn-cart" id="mobile-lang-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: none; background: transparent;">
+                                        <i class="las la-globe"></i>
                                     </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mobile-lang-dropdown">
+                                        @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                            <a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
+                                                {{ $properties['native'] }}
+                                            </a>
+                                        @endforeach
+                                    </div>
                                 </li>
                                 <li>
                                     <button class="mobile-btn-cart">
                                         <i class="las la-shopping-bag"></i>
-                                        <small class="cart-counter bg-light-green">03</small>
+                                        <small class="cart-counter bg-light-green">{{ App\Models\Cart::where('user_id', auth()->user()->id ?? 0)->count() ?? 0 }}</small>
                                     </button>
                                 </li>
                             </ul>
@@ -367,7 +374,7 @@
             <div class="container">
                 <form action="{{ route('web.shop.search') }}" method="GET">
                     <div class="form-item">
-                        <input type="search" id="searchInput" value="{{ old('search') }}" name="search" placeholder="{{ __('Search your Product') }}" />
+                        <input type="search" id="searchInput" value="{{ request('search') }}" name="search" placeholder="{{ __('Search your Product') }}" />
                         <button type="submit" class="submit-btn">
                             <i class="la la-search"></i>
                         </button>

@@ -475,19 +475,32 @@
                 <a href="{{ route('show', ['category' => $category->id]) }}" 
                    class="category-icon-item {{ request('category') == $category->id ? 'active' : '' }}"
                    data-category-id="{{ $category->id }}">
-                    <div class="category-icon-circle">
-                        @if($category->id == 1)
-                            <i class="las la-x-ray"></i>
-                        @elseif($category->id == 2)
-                            <i class="las la-bolt"></i>
-                        @elseif($category->id == 3)
-                            <i class="las la-wave-square"></i>
-                        @elseif($category->id == 4)
-                            <i class="las la-heartbeat"></i>
-                        @else
-                            <i class="las la-box"></i>
-                        @endif
-                    </div>
+                        <div class="category-icon-circle">
+                            @php
+                                $catName = strtolower($category->{'name_en'});
+                            @endphp
+                            @if(str_contains($catName, 'ortho'))
+                                <i class="las la-bone"></i>
+                            @elseif(str_contains($catName, 'neuro') || str_contains($catName, 'brain'))
+                                <i class="las la-brain"></i>
+                            @elseif(str_contains($catName, 'cardio') || str_contains($catName, 'heart'))
+                                <i class="las la-heartbeat"></i>
+                            @elseif(str_contains($catName, 'spine') || str_contains($catName, 'back'))
+                                <i class="las la-allergies"></i> <!-- Closest spine-like or vertebrae visual if available, or universal access -->
+                            @elseif(str_contains($catName, 'sport'))
+                                <i class="las la-dumbbell"></i>
+                            @elseif(str_contains($catName, 'pediatric') || str_contains($catName, 'child'))
+                                <i class="las la-baby"></i>
+                            @elseif(str_contains($catName, 'electro') || str_contains($catName, 'tens'))
+                                <i class="las la-bolt"></i>
+                            @elseif(str_contains($catName, 'manual'))
+                                <i class="las la-hand-holding-heart"></i>
+                            @elseif(str_contains($catName, 'exercise') || str_contains($catName, 'gym'))
+                                <i class="las la-running"></i>
+                            @else
+                                <i class="las la-briefcase-medical"></i>
+                            @endif
+                        </div>
                     <span class="category-icon-name">{{ $category->{'name_' . app()->getLocale()} }}</span>
                 </a>
             @endforeach
