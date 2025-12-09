@@ -16,4 +16,12 @@ class DashboardController extends Controller
         
         return view('web.therapist.dashboard');
     }
+    
+    public function profile()
+    {
+        $user = Auth::user();
+        $user->load('therapistProfile');
+        
+        return view('web.therapist.profile');
+    }
 }

@@ -204,6 +204,248 @@
                     </div>
                 </div>
 
+                {{-- System Health Indicators --}}
+                <div class="row g-4 mt-4">
+                    <div class="col-12">
+                        <h5 class="mb-3"><i class="fa fa-heartbeat text-danger"></i> System Health</h5>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #28a745 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1 small">Total Revenue</p>
+                                        <h3 class="mb-0 fw-bold">${{ number_format($totalRevenue, 2) }}</h3>
+                                    </div>
+                                    <i class="fa fa-dollar-sign fa-2x text-success opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #ffc107 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1 small">Today's Appointments</p>
+                                        <h3 class="mb-0 fw-bold">{{ $todayAppointments }}</h3>
+                                    </div>
+                                    <i class="fa fa-calendar-day fa-2x text-warning opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #17a2b8 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1 small">Active Platform</p>
+                                        <h3 class="mb-0 fw-bold text-success">Online</h3>
+                                    </div>
+                                    <i class="fa fa-check-circle fa-2x text-info opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="text-muted mb-1 small">System Status</p>
+                                        <h3 class="mb-0 fw-bold text-muted">Stable</h3>
+                                    </div>
+                                    <i class="fa fa-server fa-2x text-secondary opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Quick Access Cards --}}
+                <div class="row g-4 mt-4">
+                    <div class="col-12">
+                        <h5 class="mb-3"><i class="fa fa-bolt text-warning"></i> Quick Access</h5>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.users.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-users fa-3x mb-3" style="color: #02767F;"></i>
+                                    <h6 class="fw-bold mb-1">Manage Users</h6>
+                                    <small class="text-muted">View & edit all users</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.therapist_profiles.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-user-md fa-3x mb-3 text-success"></i>
+                                    <h6 class="fw-bold mb-1">Manage Therapists</h6>
+                                    <small class="text-muted">Approve & manage</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.appointments.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-calendar-check fa-3x mb-3 text-warning"></i>
+                                    <h6 class="fw-bold mb-1">Appointments</h6>
+                                    <small class="text-muted">View all bookings</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.clinic_profiles.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-clinic-medical fa-3x mb-3 text-info"></i>
+                                    <h6 class="fw-bold mb-1">Manage Clinics</h6>
+                                    <small class="text-muted">Clinic profiles</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.courses.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-graduation-cap fa-3x mb-3 text-danger"></i>
+                                    <h6 class="fw-bold mb-1">Manage Courses</h6>
+                                    <small class="text-muted">Learning hub</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.products.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-box fa-3x mb-3" style="color: #02767F;"></i>
+                                    <h6 class="fw-bold mb-1">Products</h6>
+                                    <small class="text-muted">Inventory management</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.orders.index') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-receipt fa-3x mb-3 text-success"></i>
+                                    <h6 class="fw-bold mb-1">Orders</h6>
+                                    <small class="text-muted">View all orders</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="{{ route('dashboard.settings.show') }}" class="text-decoration-none">
+                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center py-4">
+                                    <i class="fa fa-cog fa-3x mb-3 text-secondary"></i>
+                                    <h6 class="fw-bold mb-1">Settings</h6>
+                                    <small class="text-muted">System configuration</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Pending Approvals --}}
+                @if(collect($pendingApprovals)->sum('count') > 0)
+                <div class="row g-4 mt-4">
+                    <div class="col-12">
+                        <h5 class="mb-3"><i class="fa fa-clock text-warning"></i> Pending Approvals</h5>
+                    </div>
+
+                    @foreach($pendingApprovals as $pending)
+                        @if($pending['count'] > 0)
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card rounded-4 border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ $pending['title'] }}</h6>
+                                            <p class="text-muted mb-0 small">Requires attention</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <span class="badge bg-{{ $pending['color'] }} rounded-circle p-3" style="font-size: 1.2rem;">
+                                                {{ $pending['count'] }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ $pending['link'] }}" class="btn btn-sm btn-outline-{{ $pending['color'] }} w-100 mt-3">
+                                        <i class="fa {{ $pending['icon'] }}"></i> Review Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    @endforeach
+                </div>
+                @endif
+
+                {{-- Recent Activity Feed --}}
+                <div class="row g-4 mt-4">
+                    <div class="col-12">
+                        <div class="card rounded-4 border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 pt-4">
+                                <h5 class="mb-0"><i class="fa fa-stream text-primary"></i> Recent Activity</h5>
+                                <small class="text-muted">Latest platform actions</small>
+                            </div>
+                            <div class="card-body">
+                                @if($recentActivity && count($recentActivity) > 0)
+                                    <div class="activity-feed">
+                                        @foreach($recentActivity as $activity)
+                                        <div class="activity-item d-flex align-items-start mb-3 pb-3 border-bottom">
+                                            <div class="activity-icon me-3">
+                                                <span class="badge bg-{{ $activity['color'] }} rounded-circle p-2">
+                                                    <i class="fa {{ $activity['icon'] }}"></i>
+                                                </span>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1 fw-bold">{{ $activity['title'] }}</h6>
+                                                <p class="mb-1 text-muted small">{{ $activity['description'] }}</p>
+                                                <small class="text-muted">
+                                                    <i class="fa fa-clock"></i> {{ $activity['time']->diffForHumans() }}
+                                                </small>
+                                            </div>
+                                            <a href="{{ $activity['link'] }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fa fa-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="text-center py-5">
+                                        <i class="fa fa-inbox fa-3x text-muted mb-3 opacity-50"></i>
+                                        <p class="text-muted">No recent activity</p>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 @push('scripts')
                 <script>
                     // Payment Methods Chart
