@@ -67,9 +67,6 @@
                                                     <i class="las la-times"></i>
                                                 </button>
                                             </form>
-                                            {{-- <button type="button" class="remove-btn">
-                                                      <i class="las la-times"></i>
-                                                  </button> --}}
                                         </li>
                                     @endforeach
                                 @endif
@@ -81,9 +78,6 @@
                                 <li>
                                     <a href="{{ route('carts.index') }}" class="btn bg-default-black">View Cart</a>
                                 </li>
-                                {{-- <li>
-                                    <a href="checkout.html" class="btn bg-royal-blue">Checkout</a>
-                                </li> --}}
                             </ul>
                         </div>
                     </div>
@@ -119,7 +113,6 @@
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
 
             <div class="card">
@@ -145,8 +138,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
         <div class="menu_list ul-li-block clearfix">

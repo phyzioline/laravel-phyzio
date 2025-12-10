@@ -187,12 +187,6 @@
                                 <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="PhyzioLine Logo" style="max-height: 45px; object-fit: contain;" />
                             </a>
 
-                            @if (Auth::check() && (Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist'))
-                                <a href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}" class="btn btn-sm btn-primary text-white admin-dashboard-btn" style="margin-left: 10px; border-radius: 20px;">
-                                    <i class="las la-tachometer-alt"></i>
-                                    {{ __("Dashboard") }}
-                                </a>
-                            @endif
                         </div>
 
                         <div class="btns-group ul-li-right clearfix">
@@ -340,8 +334,8 @@
                             <li class="dropdown">
                                 @if (Auth::check())
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                        @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->hasRole('therapist'))
-                                            <a class="dropdown-item" href="{{ route('dashboard.home') }}">
+                                        @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist')
+                                            <a class="dropdown-item text-primary font-weight-bold" href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}">
                                                 <i class="las la-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
                                             </a>
                                             <div class="dropdown-divider"></div>
