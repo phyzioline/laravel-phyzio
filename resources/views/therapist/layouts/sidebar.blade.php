@@ -42,6 +42,22 @@
                 </a>
             </li>
 
+            <!-- My Courses -->
+            <li>
+                <a href="{{ route('therapist.courses.index') }}">
+                    <div class="parent-icon"><i class="material-icons-outlined">school</i></div>
+                    <div class="menu-title">My Courses</div>
+                </a>
+            </li>
+
+            <!-- Clinic ERP -->
+            <li>
+                <a href="{{ route('web.erp.index') }}">
+                    <div class="parent-icon"><i class="material-icons-outlined">medical_services</i></div>
+                    <div class="menu-title">Clinic ERP</div>
+                </a>
+            </li>
+
         </ul>
 
         <div id="footer-section" style="padding-top: 50px;" class="text-center">

@@ -32,4 +32,7 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
     
     Route::get('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'edit'])->name('availability.edit');
     Route::put('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'update'])->name('availability.update');
+
+    // Course Management
+    Route::resource('courses', \App\Http\Controllers\Therapist\CourseController::class);
 });

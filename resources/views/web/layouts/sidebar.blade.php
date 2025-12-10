@@ -119,6 +119,31 @@
                         </div>
                     </div>
                 </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header" id="heading-three">
+                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-three" aria-expanded="false" aria-controls="collapse-three">
+                        <i class="las la-globe"></i>
+                        Language
+                    </button>
+                </div>
+                <div id="collapse-three" class="collapse" aria-labelledby="heading-three" data-parent="#mobile-accordion">
+                    <div class="card-body">
+                        <div class="card-list-widget">
+                            <ul class="list-unstyled">
+                                @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                                    <li>
+                                        <a href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}" class="d-flex justify-content-between align-items-center">
+                                            {{ $properties['native'] }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
 
