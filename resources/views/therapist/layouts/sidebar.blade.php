@@ -52,7 +52,7 @@
 
             <!-- Clinic ERP -->
             <li>
-                <a href="{{ route('web.erp.index') }}">
+                <a href="{{ route('clinic.dashboard') }}">
                     <div class="parent-icon"><i class="material-icons-outlined">medical_services</i></div>
                     <div class="menu-title">Clinic ERP</div>
                 </a>

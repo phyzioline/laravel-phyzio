@@ -15,7 +15,7 @@ class CourseController extends Controller
     public function index()
     {
         // Only show courses where the logged-in therapist is the instructor
-        $courses = Course::where('instructor_id', Auth::id())->with('instructor.user')->get();
+        $courses = Course::where('instructor_id', Auth::id())->with('instructor')->get();
         return view('therapist.courses.index', compact('courses'));
     }
 
