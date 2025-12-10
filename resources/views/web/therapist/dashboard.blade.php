@@ -1,4 +1,4 @@
-@extends('web.layouts.app')
+@extends('therapist.layouts.app')
 
 @section('content')
 <div class="container-fluid py-4" style="background-color: #f8f9fa;">
