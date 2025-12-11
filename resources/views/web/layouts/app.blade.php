@@ -35,6 +35,32 @@
     max-height: 400px !important;
     overflow: auto !important;
     }
+
+    /* Fix mobile menu button — move it fully to the right */
+   .mobile-menu-btn {
+    margin-left: auto !important; /* pushes it right */
+    margin-right: 10px !important;
+    font-size: 28px !important;
+    color: #fff !important;
+    position: relative;
+    z-index: 99999; /* فوق الهيدر */
+  }
+
+  /* Ensure mobile header layout is flex aligned properly */
+    .brand-logo {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+  }
+
+   /* Hide desktop menu on mobile */
+   @media (max-width: 991px) {
+    .main-menu {
+        display: none !important;
+     }
+   } 
+
 </style>
   <!-- custom - css include -->
   <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}" />
@@ -200,6 +226,13 @@
     </script>
   <!-- custom - jquery include -->
   <script src="{{ asset('web/assets/js/custom.js')}}"></script>
+
+
+
+
+  
 </body>
+
+
 
 </html>

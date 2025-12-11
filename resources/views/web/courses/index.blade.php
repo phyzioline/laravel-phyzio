@@ -191,5 +191,10 @@
     .transition-all {
         transition: all 0.3s ease;
     }
+    /* Fix header overlap specifically for courses page */
+     body .bg-light.py-5 {
+    margin-top: 150px !important;
+    }
+ 
 </style>
 @endsection

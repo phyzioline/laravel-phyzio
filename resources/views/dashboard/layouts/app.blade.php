@@ -135,8 +135,9 @@ document.getElementById('toggle-button').addEventListener('click', function() {
     @endif
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-
 </body>
+
+
+
 
 </html>

@@ -20,12 +20,17 @@
         <style>
             /* Hero Banner */
             .shop-hero-banner {
-                background: linear-gradient(135deg, #02767F 0%, #04b8c4 100%);
-                padding: 60px 0 40px;
-                margin-bottom: 30px;
+                background: linear-gradient(185deg, #02767F 0%, #04b8c4 100%);
+                padding: 180px 0 40px;
+                margin-bottom: 90px;
                 position: relative;
                 overflow: hidden;
             }
+             .shop-hero-banner {
+             padding: 180px 0 40px;         
+        
+            }   
+
             
             .shop-hero-banner::before {
                 content: '';
@@ -177,6 +182,29 @@
                 margin-top: 5px;
                 line-height: 1.2;
             }
+            
+
+            .shop-hero-banner {
+             position: relative;
+              z-index: 1;
+            }
+
+             
+/* Make web header transparent over hero */
+header, 
+.header-section, 
+.navbar, 
+.web-header {
+    background: transparent !important;
+    box-shadow: none !important;
+    
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
             
             /* Product Grid - Noon.com Style */
             .products-section {

@@ -446,3 +446,12 @@ input:checked+.slider:before {
   transform: translateY(-5px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
 }
+/* حذف أي مساحة فوق الداشبورد */
+body,
+main,
+section,
+.container,
+.page-content {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}

@@ -64,5 +64,10 @@
         background-color: #0f766e !important;
         border-color: #0f766e !important;
     }
+
+
+    body .bg-light.py-5 {
+    margin-top: 150px !important;
+    }
 </style>
 @endsection

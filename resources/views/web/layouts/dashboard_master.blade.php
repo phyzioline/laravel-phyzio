@@ -216,6 +216,12 @@
                 right: 0;
             }
         }
+        
+
+        
+
+
+
     </style>
     @stack('styles')
 </head>

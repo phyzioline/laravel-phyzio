@@ -6,11 +6,12 @@
 <main>
     <!-- Hero Section -->
     <!-- Hero Section -->
-    <section class="hero-section position-relative pt-150 pb-100" style="background-color: #02767F; margin-top: 80px;">
+    <section class="hero-section position-relative" style="padding-top: 150px; padding-bottom: 60px; background-color:#02767F;">
+
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 order-lg-2">
-                    <img src="https://img.freepik.com/free-vector/medical-booking-app-concept_23-2148556637.jpg" alt="Clinic ERP Dashboard" class="img-fluid rounded shadow-lg">
+                    
                 </div>
                 <div class="col-lg-6 order-lg-1">
                     <span class="badge badge-pill badge-light text-primary px-3 py-2 mb-3">For Clinics</span>
@@ -97,3 +98,7 @@
     </section>
 </main>
 @endsection
+<style> 
+
+    /* Make web header transparent over hero */ header, .header-section, .navbar, .web-header { background: transparent !important; box-shadow: none !important;  top: 0; left: 0; width: 100%; z-index: 9999;
+</style>
