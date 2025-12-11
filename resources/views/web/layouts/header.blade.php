@@ -172,6 +172,251 @@
 .slider-section .item {
     background-position: center bottom !important;
 }
+
+/* =========================
+ CLEAN HEADER UI IMPROVEMENTS
+========================= */
+
+/* Make Header Transparent on Home */
+body.has-hero #header-section {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Global Header Style */
+#header-section {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10000;
+    padding: 10px 0 !important;
+    transition: 0.3s ease-in-out;
+}
+
+/* Sticky Effect on Scroll */
+#header-section.stuck {
+    background: #02767F !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Make Layout Always in One Row */
+#header-section .row {
+    width: 100%;
+    align-items: center !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+}
+
+/* Bigger Logo */
+.brand-logo img {
+    width: 80% !important;
+    max-height: 70px !important;
+    object-fit: contain;
+}
+
+/* Menu Centered */
+.main-menu ul {
+    display: flex !important;
+    gap: 28px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap !important;
+}
+
+/* Move Icons to The Right */
+#header-section .col-lg-3 {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+/* Fix Buttons Alignment */
+#header-section .btns-group ul {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 15px;
+}
+
+/* Header Icons */
+.btn-cart,
+.main-menu i,
+.btn-login {
+    color: #fff !important;
+}
+
+/* Styling Menu Links */
+#header-section .main-menu ul li a {
+    position: relative;
+    font-size: 15px;
+    color: #fff !important;
+    padding: 6px 8px;
+    font-weight: 600;
+}
+
+/* Underline Animation */
+#header-section .main-menu ul li a::after {
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-3px;
+    width:0%;
+    height:3px;
+    background:#FFD700;
+    transition: .3s ease;
+}
+
+#header-section .main-menu ul li a:hover,
+#header-section .main-menu ul li a.active {
+    color:#FFD700 !important;
+}
+
+#header-section .main-menu ul li a:hover::after,
+#header-section .main-menu ul li a.active::after {
+    width:100%;
+}
+
+/* Fix Hero Gap – Remove White Space */
+body.has-hero .hero-banner,
+body.has-hero .slider-section,
+body.has-hero .shop-hero-banner {
+    margin-top: -120px !important;
+    padding-top: 220px !important;
+    background-position: top center !important;
+}
+/* NEW HEADER FIX - Alignment Improved */
+
+/* جعل كل الـ ROW Flex مضبوط */
+#header-section .row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+}
+
+/* توزيع الأعمدة: 
+   اللوجو صغير – الروابط أكبر – الأيقونات آخر اليمين */
+#header-section .col-lg-2 {
+    flex: 0 0 auto !important;
+}
+#header-section .col-lg-7 {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+#header-section .col-lg-3 {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+/* تصغير المسافة بين عناصر المنيو */
+.main-menu ul {
+    gap: 20px !important;
+}
+
+/* الأيقونات تلزق أقصى اليمين */
+#header-section .btns-group ul {
+    gap: 18px !important;
+    justify-content: flex-end !important;
+}
+
+/* شفاف للهوم فقط */
+body.has-hero #header-section {
+    background: transparent !important;
+}
+
+/* لون عند السّكرول فقط */
+#header-section.stuck {
+    background-color: #02767F !important;
+}
+
+/* ======================
+ FINAL HEADER LAYOUT FIX
+====================== */
+
+/* Force full-width alignment */
+#header-section .container {
+    max-width: 100% !important;
+    padding: 0 30px !important;
+}
+
+/* LOGO: stick fully left */
+#header-section .col-lg-2 {
+    display: flex !important;
+    justify-content: flex-start !important;
+}
+
+/* MENU CENTERED */
+#header-section .col-lg-7 {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+/* ICONS: stick fully right */
+#header-section .col-lg-3 {
+    display: flex !important;
+    justify-content: flex-end !important;
+}
+
+/* reduce spacing between menu items */
+.main-menu ul {
+    gap: 18px !important;
+}
+
+/* Hero goes under header — remove big gap */
+body.has-hero .hero-banner,
+body.has-hero .slider-section,
+body.has-hero .shop-hero-banner {
+    margin-top: -140px !important;
+    padding-top: 260px !important;
+}
+
+
+/* Increase Hero Section Height */
+#slider-section .item,
+.slider-section .item,
+.hero-banner {
+    min-height: 480px !important; /* زوّد الرقم لو عايز أكبر */
+    padding-top: 180px !important; /* يرفع الكلام لتحت شوية */
+}
+
+/* Improve text visibility spacing */
+#slider-section .item h1,
+.hero-banner h1 {
+    font-size: 42px !important;
+    line-height: 1.25 !important;
+}
+
+#slider-section .item p,
+.hero-banner p {
+    font-size: 18px !important;
+    margin-top: 10px !important;
+}
+/* Make menu text smaller & cleaner */
+#header-section .main-menu ul li a {
+    font-size: 13px !important; /* ممكن نخليها 12px لو عايز أصغر */
+    padding: 4px 6px !important;
+    font-weight: 600 !important;
+}
+
+/* Fix spacing between items after text shrink */
+.main-menu ul {
+    gap: 14px !important;
+}
+
+
+/* Make menu text smaller & cleaner */
+#header-section .main-menu ul li a {
+    font-size: 13px !important; /* ممكن نخليها 12px لو عايز أصغر */
+    padding: 4px 6px !important;
+    font-weight: 600 !important;
+}
+
+/* Fix spacing between items after text shrink */
+.main-menu ul {
+    gap: 14px !important;
+}
+
+
 </style>
 
 <header id="header-section" class="header-section header-primary sticky-header clearfix">
@@ -182,7 +427,7 @@
                 {{-- Logo --}}
                 <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                     <div class="brand-logo clearfix">
-                        <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 50px;">
                             <a href="{{ route('home') }}" class="brand-link">
                                 <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="PhyzioLine Logo" style="max-height: 45px; object-fit: contain;" />
                             </a>

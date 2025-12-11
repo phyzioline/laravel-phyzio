@@ -3,7 +3,7 @@
 @section('content')
 <main>
     <!-- Hero Section -->
-    <section class="hero-section py-5" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 120px !important;">
+    <section class="hero-section py-5" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 200px !important;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center">
@@ -156,6 +156,17 @@
 }
 .hover-card:hover {
     transform: translateY(-5px);
+}
+
+header,
+.header-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: transparent !important;
+    box-shadow: none !important;
+    z-index: 9999;
 }
 </style>
 @endsection

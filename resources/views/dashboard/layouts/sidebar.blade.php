@@ -175,4 +175,171 @@
           <!--end navigation-->
       </div>
 
+      <style>
+/* Sidebar – Keep colored always */
+.sidebar-nav .metismenu li > a {
+    background-color: #017A82 !important;
+    color: #ffffff !important;
+    border-radius: 6px;
+    margin-bottom: 4px;
+}
+
+/* Hover + Active */
+.sidebar-nav .metismenu li.mm-active > a,
+.sidebar-nav .metismenu li a:hover,
+.sidebar-nav .metismenu li a:focus {
+    background-color: #00A6B4 !important;
+    color: #ffffff !important;
+}
+
+/* Submenu */
+.sidebar-nav .metismenu ul li a {
+    background-color: #02676f !important;
+    color: #ffffff !important;
+    border-radius: 4px;
+}
+
+.sidebar-nav .metismenu ul li a:hover {
+    background-color: #00b8c9 !important;
+    color: #ffffff !important;
+}
+</style>
+
+
+<style>
+
+/* Sidebar Background */
+.sidebar-wrapper {
+    background: #024f55 !important;
+}
+
+/* Menu Items */
+.sidebar-nav .metismenu li > a {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    background: transparent !important;
+    color: #e6f7f8 !important;
+    padding: 12px 15px;
+    border-radius: 6px;
+    transition: 0.25s ease-in-out;
+}
+
+/* Hover effect */
+.sidebar-nav .metismenu li > a:hover {
+    background: rgba(255,255,255,0.07) !important;
+    transform: translateX(6px);
+}
+
+/* Active Item Highlight */
+.sidebar-nav .metismenu li.mm-active > a {
+    background: linear-gradient(90deg, #00b8c9 0%, #008d97 100%) !important;
+    color: #fff !important;
+    font-weight: 600;
+    border-left: 4px solid #FFD700 !important;
+    padding-left: 12px !important;
+}
+
+/* Icon Styling */
+.sidebar-nav .metismenu li > a i {
+    font-size: 18px;
+    transition: 0.25s ease-in-out;
+}
+
+.sidebar-nav .metismenu li > a:hover i {
+    transform: scale(1.15);
+}
+
+/* Submenu styling */
+.sidebar-nav .metismenu ul li a {
+    background: rgba(255,255,255,0.06) !important;
+    margin: 3px 0;
+    padding: 10px 20px;
+    border-radius: 6px;
+    color: #dff5f7 !important;
+    font-size: 14px;
+}
+
+.sidebar-nav .metismenu ul li a:hover {
+    background: rgba(255,255,255,0.15) !important;
+    color: #ffffff !important;
+    padding-left: 26px;
+}
+
+/* Active submenu */
+.sidebar-nav .metismenu ul li.mm-active > a {
+    background: #00b8c9 !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+
+
+
+/* ==== Sidebar Full Theming Fix ==== */
+
+/* خلفية السايدبار بالكامل */
+.sidebar-wrapper,
+.sidebar-wrapper .sidebar-nav,
+.sidebar-wrapper .sidebar-nav ul {
+    background: linear-gradient(135deg, #02767f 0%, #04b8c4 100%) !important;
+}
+
+/* لون أيقونات وعناوين القائمة */
+.sidebar-wrapper .parent-icon i,
+.sidebar-wrapper .menu-title {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+/* إزالة أي حدود بيضاء */
+.sidebar-wrapper .sidebar-nav li {
+    border: none !important;
+}
+
+/* الروابط الافتراضية */
+.sidebar-wrapper .sidebar-nav li a {
+    color: #ffffff !important;
+    padding: 10px 15px !important;
+    border-radius: 6px;
+    transition: 0.3s ease-in-out;
+}
+
+/* Hover */
+.sidebar-wrapper .sidebar-nav li a:hover {
+    background: rgba(255, 255, 255, 0.18) !important;
+    color: #ffffff !important;
+}
+
+/* Active (الصفحة المختارة) */
+.sidebar-wrapper .sidebar-nav li.mm-active > a,
+.sidebar-wrapper .sidebar-nav li.active > a {
+    background: rgba(0, 0, 0, 0.25) !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border-left: 4px solid #FFD700 !important;
+}
+
+/* Sub Menu */
+.sidebar-wrapper .sidebar-nav ul ul {
+    background: transparent !important;
+}
+
+.sidebar-wrapper .sidebar-nav ul ul > li > a {
+    font-size: 14px !important;
+    opacity: 0.9;
+}
+
+/* Sub menu hover */
+.sidebar-wrapper .sidebar-nav ul ul > li > a:hover {
+    background: rgba(0,0,0,0.22) !important;
+    opacity: 1;
+}
+
+/* Fix icon color inside sub menu */
+.sidebar-wrapper .sidebar-nav ul ul > li > a i {
+    color: #fff !important;
+}
+
+</style>
+
   </aside>
