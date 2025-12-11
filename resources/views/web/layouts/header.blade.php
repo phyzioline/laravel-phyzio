@@ -417,6 +417,55 @@ body.has-hero .shop-hero-banner {
 }
 
 
+/* FORCE MENU, LOGIN, LOGO IN SAME ROW (RIGHT → LEFT) */
+.header-top-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 15px;
+}
+
+/* Make menu icon visible always */
+.mobile-menu-btn {
+    display: block !important;
+    font-size: 26px;
+    color: #fff !important;
+    background: none;
+    border: none;
+}
+
+/* Fix Login Button Visibility */
+.btn-login {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px !important;
+    background: #ffffff20;
+    color: #fff !important;
+    border-radius: 6px;
+    font-weight: 700 !important;
+    border: 1px solid #ffffff55;
+}
+
+.btn-login:hover {
+    background: #fff !important;
+    color: #02767F !important;
+}
+
+/* Hide old mobile login rules */
+@media(max-width: 992px) {
+    .btn-login {
+        display: flex !important;
+    }
+}
+
+/* Move logo to the far left */
+.brand-logo {
+    margin-left: auto !important;
+}
+
+
+
 </style>
 
 <header id="header-section" class="header-section header-primary sticky-header clearfix">
@@ -427,12 +476,35 @@ body.has-hero .shop-hero-banner {
                 {{-- Logo --}}
                 <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12">
                     <div class="brand-logo clearfix">
-                        <div style="display: flex; align-items: center; gap: 50px;">
-                            <a href="{{ route('home') }}" class="brand-link">
-                                <img src="{{ asset('web/assets/images/main_logo_white.png') }}" width="60%" alt="PhyzioLine Logo" style="max-height: 45px; object-fit: contain;" />
-                            </a>
+    <div class="header-top-controls">
 
-                        </div>
+        <!-- MENU BUTTON -->
+        <button type="button" class="mobile-menu-btn">
+            <i class="las la-bars"></i>
+        </button>
+
+        <!-- LOGIN BUTTON -->
+        @if(Auth::check())
+            <button class="btn-cart btn-login px-3 py-1">
+                {{ Auth::user()->name }}
+            </button>
+        @else
+            <a href="{{ route('view_login') }}">
+                <button class="btn-cart btn-login px-3 py-1">
+                    {{ __('Log In') }}
+                </button>
+            </a>
+        @endif
+
+        <!-- LOGO -->
+        <a href="{{ route('home') }}" class="brand-link" style="margin-left: auto;">
+            <img src="{{ asset('web/assets/images/main_logo_white.png') }}"
+                 style="max-height: 45px; object-fit: contain;">
+        </a>
+
+    </div>
+</div>
+
 
                         <div class="btns-group ul-li-right clearfix">
                             <ul class="clearfix">
