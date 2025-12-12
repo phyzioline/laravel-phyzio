@@ -792,25 +792,3 @@
         </div>
     </main>
 @endsection
-
-
-@extends('dashboard.layouts.app')
-@section('content')
-<div class="ecosystem-page">
-    <main class="main-wrapper">
-        <div class="main-content">
-
-
-@push('styles')
-<style>
-.ecosystem-page .main-wrapper {
-    margin-top: 80px !important; /* يمنع التغطية */
-}
-.ecosystem-page .sidebar-wrapper {
-    margin-top: 0 !important;
-}
-.ecosystem-page .top-header {
-    z-index: 2000 !important;
-}
-</style>
-@endpush
