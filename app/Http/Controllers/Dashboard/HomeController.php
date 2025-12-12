@@ -215,7 +215,7 @@ class HomeController extends Controller
             // $lowStockProducts = Product::where('stock', '<', 10)->count();
         }
 
-        return view('dashboard.pages.index', compact(
+        return view('dashboard.pages.home', compact(
             'user', 'vendor', 'buyer', 'product', 'order', 'order_card','order_cash',
             'category', 'sub_category', 'tag','order__card_only','order__cash_only',
             'product_only', 'order_only',
