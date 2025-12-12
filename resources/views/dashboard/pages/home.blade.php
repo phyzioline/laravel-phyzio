@@ -538,7 +538,6 @@
                     });
                 </script>
                 @endpush
-            @endif
             @elseif (auth()->user()->hasRole('vendor'))
                 {{-- Hero Section with Proper Spacing --}}
                 <div class="vendor-dashboard-hero" style="margin-top: 2cm; margin-bottom: 2rem;">
