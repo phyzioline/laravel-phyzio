@@ -495,35 +495,7 @@ body.has-hero .shop-hero-banner {
 </div>
 
 
-                        <div class="btns-group ul-li-right clearfix">
-                            <ul class="clearfix">
-                                <li>
-                                    <button type="button" class="mobile-menu-btn">
-                                        <i class="las la-bars"></i>
-                                    </button>
-                                </li>
-                                {{-- Mobile Language Switcher --}}
-                                <li class="dropdown">
-                                    <button class="mobile-btn-cart" id="mobile-lang-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: none; background: transparent;">
-                                        <i class="las la-globe"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="mobile-lang-dropdown">
-                                        @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                                            <a class="dropdown-item" rel="alternate" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}">
-                                                {{ $properties['native'] }}
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                </li>
-                                <li>
-                                    <button class="mobile-btn-cart">
-                                        <i class="las la-shopping-bag"></i>
-                                        <small class="cart-counter bg-light-green">{{ App\Models\Cart::where('user_id', auth()->user()->id ?? 0)->count() ?? 0 }}</small>
-                                    </button>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+
                 </div>
 
                 {{-- Main Menu --}}
