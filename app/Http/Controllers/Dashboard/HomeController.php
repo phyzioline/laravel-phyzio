@@ -97,6 +97,11 @@ class HomeController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->take(10)
                 ->get();
+
+            // Low Stock Alert (Scoped to Vendor)
+            $lowStockProducts = Product::where('user_id', auth()->user()->id)
+                ->where('amount', '<', 5) // Warning threshold
+                ->count();
         }
 
         // Ecosystem Counts
@@ -110,8 +115,7 @@ class HomeController extends Controller
         $pendingApprovals = [];
         $totalRevenue = 0;
         $todayAppointments = 0;
-        $lowStockProducts = 0;
-
+        
         if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin')) {
             // Recent Activity (last 20 items across platform)
             $recentActivity = collect();
@@ -211,8 +215,8 @@ class HomeController extends Controller
             // Today's Appointments
             $todayAppointments = \App\Models\Appointment::whereDate('appointment_date', today())->count();
 
-            // Low Stock Products (assuming stock field exists)
-            // $lowStockProducts = Product::where('stock', '<', 10)->count();
+            // Low Stock Products (Admin View - Global)
+            $lowStockProducts = Product::where('amount', '<', 5)->count();
         }
 
         return view('dashboard.pages.home', compact(

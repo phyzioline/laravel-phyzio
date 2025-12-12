@@ -54,6 +54,15 @@ class OrderController extends Controller
                     'total'          => $balance,
                     'status'       => 'completed',
                 ]);
+                
+                // Calculate Vendor Payments (Now Paid)
+                $this->orderService->calculateVendorPayments($order);
+                // Mark payments as paid
+                \App\Models\VendorPayment::where('order_id', $order->id)->update([
+                    'status' => 'paid',
+                    'paid_at' => now(),
+                ]);
+
                  Cart::where('user_id',$order->user_id)->delete();
                  foreach ($order->items as $item) {
                     if ($item->product && $item->product->amount >= $item->quantity) {

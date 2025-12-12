@@ -16,7 +16,10 @@ class Order extends Model
         'payment_id',
         'payment_type',
         'phone',
-        'payment_status'
+        'payment_status',
+        'order_number',
+        'commission_total',
+        'shipping_total',
     ];
 
     public function user()

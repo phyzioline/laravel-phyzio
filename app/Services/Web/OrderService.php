@@ -38,6 +38,7 @@ class OrderService
 
         $order = Order::create([
             'user_id'        => $user->id,
+            'order_number'   => 'ORD-' . date('Y') . '-' . strtoupper(uniqid()),
             'total'          => $cartItems->sum('total'),
             'name'           => $data['name'],
             'address'        => $data['address'],
@@ -45,6 +46,7 @@ class OrderService
             'payment_id'     => null,
             'phone'          => $data['phone'],
             'payment_status' => 'pending',
+            'status'         => 'pending' // Cash orders usually start as pending until delivery
         ]);
 
         foreach ($cartItems as $item) {
@@ -60,6 +62,10 @@ class OrderService
                 $item->product->decrement('amount', $item->quantity);
             }
         }
+        
+        // Calculate Vendor Payments (Pending for Cash Orders)
+        $this->calculateVendorPayments($order);
+
         Cart::where('user_id', $user->id)->delete();
         
         // Send notification to all admins
@@ -159,13 +165,14 @@ class OrderService
         $paymobOrderId = $orderResponse->json()['id'];
 
         $order = Order::updateOrCreate(
-            ['user_id' => auth()->user()->id],
+            ['user_id' => auth()->user()->id, 'payment_id' => $paymobOrderId], // composite check to avoid dups if retrying
             [
+                'order_number'   => 'ORD-' . date('Y') . '-' . strtoupper(uniqid()),
                 'total'          => $cartItems->sum('total'),
                 'name'           => $data['name'],
                 'address'        => $data['address'],
                 'payment_method' => 'card',
-                'payment_id'     => $paymobOrderId,
+                // 'payment_id'     => $paymobOrderId, // already in conditions
                 'phone'          => $data['phone'],
                 'payment_status' => 'pending',
             ]);
@@ -269,4 +276,51 @@ class OrderService
         ];
     }
 
+    /**
+     * Calculate and record vendor payments for an order
+     * 
+     * @param Order $order
+     * @return void
+     */
+    public function calculateVendorPayments(Order $order)
+    {
+        // Default commission rate (should ideally come from settings or vendor profile)
+        $defaultCommissionRate = 15.00; // 15%
+
+        foreach ($order->items as $item) {
+            if ($item->product && $item->product->user_id) {
+                $vendorId = $item->product->user_id;
+                
+                // Calculate financials
+                $productAmount = $item->price;
+                $quantity = $item->quantity;
+                $subtotal = $productAmount * $quantity;
+                
+                // Calculate commission
+                $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
+                $vendorEarnings = $subtotal - $commissionAmount;
+                
+                // Record payment
+                \App\Models\VendorPayment::updateOrCreate(
+                    [
+                        'vendor_id' => $vendorId,
+                        'order_id' => $order->id,
+                        'order_item_id' => $item->id,
+                    ],
+                    [
+                        'product_amount' => $productAmount,
+                        'quantity' => $quantity,
+                        'subtotal' => $subtotal,
+                        'commission_rate' => $defaultCommissionRate,
+                        'commission_amount' => $commissionAmount,
+                        'vendor_earnings' => $vendorEarnings,
+                        'status' => 'pending', // Pending until order is completed/paid
+                        'payment_reference' => $order->order_number,
+                    ]
+                );
+            }
+        }
+    }
+
+}
 }

@@ -45,6 +45,9 @@ Route::group(
             Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
 
+            // Financial Management
+            Route::get('/payments', [\App\Http\Controllers\Dashboard\PaymentController::class, 'index'])->name('payments.index');
+
             // Inventory Management
             Route::prefix('inventory')->as('inventory.')->group(function () {
                 Route::get('/manage', [\App\Http\Controllers\Dashboard\InventoryController::class, 'manage'])->name('manage');
