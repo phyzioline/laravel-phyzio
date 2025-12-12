@@ -174,8 +174,34 @@ Route::group(
     })->name('dashboard');
 });
 
-require __DIR__ . '/dashboard.php';
-require __DIR__ . '/therapist.php';
+    // Clinic Dashboard Routes
+    Route::group(['prefix' => 'clinic', 'as' => 'clinic.', 'middleware' => ['auth']], function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
+        
+        Route::get('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'index'])->name('doctors.index');
+        Route::get('/doctors/create', [\App\Http\Controllers\Clinic\DoctorController::class, 'create'])->name('doctors.create');
+        Route::get('/doctors/{id}', [\App\Http\Controllers\Clinic\DoctorController::class, 'show'])->name('doctors.show');
+        
+        Route::get('/departments', [\App\Http\Controllers\Clinic\DepartmentController::class, 'index'])->name('departments.index');
+        Route::get('/departments/create', [\App\Http\Controllers\Clinic\DepartmentController::class, 'create'])->name('departments.create');
+        
+        Route::get('/staff', [\App\Http\Controllers\Clinic\StaffController::class, 'index'])->name('staff.index');
+        Route::get('/staff/create', [\App\Http\Controllers\Clinic\StaffController::class, 'create'])->name('staff.create');
+        
+        Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');
+        Route::get('/notifications', [\App\Http\Controllers\Clinic\NotificationController::class, 'index'])->name('notifications.index');
+        Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index'); // Check if ProfileController exists or create
+
+        // Existing Resources (keep if needed, or replace)
+        Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
+        Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
+        Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
+        Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
+    });
+
+    require __DIR__ . '/dashboard.php';
+    require __DIR__ . '/therapist.php';
 
 
  

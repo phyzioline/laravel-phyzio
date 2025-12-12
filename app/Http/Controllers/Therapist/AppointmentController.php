@@ -17,4 +17,19 @@ class AppointmentController extends Controller
         // Logic to update appointment status
         return redirect()->back()->with('success', 'Appointment status updated.');
     }
+
+    public function show($id)
+    {
+        // Mock appointment details
+        $appointment = (object)[
+            'id' => $id,
+            'patient_name' => 'John Doe',
+            'type' => 'Initial Consultation',
+            'date' => '2024-12-12',
+            'time' => '10:00 AM',
+            'status' => 'Confirmed',
+            'notes' => 'Patient complains of knee pain.'
+        ];
+        return view('web.therapist.appointments.show', compact('appointment'));
+    }
 }

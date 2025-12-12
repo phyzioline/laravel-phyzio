@@ -271,23 +271,60 @@
             @endif
             
             <!-- Clinic Specific (Adding based on Company Dashboard design) -->
-            @if(auth()->user()->hasRole('clinic'))
+            <!-- Clinic Specific (Company Dashboard Design) -->
+            @if(request()->routeIs('clinic.*') || auth()->user()->hasRole('clinic'))
                  <li>
-                    <a href="#">
+                    <a href="{{ route('clinic.dashboard') }}" class="{{ request()->routeIs('clinic.dashboard') ? 'active' : '' }}">
+                         <span class="las la-chart-pie"></span> <!-- Icon matching Vercel Dashboard -->
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{ route('clinic.departments.index') }}" class="{{ request()->routeIs('clinic.departments.*') ? 'active' : '' }}">
                         <span class="las la-stethoscope"></span>
                         <span>{{ __('Services') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
-                        <span class="las la-user-nurse"></span>
+                    <a href="{{ route('clinic.doctors.index') }}" class="{{ request()->routeIs('clinic.doctors.*') ? 'active' : '' }}">
+                         <span class="las la-user-nurse"></span>
                         <span>{{ __('Doctors') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('clinic.appointments.index') }}" class="{{ request()->routeIs('clinic.appointments.*') ? 'active' : '' }}">
                         <span class="las la-calendar-check"></span>
                         <span>{{ __('Appointments') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('clinic.patients.index') }}" class="{{ request()->routeIs('clinic.patients.*') ? 'active' : '' }}">
+                         <span class="las la-user-injured"></span>
+                        <span>{{ __('Patients') }}</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{ route('clinic.staff.index') }}" class="{{ request()->routeIs('clinic.staff.*') ? 'active' : '' }}">
+                        <span class="las la-users"></span>
+                        <span>{{ __('Staff') }}</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{ route('clinic.analytics.index') }}" class="{{ request()->routeIs('clinic.analytics.*') ? 'active' : '' }}">
+                        <span class="las la-chart-bar"></span>
+                        <span>{{ __('Analytics') }}</span>
+                    </a>
+                </li>
+                 <li>
+                    <a href="{{ route('clinic.billing.index') }}" class="{{ request()->routeIs('clinic.billing.*') ? 'active' : '' }}">
+                        <span class="las la-file-invoice-dollar"></span>
+                        <span>{{ __('Billing') }}</span>
+                    </a>
+                </li>
+                  <li>
+                    <a href="{{ route('clinic.notifications.index') }}" class="{{ request()->routeIs('clinic.notifications.*') ? 'active' : '' }}">
+                        <span class="las la-bell"></span>
+                        <span>{{ __('Notifications') }}</span>
                     </a>
                 </li>
             @endif

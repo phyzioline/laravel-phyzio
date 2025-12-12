@@ -13,49 +13,70 @@
             <!-- Dashboard Home -->
             <li>
                 <a href="{{ route('therapist.dashboard') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
+                    <div class="parent-icon"><i class="las la-home"></i></div>
                     <div class="menu-title">Dashboard</div>
-                </a>
-            </li>
-
-            <!-- Profile -->
-            <li>
-                <a href="{{ route('therapist.profile.edit') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">person</i></div>
-                    <div class="menu-title">My Profile</div>
                 </a>
             </li>
 
             <!-- Appointments -->
             <li>
                 <a href="{{ route('therapist.appointments.index') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">calendar_today</i></div>
+                    <div class="parent-icon"><i class="las la-calendar-check"></i></div>
                     <div class="menu-title">Appointments</div>
                 </a>
             </li>
 
-            <!-- Availability -->
+            <!-- Patients (New) -->
             <li>
-                <a href="{{ route('therapist.availability.edit') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">schedule</i></div>
-                    <div class="menu-title">Availability</div>
+                <a href="{{ route('therapist.patients.index') }}">
+                    <div class="parent-icon"><i class="las la-user-injured"></i></div>
+                    <div class="menu-title">Patients</div>
                 </a>
             </li>
 
-            <!-- My Courses -->
+            <!-- Schedule (New) -->
             <li>
-                <a href="{{ route('therapist.courses.index') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">school</i></div>
-                    <div class="menu-title">My Courses</div>
+                <a href="{{ route('therapist.schedule.index') }}">
+                    <div class="parent-icon"><i class="las la-clock"></i></div>
+                    <div class="menu-title">Schedule</div>
                 </a>
             </li>
 
-            <!-- Clinic ERP -->
+             <!-- Earnings (New) -->
             <li>
-                <a href="{{ route('clinic.dashboard') }}">
-                    <div class="parent-icon"><i class="material-icons-outlined">medical_services</i></div>
-                    <div class="menu-title">Clinic ERP</div>
+                <a href="{{ route('therapist.earnings.index') }}">
+                    <div class="parent-icon"><i class="las la-wallet"></i></div>
+                    <div class="menu-title">Earnings</div>
                 </a>
+            </li>
+
+            <!-- Profile -->
+            <li>
+                <a href="{{ route('therapist.profile.edit') }}">
+                    <div class="parent-icon"><i class="las la-user"></i></div>
+                    <div class="menu-title">Profile</div>
+                </a>
+            </li>
+
+            <!-- Notifications (New) -->
+             <li>
+                <a href="{{ route('therapist.notifications.index') }}">
+                    <div class="parent-icon"><i class="las la-bell"></i> <span class="badge badge-danger ml-auto">5</span></div>
+                    <div class="menu-title">Notifications</div>
+                </a>
+            </li>
+
+            <!-- Dashboards (for navigation ease based on previous sidebar) -->
+             <li>
+                <a href="javascript:;" class="has-arrow">
+                    <div class="parent-icon"><i class="las la-layer-group"></i></div>
+                    <div class="menu-title">Dashboards</div>
+                </a>
+                <ul>
+                    <li> <a href="{{ route('clinic.dashboard') }}"><i class="las la-hospital"></i>Clinic Dashboard</a>
+                    </li>
+                     <!-- Add other dashboards if needed -->
+                </ul>
             </li>
 
         </ul>

@@ -1,41 +1,28 @@
 @extends('web.layouts.dashboard_master')
 
-@section('title', 'Clinic Dashboard')
-@section('header_title', 'Clinic Overview')
+@section('title', 'Company Dashboard')
+@section('header_title', 'Company Portal')
 
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <h3 style="color: #00897b; font-weight: 700;">{{ __('Welcome back,') }} {{ Auth::user()->name }}</h3>
-        <p class="text-muted">{{ __('Here is your clinic performance overview.') }}</p>
+        <h3 style="color: #00897b; font-weight: 700;">{{ __('Welcome back, HealthCare Plus') }}</h3>
+        <p class="text-muted">{{ __('Here\'s your hospital management overview') }}</p>
     </div>
 </div>
 
-<!-- 1. Key Metrics Overview -->
+<!-- Key Metrics Overview -->
 <div class="row">
-    <!-- Total Patients -->
+    <!-- Active Doctors -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card h-100">
             <div class="icon-box icon-teal">
-                <i class="las la-users"></i>
+                <i class="las la-user-nurse"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $totalPatients }}</h3>
-                <small class="text-muted">{{ __('Total Patients') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> 5% {{ __('this month') }}</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Active Plans -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card h-100">
-            <div class="icon-box icon-blue">
-                <i class="las la-notes-medical"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ $activePlans }}</h3>
-                <small class="text-muted">{{ __('Active Treatment Plans') }}</small>
+                <h3 class="font-weight-bold mb-0">45</h3>
+                <small class="text-muted">{{ __('Active Doctors') }}</small>
+                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ __('3 new this month') }}</div>
             </div>
         </div>
     </div>
@@ -44,193 +31,223 @@
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card h-100">
             <div class="icon-box icon-green">
-                <i class="las la-calendar-day"></i>
+                <i class="las la-calendar-check"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $todayAppointments }}</h3>
+                <h3 class="font-weight-bold mb-0">234</h3>
                 <small class="text-muted">{{ __('Today\'s Appointments') }}</small>
-                <div class="text-info small mt-1">
-                    {{ $completedToday }} {{ __('Completed') }}
-                </div>
+                <div class="text-info small mt-1"><i class="las la-clock"></i> {{ __('18 pending') }}</div>
             </div>
         </div>
     </div>
 
-    <!-- Outstanding Payments -->
+    <!-- Total Patients -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100">
+            <div class="icon-box icon-blue">
+                <i class="las la-users"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">1,247</h3>
+                <small class="text-muted">{{ __('Total Patients') }}</small>
+                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ __('12% from last month') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Revenue -->
     <div class="col-xl-3 col-md-6 mb-4">
          <div class="stat-card h-100">
             <div class="icon-box icon-orange">
-                <i class="las la-file-invoice-dollar"></i>
+                <i class="las la-dollar-sign"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ number_format($outstandingPayments) }} EGP</h3>
-                <small class="text-muted">{{ __('Outstanding Payments') }}</small>
+                <h3 class="font-weight-bold mb-0">$125,480</h3>
+                <small class="text-muted">{{ __('Monthly Revenue') }}</small>
+                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ __('8% from last month') }}</div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- 2. Performance Chart -->
+    <!-- Appointments Overview Chart -->
     <div class="col-lg-8 mb-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 15px; height: 100%;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="card-title font-weight-bold mb-0" style="color: #333;">{{ __('Clinic Performance') }}</h5>
-                    <select class="custom-select custom-select-sm w-auto border-0 bg-light">
-                        <option>{{ __('Last 30 Days') }}</option>
-                        <option>{{ __('This Year') }}</option>
-                    </select>
-                </div>
-                <!-- Chart -->
-                <canvas id="performanceChart" height="150"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. Quick Actions Panel -->
-    <div class="col-lg-4 mb-4">
-        <div class="card border-0 shadow-sm" style="border-radius: 15px; height: 100%;">
-            <div class="card-body">
-                <h5 class="card-title font-weight-bold mb-4">{{ __('Quick Actions') }}</h5>
-                
-                <a href="#" class="btn btn-light btn-block text-left mb-3 p-3 shadow-sm d-flex align-items-center transition-hover">
-                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: #00897b !important;">
-                        <i class="las la-user-plus"></i>
-                    </div>
-                    <div>
-                        <div class="font-weight-bold text-dark">{{ __('Add New Patient') }}</div>
-                        <small class="text-muted">{{ __('Register a new profile') }}</small>
-                    </div>
-                </a>
-
-                <a href="#" class="btn btn-light btn-block text-left mb-3 p-3 shadow-sm d-flex align-items-center transition-hover">
-                    <div class="bg-info text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="las la-calendar-plus"></i>
-                    </div>
-                    <div>
-                        <div class="font-weight-bold text-dark">{{ __('Create Appointment') }}</div>
-                         <small class="text-muted">{{ __('Schedule a session') }}</small>
-                    </div>
-                </a>
-
-                <a href="#" class="btn btn-light btn-block text-left mb-3 p-3 shadow-sm d-flex align-items-center transition-hover">
-                    <div class="bg-success text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                        <i class="las la-file-invoice"></i>
-                    </div>
-                    <div>
-                        <div class="font-weight-bold text-dark">{{ __('Register Payment') }}</div>
-                         <small class="text-muted">{{ __('Record an invoice') }}</small>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 4. Appointments Timeline -->
-<div class="row">
-    <div class="col-12">
         <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
             <div class="card-header bg-white border-0 pt-4 px-4">
-                 <h5 class="card-title font-weight-bold mb-0">{{ __('Upcoming Timeline') }}</h5>
+                 <h5 class="card-title font-weight-bold mb-0">{{ __('Appointments Overview') }}</h5>
             </div>
             <div class="card-body px-4">
-                @if($timeline->isEmpty())
-                    <p class="text-muted text-center py-4">{{ __('No upcoming appointments scheduled.') }}</p>
-                @else
-                    <div class="timeline-wrapper">
-                         @foreach($timeline as $appt)
-                            <div class="d-flex align-items-center mb-4 pb-4 border-bottom position-relative">
-                                <div class="mr-3 text-center" style="min-width: 80px;">
-                                    <h5 class="font-weight-bold mb-0" style="color: #00897b;">{{ \Carbon\Carbon::parse($appt->start_time)->format('H:i') }}</h5>
-                                    <small class="text-muted">{{ \Carbon\Carbon::parse($appt->start_time)->format('M d') }}</small>
-                                </div>
-                                <div class="flex-grow-1 p-3 rounded" style="background-color: #f8f9fa;">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="font-weight-bold mb-1">{{ $appt->patient->first_name }} {{ $appt->patient->last_name }}</h6>
-                                            <span class="badge badge-light text-primary border">{{ ucfirst($appt->type) }}</span>
-                                            <span class="text-muted small ml-2"><i class="las la-user-nurse"></i> {{ $appt->therapist->name ?? 'Unassigned' }}</span>
-                                        </div>
-                                        <div>
-                                            @if($appt->status == 'scheduled')
-                                                <span class="badge badge-info">{{ __('Scheduled') }}</span>
-                                            @elseif($appt->status == 'completed')
-                                                <span class="badge badge-success">{{ __('Completed') }}</span>
-                                            @else
-                                                <span class="badge badge-secondary">{{ ucfirst($appt->status) }}</span>
-                                            @endif
-                                            
-                                            <div class="dropdown d-inline-block ml-2">
-                                                <button class="btn btn-sm btn-link text-muted" data-toggle="dropdown"><i class="las la-ellipsis-v"></i></button>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" href="#">{{ __('View Details') }}</a>
-                                                    <a class="dropdown-item" href="#">{{ __('Check In') }}</a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item text-danger" href="#">{{ __('Cancel') }}</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                <canvas id="appointmentsChart" height="150"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Activities -->
+         <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                 <h5 class="card-title font-weight-bold mb-0">{{ __('Recent Activities') }}</h5>
+                 <a href="#" class="btn btn-sm btn-outline-primary">{{ __('View All') }}</a>
+            </div>
+            <div class="card-body px-4">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: #00897b !important; flex-shrink: 0;">
+                        <i class="las la-user-plus"></i>
                     </div>
-                @endif
+                    <div class="flex-grow-1">
+                        <h6 class="font-weight-bold text-dark mb-0">{{ __('New Doctor Registration') }}</h6>
+                        <small class="text-muted">{{ __('Dr. Sarah Johnson joined Cardiology department') }}</small>
+                    </div>
+                    <div class="text-muted small">{{ __('2 hours ago') }}</div>
+                </div>
+
+                 <div class="d-flex align-items-center mb-4">
+                    <div class="bg-info text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                        <i class="las la-calendar-check"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="font-weight-bold text-dark mb-0">{{ __('New Appointment Scheduled') }}</h6>
+                        <small class="text-muted">{{ __('Patient John Doe scheduled with Dr. Smith') }}</small>
+                    </div>
+                    <div class="text-muted small">{{ __('4 hours ago') }}</div>
+                </div>
+
+                 <div class="d-flex align-items-center">
+                    <div class="bg-warning text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
+                        <i class="las la-file-alt"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="font-weight-bold text-dark mb-0">{{ __('Medical Record Updated') }}</h6>
+                        <small class="text-muted">{{ __('Updated records for Patient ID #892') }}</small>
+                    </div>
+                    <div class="text-muted small">{{ __('6 hours ago') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Status Lists -->
+    <div class="col-lg-4 mb-4">
+        <!-- Department Status -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
+             <div class="card-header bg-white border-0 pt-4 px-4">
+                 <h5 class="card-title font-weight-bold mb-0">{{ __('Department Status') }}</h5>
+            </div>
+            <div class="card-body px-4">
+                 <!-- Cardio -->
+                 <div class="d-flex align-items-center mb-3">
+                     <div class="bg-teal text-white rounded mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: #00897b;">
+                         <i class="las la-heartbeat"></i>
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Cardiology</h6>
+                         <small class="text-muted">8 doctors, 45 patients</small>
+                     </div>
+                     <span class="badge badge-success badge-pill bg-light text-success border-0">{{ __('Active') }}</span>
+                 </div>
+                 <!-- Neuro -->
+                 <div class="d-flex align-items-center mb-3">
+                     <div class="bg-success text-white rounded mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                         <i class="las la-brain"></i>
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Neurology</h6>
+                         <small class="text-muted">5 doctors, 32 patients</small>
+                     </div>
+                     <span class="badge badge-warning badge-pill bg-light text-warning border-0">{{ __('Busy') }}</span>
+                 </div>
+                 <!-- Ortho -->
+                 <div class="d-flex align-items-center">
+                     <div class="bg-info text-white rounded mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                         <i class="las la-bone"></i>
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Orthopedics</h6>
+                         <small class="text-muted">6 doctors, 28 patients</small>
+                     </div>
+                     <span class="badge badge-success badge-pill bg-light text-success border-0">{{ __('Active') }}</span>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Doctor Status -->
+         <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+             <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                 <h5 class="card-title font-weight-bold mb-0">{{ __('Doctor Status') }}</h5>
+                 <a href="#" class="btn btn-sm btn-outline-primary">{{ __('View All') }}</a>
+            </div>
+            <div class="card-body px-4">
+                 <!-- Doc 1 -->
+                 <div class="d-flex align-items-center mb-3">
+                     <div class="avatar-circle rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px; background-color: #00897b !important;">
+                         DS
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Dr. David Smith</h6>
+                         <small class="text-muted">Cardiology</small>
+                     </div>
+                     <span class="badge badge-success badge-pill bg-light text-success border-0">{{ __('Available') }}</span>
+                 </div>
+                 <!-- Doc 2 -->
+                   <div class="d-flex align-items-center mb-3">
+                     <div class="avatar-circle rounded-circle bg-success text-white d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px;">
+                         EW
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Dr. Emily Wilson</h6>
+                         <small class="text-muted">Neurology</small>
+                     </div>
+                     <span class="badge badge-warning badge-pill bg-light text-warning border-0">{{ __('In Surgery') }}</span>
+                 </div>
+                 <!-- Doc 3 -->
+                  <div class="d-flex align-items-center">
+                     <div class="avatar-circle rounded-circle bg-info text-white d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px;">
+                         MJ
+                     </div>
+                     <div class="flex-grow-1">
+                         <h6 class="mb-0 font-weight-bold">Dr. Michael Johnson</h6>
+                         <small class="text-muted">Orthopedics</small>
+                     </div>
+                     <span class="badge badge-success badge-pill bg-light text-success border-0">{{ __('Available') }}</span>
+                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .transition-hover:hover {
-        transform: translateY(-2px);
-        background-color: #f1f1f1 !important;
-    }
-</style>
 @endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    var ctx = document.getElementById('performanceChart').getContext('2d');
+    var ctx = document.getElementById('appointmentsChart').getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [{
-                label: 'Sessions Completed',
-                data: [12, 19, 15, 25, 22, 10, 5],
-                backgroundColor: '#00897b',
-                borderRadius: 5
-            },
-            {
-                label: 'New Patients',
-                data: [2, 1, 3, 5, 2, 0, 1],
-                backgroundColor: '#fb8c00',
-                borderRadius: 5
+                label: 'Scheduled',
+                data: [42, 50, 48, 62, 58, 48, 52],
+                borderColor: '#00897b',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.4
+            }, {
+                label: 'Completed',
+                data: [35, 45, 40, 55, 52, 42, 48],
+                borderColor: '#26a69a',
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                tension: 0.4
             }]
         },
         options: {
             responsive: true,
             plugins: {
-                legend: {
-                    position: 'top',
-                }
+                legend: { position: 'top' }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        drawBorder: false
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    }
-                }
+                y: { beginAtZero: true, grid: { drawBorder: false } },
+                x: { grid: { display: false } }
             }
         }
     });

@@ -22,17 +22,35 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
         Route::post('/submit', [\App\Http\Controllers\Therapist\TherapistOnboardingController::class, 'submit'])->name('submit');
     });
 
+    // Dashboard & Profile
     Route::get('/dashboard', [\App\Http\Controllers\Therapist\DashboardController::class, 'index'])->name('dashboard');
     
     Route::get('/profile', [\App\Http\Controllers\Therapist\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [\App\Http\Controllers\Therapist\ProfileController::class, 'update'])->name('profile.update');
     
+    // Appointments
     Route::get('/appointments', [\App\Http\Controllers\Therapist\AppointmentController::class, 'index'])->name('appointments.index');
     Route::post('/appointments/{id}/status', [\App\Http\Controllers\Therapist\AppointmentController::class, 'updateStatus'])->name('appointments.status');
     
+    // Availability / Schedule (Updated)
     Route::get('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'edit'])->name('availability.edit');
     Route::put('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'update'])->name('availability.update');
+    Route::get('/schedule', [\App\Http\Controllers\Therapist\ScheduleController::class, 'index'])->name('schedule.index');
 
+    // Patients (New)
+    Route::get('/patients', [\App\Http\Controllers\Therapist\PatientController::class, 'index'])->name('patients.index');
+    Route::get('/patients/create', [\App\Http\Controllers\Therapist\PatientController::class, 'create'])->name('patients.create');
+    Route::get('/patients/{id}', [\App\Http\Controllers\Therapist\PatientController::class, 'show'])->name('patients.show');
+    
+    // Appointment Details
+    Route::get('/appointments/{id}', [\App\Http\Controllers\Therapist\AppointmentController::class, 'show'])->name('appointments.show');
+
+    // Earnings (New)
+    Route::get('/earnings', [\App\Http\Controllers\Therapist\EarningsController::class, 'index'])->name('earnings.index');
+
+    // Notifications (New)
+    Route::get('/notifications', [\App\Http\Controllers\Therapist\NotificationController::class, 'index'])->name('notifications.index');
+    
     // Course Management
     Route::resource('courses', \App\Http\Controllers\Therapist\CourseController::class);
 });
