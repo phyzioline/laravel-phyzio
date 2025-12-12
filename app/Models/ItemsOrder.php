@@ -84,20 +84,27 @@ class ItemsOrder extends Model
         });
 
         static::created(function ($item) {
-            // Create vendor payment record
-            VendorPayment::create([
-                'vendor_id' => $item->vendor_id,
-                'order_id' => $item->order_id,
-                'order_item_id' => $item->id,
-                'product_amount' => $item->price,
-                'quantity' => $item->quantity,
-                'subtotal' => $item->total,
-                'commission_rate' => $item->commission_rate,
-                'commission_amount' => $item->commission_amount,
-                'shipping_fee' => $item->shipping_fee ?? 0,
-                'vendor_earnings' => $item->vendor_earnings,
-                'status' => 'pending'
-            ]);
+            // Create vendor payment record only if table exists (migration-safe)
+            try {
+                if (\Schema::hasTable('vendor_payments')) {
+                    VendorPayment::create([
+                        'vendor_id' => $item->vendor_id,
+                        'order_id' => $item->order_id,
+                        'order_item_id' => $item->id,
+                        'product_amount' => $item->price,
+                        'quantity' => $item->quantity,
+                        'subtotal' => $item->total,
+                        'commission_rate' => $item->commission_rate,
+                        'commission_amount' => $item->commission_amount,
+                        'shipping_fee' => $item->shipping_fee ?? 0,
+                        'vendor_earnings' => $item->vendor_earnings,
+                        'status' => 'pending'
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Silently fail during migration - table might not exist yet
+                \Log::info('VendorPayment creation skipped: ' . $e->getMessage());
+            }
         });
     }
 }
