@@ -38,6 +38,67 @@ class HomeController extends Controller
             $query->where('user_id', auth()->user()->id);
         })->count();
 
+        // Enhanced vendor metrics
+        $revenue_only = 0;
+        $pending_payments = 0;
+        $completed_orders = 0;
+        $monthly_sales_data = [];
+        $top_products = [];
+        $recent_orders = [];
+        
+        if (auth()->user()->hasRole('vendor')) {
+            // Calculate actual revenue from vendor payments
+            $revenue_only = \App\Models\VendorPayment::where('vendor_id', auth()->user()->id)
+                ->where('status', 'paid')
+                ->sum('vendor_earnings');
+            
+            // Calculate pending payments
+            $pending_payments = \App\Models\VendorPayment::where('vendor_id', auth()->user()->id)
+                ->where('status', 'pending')
+                ->sum('vendor_earnings');
+            
+            // Completed orders count
+            $completed_orders = Order::where('status', 'completed')
+                ->whereHas('items.product', function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                })->count();
+            
+            // Monthly sales data for chart (last 6 months)
+            $monthly_sales_data = [];
+            for ($i = 5; $i >= 0; $i--) {
+                $date = now()->subMonths($i);
+                $earnings = \App\Models\VendorPayment::where('vendor_id', auth()->user()->id)
+                    ->whereYear('created_at', $date->year)
+                    ->whereMonth('created_at', $date->month)
+                    ->sum('vendor_earnings');
+                
+                $monthly_sales_data[] = [
+                    'month' => $date->format('M Y'),
+                    'earnings' => $earnings
+                ];
+            }
+            
+            // Top 5 products by sales
+            $top_products = Product::where('user_id', auth()->user()->id)
+                ->withCount(['orderItems as sales_count'])
+                ->orderBy('sales_count', 'desc')
+                ->take(5)
+                ->get();
+            
+            // Recent orders (last 10)
+            $recent_orders = Order::whereHas('items.product', function ($query) {
+                    $query->where('user_id', auth()->user()->id);
+                })
+                ->with(['user', 'items' => function($query) {
+                    $query->whereHas('product', function($q) {
+                        $q->where('user_id', auth()->user()->id);
+                    })->with('product');
+                }])
+                ->orderBy('created_at', 'desc')
+                ->take(10)
+                ->get();
+        }
+
         // Ecosystem Counts
         $therapist_count = \App\Models\TherapistProfile::count();
         $clinic_count = \App\Models\ClinicProfile::count();
@@ -157,8 +218,10 @@ class HomeController extends Controller
         return view('dashboard.pages.index', compact(
             'user', 'vendor', 'buyer', 'product', 'order', 'order_card','order_cash',
             'category', 'sub_category', 'tag','order__card_only','order__cash_only',
+            'product_only', 'order_only',
             'therapist_count', 'clinic_count', 'appointment_count', 'course_count',
-            'recentActivity', 'pendingApprovals', 'totalRevenue', 'todayAppointments', 'lowStockProducts'
+            'recentActivity', 'pendingApprovals', 'totalRevenue', 'todayAppointments', 'lowStockProducts',
+            'revenue_only', 'pending_payments', 'completed_orders', 'monthly_sales_data', 'top_products', 'recent_orders'
         ));
     }
 }

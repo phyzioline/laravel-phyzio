@@ -540,58 +540,252 @@
                 @endpush
             @endif
             @if (auth()->user()->hasRole('vendor'))
+                {{-- Hero Section with Proper Spacing --}}
+                <div class="vendor-dashboard-hero" style="margin-top: 2cm; margin-bottom: 2rem;">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-2">Welcome back, {{ auth()->user()->name }}!</h2>
+                            <p class="text-muted">Here's what's happening with your store today.</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Add New Product
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Statistics Cards --}}
                 <div class="row g-4">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #02767F !important;">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-tags text-primary"></i> {{ __('Number of Product') }}
-                                    </h5>
+                                    <h6 class="mb-0 text-muted">
+                                        <i class="fa fa-box text-primary"></i> Total Products
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $product_only ?? 0 }}</h2>
-                            </div>
-                        </div>
-                    </div>
-                      <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-tags text-primary"></i> {{ __('Number of Order')  }}
-                                    </h5>
-                                </div>
-                                <h2 class="mt-4 fw-bold">{{ $order_only ?? 0 }}</h2>
+                                <h2 class="mt-3 fw-bold" style="color: #02767F;">{{ $product_only ?? 0 }}</h2>
+                                <small class="text-muted">Active listings</small>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #28a745 !important;">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-tags text-primary"></i> {{ __('Number of Order Card')  }}
-                                    </h5>
+                                    <h6 class="mb-0 text-muted">
+                                        <i class="fa fa-receipt text-success"></i> Total Orders
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $order__card_only ?? 0 }}</h2>
+                                <h2 class="mt-3 fw-bold text-success">{{ $order_only ?? 0 }}</h2>
+                                <small class="text-muted">{{ $completed_orders ?? 0 }} completed</small>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #ffc107 !important;">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-tags text-primary"></i> {{ __('Number of Order Cash')  }}
-                                    </h5>
+                                    <h6 class="mb-0 text-muted">
+                                        <i class="fa fa-dollar-sign text-warning"></i> Revenue Earned
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $order__cash_only ?? 0 }}</h2>
+                                <h2 class="mt-3 fw-bold text-warning">${{ number_format($revenue_only ?? 0, 2) }}</h2>
+                                <small class="text-muted">Paid out</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #17a2b8 !important;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+                                    <h6 class="mb-0 text-muted">
+                                        <i class="fa fa-clock text-info"></i> Pending Payments
+                                    </h6>
+                                </div>
+                                <h2 class="mt-3 fw-bold text-info">${{ number_format($pending_payments ?? 0, 2) }}</h2>
+                                <small class="text-muted">Awaiting payout</small>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                {{-- Charts Section --}}
+                <div class="row g-4 mt-3">
+                    {{-- Monthly Sales Chart --}}
+                    <div class="col-lg-8">
+                        <div class="card rounded-4 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4"><i class="fa fa-chart-line text-primary"></i> Monthly Earnings</h5>
+                                <canvas id="vendorMonthlySalesChart" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Order Status Distribution --}}
+                    <div class="col-lg-4">
+                        <div class="card rounded-4 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title mb-4"><i class="fa fa-chart-pie text-success"></i> Payment Methods</h5>
+                                <canvas id="vendorPaymentMethodsChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Top Products --}}
+                @if(isset($top_products) && $top_products->count() > 0)
+                <div class="row g-4 mt-3">
+                    <div class="col-12">
+                        <div class="card rounded-4 border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 pt-4">
+                                <h5 class="mb-0"><i class="fa fa-star text-warning"></i> Top Selling Products</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>SKU</th>
+                                                <th>Product Name</th>
+                                                <th>Price</th>
+                                                <th>Sales Count</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($top_products as $product)
+                                            <tr>
+                                                <td><code>{{ $product->sku }}</code></td>
+                                                <td>{{ $product->product_name_en }}</td>
+                                                <td>${{ number_format($product->product_price, 2) }}</td>
+                                                <td><span class="badge bg-success">{{ $product->sales_count ?? 0 }}</span></td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                {{-- Recent Orders --}}
+                @if(isset($recent_orders) && $recent_orders->count() > 0)
+                <div class="row g-4 mt-3">
+                    <div class="col-12">
+                        <div class="card rounded-4 border-0 shadow-sm">
+                            <div class="card-header bg-white border-0 pt-4">
+                                <h5 class="mb-0"><i class="fa fa-receipt text-primary"></i> Recent Orders</h5>
+                                <small class="text-muted">Track your latest sales</small>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Order Number</th>
+                                                <th>Customer</th>
+                                                <th>Products</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($recent_orders as $order)
+                                            <tr>
+                                                <td><strong>{{ $order->order_number ?? 'N/A' }}</strong></td>
+                                                <td>{{ $order->user->name }}</td>
+                                                <td>{{ $order->items->count() }} item(s)</td>
+                                                <td>${{ number_format($order->total, 2) }}</td>
+                                                <td>
+                                                    @if($order->status == 'completed')
+                                                        <span class="badge bg-success">Completed</span>
+                                                    @elseif($order->status == 'pending')
+                                                        <span class="badge bg-warning">Pending</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                @push('scripts')
+                <script>
+                    // Monthly Sales Chart
+                    const vendorSalesCtx = document.getElementById('vendorMonthlySalesChart').getContext('2d');
+                    new Chart(vendorSalesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: {!! json_encode(collect($monthly_sales_data ?? [])->pluck('month')) !!},
+                            datasets: [{
+                                label: 'Earnings ($)',
+                                data: {!! json_encode(collect($monthly_sales_data ?? [])->pluck('earnings')) !!},
+                                borderColor: '#02767F',
+                                backgroundColor: 'rgba(2, 118, 127, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '$' + value.toFixed(2);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Payment Methods Chart
+                    const vendorPaymentCtx = document.getElementById('vendorPaymentMethodsChart').getContext('2d');
+                    new Chart(vendorPaymentCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Cash Orders', 'Card Orders'],
+                            datasets: [{
+                                data: [{{ $order__cash_only ?? 0 }}, {{ $order__card_only ?? 0 }}],
+                                backgroundColor: ['#36a2eb', '#4bc0c0'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                }
+                            }
+                        }
+                    });
+                </script>
+                @endpush
             @endif
 
 

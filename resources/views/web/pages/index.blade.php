@@ -338,6 +338,13 @@
                                                         {{ $product->{'product_name_' . app()->getLocale()} }}
                                                     </a>
                                                 </h3>
+                                                
+                                                {{-- Vendor Badge --}}
+                                                <div class="vendor-badge mb-2" style="font-size: 11px; color: #666;">
+                                                    <i class="fa fa-store" style="color: #02767F; font-size: 10px; margin-right: 4px;"></i>
+                                                    <span style="color: #02767F; font-weight: 600;">{{ $product->sold_by_name }}</span>
+                                                </div>
+
                                                 <div class="price-order-wrapper d-flex justify-content-between align-items-center mb-3">
                                                     <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
                                                     <button type="button" class="btn btn-order-now" data-product-id="{{ $product->id }}" 

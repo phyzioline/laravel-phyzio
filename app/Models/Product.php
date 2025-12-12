@@ -27,6 +27,14 @@ class Product extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    /**
+     * Get the vendor (same as user) that owns this product.
+     */
+    public function vendor()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
@@ -74,6 +82,22 @@ class Product extends Model
     public function getImageUrlAttribute()
     {
         return $this->productImages->first() ? asset('storage/' . $this->productImages->first()->image) : null;
+    }
+
+    /**
+     * Get the vendor name for "Sold by" display.
+     */
+    public function getSoldByNameAttribute()
+    {
+        return $this->vendor ? $this->vendor->name : 'Phyzioline';
+    }
+
+    /**
+     * Get full SKU with vendor prefix.
+     */
+    public function getFullSkuAttribute()
+    {
+        return $this->sku;
     }
 
 }

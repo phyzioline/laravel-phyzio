@@ -64,6 +64,16 @@
                                 <span class="review-text">(12 Reviews)</span>
                             </div>
                             <span class="physio-item-price mb-30 price-animated">{{ $product->product_price }} EGP</span>
+                            
+                            {{-- Vendor Information --}}
+                            <div class="vendor-info-badge mb-20" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f8f9fa; border-radius: 20px; border: 1px solid #e0e0e0;">
+                                <i class="fa fa-store" style="color: #02767F; font-size: 14px;"></i>
+                                <span style="font-size: 13px; color: #666;">
+                                    <strong style="color: #333;">Sold by:</strong> 
+                                    <span style="color: #02767F; font-weight: 600;">{{ $product->sold_by_name }}</span>
+                                </span>
+                            </div>
+
                             <p class="mb-40 description-text">
                                 {{ $product->{'short_description_' . app()->getLocale()} }}
                             </p>
