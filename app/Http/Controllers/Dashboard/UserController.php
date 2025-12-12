@@ -46,6 +46,9 @@ class UserController extends Controller
         $data = $updateUserRequest->validated();
         $this->userService->update($id,$data);
         Session::flash('message', ['type' => 'success', 'text' => __('User updated successfully')]);
+        if (auth()->id() == $id) {
+            return redirect()->route('dashboard.users.edit', $id)->with('message', ['type' => 'success', 'text' => __('Profile updated successfully')]);
+        }
         return redirect()->route('dashboard.users.index');
     }
 

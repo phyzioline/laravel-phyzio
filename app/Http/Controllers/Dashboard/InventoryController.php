@@ -63,11 +63,16 @@ class InventoryController extends Controller
         $products = $query->paginate(100);
         $categories = Category::where('status', 'active')->get();
 
+        $statsQuery = Product::query();
+        if (!auth()->user()->hasRole('admin')) {
+            $statsQuery->where('user_id', auth()->id());
+        }
+
         $stats = [
-            'total_products' => Product::count(),
-            'active_products' => Product::where('status', 'active')->count(),
-            'low_stock' => Product::where('amount', '>', 0)->where('amount', '<=', 10)->count(),
-            'out_of_stock' => Product::where('amount', 0)->count(),
+            'total_products' => (clone $statsQuery)->count(),
+            'active_products' => (clone $statsQuery)->where('status', 'active')->count(),
+            'low_stock' => (clone $statsQuery)->where('amount', '>', 0)->where('amount', '<=', 10)->count(),
+            'out_of_stock' => (clone $statsQuery)->where('amount', 0)->count(),
         ];
 
         return view('dashboard.pages.inventory.manage', compact('products', 'categories', 'stats'));

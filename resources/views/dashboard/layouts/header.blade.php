@@ -60,6 +60,9 @@
             </a>
 
             <hr class="dropdown-divider">
+            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('dashboard.users.edit', auth()->id()) }}"><i
+                class="material-icons-outlined">person</i>Profile</a>
+            <hr class="dropdown-divider">
             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('logout') }}"><i
                 class="material-icons-outlined">power_settings_new</i>Logout</a>
           </div>
