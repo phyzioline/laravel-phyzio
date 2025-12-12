@@ -539,7 +539,7 @@
                 </script>
                 @endpush
             @endif
-            @if (auth()->user()->hasRole('vendor'))
+            @elseif (auth()->user()->hasRole('vendor'))
                 {{-- Hero Section with Proper Spacing --}}
                 <div class="vendor-dashboard-hero" style="margin-top: 2cm; margin-bottom: 2rem;">
                     <div class="row align-items-center">

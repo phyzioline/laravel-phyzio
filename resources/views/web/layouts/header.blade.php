@@ -483,19 +483,8 @@ body.has-hero .shop-hero-banner {
             <i class="las la-bars"></i>
         </button>
 
-        <!-- LOGIN BUTTON -->
-        @if(Auth::check())
-            <button class="btn-cart btn-login px-3 py-1">
-                {{ Auth::user()->name }}
-            </button>
-        @else
-            <a href="{{ route('view_login') }}">
-                <button class="btn-cart btn-login px-3 py-1">
-                    {{ __('Log In') }}
-                </button>
-            </a>
-        @endif
-
+        <!-- LOGIN BUTTON REMOVED (Duplicate) -->
+        
         <!-- LOGO -->
         <a href="{{ route('home') }}" class="brand-link" style="margin-left: auto;">
             <img src="{{ asset('web/assets/images/main_logo_white.png') }}"
