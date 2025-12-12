@@ -134,7 +134,48 @@
 
 
 
+                                    <div class="col-12">
+                                        <hr>
+                                        <h6 class="mb-3 text-primary">{{ __('Bank Details') }}</h6>
+                                    </div>
 
+                                    <div class="col-md-6">
+                                        <label for="bank_name" class="form-label">{{ __('Bank Name') }}</label>
+                                        <input type="text" name="bank_name" id="bank_name" value="{{ $user->bank_name }}"
+                                            class="form-control" placeholder="{{ __('e.g. CIB, QNB') }}">
+                                        @error('bank_name')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="bank_account_name" class="form-label">{{ __('Bank Account Holder Name') }}</label>
+                                        <input type="text" name="bank_account_name" id="bank_account_name" value="{{ $user->bank_account_name }}"
+                                            class="form-control" placeholder="{{ __('Full name as in bank account') }}">
+                                        @error('bank_account_name')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="iban" class="form-label">{{ __('IBAN') }}</label>
+                                        <input type="text" name="iban" id="iban" value="{{ $user->iban }}"
+                                            class="form-control" placeholder="{{ __('EG123456789...') }}">
+                                        @error('iban')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="swift_code" class="form-label">{{ __('Swift Code') }}</label>
+                                        <input type="text" name="swift_code" id="swift_code" value="{{ $user->swift_code }}"
+                                            class="form-control" placeholder="{{ __('e.g. CIBEGCAXXX') }}">
+                                        @error('swift_code')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+
+                                    <div class="col-12"><hr></div>
                                     <div class="col-md-6">
                                         <label for="status" class="form-label">{{ __('status') }}</label>
                                         <select class="form-select" name="status" id="status">

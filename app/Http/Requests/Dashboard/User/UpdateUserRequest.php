@@ -43,6 +43,10 @@ class UpdateUserRequest extends FormRequest
             'commercial_register' => 'nullable|file|max:2048',
             'tax_card' => 'nullable|file|max:2048',
             'card_image' => 'nullable|file|max:2048',
+            'bank_name' => 'nullable|string|max:255',
+            'bank_account_name' => 'nullable|string|max:255',
+            'iban' => 'nullable|string|max:50',
+            'swift_code' => 'nullable|string|max:20',
             'role_id'         => ['nullable', 'exists:roles,id'],
 
         ];

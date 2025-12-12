@@ -35,7 +35,11 @@ class User extends Authenticatable
         'email_verified_at',
         'provider_token',
         'provider_id',
-        'provider_name'
+        'provider_name',
+        'bank_name',
+        'bank_account_name',
+        'iban',
+        'swift_code'
     ];
 
     /**

@@ -76,17 +76,29 @@ class InventoryController extends Controller
     /**
      * Display stock levels page
      */
+    /**
+     * Display stock levels page
+     */
     public function stockLevels()
     {
-        $products = Product::with(['category', 'productImages'])
-            ->orderBy('amount', 'asc')
-            ->paginate(25);
+        $query = Product::with(['category', 'productImages']);
 
-        $lowStockProducts = Product::where('amount', '>', 0)
-            ->where('amount', '<=', 10)
-            ->count();
+        if (!auth()->user()->hasRole('admin')) {
+            $query->where('user_id', auth()->id());
+        }
 
-        $outOfStockProducts = Product::where('amount', 0)->count();
+        $products = $query->orderBy('amount', 'asc')->paginate(25);
+
+        $lowStockQuery = Product::where('amount', '>', 0)->where('amount', '<=', 10);
+        $outStockQuery = Product::where('amount', 0);
+
+        if (!auth()->user()->hasRole('admin')) {
+            $lowStockQuery->where('user_id', auth()->id());
+            $outStockQuery->where('user_id', auth()->id());
+        }
+
+        $lowStockProducts = $lowStockQuery->count();
+        $outOfStockProducts = $outStockQuery->count();
 
         return view('dashboard.pages.inventory.stock-levels', compact('products', 'lowStockProducts', 'outOfStockProducts'));
     }
@@ -96,14 +108,24 @@ class InventoryController extends Controller
      */
     public function reports()
     {
-        $totalValue = Product::selectRaw('SUM(product_price * amount) as total_value')->first()->total_value ?? 0;
-        $totalProducts = Product::count();
-        $totalStock = Product::sum('amount');
-
-        $categoryBreakdown = Product::selectRaw('category_id, COUNT(*) as product_count, SUM(amount) as total_stock')
+        $valueQuery = Product::selectRaw('SUM(product_price * amount) as total_value');
+        $countQuery = Product::query();
+        $stockQuery = Product::query();
+        $breakdownQuery = Product::selectRaw('category_id, COUNT(*) as product_count, SUM(amount) as total_stock')
             ->groupBy('category_id')
-            ->with('category')
-            ->get();
+            ->with('category');
+
+        if (!auth()->user()->hasRole('admin')) {
+            $valueQuery->where('user_id', auth()->id());
+            $countQuery->where('user_id', auth()->id());
+            $stockQuery->where('user_id', auth()->id());
+            $breakdownQuery->where('user_id', auth()->id());
+        }
+
+        $totalValue = $valueQuery->first()->total_value ?? 0;
+        $totalProducts = $countQuery->count();
+        $totalStock = $stockQuery->sum('amount');
+        $categoryBreakdown = $breakdownQuery->get();
 
         return view('dashboard.pages.inventory.reports', compact('totalValue', 'totalProducts', 'totalStock', 'categoryBreakdown'));
     }
