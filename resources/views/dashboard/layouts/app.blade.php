@@ -40,6 +40,15 @@
 
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ455L4DV3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+
+    gtag('config', 'G-QJ455L4DV3');
+  </script>
 
    
 </head>
