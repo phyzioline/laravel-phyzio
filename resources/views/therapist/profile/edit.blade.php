@@ -35,6 +35,28 @@
                         <input type="number" name="home_visit_rate" class="form-control" value="{{ old('home_visit_rate', $profile->home_visit_rate ?? '') }}">
                     </div>
 
+                    <hr class="my-4">
+                    <h5 class="mb-3 text-primary"><i class="las la-university"></i> {{ __('Bank Details (For Payments)') }}</h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ __('Bank Name') }}</label>
+                            <input type="text" name="bank_name" class="form-control" value="{{ old('bank_name', $user->bank_name) }}" placeholder="e.g. CIB">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ __('Account Holder Name') }}</label>
+                            <input type="text" name="bank_account_name" class="form-control" value="{{ old('bank_account_name', $user->bank_account_name) }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ __('IBAN') }}</label>
+                            <input type="text" name="iban" class="form-control" value="{{ old('iban', $user->iban) }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ __('Swift Code') }}</label>
+                            <input type="text" name="swift_code" class="form-control" value="{{ old('swift_code', $user->swift_code) }}">
+                        </div>
+                    </div>
+
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>

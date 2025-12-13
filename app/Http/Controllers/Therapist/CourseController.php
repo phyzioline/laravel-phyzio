@@ -36,14 +36,14 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
-            // 'category_id' => 'required|exists:categories,id', // Uncomment if categories are needed
             'level' => 'required|in:beginner,intermediate,advanced',
-            // 'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'type' => 'required|in:online,offline',
+            'video_url' => 'nullable|url|required_if:type,online',
         ]);
 
         $data = $request->all();
         $data['instructor_id'] = Auth::id(); // Force instructor to be current user
-        $data['status'] = 'draft'; // Default to draft, admin might need to approve? Or published directly. Let's assume published for now or draft.
+        $data['status'] = 'draft'; 
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('courses/thumbnails', 'public');
@@ -75,6 +75,8 @@ class CourseController extends Controller
             'description' => 'required|string',
             'price' => 'required|numeric',
             'level' => 'required|in:beginner,intermediate,advanced',
+            'type' => 'required|in:online,offline',
+            'video_url' => 'nullable|url|required_if:type,online',
         ]);
 
         $data = $request->all();

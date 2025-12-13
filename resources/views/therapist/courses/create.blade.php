@@ -39,6 +39,29 @@
                     @error('level') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
+                <div class="col-md-6 mb-3">
+                    <label>Course Type</label>
+                    <select name="type" class="form-control" required onchange="toggleVideoUrl(this.value)">
+                        <option value="online" {{ old('type') == 'online' ? 'selected' : '' }}>Online (Video)</option>
+                        <option value="offline" {{ old('type') == 'offline' ? 'selected' : '' }}>Offline (In-person)</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12 mb-3" id="videoUrlDiv">
+                    <label>Video URL</label>
+                    <input type="url" name="video_url" class="form-control" value="{{ old('video_url') }}" placeholder="https://youtube.com/...">
+                </div>
+
+<script>
+function toggleVideoUrl(type) {
+    document.getElementById('videoUrlDiv').style.display = type === 'online' ? 'block' : 'none';
+}
+// Initial run
+document.addEventListener('DOMContentLoaded', function() {
+    toggleVideoUrl(document.querySelector('select[name="type"]').value);
+});
+</script>
+
                 <div class="col-md-12 mb-3">
                     <label>Thumbnail</label>
                     <input type="file" name="thumbnail" class="form-control">

@@ -11,108 +11,93 @@
         <!--navigation-->
         <ul class="metismenu" id="sidenav">
             
-            <!-- Therapist Personal Section -->
-            <li class="menu-label">{{ __('Therapist Workspace') }}</li>
+            <!-- Home Visits Dashboard (Therapist's Main Role) -->
+            <li class="menu-label">{{ __('Home Visits Dashboard') }}</li>
             <li>
                 <a href="{{ route('therapist.dashboard') }}">
-                    <div class="parent-icon"><i class="las la-home"></i></div>
-                    <div class="menu-title">{{ __('Dashboard') }}</div>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('therapist.appointments.index') }}">
                     <div class="parent-icon"><i class="las la-home"></i></div>
                     <div class="menu-title">{{ __('Home Visits') }}</div>
                 </a>
             </li>
             <li>
-                <a href="{{ route('therapist.patients.index') }}">
-                    <div class="parent-icon"><i class="las la-user-injured"></i></div>
-                    <div class="menu-title">{{ __('Patients') }}</div>
+                <a href="{{ route('therapist.appointments.index') }}">
+                    <div class="parent-icon"><i class="las la-calendar-check"></i></div>
+                    <div class="menu-title">{{ __('My Visits') }}</div>
                 </a>
             </li>
             <li>
-                <a href="{{ route('therapist.schedule.index') }}">
+                <a href="{{ route('therapist.patients.index') }}">
+                    <div class="parent-icon"><i class="las la-user-injured"></i></div>
+                    <div class="menu-title">{{ __('My Patients') }}</div>
+                </a>
+            </li>
+            <li>
+                 <a href="{{ route('therapist.schedule.index') }}">
                     <div class="parent-icon"><i class="las la-clock"></i></div>
                     <div class="menu-title">{{ __('Schedule') }}</div>
                 </a>
             </li>
-            <li>
+             <li>
                 <a href="{{ route('therapist.earnings.index') }}">
                     <div class="parent-icon"><i class="las la-wallet"></i></div>
-                    <div class="menu-title">{{ __('Earnings') }}</div>
+                    <div class="menu-title">{{ __('My Earnings') }}</div>
                 </a>
             </li>
             <li>
                 <a href="{{ route('therapist.profile.edit') }}">
-                    <div class="parent-icon"><i class="las la-user"></i></div>
-                    <div class="menu-title">{{ __('Profile') }}</div>
+                    <div class="parent-icon"><i class="las la-user-cog"></i></div>
+                    <div class="menu-title">{{ __('Profile & Settings') }}</div>
                 </a>
             </li>
 
-            <!-- Courses Section -->
-            <li class="menu-label mt-3">{{ __('Course Instructor') }}</li>
+            <!-- Courses Dashboard (Instructor Role) -->
+            <li class="menu-label mt-3">{{ __('Courses Dashboard') }}</li>
             <li>
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class="las la-graduation-cap"></i></div>
-                    <div class="menu-title">{{ __('Courses') }}</div>
+                    <div class="menu-title">{{ __('Instructor Portal') }}</div>
                 </a>
                 <ul>
-                    <li> <a href="{{ route('dashboard.courses.index') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
+                    <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
                     </li>
-                    <li> <a href="{{ route('dashboard.courses.create') }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
+                    <li> <a href="{{ route('therapist.courses.create') }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
                     </li>
-                    <li> <a href="{{ route('dashboard.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
+                    <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
                     </li>
-                     <li> <a href="javascript:;"><i class="las la-users"></i>{{ __('Students') }}</a>
-                    </li>
-                     <li> <a href="javascript:;"><i class="las la-coins"></i>{{ __('Earnings') }}</a>
-                    </li>
+                    <!-- Add distinct instructor earnings if needed here, separate from therapist earnings -->
                 </ul>
             </li>
 
-            <!-- Clinic Section -->
-            <li class="menu-label mt-3">{{ __('Clinic Management') }}</li>
+            <!-- Clinic Dashboard (Clinic Role) -->
+            <li class="menu-label mt-3">{{ __('Clinic Dashboard') }}</li>
             <li>
                  <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class="las la-hospital"></i></div>
-                    <div class="menu-title">{{ __('Clinic') }}</div>
+                    <div class="menu-title">{{ __('Clinic Portal') }}</div>
                 </a>
                 <ul>
-                    <li> <a href="{{ route('clinic.dashboard') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
+                    <li> <a href="{{ route('clinic.dashboard') }}"><i class="las la-tachometer-alt"></i>{{ __('Overview') }}</a>
                     </li>
-                     <li> <a href="javascript:;"><i class="las la-procedures"></i>{{ __('Services') }}</a>
-                    </li>
-                    <li> <a href="javascript:;"><i class="las la-user-md"></i>{{ __('Doctors') }}</a>
+                     <li> <a href="javascript:;"><i class="las la-user-md"></i>{{ __('Doctors') }}</a>
                     </li>
                     <li> <a href="javascript:;"><i class="las la-calendar"></i>{{ __('Appointments') }}</a>
                     </li>
-                     <li> <a href="javascript:;"><i class="las la-users"></i>{{ __('Patients') }}</a>
-                    </li>
-                     <li> <a href="javascript:;"><i class="las la-id-card"></i>{{ __('Staff') }}</a>
-                    </li>
-                     <li> <a href="javascript:;"><i class="las la-chart-bar"></i>{{ __('Analytics') }}</a>
-                    </li>
-                     <li> <a href="javascript:;"><i class="las la-file-invoice"></i>{{ __('Billing') }}</a>
-                    </li>
                 </ul>
             </li>
-
-            <!-- Notifications -->
+             
+             <li class="menu-label mt-3">{{ __('System') }}</li>
              <li>
                 <a href="{{ route('therapist.notifications.index') }}">
                     <div class="parent-icon"><i class="las la-bell"></i></div>
                     <div class="menu-title">{{ __('Notifications') }}</div>
                 </a>
             </li>
-             
              <li>
                 <a href="{{ url('/') }}">
                     <div class="parent-icon"><i class="las la-globe"></i></div>
                     <div class="menu-title">{{ __('Back to Website') }}</div>
                 </a>
             </li>
-
         </ul>
 
         <div id="footer-section" style="padding-top: 50px;" class="text-center">
