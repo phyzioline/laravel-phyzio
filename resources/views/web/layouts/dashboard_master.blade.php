@@ -242,8 +242,8 @@
                 </a>
             </li>
 
-            <!-- Instructor Portal -->
-            @if(auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist')
+            <!-- Instructor Portal (Hidden for Clinics) -->
+            @if((auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist') && !auth()->user()->hasRole('clinic'))
                 <li class="menu-label mt-3 ml-3 text-white small">{{ __('Instructor Portal') }}</li>
                 <li>
                     <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">
@@ -277,7 +277,6 @@
                 </li>
             @endif
             
-            <!-- Clinic Specific (Adding based on Company Dashboard design) -->
             <!-- Clinic Specific (Company Dashboard Design) -->
             @if(request()->routeIs('clinic.*') || auth()->user()->hasRole('clinic'))
                  <li>
@@ -286,6 +285,15 @@
                         <span>{{ __('Dashboard') }}</span>
                     </a>
                 </li>
+                 
+                <!-- Job System for Clinics -->
+                 <li>
+                    <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
+                        <span class="las la-briefcase"></span>
+                        <span>{{ __('Job System') }}</span>
+                    </a>
+                </li>
+
                  <li>
                     <a href="{{ route('clinic.departments.index') }}" class="{{ request()->routeIs('clinic.departments.*') ? 'active' : '' }}">
                         <span class="las la-stethoscope"></span>

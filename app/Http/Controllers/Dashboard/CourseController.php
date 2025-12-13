@@ -12,7 +12,7 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = \App\Models\Course::with('instructor.user')->get();
+        $courses = \App\Models\Course::with('instructor')->get();
         return view('dashboard.courses.index', compact('courses'));
     }
 

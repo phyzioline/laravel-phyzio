@@ -506,6 +506,7 @@ body.has-hero .shop-hero-banner {
                             <li><a href="{{ route('web.appointments.index') }}" class="text-decoration-none">{{ __('Appointments') }}</a></li>
                             <li><a href="{{ route('web.erp.index') }}" class="text-decoration-none">{{ __('Clinic ERP') }}</a></li>
                             <li><a href="{{ route('web.courses.index') }}" class="text-decoration-none">{{ __('Courses') }}</a></li>
+                            <li><a href="{{ route('web.jobs.index') }}" class="text-decoration-none">{{ __('Jobs') }}</a></li>
                             <li><a href="{{ route('web.datahub.index') }}" class="text-decoration-none">{{ __('Data Hub') }}</a></li>
                            	 @if (Auth::check())
                                   <li>
