@@ -243,7 +243,7 @@
             </li>
 
             <!-- Instructor Portal (Hidden for Clinics) -->
-            @if((auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist') && !auth()->user()->hasRole('clinic'))
+            @if(!request()->routeIs('clinic.*') && (auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist'))
                 <li class="menu-label mt-3 ml-3 text-white small">{{ __('Instructor Portal') }}</li>
                 <li>
                     <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">

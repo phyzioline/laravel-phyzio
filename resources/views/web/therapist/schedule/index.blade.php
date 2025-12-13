@@ -6,22 +6,24 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="font-weight-bold text-dark mb-0">{{ __('My Schedule') }}</h2>
-            <p class="text-muted">{{ __('Manage your availability and time slots') }}</p>
+            <p class="text-muted">{{ __('Manage your recurring weekly availability') }}</p>
         </div>
         <div>
-             <button class="btn btn-white shadow-sm mr-2"><i class="las la-cog"></i> {{ __('Settings') }}</button>
-             <button class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('Add Slot') }}</button>
+             <!-- Toggle Modal -->
+             <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+                <i class="las la-plus"></i> {{ __('Add Availability') }}
+             </button>
         </div>
     </div>
 
-    <!-- Calendar Stats -->
+    <!-- Stats -->
     <div class="row mb-4">
         <div class="col-md-3">
              <div class="card shadow-sm border-0 text-center py-3">
                  <div class="card-body">
                     <i class="las la-clock text-primary mb-2" style="font-size: 32px;"></i>
                     <h3 class="font-weight-bold text-dark mb-0">{{ $availableSlots }}</h3>
-                    <p class="text-muted small mb-0">{{ __('Available Slots') }}</p>
+                    <p class="text-muted small mb-0">{{ __('Total Weekly Slots') }}</p>
                 </div>
              </div>
         </div>
@@ -30,7 +32,7 @@
                  <div class="card-body">
                     <i class="las la-calendar-check text-success mb-2" style="font-size: 32px;"></i>
                     <h3 class="font-weight-bold text-dark mb-0">{{ $bookedSlots }}</h3>
-                    <p class="text-muted small mb-0">{{ __('Booked Slots') }}</p>
+                    <p class="text-muted small mb-0">{{ __('Bookings this Month') }}</p>
                 </div>
              </div>
         </div>
@@ -39,7 +41,7 @@
                  <div class="card-body">
                     <i class="las la-ban text-warning mb-2" style="font-size: 32px;"></i>
                     <h3 class="font-weight-bold text-dark mb-0">{{ $blockedSlots }}</h3>
-                    <p class="text-muted small mb-0">{{ __('Blocked Slots') }}</p>
+                    <p class="text-muted small mb-0">{{ __('Blocked') }}</p>
                 </div>
              </div>
         </div>
@@ -48,141 +50,114 @@
                  <div class="card-body">
                     <i class="las la-percent text-info mb-2" style="font-size: 32px;"></i>
                     <h3 class="font-weight-bold text-dark mb-0">{{ $utilizationRate }}%</h3>
-                    <p class="text-muted small mb-0">{{ __('Utilization Rate') }}</p>
+                    <p class="text-muted small mb-0">{{ __('Utilization') }}</p>
                 </div>
              </div>
         </div>
     </div>
 
-    <!-- Calendar View (Mockup of Weekly View) -->
-    <div class="card shadow border-0 mb-4">
-        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-                 <button class="btn btn-light btn-sm mr-2"><i class="las la-chevron-left"></i></button>
-                 <h5 class="mb-0 font-weight-bold text-dark mx-2">December 2024</h5>
-                 <button class="btn btn-light btn-sm ml-2"><i class="las la-chevron-right"></i></button>
-            </div>
-            <div class="btn-group btn-group-sm">
-                <button type="button" class="btn btn-outline-secondary">Week</button>
-                <button type="button" class="btn btn-primary">Month</button>
-                <button type="button" class="btn btn-outline-secondary">Day</button>
-            </div>
-        </div>
-        <div class="card-body p-0">
-            <!-- Simple Responsive Calendar Grid -->
-            <div class="table-responsive">
-                <table class="table table-bordered mb-0 text-center table-calendar">
-                    <thead class="bg-light">
-                        <tr>
-                            <th style="width: 14%;">Sun</th>
-                            <th style="width: 14%;">Mon</th>
-                            <th style="width: 14%;">Tue</th>
-                            <th style="width: 14%;">Wed</th>
-                            <th style="width: 14%;">Thu</th>
-                            <th style="width: 14%;">Fri</th>
-                            <th style="width: 14%;">Sat</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                         <!-- Week 1 -->
-                        <tr style="height: 100px;">
-                            <td class="text-muted bg-light">
-                                <div class="text-left small mb-1">30</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">1</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">9:00 AM</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">2:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">2</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">10:00 AM</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">3:00 PM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">3</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">11:00 AM</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">12:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">4</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">10:00 AM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">5</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">2:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">6</div>
-                            </td>
-                        </tr>
+    <!-- Weekly Schedule View -->
+    <div class="row">
+        @php
+            $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        @endphp
 
-                        <!-- Week 2 -->
-                         <tr style="height: 100px;">
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">7</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">8</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">9:00 AM</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">1:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">9</div>
-                                 <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">10:00 AM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">10</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">11:00 AM</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">3:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">11</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">9:00 AM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">12</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">2:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">13</div>
-                            </td>
-                        </tr>
-                        
-                         <!-- Week 3 -->
-                         <tr style="height: 100px;">
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">14</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">15</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">10:00 AM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">16</div>
-                                 <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">9:00 AM</div>
-                                 <div class="badge badge-success d-block mb-1 py-1 text-left px-2">2:00 PM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">17</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">11:00 AM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">18</div>
-                                <div class="badge badge-danger d-block mb-1 py-1 text-left px-2">10:00 AM</div>
-                            </td>
-                             <td>
-                                <div class="text-left small mb-1 font-weight-bold">19</div>
-                                <div class="badge badge-success d-block mb-1 py-1 text-left px-2">3:00 PM</div>
-                            </td>
-                            <td>
-                                <div class="text-left small mb-1 font-weight-bold">20</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+        @foreach($days as $day)
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white border-bottom-0 pb-0">
+                    <h5 class="text-capitalize font-weight-bold text-primary">{{ $day }}</h5>
+                </div>
+                <div class="card-body">
+                    @php
+                        // Filter schedules for this day
+                        $daySchedules = $schedules->where('day_of_week', $day);
+                    @endphp
+
+                    @forelse($daySchedules as $schedule)
+                        <div class="d-flex justify-content-between align-items-center mb-2 p-2 bg-light rounded">
+                            <div>
+                                <i class="las la-clock text-muted"></i> 
+                                <strong>{{ \Carbon\Carbon::parse($schedule->start_time)->format('g:i A') }}</strong> - 
+                                <strong>{{ \Carbon\Carbon::parse($schedule->end_time)->format('g:i A') }}</strong>
+                            </div>
+                            <!-- Future: Add delete button here -->
+                        </div>
+                    @empty
+                        <p class="text-muted small text-center mb-0 p-3 bg-light rounded">No slots available</p>
+                    @endforelse
+                </div>
             </div>
         </div>
+        @endforeach
     </div>
+</div>
+
+<!-- Add Availability Modal -->
+<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Set Availability</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{{ route('therapist.availability.update') }}" method="POST">
+          @csrf
+          @method('PUT')
+          <div class="modal-body">
+            <!-- Days Selection -->
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Select Days</label>
+                <div class="row">
+                    @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
+                    <div class="col-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="days[]" value="{{ $day }}" id="day_{{ $day }}">
+                            <label class="form-check-label text-capitalize" for="day_{{ $day }}">
+                                {{ $day }}
+                            </label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Start Time</label>
+                    <input type="time" name="start_time" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                     <label class="form-label">End Time</label>
+                     <input type="time" name="end_time" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Date Range (Optional Validity)</label>
+                <div class="d-flex gap-2">
+                    <input type="date" name="start_date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                    <input type="date" name="end_date" class="form-control" value="{{ date('Y-m-d', strtotime('+1 year')) }}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Slot Duration (Minutes)</label>
+                 <select name="slot_duration" class="form-control">
+                     <option value="15">15 Minutes</option>
+                     <option value="30" selected>30 Minutes</option>
+                     <option value="45">45 Minutes</option>
+                     <option value="60">60 Minutes</option>
+                 </select>
+            </div>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save Availability</button>
+          </div>
+      </form>
+    </div>
+  </div>
 </div>
 @endsection
