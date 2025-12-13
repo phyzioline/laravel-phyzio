@@ -12,19 +12,35 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('therapist_profiles', function (Blueprint $table) {
-            $table->string('bank_name')->nullable();
-            $table->string('bank_account_name')->nullable();
-            $table->string('bank_account_number')->nullable();
-            $table->string('iban')->nullable();
-            $table->string('swift_code')->nullable();
+            if (!Schema::hasColumn('therapist_profiles', 'bank_name')) {
+                $table->string('bank_name')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'bank_account_name')) {
+                $table->string('bank_account_name')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'bank_account_number')) {
+                $table->string('bank_account_number')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'iban')) {
+                $table->string('iban')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'swift_code')) {
+                $table->string('swift_code')->nullable();
+            }
             
-            // Access control flags if not already present on users table
-            $table->boolean('can_access_clinic')->default(false);
-            $table->boolean('can_access_instructor')->default(false);
+            if (!Schema::hasColumn('therapist_profiles', 'can_access_clinic')) {
+                $table->boolean('can_access_clinic')->default(false);
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'can_access_instructor')) {
+                $table->boolean('can_access_instructor')->default(false);
+            }
             
-            // Other missing fields from model
-            $table->json('available_areas')->nullable();
-            $table->decimal('total_earnings', 10, 2)->default(0);
+            if (!Schema::hasColumn('therapist_profiles', 'available_areas')) {
+                $table->json('available_areas')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'total_earnings')) {
+                $table->decimal('total_earnings', 10, 2)->default(0);
+            }
         });
     }
 
