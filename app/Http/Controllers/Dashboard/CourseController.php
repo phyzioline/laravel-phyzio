@@ -36,6 +36,8 @@ class CourseController extends Controller
             'category_id' => 'nullable|exists:categories,id',
             'level' => 'required|in:beginner,intermediate,advanced',
             'status' => 'required|in:draft,pending,published',
+            'type' => 'required|in:online,offline',
+            'video_url' => 'nullable|url|required_if:type,online',
         ]);
 
         \App\Models\Course::create($request->all());
