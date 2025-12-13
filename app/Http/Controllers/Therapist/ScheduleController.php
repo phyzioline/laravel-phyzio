@@ -9,8 +9,44 @@ class ScheduleController extends Controller
 {
     public function index()
     {
-        // Mock slots/schedule data
-        $slots = []; // Populate with calendar events format later
-        return view('web.therapist.schedule.index', compact('slots'));
+        $user = auth()->user();
+        
+        // Fetch Appointments (Booked Slots)
+        $appointments = \App\Models\Appointment::where('therapist_id', $user->id)
+            ->whereDate('appointment_date', '>=', now()->startOfMonth())
+            ->whereDate('appointment_date', '<=', now()->endOfMonth())
+            ->get();
+            
+        // Fetch Availability Schedules
+        $schedules = \App\Models\TherapistSchedule::where('therapist_id', $user->id)
+            ->where('is_active', true)
+            ->get();
+            
+        // Prepare events for calendar (simplified for now, full implementation would separate this)
+        $events = [];
+        
+        foreach($appointments as $appt) {
+            $events[] = [
+                'title' => 'Booked: ' . ($appt->patient->name ?? 'Patient'),
+                'start' => $appt->appointment_date . 'T' . $appt->time,
+                'color' => '#dc3545' // Red
+            ];
+        }
+        
+        // Mocking slots based on schedule for visualization would be complex here without a full calendar library integration
+        // passing $schedules to view to loop through
+        
+        // Calculate Stats
+        $availableSlots = $schedules->sum(function($s) {
+             $start = \Carbon\Carbon::parse($s->start_time);
+             $end = \Carbon\Carbon::parse($s->end_time);
+             return floor($start->diffInMinutes($end) / ($s->slot_duration ?: 30));
+        }) * 4; // Approx 4 weeks in a month
+        
+        $bookedSlots = $appointments->count();
+        $blockedSlots = 0; // Add blocked logic if needed
+        $utilizationRate = $availableSlots > 0 ? round(($bookedSlots / $availableSlots) * 100) : 0;
+
+        return view('web.therapist.schedule.index', compact('events', 'schedules', 'availableSlots', 'bookedSlots', 'blockedSlots', 'utilizationRate'));
     }
 }

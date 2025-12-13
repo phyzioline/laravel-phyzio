@@ -49,6 +49,11 @@ class CourseController extends Controller
             $data['thumbnail'] = $request->file('thumbnail')->store('courses/thumbnails', 'public');
         }
 
+        if ($request->hasFile('video_file')) {
+            $data['video_file'] = $request->file('video_file')->store('courses/videos', 'public');
+            $data['type'] = 'online'; // Force type if video uploaded
+        }
+
         Course::create($data);
 
         return redirect()->route('therapist.courses.index')->with('message', ['type' => 'success', 'text' => 'Course created successfully!']);

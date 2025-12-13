@@ -242,16 +242,23 @@
                 </a>
             </li>
 
-            <!-- Instructor Specific -->
+            <!-- Instructor Portal -->
             @if(auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist')
+                <li class="menu-label mt-3 ml-3 text-white small">{{ __('Instructor Portal') }}</li>
                 <li>
-                    <a href="{{ route('instructor.courses.create') }}" class="{{ request()->routeIs('instructor.courses.create') ? 'active' : '' }}">
+                    <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">
+                         <span class="las la-tachometer-alt"></span>
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('therapist.courses.create') }}" class="{{ request()->routeIs('therapist.courses.create') ? 'active' : '' }}">
                         <span class="las la-plus-circle"></span>
                         <span>{{ __('Create Course') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="">
+                    <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">
                         <span class="las la-book"></span>
                         <span>{{ __('My Courses') }}</span>
                     </a>
@@ -263,7 +270,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="">
+                    <a href="{{ route('therapist.earnings.index') }}" class="{{ request()->routeIs('therapist.earnings.index') ? 'active' : '' }}">
                         <span class="las la-wallet"></span>
                         <span>{{ __('Earnings') }}</span>
                     </a>

@@ -52,9 +52,21 @@
                     <input type="url" name="video_url" class="form-control" value="{{ old('video_url') }}" placeholder="https://youtube.com/...">
                 </div>
 
+                <div class="col-md-12 mb-3" id="videoUploadDiv" style="display:none;">
+                    <label>Upload Video (MP4)</label>
+                    <input type="file" name="video_file" class="form-control" accept="video/mp4,video/x-m4v,video/*">
+                </div>
+
 <script>
 function toggleVideoUrl(type) {
-    document.getElementById('videoUrlDiv').style.display = type === 'online' ? 'block' : 'none';
+    if(type === 'online') {
+         document.getElementById('videoUrlDiv').style.display = 'block';
+         document.getElementById('videoUploadDiv').style.display = 'block'; // Allow both or toggle? 
+         // For now show both options if online
+    } else {
+         document.getElementById('videoUrlDiv').style.display = 'none';
+         document.getElementById('videoUploadDiv').style.display = 'none';
+    }
 }
 // Initial run
 document.addEventListener('DOMContentLoaded', function() {

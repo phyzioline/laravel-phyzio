@@ -20,7 +20,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                  <div class="card-body">
                     <i class="las la-clock text-primary mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">32</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $availableSlots }}</h3>
                     <p class="text-muted small mb-0">{{ __('Available Slots') }}</p>
                 </div>
              </div>
@@ -29,7 +29,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                  <div class="card-body">
                     <i class="las la-calendar-check text-success mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">18</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $bookedSlots }}</h3>
                     <p class="text-muted small mb-0">{{ __('Booked Slots') }}</p>
                 </div>
              </div>
@@ -38,7 +38,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                  <div class="card-body">
                     <i class="las la-ban text-warning mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">6</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $blockedSlots }}</h3>
                     <p class="text-muted small mb-0">{{ __('Blocked Slots') }}</p>
                 </div>
              </div>
@@ -47,7 +47,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                  <div class="card-body">
                     <i class="las la-percent text-info mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">75%</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $utilizationRate }}%</h3>
                     <p class="text-muted small mb-0">{{ __('Utilization Rate') }}</p>
                 </div>
              </div>
