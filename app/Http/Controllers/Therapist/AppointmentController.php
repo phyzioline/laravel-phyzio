@@ -9,7 +9,18 @@ class AppointmentController extends Controller
 {
     public function index()
     {
-        return view('web.therapist.appointments');
+        $appointments = \App\Models\Appointment::where('therapist_id', auth()->id())
+            ->with(['patient', 'service'])
+            ->orderBy('appointment_date', 'asc')
+            ->orderBy('appointment_time', 'asc')
+            ->get();
+
+        $upcoming = $appointments->where('status', 'scheduled')->where('appointment_date', '>=', now()->toDateString());
+        $past = $appointments->where('appointment_date', '<', now()->toDateString());
+        $cancelled = $appointments->where('status', 'cancelled');
+        $completed = $appointments->where('status', 'completed');
+
+        return view('web.therapist.appointments', compact('appointments', 'upcoming', 'past', 'cancelled', 'completed'));
     }
 
     public function updateStatus(Request $request, $id)
