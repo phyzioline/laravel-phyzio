@@ -51,11 +51,11 @@
             </li>
 
             <!-- Courses Dashboard (Instructor Role) -->
-            <li class="menu-label mt-3">{{ __('Courses Dashboard') }}</li>
+            <li class="menu-label mt-3">{{ __('Instructor Portal') }}</li>
             <li>
                 <a href="javascript:;" class="has-arrow">
                     <div class="parent-icon"><i class="las la-graduation-cap"></i></div>
-                    <div class="menu-title">{{ __('Instructor Portal') }}</div>
+                    <div class="menu-title">{{ __('Courses Management') }}</div>
                 </a>
                 <ul>
                     <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
@@ -64,7 +64,10 @@
                     </li>
                     <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
                     </li>
-                    <!-- Add distinct instructor earnings if needed here, separate from therapist earnings -->
+                    <li> <a href="javascript:;"><i class="las la-users"></i>{{ __('Students') }}</a>
+                    </li>
+                    <li> <a href="{{ route('therapist.earnings.index') }}"><i class="las la-coins"></i>{{ __('Earnings') }}</a>
+                    </li>
                 </ul>
             </li>
 

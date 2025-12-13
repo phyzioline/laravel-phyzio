@@ -27,6 +27,8 @@ class TherapistProfile extends Model
         'bank_name',
         'bank_account_number',
         'bank_account_name',
+        'iban',
+        'swift_code',
         'can_access_clinic',
         'can_access_instructor'
     ];

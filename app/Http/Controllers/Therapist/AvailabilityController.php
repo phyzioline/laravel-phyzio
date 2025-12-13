@@ -14,10 +14,20 @@ class AvailabilityController extends Controller
             ->where('is_active', true)
             ->get();
             
-        // Mock stats for the view (can be real later)
-        $availableSlots = 32; 
-        $blockedSlots = 6;
-        $utilizationRate = 75;
+        // Calculate real stats
+        $totalSchedules = $schedules->count();
+        $availableSlots = $schedules->sum(function($schedule) {
+            $start = \Carbon\Carbon::parse($schedule->start_time);
+            $end = \Carbon\Carbon::parse($schedule->end_time);
+            return $start->diffInMinutes($end) / ($schedule->slot_duration ?: 30);
+        });
+        
+        // Blocked slots could be appointments
+        $blockedSlots = \App\Models\Appointment::where('therapist_id', auth()->id())
+            ->whereDate('appointment_date', '>=', now())
+            ->count();
+            
+        $utilizationRate = $availableSlots > 0 ? round(($blockedSlots / $availableSlots) * 100) : 0;
 
         return view('web.therapist.availability', compact('schedules', 'availableSlots', 'blockedSlots', 'utilizationRate'));
     }
