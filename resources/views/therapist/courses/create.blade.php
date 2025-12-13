@@ -79,6 +79,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="file" name="thumbnail" class="form-control">
                     @error('thumbnail') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
+
+                <div class="col-md-12 mb-3">
+                    <label>Status</label>
+                    <select name="status" class="form-control" required>
+                        <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft (Hidden)</option>
+                        <option value="published" {{ old('status') == 'published' ? 'selected' : '' }} selected>Published (Visible)</option>
+                    </select>
+                </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Create Course</button>

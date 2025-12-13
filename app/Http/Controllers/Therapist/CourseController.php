@@ -38,12 +38,13 @@ class CourseController extends Controller
             'price' => 'required|numeric',
             'level' => 'required|in:beginner,intermediate,advanced',
             'type' => 'required|in:online,offline',
+            'status' => 'required|in:draft,published',
             'video_url' => 'nullable|url|required_if:type,online',
         ]);
 
         $data = $request->all();
-        $data['instructor_id'] = Auth::id(); // Force instructor to be current user
-        $data['status'] = 'draft'; 
+        $data['instructor_id'] = Auth::id(); 
+        $data['status'] = $request->input('status'); 
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('courses/thumbnails', 'public');
@@ -81,6 +82,7 @@ class CourseController extends Controller
             'price' => 'required|numeric',
             'level' => 'required|in:beginner,intermediate,advanced',
             'type' => 'required|in:online,offline',
+            'status' => 'required|in:draft,published',
             'video_url' => 'nullable|url|required_if:type,online',
         ]);
 

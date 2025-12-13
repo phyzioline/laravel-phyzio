@@ -75,6 +75,10 @@ Route::get('/', [HomeController::class, 'index'])
         Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
         Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
         Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
+        Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
+        Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
+        Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
+        Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
         Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name('web.datahub.dashboard');
         Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name('web.datahub.licensing');
@@ -198,6 +202,8 @@ Route::group(
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
+        Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
+        Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
 
     require __DIR__ . '/dashboard.php';
