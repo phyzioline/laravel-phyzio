@@ -145,22 +145,13 @@
 
             <ul style="height: 100vh;" class="clearfix">
                 @if (Auth::check())
-                    <li class="menu-item-box">
+                    {{-- <li class="menu-item-box">
                         <a href="{{ route('profile.index') }}">{{ __('My Profile') }}</a>
+                    </li> --}}
+                    
+                    <li class="menu-item-box">
+                        <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
                     </li>
-                    @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('therapist') || Auth::user()->hasRole('instructor') || Auth::user()->hasRole('admin'))
-                        <li class="menu-item-box">
-                             @if(Auth::user()->hasRole('admin'))
-                                <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
-                             @elseif(Auth::user()->hasRole('vendor'))
-                                <a href="{{ route('dashboard.home') }}">{{ __('Dashboard') }}</a>
-                             @elseif(Auth::user()->hasRole('therapist'))
-                                <a href="{{ route('therapist.dashboard') }}">{{ __('Dashboard') }}</a>
-                             @elseif(Auth::user()->hasRole('instructor'))
-                                <a href="{{ route('instructor.dashboard') }}">{{ __('Dashboard') }}</a>
-                             @endif
-                        </li>
-                    @endif
                 @endif
 
                 <li class="menu-item-box {{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
