@@ -23,10 +23,11 @@ use App\Http\Controllers\Web\SocialLoginController;
 //     return view('welcome');
 // });
 
-// Root redirect to localized URL
-Route::get('/', function () {
-    return redirect(LaravelLocalization::getLocalizedURL());
-});
+// Note: the localized route group defines the home route; avoid forcing a redirect
+// Redirect legacy '/en' requests (default locale) to root to avoid 404s
+Route::get('en/{any?}', function () {
+    return redirect('/', 301);
+})->where('any', '.*');
 
 Route::group(
 [
