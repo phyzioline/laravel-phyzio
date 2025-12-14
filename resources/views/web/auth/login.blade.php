@@ -24,6 +24,14 @@
                   <div class="card-front">
                     <div class="center-wrap">
                       <h4 class="heading">Log In</h4>
+                      @if(Session::has('message'))
+                          <div class="alert alert-{{ Session::get('message')['type'] == 'error' ? 'danger' : 'success' }} alert-dismissible fade show" role="alert">
+                              {{ Session::get('message')['text'] }}
+                              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                              </button>
+                          </div>
+                      @endif
                       <form method="post" action="{{ route('login') }}">
                         @csrf
                         <div class="form-group">

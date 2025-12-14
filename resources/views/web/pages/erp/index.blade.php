@@ -18,7 +18,7 @@
                     <h1 class="mb-4 display-4 font-weight-bold text-white">Complete Management System for Your Clinic</h1>
                     <p class="lead mb-5 text-white-50">Streamline your practice with our all-in-one ERP. EMR, scheduling, billing, and patient engagement in one secure platform.</p>
                     <div class="d-flex">
-                        <a href="#" class="btn btn-primary btn-lg px-4 mr-3 font-weight-bold" style="background-color: #04b8c4; border-color: #04b8c4;">Start Free Trial</a>
+                        <a href="{{ route('clinic.dashboard') }}" class="btn btn-primary btn-lg px-4 mr-3 font-weight-bold" style="background-color: #04b8c4; border-color: #04b8c4;">Start Free Trial</a>
                         <a href="#" class="btn btn-outline-secondary btn-lg px-4 font-weight-bold">Watch Demo</a>
                     </div>
                 </div>
