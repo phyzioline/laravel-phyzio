@@ -145,9 +145,9 @@
 
             <ul style="height: 100vh;" class="clearfix">
                 @if (Auth::check())
-                    {{-- <li class="menu-item-box">
-                        <a href="{{ route('profile.index') }}">{{ __('My Profile') }}</a>
-                    </li> --}}
+                    <li class="menu-item-box">
+                        <a href="{{ route('history_order.index') }}">{{ __('My Profile') }}</a>
+                    </li>
                     
                     <li class="menu-item-box">
                         <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
