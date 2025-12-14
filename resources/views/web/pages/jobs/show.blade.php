@@ -1,4 +1,4 @@
-@extends('web.layouts.master')
+@extends('web.layouts.app')
 
 @section('title', $job->title)
 
