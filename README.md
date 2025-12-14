@@ -87,6 +87,24 @@ See the [Deployment Guide](docs/deployment/deployment-guide.md) for detailed ins
 
 This project is prepared for future mobile app development with Python (Flutter backend/API integration).
 
+## Google Merchant Feed
+
+We expose localized product feeds for Google Merchant Center. Two public feeds are available:
+
+- `/google-merchant-en.xml` — English feed
+- `/google-merchant-ar.xml` — Arabic feed
+
+Notes:
+- Google requires product data in the target language and currency; submit the feed corresponding to the country/language you target.
+- Feed entries include localized title/description, localized product link (with locale), absolute image URLs, price (EGP), availability and `sku` as `mpn`.
+- To clear caches on deployment run:
+
+```bash
+php artisan route:clear
+php artisan view:clear
+php artisan cache:clear
+```
+
 ## License
 
 Proprietary - All rights reserved.

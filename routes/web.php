@@ -138,6 +138,13 @@ Route::get('/', [HomeController::class, 'index'])
 
 
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\Web\FeedController;
+
+// Google Merchant feeds (separate feeds per language)
+Route::get('/google-merchant-{lang}.xml', [FeedController::class, 'google'])
+    ->where('lang', 'en|ar')
+    ->name('feeds.google');
+
 
 Route::get('/run-privacy-policy-seeder', function () {
     Artisan::call('db:seed', [
