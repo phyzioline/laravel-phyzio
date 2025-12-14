@@ -77,8 +77,7 @@ Route::get('/', [HomeController::class, 'index'])
         Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
-        Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
-        Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
+
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
         Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name('web.datahub.dashboard');
         Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name('web.datahub.licensing');
@@ -159,8 +158,7 @@ Route::get('/callback', [OrderController::class, 'callback']);
 Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social.')->group(function(){
     Route::get('{provider}/redirect','redirect')->name('redirect');
     Route::get('{provider}/callback','callback')->name('callback');
-    Route::get('{provider}/redirect','redirect')->name('redirect');
-    Route::get('{provider}/callback','callback')->name('callback');
+
 });
 
 // Generic Dashboard Redirect
@@ -202,14 +200,13 @@ Route::group(
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');
         Route::get('/notifications', [\App\Http\Controllers\Clinic\NotificationController::class, 'index'])->name('notifications.index');
-        Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index'); // Check if ProfileController exists or create
+        // Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index'); // Check if ProfileController exists or create
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
-        Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
 
