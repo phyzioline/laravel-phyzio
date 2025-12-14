@@ -21,7 +21,7 @@ class AppointmentController extends Controller
         $endOfWeek = Carbon::now()->endOfWeek();
 
         $appointments = ClinicAppointment::with(['patient', 'therapist'])
-                        ->whereBetween('start_time', [$startOfWeek, $endOfWeek])
+                        ->whereBetween('appointment_date', [$startOfWeek, $endOfWeek])
                         ->get();
 
         $patients = Patient::all(); 
@@ -44,14 +44,13 @@ class AppointmentController extends Controller
         ]);
 
         $start = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
-        $end = $start->copy()->addHour(); // Default 1 hour duration
-
+        
         $appointment = new ClinicAppointment();
         $appointment->clinic_id = 1; // Default or Auth::user()->clinic_id
         $appointment->patient_id = $request->patient_id;
         $appointment->therapist_id = $request->therapist_id;
-        $appointment->start_time = $start;
-        $appointment->end_time = $end;
+        $appointment->appointment_date = $start;
+        $appointment->duration_minutes = 60; // Default 1 hour duration
         $appointment->type = $request->type;
         $appointment->status = 'scheduled';
         $appointment->save();

@@ -7,15 +7,15 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="text-white font-weight-bold mb-4">Book a Home Visit Physiotherapist</h1>
-                    <p class="text-white lead mb-5">Professional care in the comfort of your home</p>
+                    <h1 class="text-white font-weight-bold mb-4">{{ __('Book a Home Visit Physiotherapist') }}</h1>
+                    <p class="text-white lead mb-5">{{ __('Professional care in the comfort of your home') }}</p>
                     
                     <!-- Search Box -->
                     <div class="bg-white p-4 rounded shadow-lg">
                         <form action="{{ url('/appointments') }}" method="GET" class="row">
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <select name="specialization" class="form-control border-0 bg-light" style="height: 50px;">
-                                    <option value="">Select Specialization</option>
+                                    <option value="">{{ __('Select Specialization') }}</option>
                                     @foreach($specializations as $spec)
                                         <option value="{{ $spec }}" {{ request('specialization') == $spec ? 'selected' : '' }}>{{ $spec }}</option>
                                     @endforeach
@@ -23,15 +23,15 @@
                             </div>
                             <div class="col-md-4 mb-3 mb-md-0">
                                 <select name="area" class="form-control border-0 bg-light" style="height: 50px;">
-                                    <option value="">Select Area</option>
+                                    <option value="">{{ __('Select Area') }}</option>
                                     @foreach($areas as $area)
                                         <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>{{ $area }}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <button type="submit" class="btn btn-block text-white font-weight-bold" style="background-color: #04b8c4; height: 50px;">
-                                    Search Therapists
+                                <button type="submit" class="btn btn-block text-white font-weight-bold shadow" style="background-color: #02767F; height: 50px; border-bottom: 3px solid #FFD700;">
+                                    {{ __('Search Therapists') }}
                                 </button>
                             </div>
                         </form>
@@ -48,35 +48,35 @@
                 <!-- Filters Sidebar -->
                 <div class="col-lg-3 mb-4">
                     <div class="bg-white p-4 rounded shadow-sm">
-                        <h5 class="font-weight-bold mb-4">Filters</h5>
+                        <h5 class="font-weight-bold mb-4">{{ __('Filters') }}</h5>
                         <form action="{{ url('/appointments') }}" method="GET">
                             <div class="form-group">
-                                <label class="font-weight-bold">Gender</label>
+                                <label class="font-weight-bold">{{ __('Gender') }}</label>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="male">
-                                    <label class="custom-control-label" for="male">Male</label>
+                                    <label class="custom-control-label" for="male">{{ __('Male') }}</label>
                                 </div>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="female">
-                                    <label class="custom-control-label" for="female">Female</label>
+                                    <label class="custom-control-label" for="female">{{ __('Female') }}</label>
                                 </div>
                             </div>
                             
                             <hr>
                             
                             <div class="form-group">
-                                <label class="font-weight-bold">Availability</label>
+                                <label class="font-weight-bold">{{ __('Availability') }}</label>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="today">
-                                    <label class="custom-control-label" for="today">Available Today</label>
+                                    <label class="custom-control-label" for="today">{{ __('Available Today') }}</label>
                                 </div>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="tomorrow">
-                                    <label class="custom-control-label" for="tomorrow">Available Tomorrow</label>
+                                    <label class="custom-control-label" for="tomorrow">{{ __('Available Tomorrow') }}</label>
                                 </div>
                             </div>
                             
-                            <button type="submit" class="btn btn-block btn-outline-primary mt-4">Apply Filters</button>
+                            <button type="submit" class="btn btn-block btn-outline-primary mt-4">{{ __('Apply Filters') }}</button>
                         </form>
                     </div>
                 </div>
@@ -104,13 +104,18 @@
                                         @for($i = 1; $i <= 5; $i++)
                                             <i class="las la-star {{ $i <= $therapist->rating ? 'text-warning' : 'text-muted' }}"></i>
                                         @endfor
-                                        <span class="text-muted small">({{ $therapist->total_reviews }} reviews)</span>
+                                        <span class="text-muted small">({{ $therapist->total_reviews }} {{ __('reviews') }})</span>
                                     </div>
+                                    
+                                    <p class="mb-2 text-muted" style="font-size: 14px;">
+                                        <i class="las la-briefcase text-primary scale-110 mr-1"></i> 
+                                        <strong>{{ $therapist->years_experience }}+ {{ __('Years Exp.') }}</strong>
+                                    </p>
                                     
                                     <p class="mb-2 small text-muted">
                                         <i class="las la-map-marker text-primary"></i> 
-                                        Available in: {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 3)) }}
-                                        {{ count($therapist->available_areas ?? []) > 3 ? '+'.(count($therapist->available_areas)-3).' more' : '' }}
+                                        {{ __('Available in') }}: {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 3)) }}
+                                        {{ count($therapist->available_areas ?? []) > 3 ? '+'.(count($therapist->available_areas)-3).' '.__('more') : '' }}
                                     </p>
                                     
                                     <p class="mb-0 small">
@@ -119,15 +124,15 @@
                                 </div>
                                 <div class="col-md-3 text-center border-left">
                                     <div class="mb-3">
-                                        <span class="d-block text-muted small">Home Visit Fees</span>
-                                        <span class="h4 font-weight-bold text-primary">{{ $therapist->home_visit_rate }} EGP</span>
+                                        <span class="d-block text-muted small">{{ __('Home Visit Fees') }}</span>
+                                        <span class="h4 font-weight-bold text-primary">{{ $therapist->home_visit_rate }} {{ __('EGP') }}</span>
                                     </div>
                                     
-                                    <a href="{{ url('/appointments/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2" style="background-color: #ea3d2f;">
-                                        Book Now
+                                    <a href="{{ url('/appointments/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2 shadow-lg" style="background-color: #02767F; border-bottom: 3px solid #FFD700; transition: all 0.3s ease;">
+                                        {{ __('Book Now') }}
                                     </a>
-                                    <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-secondary btn-sm">
-                                        View Profile
+                                    <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-info btn-sm font-weight-bold" style="color: #02767F; border-color: #02767F;">
+                                        {{ __('View Profile') }}
                                     </a>
                                 </div>
                             </div>
@@ -136,8 +141,8 @@
                     @empty
                     <div class="text-center py-5">
                         <img src="{{ asset('web/assets/images/no-results.svg') }}" style="width: 150px; opacity: 0.5;" class="mb-3">
-                        <h4>No therapists found</h4>
-                        <p class="text-muted">Try adjusting your search filters</p>
+                        <h4>{{ __('No therapists found') }}</h4>
+                        <p class="text-muted">{{ __('Try adjusting your search filters') }}</p>
                     </div>
                     @endforelse
 
