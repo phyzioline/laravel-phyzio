@@ -1,4 +1,4 @@
-{
+in{
     "Physioline - Physical Therapy Products & Medical Equipment": "فيزيولاين - منتجات العلاج الطبيعي والمعدات الطبية",
     "Dashboard": "لوحة التحكم",
     "Shop": "المتجر",
@@ -240,5 +240,7 @@
     "EGP": "ج.م",
     "Book Now": "احجز الآن",
     "No therapists found": "لم يتم العثور على معالجين",
-    "Try adjusting your search filters": "حاول تعديل خيارات البحث"
+    "Try adjusting your search filters": "حاول تعديل خيارات البحث",
+    "Menu List": "القائمة",
+    "My Profile": "ملفي الشخصي"
 }

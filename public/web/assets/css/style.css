@@ -6582,3 +6582,45 @@ background: radial-gradient(49.06% 178.95% at 50% 50%, rgba(255, 255, 255, 0) 0%
 }
 
 
+
+/* Mobile Sidebar Enhancement - Menu Item Box */
+.menu-item-box {
+    background-color: rgba(2, 118, 127, 0.1); 
+    /* Using brand color #02767F with low opacity for the box background */
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    border-bottom: 1px solid rgba(2, 118, 127, 0.3); /* Tiny line below */
+    transition: all 0.3s ease;
+}
+
+.menu-item-box a {
+    color: #02767F; /* Phyzioline brand color for text */
+    text-decoration: none !important; /* Force remove underline */
+    font-weight: 500;
+    display: block;
+    width: 100%;
+}
+
+.menu-item-box:hover {
+    background-color: rgba(2, 118, 127, 0.2);
+}
+
+.menu-item-box.active {
+    background-color: rgba(2, 118, 127, 0.8);
+}
+
+.menu-item-box.active a {
+    color: #ffffff;
+}
+
+/* Ensure no underlines on hover for these specific links */
+.menu-item-box a:hover {
+    text-decoration: none;
+    color: #02767F;
+}
+
+.menu-item-box.active a:hover {
+    color: #ffffff;
+}
+

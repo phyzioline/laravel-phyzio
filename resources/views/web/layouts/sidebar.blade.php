@@ -141,29 +141,48 @@
         </div>
 
         <div class="menu_list ul-li-block clearfix">
-            <h3 class="widget-title">Menu List</h3>
+            <h3 class="widget-title">{{ __('Menu List') }}</h3>
 
             <ul style="height: 100vh;" class="clearfix">
-                <li class="{{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
-                <li class="{{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
-                <li class="{{ Route::is('web.appointments.index') ? 'active' : '' }}"><a href="{{ route('web.appointments.index') }}">{{ __('Appointments') }}</a></li>
-                <li class="{{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
-                <li class="{{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
-                <li class="{{ Route::is('web.datahub.index') ? 'active' : '' }}"><a href="{{ route('web.datahub.index') }}">{{ __('Data Hub') }}</a></li>
+                @if (Auth::check())
+                    <li class="menu-item-box">
+                        <a href="{{ route('profile.index') }}">{{ __('My Profile') }}</a>
+                    </li>
+                    @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('therapist') || Auth::user()->hasRole('instructor') || Auth::user()->hasRole('admin'))
+                        <li class="menu-item-box">
+                             @if(Auth::user()->hasRole('admin'))
+                                <a href="{{ route('admin.dashboard') }}">{{ __('Dashboard') }}</a>
+                             @elseif(Auth::user()->hasRole('vendor'))
+                                <a href="{{ route('dashboard.home') }}">{{ __('Dashboard') }}</a>
+                             @elseif(Auth::user()->hasRole('therapist'))
+                                <a href="{{ route('therapist.dashboard') }}">{{ __('Dashboard') }}</a>
+                             @elseif(Auth::user()->hasRole('instructor'))
+                                <a href="{{ route('instructor.dashboard') }}">{{ __('Dashboard') }}</a>
+                             @endif
+                        </li>
+                    @endif
+                @endif
+
+                <li class="menu-item-box {{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                <li class="menu-item-box {{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.appointments.index') ? 'active' : '' }}"><a href="{{ route('web.appointments.index') }}">{{ __('Appointments') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.datahub.index') ? 'active' : '' }}"><a href="{{ route('web.datahub.index') }}">{{ __('Data Hub') }}</a></li>
                 
                 @if (Auth::check())
-                    <li class="{{ Route::is('history_order.index') ? 'active' : '' }}">
+                    <li class="menu-item-box {{ Route::is('history_order.index') ? 'active' : '' }}">
                         <a href="{{ route('history_order.index') }}">{{ __('Order History') }}</a>
                     </li>
-                    <li>
+                    <li class="menu-item-box">
                         <a href="{{ route('logout') }}"><i class="las la-sign-out-alt"></i> {{ __('Logout') }}</a>
                     </li>
                 @else
-                    <li>
+                    <li class="menu-item-box">
                         <a href="{{ route('view_login') }}"><i class="las la-sign-in-alt"></i> {{ __('Log In') }}</a>
                     </li>
                 @endif
-                <li><a href="{{ route('home') }}#about">{{ __('About Us') }}</a></li>
+                <li class="menu-item-box"><a href="{{ route('home') }}#about">{{ __('About Us') }}</a></li>
             </ul>
         </div>
 
