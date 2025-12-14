@@ -146,7 +146,13 @@
             <ul style="height: 100vh;" class="clearfix">
                 @if (Auth::check())
                     <li class="menu-item-box">
-                        <a href="{{ route('history_order.index') }}">{{ __('My Profile') }}</a>
+                        @if(auth()->user()->type == 'therapist')
+                            <a href="{{ route('therapist.profile.edit') }}">{{ __('My Profile') }}</a>
+                        @elseif(auth()->user()->hasRole('clinic'))
+                            <a href="{{ route('clinic.profile.index') }}">{{ __('My Profile') }}</a>
+                        @else
+                            <a href="{{ route('history_order.index') }}">{{ __('My Profile') }}</a>
+                        @endif
                     </li>
                     
                     <li class="menu-item-box">
