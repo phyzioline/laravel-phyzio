@@ -17,6 +17,7 @@ use App\Http\Controllers\Web\TearmsConditionController;
 use App\Http\Controllers\Web\ShippingPolicyController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Http\Controllers\Web\SocialLoginController;
+use App\Http\Controllers\Web\FeedbackController;
 
 
 // Route::get('/', function () {
@@ -58,6 +59,9 @@ Route::get('/', [HomeController::class, 'index'])
     Route::get('products/{id}', [ShowController::class, 'product'])->name('product.show');
         Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name('shipping_policy.index');
      Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name('privacy_policy.index');
+     
+     Route::get('/contact-us', [FeedbackController::class, 'index'])->name('feedback.index');
+     Route::post('/contact-us', [FeedbackController::class, 'store'])->name('feedback.store');
 
            Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name('tearms_condition.index');
         

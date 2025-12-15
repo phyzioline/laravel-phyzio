@@ -1,133 +1,90 @@
- <footer id="footer-section" class="footer-section pb-30 mt-5 clearfix">
-    <div class="container">
-      <div style="background-color: #F4F8FB; border-radius: 20px 0px 20px 0px;" class="widget-area clearfix p-5">
-        <div class="row justify-content-lg-between justify-content-md-center justify-content-md-center">
-          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-            <div class="about-content">
-              <div class="brand-logo mb-4 clearfix">
-                <a href="index.html" class="brand-link">
-                    @php
+<footer id="footer-section" class="footer-section clearfix" style="background-color: #02767F; color: white; padding-top: 60px; margin-top: 50px;">
+  <div class="container">
+    <div class="row">
+      <!-- Brand & About -->
+      <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
+        <div class="footer-widget">
+          <div class="brand-logo mb-4">
+            <a href="{{ route('home') }}" class="brand-link">
+              <!-- Using white logo or filtering the existing one if needed. Assuming white text logo is preferred on dark bg -->
+               @php
                     $setting = \App\Models\Setting::first();
-                    @endphp
-
-                <img src="{{ optional($setting)->image ? asset($setting->image) : asset('web/assets/images/colored-logo.svg') }}" alt="logo_not_found" />
-
-                </a>
-              </div>
-              <!--<p class="mb-30">-->
-              <!--  {{-- Medicia is an online medical service and medicinewooCommerce-->
-              <!--  theme for your ultimate online store and medical service. --}}-->
-              <!--  {{ $setting->{'description_' . app()->getLocale()} ?? 'Medicia is an online medical service and medicinewooCommerce theme for your ultimate online store and medical service.' }}-->
-              <!--</p>-->
-        <p class="mb-30">
-  {{ \Illuminate\Support\Str::limit($setting->{'description_' . app()->getLocale()} ?? 'Medicia is an online medical service and medicinewooCommerce theme for your ultimate online store and medical service.', 100) }}
-  <a href="#" data-bs-toggle="modal" data-bs-target="#descriptionModal">Read more</a>
-</p>
-
-
-              <div class="contact-info ul-li-block clearfix">
-               <ul class="clearfix">
-  <li>
-    <span><i class="las la-map-marked-alt"></i></span>
-    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($setting->{'address_' . app()->getLocale()} ?? '16122 Collins Street West Victoria 8007 Australia') }}" target="_blank">
-      {{ $setting->{'address_' . app()->getLocale()} ?? '16122 Collins Street West Victoria 8007 Australia' }}
-    </a>
-  </li>
-  <li>
-    <span><i class="las la-envelope-open-text"></i></span>
-    <a href="mailto:{{ $setting->email ?? '' }}">
-      {{ $setting->email ?? '' }}
-    </a>
-  </li>
- <li>
-  <span><i class="las la-phone-volume"></i></span>
-  <a href="https://wa.me/{{ preg_replace('/\D/', '', $setting->phone ?? '') }}" target="_blank">
-    {{ $setting->phone ?? '' }}
-  </a>
-</li>
-
-</ul>
-
-              </div>
-            </div>
+                @endphp
+              <img src="{{ asset('web/assets/images/Frame 131.svg') }}" alt="Phyzioline" style="max-height: 50px; filter: brightness(0) invert(1);" /> 
+            </a>
           </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-            <div class="useful-links ul-li-block clearfix">
-              <h3 class="widget-title" style="color: #36415A;">Phyzioline</h3>
-              <ul class="clearfix">
-                <li><a href="{{ route('show') }}">Shop</a></li>
-                <li><a href="{{ route('web.appointments.index') }}">Appointments</a></li>
-                <li><a href="#System">Our System</a></li>
-                <li><a href="#jobs">Jobs</a></li>
-                <li><a href="#courses">Courses</a></li>
-                <li><a href="#about">About Us</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-            <div class="useful-links ul-li-block clearfix">
-              <h3 class="widget-title" style="color: #36415A;">Quick Link</h3>
-              <ul class="clearfix">
-                <li><a href="#!">Support</a></li>
-                <!--<li><a href="TearmsCondition.html">Tearms & Condition</a></li>-->
-                <li><a href="{{ route('shipping_policy.index') }}">Shipping policies</a></li>
-                <li><a href="{{ route('privacy_policy.index') }}">Privacy Policies</a></li>
-                <li><a href="{{ route('tearms_condition.index') }}">Tearms & Condition</a></li>
-                <!-- <li><a href="#!">Help Center</a></li>-->
-              </ul>
-            </div>
-            <div class="social-icon-circle ul-li clearfix mt-5">
-              <ul class="clearfix">
-                <li>
-                  <a href="https://www.facebook.com/share/g/1BHkoMrDjk/?mibextid=wwXIfr
-                  "><i class="lab la-facebook-f"></i></a>
-                </li>
-                <li>
-                  <a href="{{ $setting->twitter ?? '' }}"><i class="lab la-twitter"></i></a>
-                </li>
-                <li>
-                  <a href="{{ $setting->instagram  ?? '' }}"><i class="lab la-instagram"></i></a>
-                </li>
-                <li>
-  <a href="{{ $setting->linkedin ?? '' }}" target="_blank">
-    <i class="lab la-linkedin"></i>
-  </a>
-</li>
-
-              </ul>
-            </div>
-          </div>
-
-
+          <p class="mb-4" style="color: rgba(255,255,255,0.8);">
+             {{ \Illuminate\Support\Str::limit($setting->{'description_' . app()->getLocale()} ?? 'Your complete medical platform for healthcare services, career opportunities, and medical products.', 150) }}
+          </p>
         </div>
       </div>
 
-      <div class="footer-bottom  text-center clearfix">
-        <p class="mb-0">
-          Designed and developed by <a href="https://phyzioline.com/" target="_blank" style="color:#02767F;">Phyzioline</a> . 2025
-        </p>
+      <!-- Services -->
+      <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Services</h4>
+          <ul class="list-unstyled">
+             <li class="mb-2"><a href="{{ route('web.appointments.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home Visits</a></li>
+             <li class="mb-2"><a href="{{ route('web.jobs.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Find Jobs</a></li>
+             <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Courses</a></li>
+             <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Products</a></li>
+          </ul>
+        </div>
+      </div>
 
+      <!-- Support -->
+      <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
+        <div class="footer-widget">
+          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Support</h4>
+           <ul class="list-unstyled">
+             <!--<li class="mb-2"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none;">Help Center</a></li>-->
+             <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Track Order</a></li>
+             <li class="mb-2"><a href="{{ route('feedback.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Contact Support</a></li>
+             <li class="mb-2"><a href="{{ route('shipping_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shipping Policy</a></li>
+              <li class="mb-2"><a href="{{ route('privacy_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Account & Connect -->
+      <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
+        <div class="footer-widget">
+           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Account</h4>
+            <ul class="list-unstyled mb-5">
+                @if(Auth::check())
+                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">My Account</a></li>
+                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Order History</a></li>
+                @else
+                 <li class="mb-2"><a href="{{ route('view_login') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Login / Register</a></li>
+                @endif
+                 <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shop</a></li>
+            </ul>
+
+            <h5 class="widget-title mb-3" style="font-weight: 700; font-size: 16px; color: white;">Connect With Us</h5>
+            <div class="social-links d-flex gap-3 mb-3">
+                 <a href="https://www.facebook.com/share/g/1BHkoMrDjk" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-facebook-f"></i></a>
+                 <a href="{{ $setting->twitter ?? '#' }}" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-twitter"></i></a>
+                 <a href="{{ $setting->instagram ?? '#' }}" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-instagram"></i></a>
+                 <a href="{{ $setting->linkedin ?? '#' }}" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-linkedin-in"></i></a>
+            </div>
+            
+            <div class="email-contact d-flex align-items-center gap-2">
+                <i class="las la-envelope" style="font-size: 18px;"></i>
+                <a href="mailto:phyzioline@gmail.com" style="color: white; text-decoration: none;">phyzioline@gmail.com</a>
+            </div>
+        </div>
       </div>
     </div>
-  </footer>
-<!-- Modal -->
-<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="descriptionModalLabel">About Us</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    <div class="row pt-4 pb-4 mt-4" style="border-top: 1px solid rgba(255,255,255,0.1);">
+      <div class="col-md-6 text-center text-md-start">
+        <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 14px;">&copy; {{ date('Y') }} Phyzioline. All rights reserved.</p>
       </div>
-      <div class="modal-body">
-        {{ $setting->{'description_' . app()->getLocale()} ?? 'Medicia is an online medical service and medicinewooCommerce theme for your ultimate online store and medical service.' }}
+      <div class="col-md-6 text-center text-md-end">
+         <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 14px;">
+             Made with <i class="las la-heart" style="color: #ff6b6b;"></i> for healthcare
+         </p>
       </div>
     </div>
   </div>
-</div>
-<!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</footer>
