@@ -2,6 +2,11 @@
 
 @section('title', 'Learning Platform | PhyzioLine')
 
+@push('meta')
+    <meta name="description" content="{{ __('Advance your physiotherapy career with our specialized courses and workshops. Certifications, video lessons, and practical training.') }}">
+    <meta name="keywords" content="Medical Courses, CME, Physical Therapy Courses, دورات طبية, تعليم مستمر, Physiotherapy Education, تدريب علاج طبيعي">
+@endpush
+
 @section('content')
 <main>
     <!-- Hero Section -->

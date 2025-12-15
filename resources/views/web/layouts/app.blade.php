@@ -6,10 +6,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <meta http-equiv="x-ua-compatible" content="ie=edge" />
 
-  <title>@yield('title', __('Physioline - Physical Therapy Products & Medical Equipment'))</title>
+  @php
+      $gSetting = \App\Models\Setting::first();
+      $currentLocale = app()->getLocale();
+      $metaTitle = $gSetting->{'website_title_' . $currentLocale} ?? 'Phyzioline - Physical Therapy Products & Medical Equipment';
+      $metaDesc = \Illuminate\Support\Str::limit($gSetting->{'description_' . $currentLocale} ?? 'Phyzioline is your premier destination for physical therapy products, medical equipment, and educational courses in the Middle East.', 160);
+      $metaKeywords = 'Physical Therapy, العلاج الطبيعي, Medical Equipment, معدات طبية, Phyzioline, فيزيولاين, Rehabilitation, إعادة التأهيل, ' . ($gSetting->keywords ?? '');
+      $metaImage = asset('web/assets/images/logo.png'); // Default image
+      $currentUrl = url()->current();
+  @endphp
+
+  <title>@yield('title', $metaTitle)</title>
+  <meta name="description" content="@yield('description', $metaDesc)">
+  <meta name="keywords" content="@yield('keywords', $metaKeywords)">
+  <meta name="author" content="Phyzioline">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ $currentUrl }}">
+  <meta property="og:title" content="@yield('title', $metaTitle)">
+  <meta property="og:description" content="@yield('description', $metaDesc)">
+  <meta property="og:image" content="@yield('image', $metaImage)">
+  <meta property="og:site_name" content="Phyzioline">
+  <meta property="og:locale" content="{{ $currentLocale == 'ar' ? 'ar_AR' : 'en_US' }}">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="{{ $currentUrl }}">
+  <meta property="twitter:title" content="@yield('title', $metaTitle)">
+  <meta property="twitter:description" content="@yield('description', $metaDesc)">
+  <meta property="twitter:image" content="@yield('image', $metaImage)">
+
+  <!-- Hreflang for SEO -->
+  @foreach(Mcamara\LaravelLocalization\Facades\LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+      <link rel="alternate" hreflang="{{ $localeCode }}" href="{{ Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}" />
+  @endforeach
+
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Phyzioline",
+    "url": "{{ url('/') }}",
+    "logo": "{{ asset('web/assets/images/logo.png') }}",
+    "sameAs": [
+      "{{ $gSetting->facebook ?? 'https://facebook.com ' }}",
+      "{{ $gSetting->twitter ?? '#' }}",
+      "{{ $gSetting->instagram ?? '#' }}",
+      "{{ $gSetting->linkedin ?? '#' }}"
+    ]
+  }
+  </script>
+
   @stack('meta')
   <link rel="shortcut icon" href="{{ asset('web/assets/images/logo.png')}}" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- css include -->
 

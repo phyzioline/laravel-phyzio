@@ -1,5 +1,10 @@
 @extends('web.layouts.app')
 
+@push('meta')
+    <meta name="description" content="{{ __('Phyzioline is the leading medical platform for physical therapy products, home visits, clinic management, and education.') }}">
+    <meta name="keywords" content="Phyzioline, Who we are, Medical Platform, من نحن, فيزيولاين, Physical Therapy, علاج طبيعي, Medical Equipment, Clinic ERP">
+@endpush
+
 @push('css')
 <style>
     /* Make header transparent to show hero background image */

@@ -1,5 +1,12 @@
 @extends('web.layouts.app')
 
+@section('title', __('Home Physical Therapy Visits'))
+
+@push('meta')
+    <meta name="description" content="{{ __('Book a professional physical therapist for home visits. Expert care at your doorstep from certified specialists.') }}">
+    <meta name="keywords" content="Home Physical Therapy, Doctor Visit, زيارات منزلية, دكتور علاج طبيعي, Home Rehabilitation, تأهيل منزلي, Phyzioline Home Visits">
+@endpush
+
 @section('content')
 <main>
     <!-- Hero Section -->

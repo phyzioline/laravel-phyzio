@@ -2,6 +2,11 @@
 
 @section('title', 'Career Opportunities')
 
+@push('meta')
+    <meta name="description" content="{{ __('Find the best physical therapy jobs and medical career opportunities. Connect with top clinics and hospitals.') }}">
+    <meta name="keywords" content="Medical Jobs, Physical Therapy Jobs, وظائف طبية, توظيف, Physiotherapist Jobs, وظائف علاج طبيعي, Healthcare Careers">
+@endpush
+
 @section('content')
 <div class="page-header" style="background: #00897b; padding: 60px 0; margin-top: 130px;">
     <div class="container">

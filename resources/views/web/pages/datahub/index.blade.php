@@ -2,6 +2,11 @@
 
 @section('title', __('PhyzioLine Data Hub'))
 
+@push('meta')
+    <meta name="description" content="{{ __('Explore global physical therapy data, statistics, and licensing requirements. Your central resource for PT insights.') }}">
+    <meta name="keywords" content="Global PT Data, Statistics, Licensing, بنك المعلومات, احصائيات علاج طبيعي, Physical Therapy Landscape, تراخيص مزاولة المهنة">
+@endpush
+
 @section('content')
 <div class="datahub-landing py-5" style="background-color: #f8f9fa; margin-top: 130px;">
     <div class="container">

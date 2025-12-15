@@ -2,6 +2,11 @@
 
 @section('title', 'Clinic ERP System | PhyzioLine')
 
+@push('meta')
+    <meta name="description" content="{{ __('Manage your medical clinic efficiently with Phyzioline ERP. Scheduling, patient records, billing, and more in one platform.') }}">
+    <meta name="keywords" content="Clinic Management System, Medical Software, إدارة عيادات, برنامج طبي, Clinic ERP, نظام إدارة طبي, Phyzioline ERP">
+@endpush
+
 @section('content')
 <main>
     <!-- Hero Section -->
