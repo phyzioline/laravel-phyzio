@@ -16,21 +16,20 @@
         <!-- Controls Section -->
         <div class="card shadow-sm border-0 mb-4">
             <div class="card-body p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-3 mb-3 mb-md-0">
-                        <label class="font-weight-bold text-teal-600 mb-2" style="color: #0d9488;">{{ __('Filter by Continent') }}</label>
-                        <select id="continentFilter" class="form-control rounded-pill border-teal" style="border-color: #0d9488;">
-                            <option value="all">{{ __('All Continents') }}</option>
-                            <option value="africa">{{ __('Africa') }}</option>
-                            <option value="asia">{{ __('Asia') }}</option>
-                            <option value="europe">{{ __('Europe') }}</option>
-                            <option value="north_america">{{ __('North America') }}</option>
-                            <option value="south_america">{{ __('South America') }}</option>
-                            <option value="oceania">{{ __('Oceania') }}</option>
-                        </select>
+                <div class="row align-items-end">
+                    <!-- Search Bar -->
+                     <div class="col-md-4 mb-3 mb-md-0">
+                        <label class="font-weight-bold text-teal-600 mb-2" style="color: #0d9488;">{{ __('Search Country') }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-right-0 border-teal" style="border-color: #0d9488; color: #0d9488;"><i class="las la-search"></i></span>
+                            </div>
+                            <input type="text" id="countrySearch" class="form-control border-left-0 border-teal" placeholder="{{ __('Type country name...') }}" style="border-color: #0d9488;">
+                        </div>
                     </div>
 
-                    <div class="col-md-9">
+                    <!-- Metric Buttons -->
+                    <div class="col-md-8">
                         <label class="font-weight-bold text-teal-600 mb-2 d-block" style="color: #0d9488;">{{ __('Select a Metric to Visualize') }}</label>
                         <div class="btn-group w-100 flex-wrap" role="group">
                             <button type="button" class="btn btn-outline-teal metric-btn active rounded-pill mr-2 mb-2" data-metric="therapists" style="border-color:#0d9488; color: #0d9488;">
@@ -46,25 +45,55 @@
                                 <i class="las la-hospital-alt mr-1"></i> {{ __('Rehab Centers') }}
                             </button>
                         </div>
-                        <div class="text-right mt-2">
-                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="digitalPlatformsToggle">
-                                <label class="custom-control-label" for="digitalPlatformsToggle">{{ __('Digital Platforms') }}</label>
-                            </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-3">
+                     <!-- Filter Continent -->
+                    <div class="col-md-6 mb-3 mb-md-0">
+                         <label class="font-weight-bold text-teal-600 mb-2" style="color: #0d9488;">{{ __('Filter by Continent') }}</label>
+                        <select id="continentFilter" class="form-control rounded-pill border-teal" style="border-color: #0d9488;">
+                            <option value="all">{{ __('All Continents') }}</option>
+                            <option value="africa">{{ __('Africa') }}</option>
+                            <option value="asia">{{ __('Asia') }}</option>
+                            <option value="europe">{{ __('Europe') }}</option>
+                            <option value="north_america">{{ __('North America') }}</option>
+                            <option value="south_america">{{ __('South America') }}</option>
+                            <option value="oceania">{{ __('Oceania') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Digital Platforms Toggle -->
+                    <div class="col-md-6 d-flex align-items-center justify-content-end">
+                        <div class="custom-control custom-switch scale-125">
+                            <input type="checkbox" class="custom-control-input" id="viewToggle">
+                            <label class="custom-control-label font-weight-bold text-teal-600" for="viewToggle" style="color: #0d9488; font-size: 1.1rem;">{{ __('Digital Platforms View (Chart)') }}</label>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Flat World Map -->
+        <!-- Visualization Container -->
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body p-4">
-                <h4 class="card-title text-center text-teal-700 font-weight-bold mb-4" style="color: #0d9488;">{{ __('Interactive Global Data Map') }}</h4>
-                <div id="world-map-markers" style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #fff;"></div>
-                <div class="text-center mt-3 text-muted">
-                    <small>{{ __('Hover over or click on highlighted countries to view statistics.') }}</small>
+                <h4 class="card-title text-center text-teal-700 font-weight-bold mb-4" id="vizTitle" style="color: #0d9488;">{{ __('Interactive Global Data Map') }}</h4>
+                
+                <!-- Map View -->
+                <div id="mapViewContainer">
+                    <div id="world-map-markers" style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #fff;"></div>
+                    <div class="text-center mt-3 text-muted">
+                        <small>{{ __('Hover over or click on highlighted countries to view statistics.') }}</small>
+                    </div>
                 </div>
+
+                <!-- Chart View (Hidden by Default) -->
+                <div id="chartViewContainer" style="display: none;">
+                    <div style="position: relative; height: 500px; width: 100%;">
+                        <canvas id="landscapeChart"></canvas>
+                    </div>
+                 </div>
+
             </div>
         </div>
     </div>
@@ -136,6 +165,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- Enhanced Data (Global Coverage with ISO Codes & Salary) ---
@@ -203,14 +234,18 @@
             { country: 'New Zealand', code: 'NZ', continent: 'oceania', therapists: 7000, population: 5000000, schools: 5, centers: 450, salary: 55000 }
         ];
 
-        // Create Map Data Object
+        let currentMetric = 'therapists';
+        let isChartView = false;
+        let chartInstance = null;
+        let mapInstance = null;
+
         const mapData = {};
         rawData.forEach(item => {
             mapData[item.code] = item;
         });
 
-        // Initialize Map
-        const map = new jsVectorMap({
+        // --- MAP INITIALIZATION ---
+        mapInstance = new jsVectorMap({
             selector: '#world-map-markers',
             map: 'world',
             backgroundColor: 'transparent',
@@ -218,35 +253,15 @@
             zoomButtons: true,
             zoomOnScroll: false,
             regionStyle: {
-                initial: {
-                    fill: '#e9ecef',
-                    stroke: '#ced4da',
-                    strokeWidth: 1,
-                    fillOpacity: 1
-                },
-                hover: {
-                    fillOpacity: 0.8,
-                    cursor: 'pointer'
-                },
-                selected: {
-                    fill: '#0d9488'
-                }
+                initial: { fill: '#e9ecef', stroke: '#ced4da', strokeWidth: 1, fillOpacity: 1 },
+                hover: { fillOpacity: 0.8, cursor: 'pointer', fill: '#0d9488' },
+                selected: { fill: '#0d9488' }
             },
-            // Highlight regions with data
             series: {
                 regions: [{
                     attribute: 'fill',
-                    legend: {
-                        title: 'Therapists Presence',
-                        vertical: true
-                    },
-                    scale: {
-                        'US': '#0d9488',
-                        'CA': '#0d9488',
-                        // We can just set a static color for highlighting or use a scale based on therapist count
-                         // Simpler approach: highlight all countries in our list with Teal
-                    },
-                     values: (function(){
+                    scale: {},
+                    values: (function(){
                         let vals = {};
                         rawData.forEach(d => { vals[d.code] = '#0d9488'; });
                         return vals;
@@ -268,13 +283,150 @@
                             <strong class="d-block mb-1">${data.country}</strong>
                             <small>Therapists: ${data.therapists.toLocaleString()}</small>
                         </div>`,
-                        true // Allow HTML
+                        true
                     );
                 }
             }
         });
 
-        // Modal Update Function
+        // --- CHART INITIALIZATION ---
+        function initChart() {
+            const ctx = document.getElementById('landscapeChart').getContext('2d');
+            
+            // Prepare Data
+            let sortedData = [...rawData];
+            // Filter by continent if needed (optional, keeping it global for now or reusing continent filter)
+            const selectedContinent = document.getElementById('continentFilter').value;
+            if(selectedContinent !== 'all') {
+                sortedData = sortedData.filter(d => d.continent === selectedContinent);
+            }
+
+            sortedData.sort((a, b) => b[currentMetric] - a[currentMetric]);
+            const topCountries = sortedData.slice(0, 15);
+
+            const labels = topCountries.map(d => d.country);
+            const values = topCountries.map(d => d[currentMetric]);
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: currentMetric.charAt(0).toUpperCase() + currentMetric.slice(1),
+                        data: values,
+                        backgroundColor: '#0d9488',
+                        borderRadius: 4,
+                        maxBarThickness: 30
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { backgroundColor: '#333' }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { display: false } }
+                    },
+                     onClick: (e, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const countryData = topCountries[index];
+                            updateModal(countryData);
+                            $('#countryDetailModal').modal('show');
+                        }
+                    } 
+                }
+            });
+        }
+
+        // --- VIEW TOGGLE LOGIC ---
+        document.getElementById('viewToggle').addEventListener('change', function() {
+            isChartView = this.checked;
+            const mapContainer = document.getElementById('mapViewContainer');
+            const chartContainer = document.getElementById('chartViewContainer');
+            const title = document.getElementById('vizTitle');
+
+            if(isChartView) {
+                mapContainer.style.display = 'none';
+                chartContainer.style.display = 'block';
+                title.innerText = '{{ __("Top Countries Statistics") }}';
+                initChart(); // Render chart when visible
+            } else {
+                mapContainer.style.display = 'block';
+                chartContainer.style.display = 'none';
+                title.innerText = '{{ __("Interactive Global Data Map") }}';
+                mapInstance.updateSize(); // Fix map size if hidden
+            }
+        });
+
+        // --- METRIC BUTTONS LOGIC ---
+        document.querySelectorAll('.metric-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class
+                document.querySelectorAll('.metric-btn').forEach(b => {
+                    b.classList.remove('active', 'btn-teal', 'text-white');
+                    b.classList.add('btn-outline-teal');
+                    b.style.backgroundColor = 'transparent';
+                    b.style.color = '#0d9488';
+                });
+                
+                // Add active class
+                this.classList.remove('btn-outline-teal');
+                this.classList.add('active', 'btn-teal', 'text-white');
+                this.style.backgroundColor = '#0d9488';
+                this.style.color = '#fff';
+
+                currentMetric = this.getAttribute('data-metric');
+                
+                if(isChartView) {
+                    initChart();
+                }
+            });
+        });
+
+        // --- CONTINENT FILTER LOGIC ---
+        document.getElementById('continentFilter').addEventListener('change', function() {
+             // For Map: Simplest is to maybe zoom to continent? OR just leave map as is and let Chart filter.
+             // Usually map shows everything. Let's let the chart filter update.
+             if(isChartView) {
+                 initChart();
+             }
+        });
+
+        // --- SEARCH LOGIC ---
+        document.getElementById('countrySearch').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter' || this.value.length > 2) {
+                const query = this.value.toLowerCase();
+                const found = rawData.find(d => d.country.toLowerCase().includes(query));
+                
+                if(found) {
+                    if(!isChartView) {
+                        // Zoom/Focus Map
+                         // jsVectorMap doesn't have a simple 'zoomToCountry' by code exposed easily without digging, 
+                         // but we can trigger the tooltip or modal.
+                         // Let's settle for opening the modal for now as distinct feedback.
+                         updateModal(found);
+                         $('#countryDetailModal').modal('show');
+                    } else {
+                        // Highlight in Chart?
+                        // For now, let's also just show the modal, as finding it in the bar chart might be hard if it's not in top 15.
+                         updateModal(found);
+                         $('#countryDetailModal').modal('show');
+                    }
+                }
+            }
+        });
+
+
+        // --- MODAL UPDATE ---
         function updateModal(data) {
             document.getElementById('modalCountryName').innerText = data.country;
             document.getElementById('modalTherapists').innerText = data.therapists.toLocaleString();
@@ -298,6 +450,15 @@
             const ratio = (data.therapists / data.population) * 100000;
             document.getElementById('modalRatio').innerText = ratio.toFixed(1);
         }
+        
+        // Initial Style safety
+         const activeBtn = document.querySelector('.metric-btn.active');
+        if(activeBtn) {
+            activeBtn.classList.remove('btn-outline-teal');
+            activeBtn.classList.add('btn-teal', 'text-white');
+            activeBtn.style.backgroundColor = '#0d9488';
+            activeBtn.style.color = '#fff';
+        }
     });
 </script>
 <style>
@@ -313,10 +474,10 @@
         border-radius: 4px;
         color: white;
     }
-</style>
-@endpush
-
-<style>
+    .scale-125 {
+        transform: scale(1.25);
+        transform-origin: right center;
+    }
     .btn-teal {
         background-color: #0d9488;
         color: white;
@@ -332,5 +493,12 @@
     }
     .text-teal-600 { color: #0d9488 !important; }
     .text-teal-700 { color: #0f766e !important; }
+    
+    /* Search Input Styling */
+    #countrySearch::placeholder {
+        color: #0d9488;
+        opacity: 0.6;
+    }
 </style>
+@endpush
 @endsection
