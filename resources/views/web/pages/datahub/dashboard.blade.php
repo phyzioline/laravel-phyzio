@@ -57,13 +57,13 @@
             </div>
         </div>
 
-        <!-- 3D Globe Visualization -->
+        <!-- Flat World Map -->
         <div class="card shadow-sm border-0 mb-5">
             <div class="card-body p-4">
                 <h4 class="card-title text-center text-teal-700 font-weight-bold mb-4" style="color: #0d9488;">{{ __('Interactive Global Data Map') }}</h4>
-                <div id="globeViz" style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; background: #000;"></div>
+                <div id="world-map-markers" style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #fff;"></div>
                 <div class="text-center mt-3 text-muted">
-                    <small>{{ __('Click on any marked country point to view detailed statistics.') }}</small>
+                    <small>{{ __('Hover over or click on highlighted countries to view statistics.') }}</small>
                 </div>
             </div>
         </div>
@@ -133,97 +133,146 @@
 </div>
 
 @push('scripts')
-<script src="//unpkg.com/globe.gl"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- Enhanced Mock Data (Global Coverage with Coordinates & Salary) ---
+        // --- Enhanced Data (Global Coverage with ISO Codes & Salary) ---
         const rawData = [
             // North America
-            { country: 'USA', continent: 'north_america', therapists: 247000, population: 331000000, schools: 275, centers: 18000, lat: 37.0902, lng: -95.7129, salary: 89000 },
-            { country: 'Canada', continent: 'north_america', therapists: 29000, population: 38000000, schools: 15, centers: 1600, lat: 56.1304, lng: -106.3468, salary: 74000 },
-            { country: 'Mexico', continent: 'north_america', therapists: 18000, population: 126000000, schools: 45, centers: 900, lat: 23.6345, lng: -102.5528, salary: 18000 },
+            { country: 'USA', code: 'US', continent: 'north_america', therapists: 247000, population: 331000000, schools: 275, centers: 18000, salary: 89000 },
+            { country: 'Canada', code: 'CA', continent: 'north_america', therapists: 29000, population: 38000000, schools: 15, centers: 1600, salary: 74000 },
+            { country: 'Mexico', code: 'MX', continent: 'north_america', therapists: 18000, population: 126000000, schools: 45, centers: 900, salary: 18000 },
             
             // Europe
-            { country: 'Germany', continent: 'europe', therapists: 195000, population: 83000000, schools: 100, centers: 9000, lat: 51.1657, lng: 10.4515, salary: 55000 },
-            { country: 'UK', continent: 'europe', therapists: 62000, population: 67000000, schools: 50, centers: 3500, lat: 55.3781, lng: -3.4360, salary: 52000 },
-            { country: 'France', continent: 'europe', therapists: 95000, population: 65000000, schools: 55, centers: 6500, lat: 46.2276, lng: 2.2137, salary: 48000 },
-            { country: 'Italy', continent: 'europe', therapists: 68000, population: 60000000, schools: 38, centers: 4200, lat: 41.8719, lng: 12.5674, salary: 42000 },
-            { country: 'Spain', continent: 'europe', therapists: 58000, population: 47000000, schools: 45, centers: 3800, lat: 40.4637, lng: -3.7492, salary: 38000 },
-            { country: 'Netherlands', continent: 'europe', therapists: 24000, population: 17000000, schools: 14, centers: 2000, lat: 52.1326, lng: 5.2913, salary: 60000 },
-            { country: 'Sweden', continent: 'europe', therapists: 15000, population: 10000000, schools: 9, centers: 1000, lat: 60.1282, lng: 18.6435, salary: 58000 },
-            { country: 'Belgium', continent: 'europe', therapists: 32000, population: 11500000, schools: 12, centers: 1500, lat: 50.5039, lng: 4.4699, salary: 50000 },
-            { country: 'Poland', continent: 'europe', therapists: 45000, population: 38000000, schools: 25, centers: 1800, lat: 51.9194, lng: 19.1451, salary: 28000 },
-            { country: 'Switzerland', continent: 'europe', therapists: 12000, population: 8600000, schools: 5, centers: 800, lat: 46.8182, lng: 8.2275, salary: 75000 },
-            { country: 'Norway', continent: 'europe', therapists: 11000, population: 5400000, schools: 4, centers: 600, lat: 60.4720, lng: 8.4689, salary: 62000 },
-            { country: 'Denmark', continent: 'europe', therapists: 10000, population: 5800000, schools: 5, centers: 550, lat: 56.2639, lng: 9.5018, salary: 60000 },
-            { country: 'Finland', continent: 'europe', therapists: 9000, population: 5500000, schools: 5, centers: 500, lat: 61.9241, lng: 25.7482, salary: 54000 },
-            { country: 'Ireland', continent: 'europe', therapists: 5000, population: 5000000, schools: 4, centers: 300, lat: 53.1424, lng: -7.6921, salary: 55000 },
-            { country: 'Portugal', continent: 'europe', therapists: 12000, population: 10000000, schools: 10, centers: 500, lat: 39.3999, lng: -8.2245, salary: 28000 },
-            { country: 'Greece', continent: 'europe', therapists: 8000, population: 10400000, schools: 6, centers: 400, lat: 39.0742, lng: 21.8243, salary: 25000 },
+            { country: 'Germany', code: 'DE', continent: 'europe', therapists: 195000, population: 83000000, schools: 100, centers: 9000, salary: 55000 },
+            { country: 'UK', code: 'GB', continent: 'europe', therapists: 62000, population: 67000000, schools: 50, centers: 3500, salary: 52000 },
+            { country: 'France', code: 'FR', continent: 'europe', therapists: 95000, population: 65000000, schools: 55, centers: 6500, salary: 48000 },
+            { country: 'Italy', code: 'IT', continent: 'europe', therapists: 68000, population: 60000000, schools: 38, centers: 4200, salary: 42000 },
+            { country: 'Spain', code: 'ES', continent: 'europe', therapists: 58000, population: 47000000, schools: 45, centers: 3800, salary: 38000 },
+            { country: 'Netherlands', code: 'NL', continent: 'europe', therapists: 24000, population: 17000000, schools: 14, centers: 2000, salary: 60000 },
+            { country: 'Sweden', code: 'SE', continent: 'europe', therapists: 15000, population: 10000000, schools: 9, centers: 1000, salary: 58000 },
+            { country: 'Belgium', code: 'BE', continent: 'europe', therapists: 32000, population: 11500000, schools: 12, centers: 1500, salary: 50000 },
+            { country: 'Poland', code: 'PL', continent: 'europe', therapists: 45000, population: 38000000, schools: 25, centers: 1800, salary: 28000 },
+            { country: 'Switzerland', code: 'CH', continent: 'europe', therapists: 12000, population: 8600000, schools: 5, centers: 800, salary: 75000 },
+            { country: 'Norway', code: 'NO', continent: 'europe', therapists: 11000, population: 5400000, schools: 4, centers: 600, salary: 62000 },
+            { country: 'Denmark', code: 'DK', continent: 'europe', therapists: 10000, population: 5800000, schools: 5, centers: 550, salary: 60000 },
+            { country: 'Finland', code: 'FI', continent: 'europe', therapists: 9000, population: 5500000, schools: 5, centers: 500, salary: 54000 },
+            { country: 'Ireland', code: 'IE', continent: 'europe', therapists: 5000, population: 5000000, schools: 4, centers: 300, salary: 55000 },
+            { country: 'Portugal', code: 'PT', continent: 'europe', therapists: 12000, population: 10000000, schools: 10, centers: 500, salary: 28000 },
+            { country: 'Greece', code: 'GR', continent: 'europe', therapists: 8000, population: 10400000, schools: 6, centers: 400, salary: 25000 },
             
             // Asia
-            { country: 'Japan', continent: 'asia', therapists: 130000, population: 126000000, schools: 120, centers: 4500, lat: 36.2048, lng: 138.2529, salary: 45000 },
-            { country: 'China', continent: 'asia', therapists: 90000, population: 1400000000, schools: 90, centers: 4000, lat: 35.8617, lng: 104.1954, salary: 25000 },
-            { country: 'India', continent: 'asia', therapists: 110000, population: 1380000000, schools: 350, centers: 6000, lat: 20.5937, lng: 78.9629, salary: 8000 },
-            { country: 'South Korea', continent: 'asia', therapists: 35000, population: 51000000, schools: 50, centers: 1400, lat: 35.9078, lng: 127.7669, salary: 42000 },
-            { country: 'Saudi Arabia', continent: 'asia', therapists: 14000, population: 35000000, schools: 18, centers: 950, lat: 23.8859, lng: 45.0792, salary: 48000 },
-            { country: 'UAE', continent: 'asia', therapists: 6500, population: 9900000, schools: 6, centers: 450, lat: 23.4241, lng: 53.8478, salary: 65000 },
-            { country: 'Jordan', continent: 'asia', therapists: 7500, population: 10200000, schools: 10, centers: 300, lat: 30.5852, lng: 36.2384, salary: 18000 },
-            { country: 'Philippines', continent: 'asia', therapists: 22000, population: 110000000, schools: 40, centers: 700, lat: 12.8797, lng: 121.7740, salary: 9000 },
-            { country: 'Thailand', continent: 'asia', therapists: 10000, population: 70000000, schools: 14, centers: 500, lat: 15.8700, lng: 100.9925, salary: 12000 },
-            { country: 'Vietnam', continent: 'asia', therapists: 8000, population: 97000000, schools: 10, centers: 400, lat: 14.0583, lng: 108.2772, salary: 10000 },
-            { country: 'Indonesia', continent: 'asia', therapists: 15000, population: 273000000, schools: 20, centers: 600, lat: -0.7893, lng: 113.9213, salary: 8000 },
-            { country: 'Malaysia', continent: 'asia', therapists: 5000, population: 32000000, schools: 8, centers: 250, lat: 4.2105, lng: 101.9758, salary: 14000 },
-            { country: 'Singapore', continent: 'asia', therapists: 2500, population: 5700000, schools: 2, centers: 150, lat: 1.3521, lng: 103.8198, salary: 50000 },
-            { country: 'Turkey', continent: 'asia', therapists: 25000, population: 84000000, schools: 30, centers: 1200, lat: 38.9637, lng: 35.2433, salary: 15000 },
-            { country: 'Israel', continent: 'asia', therapists: 7000, population: 9000000, schools: 5, centers: 300, lat: 31.0461, lng: 34.8516, salary: 55000 },
-            { country: 'Taiwan', continent: 'asia', therapists: 8000, population: 23000000, schools: 10, centers: 350, lat: 23.6978, lng: 120.9605, salary: 38000 },
+            { country: 'Japan', code: 'JP', continent: 'asia', therapists: 130000, population: 126000000, schools: 120, centers: 4500, salary: 45000 },
+            { country: 'China', code: 'CN', continent: 'asia', therapists: 90000, population: 1400000000, schools: 90, centers: 4000, salary: 25000 },
+            { country: 'India', code: 'IN', continent: 'asia', therapists: 110000, population: 1380000000, schools: 350, centers: 6000, salary: 8000 },
+            { country: 'South Korea', code: 'KR', continent: 'asia', therapists: 35000, population: 51000000, schools: 50, centers: 1400, salary: 42000 },
+            { country: 'Saudi Arabia', code: 'SA', continent: 'asia', therapists: 14000, population: 35000000, schools: 18, centers: 950, salary: 48000 },
+            { country: 'UAE', code: 'AE', continent: 'asia', therapists: 6500, population: 9900000, schools: 6, centers: 450, salary: 65000 },
+            { country: 'Jordan', code: 'JO', continent: 'asia', therapists: 7500, population: 10200000, schools: 10, centers: 300, salary: 18000 },
+            { country: 'Philippines', code: 'PH', continent: 'asia', therapists: 22000, population: 110000000, schools: 40, centers: 700, salary: 9000 },
+            { country: 'Thailand', code: 'TH', continent: 'asia', therapists: 10000, population: 70000000, schools: 14, centers: 500, salary: 12000 },
+            { country: 'Vietnam', code: 'VN', continent: 'asia', therapists: 8000, population: 97000000, schools: 10, centers: 400, salary: 10000 },
+            { country: 'Indonesia', code: 'ID', continent: 'asia', therapists: 15000, population: 273000000, schools: 20, centers: 600, salary: 8000 },
+            { country: 'Malaysia', code: 'MY', continent: 'asia', therapists: 5000, population: 32000000, schools: 8, centers: 250, salary: 14000 },
+            { country: 'Singapore', code: 'SG', continent: 'asia', therapists: 2500, population: 5700000, schools: 2, centers: 150, salary: 50000 },
+            { country: 'Turkey', code: 'TR', continent: 'asia', therapists: 25000, population: 84000000, schools: 30, centers: 1200, salary: 15000 },
+            { country: 'Israel', code: 'IL', continent: 'asia', therapists: 7000, population: 9000000, schools: 5, centers: 300, salary: 55000 },
+            { country: 'Taiwan', code: 'TW', continent: 'asia', therapists: 8000, population: 23000000, schools: 10, centers: 350, salary: 38000 },
 
             // South America
-            { country: 'Brazil', continent: 'south_america', therapists: 280000, population: 212000000, schools: 250, centers: 7000, lat: -14.2350, lng: -51.9253, salary: 18000 },
-            { country: 'Argentina', continent: 'south_america', therapists: 40000, population: 45000000, schools: 30, centers: 1400, lat: -38.4161, lng: -63.6167, salary: 14000 },
-            { country: 'Colombia', continent: 'south_america', therapists: 15000, population: 50000000, schools: 22, centers: 850, lat: 4.5709, lng: -74.2973, salary: 12000 },
-            { country: 'Chile', continent: 'south_america', therapists: 18000, population: 19000000, schools: 20, centers: 600, lat: -35.6751, lng: -71.5430, salary: 22000 },
-            { country: 'Peru', continent: 'south_america', therapists: 9000, population: 33000000, schools: 12, centers: 400, lat: -9.1900, lng: -75.0152, salary: 13000 },
-            { country: 'Venezuela', continent: 'south_america', therapists: 6000, population: 28000000, schools: 8, centers: 300, lat: 6.4238, lng: -66.5897, salary: 5000 },
+            { country: 'Brazil', code: 'BR', continent: 'south_america', therapists: 280000, population: 212000000, schools: 250, centers: 7000, salary: 18000 },
+            { country: 'Argentina', code: 'AR', continent: 'south_america', therapists: 40000, population: 45000000, schools: 30, centers: 1400, salary: 14000 },
+            { country: 'Colombia', code: 'CO', continent: 'south_america', therapists: 15000, population: 50000000, schools: 22, centers: 850, salary: 12000 },
+            { country: 'Chile', code: 'CL', continent: 'south_america', therapists: 18000, population: 19000000, schools: 20, centers: 600, salary: 22000 },
+            { country: 'Peru', code: 'PE', continent: 'south_america', therapists: 9000, population: 33000000, schools: 12, centers: 400, salary: 13000 },
+            { country: 'Venezuela', code: 'VE', continent: 'south_america', therapists: 6000, population: 28000000, schools: 8, centers: 300, salary: 5000 },
 
             // Africa
-            { country: 'Egypt', continent: 'africa', therapists: 55000, population: 102000000, schools: 30, centers: 1500, lat: 26.8206, lng: 30.8025, salary: 6000 },
-            { country: 'South Africa', continent: 'africa', therapists: 9500, population: 59000000, schools: 15, centers: 600, lat: -30.5595, lng: 22.9375, salary: 32000 },
-            { country: 'Nigeria', continent: 'africa', therapists: 6000, population: 206000000, schools: 10, centers: 250, lat: 9.0820, lng: 8.6753, salary: 8000 },
-            { country: 'Morocco', continent: 'africa', therapists: 9000, population: 37000000, schools: 7, centers: 500, lat: 31.7917, lng: -7.0926, salary: 11000 },
-            { country: 'Kenya', continent: 'africa', therapists: 3000, population: 53000000, schools: 5, centers: 150, lat: -0.0236, lng: 37.9062, salary: 9000 },
-            { country: 'Ghana', continent: 'africa', therapists: 1500, population: 31000000, schools: 3, centers: 100, lat: 7.9465, lng: -1.0232, salary: 7000 },
-            { country: 'Algeria', continent: 'africa', therapists: 7000, population: 43000000, schools: 6, centers: 300, lat: 28.0339, lng: 1.6596, salary: 10000 },
+            { country: 'Egypt', code: 'EG', continent: 'africa', therapists: 55000, population: 102000000, schools: 30, centers: 1500, salary: 6000 },
+            { country: 'South Africa', code: 'ZA', continent: 'africa', therapists: 9500, population: 59000000, schools: 15, centers: 600, salary: 32000 },
+            { country: 'Nigeria', code: 'NG', continent: 'africa', therapists: 6000, population: 206000000, schools: 10, centers: 250, salary: 8000 },
+            { country: 'Morocco', code: 'MA', continent: 'africa', therapists: 9000, population: 37000000, schools: 7, centers: 500, salary: 11000 },
+            { country: 'Kenya', code: 'KE', continent: 'africa', therapists: 3000, population: 53000000, schools: 5, centers: 150, salary: 9000 },
+            { country: 'Ghana', code: 'GH', continent: 'africa', therapists: 1500, population: 31000000, schools: 3, centers: 100, salary: 7000 },
+            { country: 'Algeria', code: 'DZ', continent: 'africa', therapists: 7000, population: 43000000, schools: 6, centers: 300, salary: 10000 },
 
             // Oceania
-            { country: 'Australia', continent: 'oceania', therapists: 38000, population: 25000000, schools: 25, centers: 2000, lat: -25.2744, lng: 133.7751, salary: 68000 },
-            { country: 'New Zealand', continent: 'oceania', therapists: 7000, population: 5000000, schools: 5, centers: 450, lat: -40.9006, lng: 174.8860, salary: 55000 }
+            { country: 'Australia', code: 'AU', continent: 'oceania', therapists: 38000, population: 25000000, schools: 25, centers: 2000, salary: 68000 },
+            { country: 'New Zealand', code: 'NZ', continent: 'oceania', therapists: 7000, population: 5000000, schools: 5, centers: 450, salary: 55000 }
         ];
 
-        // Initialize Globe
-        const globeContainer = document.getElementById('globeViz');
-        const world = Globe()
-            (globeContainer)
-            .globeImageUrl('//unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
-            .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-            .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-            .pointsData(rawData)
-            .pointAltitude(0.15)
-            .pointColor(() => '#0d9488')
-            .pointRadius(0.8)
-            .pointLabel(d => `<div style="color: #fff; background: rgba(0,0,0,0.8); padding: 5px; border-radius: 4px;"><b>${d.country}</b><br>Therapists: ${d.therapists.toLocaleString()}</div>`)
-            .onPointClick(d => {
-                updateModal(d);
-                $('#countryDetailModal').modal('show'); // Ensure ID matches your HTML (countryDetailModal or countryModal)
-                
-                // Focus on country
-                world.pointOfView({ lat: d.lat, lng: d.lng, altitude: 1.5 }, 1500);
-            });
-            
-        // Auto-rotate
-        world.controls().autoRotate = true;
-        world.controls().autoRotateSpeed = 0.5;
+        // Create Map Data Object
+        const mapData = {};
+        rawData.forEach(item => {
+            mapData[item.code] = item;
+        });
+
+        // Initialize Map
+        const map = new jsVectorMap({
+            selector: '#world-map-markers',
+            map: 'world',
+            backgroundColor: 'transparent',
+            draggable: true,
+            zoomButtons: true,
+            zoomOnScroll: false,
+            regionStyle: {
+                initial: {
+                    fill: '#e9ecef',
+                    stroke: '#ced4da',
+                    strokeWidth: 1,
+                    fillOpacity: 1
+                },
+                hover: {
+                    fillOpacity: 0.8,
+                    cursor: 'pointer'
+                },
+                selected: {
+                    fill: '#0d9488'
+                }
+            },
+            // Highlight regions with data
+            series: {
+                regions: [{
+                    attribute: 'fill',
+                    legend: {
+                        title: 'Therapists Presence',
+                        vertical: true
+                    },
+                    scale: {
+                        'US': '#0d9488',
+                        'CA': '#0d9488',
+                        // We can just set a static color for highlighting or use a scale based on therapist count
+                         // Simpler approach: highlight all countries in our list with Teal
+                    },
+                     values: (function(){
+                        let vals = {};
+                        rawData.forEach(d => { vals[d.code] = '#0d9488'; });
+                        return vals;
+                    })()
+                }]
+            },
+            onRegionClick: function(event, code) {
+                const data = mapData[code];
+                if(data) {
+                    updateModal(data);
+                    $('#countryDetailModal').modal('show');
+                }
+            },
+            onRegionTooltipShow(event, tooltip, code) {
+                const data = mapData[code];
+                if(data) {
+                    tooltip.text(
+                        `<div class="text-center">
+                            <strong class="d-block mb-1">${data.country}</strong>
+                            <small>Therapists: ${data.therapists.toLocaleString()}</small>
+                        </div>`,
+                        true // Allow HTML
+                    );
+                }
+            }
+        });
 
         // Modal Update Function
         function updateModal(data) {
@@ -251,6 +300,20 @@
         }
     });
 </script>
+<style>
+    .jvm-tooltip {
+        background-color: #333;
+        font-family: inherit;
+        border-radius: 6px;
+        padding: 5px 10px;
+    }
+    .jvm-zoom-btn {
+        background-color: #0d9488;
+        padding: 5px;
+        border-radius: 4px;
+        color: white;
+    }
+</style>
 @endpush
 
 <style>
