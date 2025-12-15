@@ -20,7 +20,7 @@
                         <div class="icon-wrapper mb-4 text-teal-600" style="color: #0d9488; font-size: 3rem;">
                             <i class="las la-globe-americas"></i>
                         </div>
-                        <h3 class="card-title font-weight-bold mb-3">{{ __('Global Physical Therapy Landscape') }}</h3>
+                        <h3 class="card-title font-weight-bold mb-3 text-dark" style="color: #333;">{{ __('Global Physical Therapy Landscape') }}</h3>
                         <p class="card-text text-muted mb-4">
                             {{ __('Explore interactive data on therapists, rehabilitation centers, and educational institutions across 100+ countries.') }}
                         </p>
@@ -38,7 +38,7 @@
                         <div class="icon-wrapper mb-4 text-teal-600" style="color: #0d9488; font-size: 3rem;">
                             <i class="las la-graduation-cap"></i>
                         </div>
-                        <h3 class="card-title font-weight-bold mb-3">{{ __('Professional Equivalence & Licensing Guide') }}</h3>
+                        <h3 class="card-title font-weight-bold mb-3 text-dark" style="color: #333;">{{ __('Professional Equivalence & Licensing Guide') }}</h3>
                         <p class="card-text text-muted mb-4">
                             {{ __('Navigate the requirements for practicing physical therapy in renewed countries. Check equivalence and licensing steps.') }}
                         </p>

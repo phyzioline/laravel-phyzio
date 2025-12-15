@@ -282,18 +282,32 @@
                             <label class="font-weight-bold text-teal-600" style="color: #0d9488;">{{ __('2. Select Target Country') }} <small class="text-muted">({{ __('Where you want to practice') }})</small></label>
                             <select id="targetCountry" class="form-control form-control-lg border-teal" style="border-color: #0d9488;">
                                 <option value="" selected disabled>{{ __('Choose Country...') }}</option>
-                                <option value="oman">{{ __('Oman') }}</option>
-                                <option value="saudi_arabia">{{ __('Saudi Arabia') }}</option>
-                                <option value="uae">{{ __('UAE') }}</option>
-                                <option value="qatar">{{ __('Qatar') }}</option>
-                                <option value="kuwait">{{ __('Kuwait') }}</option>
-                                <option value="bahrain">{{ __('Bahrain') }}</option>
-                                <option value="usa">{{ __('USA') }}</option>
-                                <option value="uk">{{ __('UK') }}</option>
-                                <option value="canada">{{ __('Canada') }}</option>
-                                <option value="australia">{{ __('Australia') }}</option>
-                                <option value="ireland">{{ __('Ireland') }}</option>
-                                <option value="germany">{{ __('Germany') }}</option>
+                                <optgroup label="{{ __('Middle East') }}">
+                                    <option value="saudi_arabia">{{ __('Saudi Arabia (KSA)') }}</option>
+                                    <option value="uae">{{ __('United Arab Emirates (UAE)') }}</option>
+                                    <option value="oman">{{ __('Oman') }}</option>
+                                    <option value="qatar">{{ __('Qatar') }}</option>
+                                    <option value="kuwait">{{ __('Kuwait') }}</option>
+                                    <option value="bahrain">{{ __('Bahrain') }}</option>
+                                </optgroup>
+                                <optgroup label="{{ __('North America') }}">
+                                    <option value="usa">{{ __('United States (USA)') }}</option>
+                                    <option value="canada">{{ __('Canada') }}</option>
+                                </optgroup>
+                                <optgroup label="{{ __('Europe') }}">
+                                    <option value="uk">{{ __('United Kingdom') }}</option>
+                                    <option value="ireland">{{ __('Ireland') }}</option>
+                                    <option value="germany">{{ __('Germany') }}</option>
+                                    <option value="france">{{ __('France') }}</option>
+                                    <option value="netherlands">{{ __('Netherlands') }}</option>
+                                    <option value="sweden">{{ __('Sweden') }}</option>
+                                    <option value="norway">{{ __('Norway') }}</option>
+                                    <option value="switzerland">{{ __('Switzerland') }}</option>
+                                </optgroup>
+                                <optgroup label="{{ __('Oceania') }}">
+                                    <option value="australia">{{ __('Australia') }}</option>
+                                    <option value="new_zealand">{{ __('New Zealand') }}</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -488,8 +502,138 @@
         const requirementsSection = document.getElementById('requirementsSection');
         const emptyState = document.getElementById('emptyState');
 
+        // Country Specific Data Dictionary
+        const countryData = {
+            'usa': {
+                authority: 'FSBPT / FCCPT',
+                exam: 'NPTE (National Physical Therapy Exam)',
+                experience: 'Varies by state (Clinical Doctorate often required)',
+                process: 'Credentials Evaluation -> Authorization to Test -> Take NPTE -> State Law Exam',
+                link: 'https://www.fsbpt.org/'
+            },
+            'canada': {
+                authority: 'CAPR (Canadian Alliance of Physiotherapy Regulators)',
+                exam: 'PCE (Physiotherapy Competency Exam) - Written & Clinical',
+                experience: 'Credentialling Assessment required',
+                process: 'Credentialling -> Written Component -> Clinical Component -> Provincial Registration',
+                link: 'https://www.alliancept.org/'
+            },
+            'uk': {
+                authority: 'HCPC (Health and Care Professions Council)',
+                exam: 'No licensing exam (Assessment of training & experience)',
+                experience: 'Must demonstrate proficiency matching UK standards',
+                process: 'Submit International Application -> Scrutiny Fee -> Assessment -> Registration',
+                link: 'https://www.hcpc-uk.org/'
+            },
+            'ireland': {
+                authority: 'CORU',
+                exam: 'Aptitude Test or Adaptation Period (if deficits found)',
+                experience: 'Recognition of Qualification required',
+                process: 'Apply for Recognition -> Assessment -> Compensation Measure (if needed) -> Registration',
+                link: 'https://www.coru.ie/'
+            },
+            'australia': {
+                authority: 'APC (Australian Physiotherapy Council)',
+                exam: 'Standard Assessment Pathway (Written & Clinical)',
+                experience: 'Eligibility Assessment required',
+                process: 'Eligibility Assmt -> Cultural Safety Training -> Written Assessment -> Clinical Assessment',
+                link: 'https://physiocouncil.com.au/'
+            },
+            'new_zealand': {
+                authority: 'Physiotherapy Board of New Zealand',
+                exam: 'Competence Examination (if qualifications not equivalent)',
+                experience: 'Threshold Competence',
+                process: 'Application -> Assessment of Qualifications -> Cultural Competence -> Registration',
+                link: 'https://www.physioboard.org.nz/'
+            },
+            'saudi_arabia': {
+                authority: 'SCFHS (Saudi Commission for Health Specialties)',
+                exam: 'Prometric Exam (Specialist/Technician)',
+                experience: 'DataFlow Verification (PSV) required',
+                process: 'Mumaris+ Account -> DataFlow -> Eligibility Number -> Book Prometric -> Classification',
+                link: 'https://scfhs.org.sa/'
+            },
+            'uae': {
+                authority: 'DHA (Dubai) / DOH (Abu Dhabi) / MOH (Federal)',
+                exam: 'Prometric Exam (DHA/HAAD/MOH)',
+                experience: '2 Years Experience usually required',
+                process: 'DataFlow PSV -> Exam Registration -> Assessment -> License Issuance',
+                link: 'https://www.dha.gov.ae/'
+            },
+            'oman': {
+                authority: 'OMSB (Oman Medical Specialty Board) / MOH',
+                exam: 'OMSB Prometric Exam',
+                experience: 'DataFlow Verification required',
+                process: 'Viva Voce (Oral) + Prometric Exam -> DataFlow -> Licensing',
+                link: 'https://www.omsb.gov.om/'
+            },
+             'qatar': {
+                authority: 'DHP (Department of Healthcare Professions - MOPH)',
+                exam: 'Prometric Exam (Qualifying Exam)',
+                experience: 'DataFlow Verification required',
+                process: 'Circular Verification -> Exam -> Evaluation -> Licensing',
+                link: 'https://dhp.moph.gov.qa/'
+            },
+            'kuwait': {
+                authority: 'Ministry of Health (Licensing Dept)',
+                exam: 'Written & Oral Interview',
+                experience: 'Authentication of Degree',
+                process: 'Document Submission -> Interview/Exam -> Security Clearance -> License',
+                link: 'https://www.moh.gov.kw/'
+            },
+            'bahrain': {
+                authority: 'NHRA (National Health Regulatory Authority)',
+                exam: 'Licensure Exam (Prometric)',
+                experience: 'DataFlow required',
+                process: 'DataFlow -> Application -> Exam -> Licensure',
+                link: 'https://www.nhra.bh/'
+            },
+             'germany': {
+                authority: 'State Health Authorities (Gesundheitsamt)',
+                exam: 'Knowledge Test (Kenntnisprüfung) - often oral/practical',
+                experience: 'B2 German Language Level (Fachsprachenprüfung) Mandatory',
+                process: 'Translation of Docs -> Deficit Assessment -> Adaptation Course or Exam -> Berufsurkunde',
+                link: 'https://www.anerkennung-in-deutschland.de/'
+            }
+        };
+
+        const defaultData = {
+            authority: 'National Health Authority',
+            exam: 'Licensing / Competency Exam',
+            experience: 'Degree Verification & Good Standing',
+            process: 'Document Verification -> Exam/Assessment -> Registration',
+            link: '#'
+        };
+
         function checkSelections() {
             if (sourceSelect.value && targetSelect.value) {
+                // Update Logic
+                const target = targetSelect.value;
+                const data = countryData[target] || defaultData;
+
+                // Update UI Elements
+                // We need to target specific elements. I will add IDs to the HTML elements in the next step or assume generic update.
+                // Since I can't easily add IDs to all lists without rewriting HTML, I will use QuerySelectors relative to the tabs.
+                
+                // Update "Official Documentation" Title or Content if possible. 
+                // For now, let's update the Exam Tab content mostly as it's the most variable.
+                
+                // Update Exam Name
+                const examRows = document.querySelectorAll('#v-pills-exams td');
+                if(examRows.length > 0) examRows[0].innerText = data.authority; // Exam Name -> Authority/Exam combo
+                if(examRows.length > 2) examRows[2].innerText = "Varies"; // Passing Score
+                
+                // Update Link
+                const examLink = document.querySelector('#v-pills-exams a');
+                if(examLink) {
+                    examLink.href = data.link;
+                    examLink.innerHTML = `Go to ${data.authority} <i class="las la-external-link-alt"></i>`;
+                }
+
+                // Update Experience Tab
+                const expDesc = document.querySelector('#v-pills-experience p');
+                if(expDesc) expDesc.innerText = data.experience;
+
                 requirementsSection.style.display = 'block';
                 emptyState.style.display = 'none';
 
