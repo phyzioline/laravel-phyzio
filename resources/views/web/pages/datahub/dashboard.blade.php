@@ -3,45 +3,45 @@
 @section('title', __('Global Physical Therapy Landscape Dashboard'))
 
 @section('content')
-<div class="dashboard-wrapper bg-light py-4">
+<div class="dashboard-wrapper py-4" style="margin-top: 170px; background-color: rgba(13, 148, 136, 0.04);">
     <div class="container">
         <!-- Header -->
-        <div class="row mb-4 text-center">
+        <div class="row mb-3 text-center">
             <div class="col-12">
-                <h2 class="text-teal-700 font-weight-bold" style="color: #0d9488;">{{ __('Global Physical Therapy Landscape') }}</h2>
-                <p class="text-muted">{{ __('An interactive overview of physical therapy resources, platforms, and rehabilitation centers across the globe with focus on Arab countries.') }}</p>
+                <h3 class="text-teal-700 font-weight-bold" style="color: #0f766e;">{{ __('Global Physical Therapy Landscape') }}</h3>
+                <p class="text-muted mb-2">{{ __('An interactive overview of physical therapy resources, platforms, and rehabilitation centers across the globe.') }}</p>
             </div>
         </div>
 
         <!-- Controls Section -->
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
+        <div class="card shadow border-0 mb-4" style="border-radius: 15px;">
+            <div class="card-body p-3">
                 <div class="row align-items-end">
                     <!-- Search Bar -->
                      <div class="col-md-4 mb-3 mb-md-0">
-                        <label class="font-weight-bold text-teal-600 mb-2" style="color: #0d9488;">{{ __('Search Country') }}</label>
+                        <label class="font-weight-bold text-teal-600 mb-1" style="color: #0d9488; font-size: 0.9rem;">{{ __('Search Country') }}</label>
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text bg-white border-right-0 border-teal" style="border-color: #0d9488; color: #0d9488;"><i class="las la-search"></i></span>
+                                <span class="input-group-text bg-white border-right-0" style="border-color: #0d9488; color: #0d9488;"><i class="las la-search"></i></span>
                             </div>
-                            <input type="text" id="countrySearch" class="form-control border-left-0 border-teal" placeholder="{{ __('Type country name...') }}" style="border-color: #0d9488;">
+                            <input type="text" id="countrySearch" class="form-control border-left-0" placeholder="{{ __('Type country name...') }}" style="border-color: #0d9488;">
                         </div>
                     </div>
 
                     <!-- Metric Buttons -->
                     <div class="col-md-8">
-                        <label class="font-weight-bold text-teal-600 mb-2 d-block" style="color: #0d9488;">{{ __('Select a Metric to Visualize') }}</label>
+                        <label class="font-weight-bold text-teal-600 mb-1 d-block" style="color: #0d9488; font-size: 0.9rem;">{{ __('Select a Metric to Visualize') }}</label>
                         <div class="btn-group w-100 flex-wrap" role="group">
-                            <button type="button" class="btn btn-outline-teal metric-btn active rounded-pill mr-2 mb-2" data-metric="therapists" style="border-color:#0d9488; color: #0d9488;">
+                            <button type="button" class="btn btn-outline-teal metric-btn active rounded-pill mr-2 mb-2 btn-sm" data-metric="therapists" style="border-color:#0d9488; color: #0d9488;">
                                 <i class="las la-user-nurse mr-1"></i> {{ __('Therapists') }}
                             </button>
-                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mr-2 mb-2" data-metric="population" style="border-color:#0d9488; color: #0d9488;">
+                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mr-2 mb-2 btn-sm" data-metric="population" style="border-color:#0d9488; color: #0d9488;">
                                 <i class="las la-users mr-1"></i> {{ __('Population') }}
                             </button>
-                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mr-2 mb-2" data-metric="schools" style="border-color:#0d9488; color: #0d9488;">
+                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mr-2 mb-2 btn-sm" data-metric="schools" style="border-color:#0d9488; color: #0d9488;">
                                 <i class="las la-university mr-1"></i> {{ __('Schools/Colleges') }}
                             </button>
-                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mb-2" data-metric="centers" style="border-color:#0d9488; color: #0d9488;">
+                            <button type="button" class="btn btn-outline-teal metric-btn rounded-pill mb-2 btn-sm" data-metric="centers" style="border-color:#0d9488; color: #0d9488;">
                                 <i class="las la-hospital-alt mr-1"></i> {{ __('Rehab Centers') }}
                             </button>
                         </div>
@@ -50,9 +50,9 @@
                 
                 <div class="row mt-3">
                      <!-- Filter Continent -->
-                    <div class="col-md-6 mb-3 mb-md-0">
-                         <label class="font-weight-bold text-teal-600 mb-2" style="color: #0d9488;">{{ __('Filter by Continent') }}</label>
-                        <select id="continentFilter" class="form-control rounded-pill border-teal" style="border-color: #0d9488;">
+                    <div class="col-md-5 mb-3 mb-md-0">
+                         <label class="font-weight-bold text-teal-600 mb-1" style="color: #0d9488; font-size: 0.9rem;">{{ __('Filter by Continent') }}</label>
+                        <select id="continentFilter" class="form-control rounded-pill" style="border-color: #0d9488;">
                             <option value="all">{{ __('All Continents') }}</option>
                             <option value="africa">{{ __('Africa') }}</option>
                             <option value="asia">{{ __('Asia') }}</option>
@@ -64,10 +64,12 @@
                     </div>
 
                     <!-- Digital Platforms Toggle -->
-                    <div class="col-md-6 d-flex align-items-center justify-content-end">
-                        <div class="custom-control custom-switch scale-125">
+                    <div class="col-md-7 d-flex align-items-center justify-content-end">
+                        <div class="custom-control custom-switch scale-125 p-2 rounded bg-light border" style="border-color: #0d9488 !important;">
                             <input type="checkbox" class="custom-control-input" id="viewToggle">
-                            <label class="custom-control-label font-weight-bold text-teal-600" for="viewToggle" style="color: #0d9488; font-size: 1.1rem;">{{ __('Digital Platforms View (Chart)') }}</label>
+                            <label class="custom-control-label font-weight-bold text-teal-600 m-0" for="viewToggle" style="color: #0d9488; font-size: 1rem;">
+                                {{ __('Digital Platforms View (Chart)') }}
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -75,14 +77,14 @@
         </div>
 
         <!-- Visualization Container -->
-        <div class="card shadow-sm border-0 mb-5">
-            <div class="card-body p-4">
-                <h4 class="card-title text-center text-teal-700 font-weight-bold mb-4" id="vizTitle" style="color: #0d9488;">{{ __('Interactive Global Data Map') }}</h4>
+        <div class="card shadow border-0 mb-5" style="border-radius: 15px;">
+            <div class="card-body p-3">
+                <h5 class="card-title text-center text-teal-700 font-weight-bold mb-3" id="vizTitle" style="color: #0f766e;">{{ __('Interactive Global Data Map') }}</h5>
                 
                 <!-- Map View -->
                 <div id="mapViewContainer">
-                    <div id="world-map-markers" style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #fff;"></div>
-                    <div class="text-center mt-3 text-muted">
+                    <div id="world-map-markers" style="width: 100%; height: 500px; border-radius: 12px; overflow: hidden; background: #f8f9fa;"></div>
+                    <div class="text-center mt-2 text-muted">
                         <small>{{ __('Hover over or click on highlighted countries to view statistics.') }}</small>
                     </div>
                 </div>
