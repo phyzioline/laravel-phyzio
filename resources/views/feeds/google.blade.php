@@ -17,14 +17,14 @@
         } elseif (filter_var($imgRaw, FILTER_VALIDATE_URL)) {
              $image = $imgRaw;
         } else {
-             // If it's a relative path stored in DB (e.g. products/xyz.jpg)
-             // Product accessor might return asset('storage/...') but let's be safe.
-             // If product->image_url returns null, we handled it.
-             // If it returns a string that doesn't start with http, wrap it.
+             // If it's a relative path stored in DB (e.g. uploads/products/xyz.jpg)
+             // Product accessor now returns asset(...) correctly.
+             // If we are dealing with raw string here for some reason:
              if (strpos($imgRaw, 'http') === 0) {
                  $image = $imgRaw;
              } else {
-                 $image = asset('storage/' . $imgRaw);
+                 // Assume it is relative to public root directly as per user feedback
+                 $image = asset($imgRaw); 
              }
         }
 
