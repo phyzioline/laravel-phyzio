@@ -23,17 +23,12 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Web\FeedController;
 
 
-// Redirect legacy '/en' requests (default locale) to root to avoid 404s
-Route::get('en/{any?}', function () {
-    return redirect('/', 301);
-})->where('any', '.*');
-
 // Dynamic Localization Route Group
 // NOTE: This prevents 'php artisan route:cache' from working!
 Route::group(
 [
 	'prefix' => LaravelLocalization::setLocale(),
-	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+	'middleware' => [ 'localizationRedirect', 'localeViewPath' ]
 ], function(){
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
