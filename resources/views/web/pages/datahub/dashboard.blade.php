@@ -125,47 +125,70 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // --- Enhanced Mock Data (Global Coverage) ---
+        // --- Global Physical Therapy Landscape Data (Estimated 2024) ---
         const rawData = [
             // North America
-            { country: 'USA', continent: 'north_america', therapists: 230000, population: 331000000, schools: 260, centers: 15000 },
-            { country: 'Canada', continent: 'north_america', therapists: 28000, population: 38000000, schools: 15, centers: 1400 },
-            { country: 'Mexico', continent: 'north_america', therapists: 15000, population: 126000000, schools: 40, centers: 800 },
+            { country: 'USA', continent: 'north_america', therapists: 247000, population: 331000000, schools: 275, centers: 18000 },
+            { country: 'Canada', continent: 'north_america', therapists: 29000, population: 38000000, schools: 15, centers: 1600 },
+            { country: 'Mexico', continent: 'north_america', therapists: 18000, population: 126000000, schools: 45, centers: 900 },
             
             // Europe
-            { country: 'Germany', continent: 'europe', therapists: 185000, population: 83000000, schools: 90, centers: 8500 },
-            { country: 'UK', continent: 'europe', therapists: 60000, population: 67000000, schools: 45, centers: 3200 },
-            { country: 'France', continent: 'europe', therapists: 90000, population: 65000000, schools: 50, centers: 6200 },
-            { country: 'Italy', continent: 'europe', therapists: 65000, population: 60000000, schools: 35, centers: 4000 },
-            { country: 'Spain', continent: 'europe', therapists: 55000, population: 47000000, schools: 40, centers: 3500 },
-            { country: 'Netherlands', continent: 'europe', therapists: 22000, population: 17000000, schools: 12, centers: 1800 },
-            { country: 'Sweden', continent: 'europe', therapists: 14000, population: 10000000, schools: 8, centers: 900 },
+            { country: 'Germany', continent: 'europe', therapists: 195000, population: 83000000, schools: 100, centers: 9000 },
+            { country: 'UK', continent: 'europe', therapists: 62000, population: 67000000, schools: 50, centers: 3500 },
+            { country: 'France', continent: 'europe', therapists: 95000, population: 65000000, schools: 55, centers: 6500 },
+            { country: 'Italy', continent: 'europe', therapists: 68000, population: 60000000, schools: 38, centers: 4200 },
+            { country: 'Spain', continent: 'europe', therapists: 58000, population: 47000000, schools: 45, centers: 3800 },
+            { country: 'Netherlands', continent: 'europe', therapists: 24000, population: 17000000, schools: 14, centers: 2000 },
+            { country: 'Sweden', continent: 'europe', therapists: 15000, population: 10000000, schools: 9, centers: 1000 },
+            { country: 'Belgium', continent: 'europe', therapists: 32000, population: 11500000, schools: 12, centers: 1500 },
+            { country: 'Poland', continent: 'europe', therapists: 45000, population: 38000000, schools: 25, centers: 1800 },
+            { country: 'Switzerland', continent: 'europe', therapists: 12000, population: 8600000, schools: 5, centers: 800 },
+            { country: 'Norway', continent: 'europe', therapists: 11000, population: 5400000, schools: 4, centers: 600 },
+            { country: 'Denmark', continent: 'europe', therapists: 10000, population: 5800000, schools: 5, centers: 550 },
+            { country: 'Finland', continent: 'europe', therapists: 9000, population: 5500000, schools: 5, centers: 500 },
+            { country: 'Ireland', continent: 'europe', therapists: 5000, population: 5000000, schools: 4, centers: 300 },
+            { country: 'Portugal', continent: 'europe', therapists: 12000, population: 10000000, schools: 10, centers: 500 },
+            { country: 'Greece', continent: 'europe', therapists: 8000, population: 10400000, schools: 6, centers: 400 },
             
             // Asia
-            { country: 'Japan', continent: 'asia', therapists: 120000, population: 126000000, schools: 110, centers: 4000 },
-            { country: 'China', continent: 'asia', therapists: 85000, population: 1400000000, schools: 80, centers: 3500 },
-            { country: 'India', continent: 'asia', therapists: 95000, population: 1380000000, schools: 300, centers: 5500 },
-            { country: 'South Korea', continent: 'asia', therapists: 30000, population: 51000000, schools: 45, centers: 1200 },
-            { country: 'Saudi Arabia', continent: 'asia', therapists: 12000, population: 34000000, schools: 15, centers: 800 },
-            { country: 'UAE', continent: 'asia', therapists: 4500, population: 9800000, schools: 5, centers: 350 },
-            { country: 'Jordan', continent: 'asia', therapists: 6000, population: 10200000, schools: 8, centers: 250 },
-            { country: 'Philippines', continent: 'asia', therapists: 18000, population: 109000000, schools: 30, centers: 600 },
-            { country: 'Thailand', continent: 'asia', therapists: 8000, population: 69000000, schools: 12, centers: 400 },
+            { country: 'Japan', continent: 'asia', therapists: 130000, population: 126000000, schools: 120, centers: 4500 },
+            { country: 'China', continent: 'asia', therapists: 90000, population: 1400000000, schools: 90, centers: 4000 },
+            { country: 'India', continent: 'asia', therapists: 110000, population: 1380000000, schools: 350, centers: 6000 },
+            { country: 'South Korea', continent: 'asia', therapists: 35000, population: 51000000, schools: 50, centers: 1400 },
+            { country: 'Saudi Arabia', continent: 'asia', therapists: 14000, population: 35000000, schools: 18, centers: 950 },
+            { country: 'UAE', continent: 'asia', therapists: 6500, population: 9900000, schools: 6, centers: 450 },
+            { country: 'Jordan', continent: 'asia', therapists: 7500, population: 10200000, schools: 10, centers: 300 },
+            { country: 'Philippines', continent: 'asia', therapists: 22000, population: 110000000, schools: 40, centers: 700 },
+            { country: 'Thailand', continent: 'asia', therapists: 10000, population: 70000000, schools: 14, centers: 500 },
+            { country: 'Vietnam', continent: 'asia', therapists: 8000, population: 97000000, schools: 10, centers: 400 },
+            { country: 'Indonesia', continent: 'asia', therapists: 15000, population: 273000000, schools: 20, centers: 600 },
+            { country: 'Malaysia', continent: 'asia', therapists: 5000, population: 32000000, schools: 8, centers: 250 },
+            { country: 'Singapore', continent: 'asia', therapists: 2500, population: 5700000, schools: 2, centers: 150 },
+            { country: 'Turkey', continent: 'asia', therapists: 25000, population: 84000000, schools: 30, centers: 1200 },
+            { country: 'Israel', continent: 'asia', therapists: 7000, population: 9000000, schools: 5, centers: 300 },
+            { country: 'Taiwan', continent: 'asia', therapists: 8000, population: 23000000, schools: 10, centers: 350 },
             
             // South America
-            { country: 'Brazil', continent: 'south_america', therapists: 240000, population: 212000000, schools: 200, centers: 6000 },
-            { country: 'Argentina', continent: 'south_america', therapists: 35000, population: 45000000, schools: 25, centers: 1200 },
-            { country: 'Colombia', continent: 'south_america', therapists: 12000, population: 50000000, schools: 18, centers: 700 },
+            { country: 'Brazil', continent: 'south_america', therapists: 280000, population: 212000000, schools: 250, centers: 7000 },
+            { country: 'Argentina', continent: 'south_america', therapists: 40000, population: 45000000, schools: 30, centers: 1400 },
+            { country: 'Colombia', continent: 'south_america', therapists: 15000, population: 50000000, schools: 22, centers: 850 },
+            { country: 'Chile', continent: 'south_america', therapists: 18000, population: 19000000, schools: 20, centers: 600 },
+            { country: 'Peru', continent: 'south_america', therapists: 9000, population: 33000000, schools: 12, centers: 400 },
+            { country: 'Venezuela', continent: 'south_america', therapists: 6000, population: 28000000, schools: 8, centers: 300 },
             
             // Africa
-            { country: 'Egypt', continent: 'africa', therapists: 45000, population: 102000000, schools: 25, centers: 1200 },
-            { country: 'South Africa', continent: 'africa', therapists: 8500, population: 59000000, schools: 12, centers: 500 },
-            { country: 'Nigeria', continent: 'africa', therapists: 5000, population: 206000000, schools: 8, centers: 150 },
-            { country: 'Morocco', continent: 'africa', therapists: 8000, population: 36000000, schools: 6, centers: 450 },
-            { country: 'Kenya', continent: 'africa', therapists: 2500, population: 53000000, schools: 4, centers: 120 },
+            { country: 'Egypt', continent: 'africa', therapists: 55000, population: 102000000, schools: 30, centers: 1500 },
+            { country: 'South Africa', continent: 'africa', therapists: 9500, population: 59000000, schools: 15, centers: 600 },
+            { country: 'Nigeria', continent: 'africa', therapists: 6000, population: 206000000, schools: 10, centers: 250 },
+            { country: 'Morocco', continent: 'africa', therapists: 9000, population: 37000000, schools: 7, centers: 500 },
+            { country: 'Kenya', continent: 'africa', therapists: 3000, population: 53000000, schools: 5, centers: 150 },
+            { country: 'Ghana', continent: 'africa', therapists: 1500, population: 31000000, schools: 3, centers: 100 },
+            { country: 'Ethiopia', continent: 'africa', therapists: 2000, population: 115000000, schools: 4, centers: 100 },
+            { country: 'Algeria', continent: 'africa', therapists: 7000, population: 43000000, schools: 6, centers: 300 },
             
             // Oceania
-            { country: 'Australia', continent: 'oceania', therapists: 35000, population: 25000000, schools: 22, centers: 1800 },
-            { country: 'New Zealand', continent: 'oceania', therapists: 6000, population: 5000000, schools: 4, centers: 400 }
+            { country: 'Australia', continent: 'oceania', therapists: 38000, population: 25000000, schools: 25, centers: 2000 },
+            { country: 'New Zealand', continent: 'oceania', therapists: 7000, population: 5000000, schools: 5, centers: 450 }
         ];
 
         let chartInstance = null;

@@ -3,7 +3,7 @@
 @section('title', 'Career Opportunities')
 
 @section('content')
-<div class="page-header" style="background: #00897b; padding: 60px 0;">
+<div class="page-header" style="background: #00897b; padding: 60px 0; margin-top: 130px;">
     <div class="container">
         <h1 class="text-white font-weight-bold display-4">Career Opportunities</h1>
         <p class="text-white-50 lead">Find your next job or training program in healthcare.</p>

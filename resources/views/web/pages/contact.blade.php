@@ -7,6 +7,7 @@
     .contact-hero {
         padding: 80px 0;
         background: #f8f9fa;
+        margin-top: 130px; /* Fix header overlap */
     }
     .contact-form-wrapper {
         background: #fff;
@@ -19,82 +20,58 @@
         color: #333;
         margin-bottom: 8px;
     }
-    .form-control {
-        padding: 12px 15px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+    .text-teal {
+        color: #02767F !important;
     }
-    .form-control:focus {
-        border-color: #02767F;
-        box-shadow: 0 0 0 3px rgba(2, 118, 127, 0.1);
-    }
-    .btn-submit {
-        background: #02767F;
-        color: white;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    .btn-submit:hover {
-        background: #04b8c4;
-        transform: translateY(-2px);
-    }
-    .contact-info-item {
-        margin-bottom: 30px;
-    }
-    .contact-info-item i {
-        color: #02767F;
-        font-size: 24px;
-        margin-bottom: 15px;
-    }
-    .contact-info-item h4 {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
+    /* ... existing styles ... */
 </style>
 @endpush
 
 @section('content')
+@php
+    $setting = \App\Models\Setting::first();
+@endphp
 <main>
     <section class="contact-hero">
         <div class="container">
             <div class="row">
                 <div class="col-lg-5 mb-5 mb-lg-0">
                     <div class="pe-lg-5">
-                        <span class="text-primary fw-bold text-uppercase mb-2 d-block" style="color: #02767F !important;">Get in Touch</span>
-                        <h1 class="mb-4 display-5 fw-bold">Let's Chat</h1>
-                        <p class="text-muted mb-5">Have questions about our services? Need technical support? Our team is ready to assist you.</p>
+                        <span class="fw-bold text-uppercase mb-2 d-block text-teal">Get in Touch</span>
+                        <h1 class="mb-4 display-5 fw-bold" style="color: #333;">Let's Chat</h1>
+                        <p class="mb-5" style="color: #555;">Have questions about our services? Need technical support? Our team is ready to assist you.</p>
 
                         <div class="contact-info-list">
                             <div class="contact-info-item d-flex mb-4">
                                 <div class="icon-box me-3">
-                                    <i class="las la-map-marker" style="color: #02767F; font-size: 28px;"></i>
+                                    <i class="las la-map-marker text-teal" style="font-size: 28px;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="fw-bold">Address</h5>
-                                    <p class="text-muted mb-0">123 Healthcare Avenue, Medical City, MC 12345</p>
+                                    <h5 class="fw-bold text-teal">Address</h5>
+                                    <p class="mb-0" style="color: #333;">
+                                        {{ $setting->{'address_' . app()->getLocale()} ?? '123 Healthcare Avenue, Medical City, MC 12345' }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="contact-info-item d-flex mb-4">
                                 <div class="icon-box me-3">
-                                    <i class="las la-phone" style="color: #02767F; font-size: 28px;"></i>
+                                    <i class="las la-phone text-teal" style="font-size: 28px;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="fw-bold">Phone</h5>
-                                    <p class="text-muted mb-0">+1 (555) 123-4567</p>
+                                    <h5 class="fw-bold text-teal">Phone</h5>
+                                    <p class="mb-0" style="color: #333;">
+                                        {{ $setting->phone ?? '+1 (555) 123-4567' }}
+                                    </p>
                                     <small class="text-muted">Mon-Fri 9AM-6PM EST</small>
                                 </div>
                             </div>
                             <div class="contact-info-item d-flex mb-4">
                                 <div class="icon-box me-3">
-                                    <i class="las la-envelope" style="color: #02767F; font-size: 28px;"></i>
+                                    <i class="las la-envelope text-teal" style="font-size: 28px;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="fw-bold">Email</h5>
-                                    <p class="text-muted mb-0">phyzioline@gmail.com</p>
+                                    <h5 class="fw-bold text-teal">Email</h5>
+                                    <p class="mb-0" style="color: #333;">{{ $setting->email ?? 'phyzioline@gmail.com' }}</p>
                                     <small class="text-muted">We'll respond within 24 hours</small>
                                 </div>
                             </div>

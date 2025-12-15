@@ -3,7 +3,7 @@
 @section('title', __('PhyzioLine Data Hub'))
 
 @section('content')
-<div class="datahub-landing py-5" style="background-color: #f8f9fa;">
+<div class="datahub-landing py-5" style="background-color: #f8f9fa; margin-top: 130px;">
     <div class="container">
         <div class="row justify-content-center mb-5">
             <div class="col-md-8 text-center">
