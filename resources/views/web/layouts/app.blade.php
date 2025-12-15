@@ -63,7 +63,7 @@
 
 </style>
   <!-- custom - css include -->
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}" />
+  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}?v={{ time() }}" />
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 @stack('css')
