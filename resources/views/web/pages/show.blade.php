@@ -128,8 +128,8 @@
                 transition: all 0.3s ease;
                 padding: 10px;
                 border-radius: 12px;
-                text-decoration: none;
-                color: #333;
+                text-decoration: none !important;
+                color: #333 !important;
             }
             
             .category-icon-item:hover {
@@ -139,7 +139,7 @@
             
             .category-icon-item.active {
                 background: linear-gradient(135deg, #02767F, #04b8c4);
-                color: white;
+                color: white !important;
             }
             
             .category-icon-circle {
@@ -326,6 +326,10 @@ header,
             .noon-action-btn.compare.active {
                 background: #04b8c4;
                 color: white;
+            }
+
+            .noon-action-btn.compare {
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2) !important;
             }
             
             .noon-product-info {
@@ -571,7 +575,7 @@ header,
                                             class="noon-action-btn compare"
                                             data-product-id="{{ $product->id }}"
                                             title="Compare">
-                                        <i class="las la-sync"></i>
+                                        <i class="las la-balance-scale"></i>
                                     </button>
                                 </div>
                             </div>
@@ -733,6 +737,7 @@ header,
                             if (response.action === 'added') {
                                 btn.addClass('active');
                                 toastr.success(response.message);
+                                window.location.href = '{{ route('compare.index') }}';
                             } else {
                                 btn.removeClass('active');
                                 toastr.info(response.message);

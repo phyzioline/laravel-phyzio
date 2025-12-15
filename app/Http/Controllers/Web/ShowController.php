@@ -38,9 +38,9 @@ class ShowController extends Controller
     return view('web.pages.show', compact('products', 'categories', 'count_product'));
 }
 
-    public function show()
+    public function show(Request $request)
     {
-        return $this->showService->show();
+        return $this->showService->show($request);
     }
     public function product($id)
     {

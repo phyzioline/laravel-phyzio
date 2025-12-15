@@ -7,15 +7,24 @@ use App\Models\Product;
 class ShowService
 {
 
-    public function show()
+    public function show($request = null)
     {
         $categories = Category::where('status', 'active')
             ->with(['subCategories' => function ($query) {
                 $query->where('status', 'active');
             }])
             ->get();
-        $products      = Product::where('amount','>' ,'0')->where('status', 'active')->paginate(50);
-        $count_product = Product::where('amount','>' ,'0')->where('status', 'active')->count();
+        
+        $query = Product::where('amount', '>', '0')->where('status', 'active');
+
+        if ($request && $request->has('category') && $request->category != null) {
+            $query->where('category_id', $request->category);
+        }
+
+        $products = $query->paginate(50)->withQueryString();
+        $count_product = $products->total();
+
+        
         return view('web.pages.show', compact('categories', 'products', 'count_product'));
     }
 

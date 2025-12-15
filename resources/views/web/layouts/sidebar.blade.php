@@ -32,13 +32,13 @@
             <div class="card">
                 <div class="card-header" id="heading-one">
                     <button data-toggle="collapse" data-target="#collapse-one" aria-expanded="false"
-                        aria-controls="collapse-one">
-                        <i class="las la-shopping-bag"></i>
+                        aria-controls="collapse-one" style="text-decoration: none; color: #333; font-weight: 600;">
+                        <i class="las la-shopping-bag" style="color: #02767F;"></i>
                         Cart Item
                         @if (Auth::check())
-                            <small>{{ App\Models\Cart::where('user_id', auth()->user()->id)->count() ?? 0 }}</small>
+                            <small class="badge badge-pill badge-info" style="background: #02767F;">{{ App\Models\Cart::where('user_id', auth()->user()->id)->count() ?? 0 }}</small>
                         @else
-                            <small>{{ 0 }}</small>
+                            <small class="badge badge-pill badge-info" style="background: #02767F;">{{ 0 }}</small>
                         @endif
                     </button>
                 </div>
@@ -86,8 +86,8 @@
 
             <div class="card">
                 <div class="card-header" id="heading-two">
-                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-two" aria-expanded="false" aria-controls="collapse-two">
-                        <i class="las la-th-large"></i>
+                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-two" aria-expanded="false" aria-controls="collapse-two" style="text-decoration: none; color: #333; font-weight: 600;">
+                        <i class="las la-th-large" style="color: #02767F;"></i>
                         Categories
                     </button>
                 </div>
@@ -95,16 +95,16 @@
                     <div class="card-body">
                         <div class="card-list-widget">
                             <ul class="list-unstyled">
-                                <li><a href="{{ route('show') }}">All Products</a></li>
+                                <li><a href="{{ route('show') }}" style="text-decoration: none; color: #333; padding: 10px 0; display: block; font-weight: 500;">All Products</a></li>
                                 @foreach (App\Models\Category::where('status', 'active')->get() as $category)
-                                    <li>
-                                        <a href="#category-{{ $category->id }}" data-toggle="collapse" aria-expanded="false" class="d-flex justify-content-between align-items-center">
+                                    <li style="border-bottom: 1px solid #f0f0f0;">
+                                        <a href="#category-{{ $category->id }}" data-toggle="collapse" aria-expanded="false" class="d-flex justify-content-between align-items-center" style="text-decoration: none; color: #333; padding: 12px 0; font-weight: 500;">
                                             {{ $category->{'name_' . app()->getLocale()} }}
                                             <i class="las la-angle-down"></i>
                                         </a>
                                         <ul class="collapse list-unstyled pl-3" id="category-{{ $category->id }}">
                                             @foreach ($category->subcategories as $subcategory)
-                                                <li><a href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}" class="text-muted" style="font-size: 13px;">- {{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
+                                                <li><a href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}" style="text-decoration: none; color: #666; font-size: 14px; padding: 8px 0; display: block; padding-left: 10px; border-left: 2px solid #eee;">{{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
                                             @endforeach
                                         </ul>
                                     </li>
@@ -117,8 +117,8 @@
 
             <div class="card">
                 <div class="card-header" id="heading-three">
-                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-three" aria-expanded="false" aria-controls="collapse-three">
-                        <i class="las la-globe"></i>
+                    <button class="collapsed" data-toggle="collapse" data-target="#collapse-three" aria-expanded="false" aria-controls="collapse-three" style="text-decoration: none; color: #333; font-weight: 600;">
+                        <i class="las la-globe" style="color: #02767F;"></i>
                         Language
                     </button>
                 </div>
@@ -150,14 +150,14 @@
                             <a href="{{ route('therapist.profile.edit') }}">{{ __('My Profile') }}</a>
                         @elseif(auth()->user()->hasRole('clinic'))
                             <a href="{{ route('clinic.profile.index') }}">{{ __('My Profile') }}</a>
-                        @else
-                            <a href="{{ route('history_order.index') }}">{{ __('My Profile') }}</a>
                         @endif
                     </li>
                     
-                    <li class="menu-item-box">
-                        <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
-                    </li>
+                    @if(auth()->user()->type == 'therapist' || auth()->user()->hasRole('clinic') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('instructor'))
+                        <li class="menu-item-box">
+                            <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
+                        </li>
+                    @endif
                 @endif
 
                 <li class="menu-item-box {{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
