@@ -11,6 +11,8 @@
   <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
    <!-- swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <!-- International Tel Input -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/css/intlTelInput.css">
 
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -69,8 +71,30 @@
                                             @enderror
                                         </div>
 
+                                        <!-- Country Selector -->
                                         <div class="form-group">
-                                            <input type="phone" name="phone" class="form-style" placeholder="Your phone" value="{{ old('phone') }}" autocomplete="off">
+                                            <select name="country" id="country" class="form-style" required onchange="handleCountryChange()">
+                                                <option value="" disabled selected>Select Country</option>
+                                                <option value="EG" {{ old('country') == 'EG' ? 'selected' : '' }}>Egypt</option>
+                                                <option value="SA" {{ old('country') == 'SA' ? 'selected' : '' }}>Saudi Arabia</option>
+                                                <option value="AE" {{ old('country') == 'AE' ? 'selected' : '' }}>UAE</option>
+                                                <option value="JO" {{ old('country') == 'JO' ? 'selected' : '' }}>Jordan</option>
+                                                <option value="KW" {{ old('country') == 'KW' ? 'selected' : '' }}>Kuwait</option>
+                                                <option value="QA" {{ old('country') == 'QA' ? 'selected' : '' }}>Qatar</option>
+                                                <option value="BH" {{ old('country') == 'BH' ? 'selected' : '' }}>Bahrain</option>
+                                                <option value="OM" {{ old('country') == 'OM' ? 'selected' : '' }}>Oman</option>
+                                                <option value="LB" {{ old('country') == 'LB' ? 'selected' : '' }}>Lebanon</option>
+                                                <option value="IQ" {{ old('country') == 'IQ' ? 'selected' : '' }}>Iraq</option>
+                                            </select>
+                                            <i class="input-icon material-icons">public</i>
+                                            @error('country')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Phone with Country Code & Flag -->
+                                        <div class="form-group" style="position: relative;">
+                                            <input type="tel" name="phone" id="phone" class="form-style" placeholder="Your phone" value="{{ old('phone') }}" autocomplete="off" required>
                                             <i class="input-icon material-icons">phone</i>
                                             @error('phone')
                                                 <span class="text-danger">{{ $message }}</span>
@@ -182,9 +206,15 @@
 
     <!-- Toastr & Logic -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <!-- International Tel Input JS -->
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/intlTelInput.min.js"></script>
+    
     <script>
+        let iti; // International Tel Input instance
+
         document.addEventListener('DOMContentLoaded', function() {
-            handleUserTypeChange(); // Ensure correct fields show on load (e.g. after validation error)
+            handleUserTypeChange(); // Ensure correct fields show on load
+            initializePhoneInput(); // Initialize phone input with flags
         });
 
         $(document).ready(function() {
@@ -208,6 +238,37 @@
             @endif
         });
 
+        function initializePhoneInput() {
+            const phoneInput = document.querySelector("#phone");
+            iti = window.intlTelInput(phoneInput, {
+                initialCountry: "eg",
+                preferredCountries: ["eg", "sa", "ae", "jo", "kw"],
+                separateDialCode: true,
+                nationalMode: true,
+                autoPlaceholder: "polite",
+                customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
+                    return "e.g. " + selectedCountryPlaceholder;
+                },
+                utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.2.1/build/js/utils.js"
+            });
+
+            // Sync country dropdown with phone country
+            const countrySelect = document.getElementById('country');
+            if (countrySelect.value) {
+                iti.setCountry(countrySelect.value.toLowerCase());
+            }
+        }
+
+        function handleCountryChange() {
+            const countrySelect = document.getElementById('country');
+            const selectedCountry = countrySelect.value;
+            
+            // Update phone input country when country dropdown changes
+            if (iti && selectedCountry) {
+                iti.setCountry(selectedCountry.toLowerCase());
+            }
+        }
+
         function handleUserTypeChange() {
             const userType = document.getElementById('userType').value;
             const vendorFields = document.getElementById('vendorFields');
@@ -217,14 +278,14 @@
             // Hide all first
             vendorFields.style.display = 'none';
             therapistFields.style.display = 'none';
-            formWrapper.style.minHeight = '800px'; 
+            formWrapper.style.minHeight = '850px'; // Slightly taller for new country field
 
             if (userType === 'vendor') {
                 vendorFields.style.display = 'block';
-                formWrapper.style.minHeight = '1200px';
+                formWrapper.style.minHeight = '1250px';
             } else if (userType === 'therapist') {
                 therapistFields.style.display = 'block';
-                formWrapper.style.minHeight = '900px';
+                formWrapper.style.minHeight = '950px';
             }
         }
     </script>
