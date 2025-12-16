@@ -17,11 +17,45 @@ class Job extends Model
         'location',
         'salary_range',
         'file_path',
-        'is_active'
+        'is_active',
+        'specialty',
+        'techniques',
+        'equipment',
+        'experience_level',
+        'urgency_level',
+        'salary_type',
+        'benefits',
+        'openings_count',
+        'featured',
+        'posted_by_type',
+    ];
+
+    protected $casts = [
+        'specialty' => 'array',
+        'techniques' => 'array',
+        'equipment' => 'array',
+        'benefits' => 'array',
+        'is_active' => 'boolean',
+        'featured' => 'boolean',
     ];
 
     public function clinic()
     {
         return $this->belongsTo(User::class, 'clinic_id');
+    }
+
+    public function requirements()
+    {
+        return $this->hasOne(JobRequirement::class);
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(JobApplication::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

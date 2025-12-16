@@ -38,6 +38,10 @@ Route::group(
     Route::get('/otp', [RegisterController::class, 'otp'])->name('view_otp');
     Route::post('/verify', [RegisterController::class, 'verify'])->name('verify');
 
+    // Company Registration
+    Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name('company.register');
+    Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name('company.register.store');
+
     Route::get('/login', [LoginController::class, 'index'])->name('view_login');
     Route::post('/login', [LoginController::class, 'store'])->name('login');
 
@@ -75,6 +79,7 @@ Route::group(
         
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
+        Route::post('/jobs/{id}/apply', [App\Http\Controllers\Web\JobController::class, 'apply'])->name('web.jobs.apply');
 
         // Data Hub
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
@@ -98,11 +103,43 @@ Route::group(
             Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name('courses.edit');
             Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name('courses.update');
             Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name('courses.destroy');
+            
+            // Modules & Units
+            Route::post('/courses/{course}/modules', [App\Http\Controllers\Instructor\CourseController::class, 'storeModule'])->name('courses.modules.store');
+            Route::post('/courses/{course}/modules/{module}/units', [App\Http\Controllers\Instructor\CourseController::class, 'storeUnit'])->name('courses.modules.units.store');
+        });
+
+        // --- Home Visit System Routes ---
+        
+        // Patient Flow
+        Route::get('/visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name('patient.visits.create');
+        Route::post('/visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.visits.store');
+        Route::get('/visits/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.visits.show');
+
+        // Therapist Flow
+        Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');
+        Route::post('/therapist/visits/{visit}/accept', [App\Http\Controllers\Therapist\VisitManagementController::class, 'accept'])->name('therapist.visits.accept');
+        Route::post('/therapist/visits/{visit}/status', [App\Http\Controllers\Therapist\VisitManagementController::class, 'updateStatus'])->name('therapist.visits.status');
+        Route::post('/therapist/visits/{visit}/complete', [App\Http\Controllers\Therapist\VisitManagementController::class, 'complete'])->name('therapist.visits.complete');
+
+        // Feed Routes (Public)
+        Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name('feed.index');
+        Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name('feed.interact');
+        Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name('feed.like');
+
+        // Admin Feed Management
+        Route::prefix('admin')->name('admin.')->group(function(){
+            Route::resource('feed', App\Http\Controllers\Admin\FeedController::class);
         });
 
         // Clinic ERP Routes
         Route::prefix('clinic')->name('clinic.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
+            
+            // Episodes & Clinical Care (New ERP)
+            Route::resource('episodes', App\Http\Controllers\Clinic\EpisodeController::class);
+            Route::resource('episodes.assessments', App\Http\Controllers\Clinic\AssessmentController::class);
+            
             Route::resource('patients', App\Http\Controllers\Clinic\PatientController::class);
             Route::resource('appointments', App\Http\Controllers\Clinic\AppointmentController::class);
             Route::resource('plans', App\Http\Controllers\Clinic\TreatmentPlanController::class);
@@ -194,6 +231,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
+        Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
 

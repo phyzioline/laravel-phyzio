@@ -117,6 +117,11 @@
 </style>
   <!-- custom - css include -->
   <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}?v={{ time() }}" />
+  
+  <!-- RTL Overrides for Arabic -->
+  @if(app()->getLocale() == 'ar')
+  <link rel="stylesheet" type="text/css" href="{{ asset('css/rtl-overrides.css') }}" />
+  @endif
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
 @stack('css')

@@ -72,4 +72,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(\App\Models\TherapistProfile::class);
     }
+
+    public function homeVisits()
+    {
+        return $this->hasMany(HomeVisit::class, 'patient_id');
+    }
+
+    public function therapistVisits()
+    {
+        return $this->hasMany(HomeVisit::class, 'therapist_id');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
 }

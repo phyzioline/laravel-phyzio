@@ -1,0 +1,47 @@
+/* RTL Overrides for Phyzioline New Modules */
+html[dir="rtl"] {
+    /* Feed Cards */
+    .feed-card .icon-box {
+        margin-left: 1rem;
+        margin-right: 0 !important;
+    }
+    
+    .feed-card .ml-auto {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+    
+    .feed-card .mr-2, .feed-card .mr-3 {
+        margin-right: 0 !important;
+        margin-left: 0.5rem;
+    }
+    
+    /* Dashboard Sidebar Icons */
+    .sidebar-menu li a i {
+        margin-right: 0;
+        margin-left: 10px;
+    }
+    
+    /* Button Icons */
+    .btn .la-arrow-right {
+        margin-left: 0;
+        margin-right: 0.5rem;
+        transform: rotate(180deg);
+    }
+    
+    /* Form Inputs */
+    .form-control {
+        text-align: right;
+    }
+    
+    /* Tables */
+    .table th, .table td {
+        text-align: right;
+    }
+    
+    /* Badges and Pills */
+    .badge, .rounded-pill {
+        margin-left: 0.5rem;
+        margin-right: 0;
+    }
+}

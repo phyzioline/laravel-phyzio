@@ -28,6 +28,11 @@
                                     <span class="badge badge-{{ $job->type == 'job' ? 'success' : 'info' }} mr-2 px-3 py-2">
                                         {{ ucfirst($job->type) }}
                                     </span>
+                                    @if(isset($job->match_score) && $job->match_score > 0)
+                                        <span class="badge badge-warning mr-2 px-3 py-2" title="Match Score based on your profile">
+                                            <i class="las la-star"></i> {{ round($job->match_score) }}% Match
+                                        </span>
+                                    @endif
                                     <span class="text-muted mr-3"><i class="las la-map-marker"></i> {{ $job->location ?? 'Remote' }}</span>
                                     <span class="text-muted"><i class="las la-wallet"></i> {{ $job->salary_range ?? 'Negotiable' }}</span>
                                 </div>

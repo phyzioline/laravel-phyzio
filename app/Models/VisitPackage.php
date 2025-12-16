@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class VisitPackage extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'name_en',
+        'name_ar',
+        'price',
+        'session_count',
+        'description',
+        'condition_type',
+        'is_active'
+    ];
+    
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+}

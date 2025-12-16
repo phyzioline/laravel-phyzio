@@ -35,16 +35,49 @@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
                     <h5 class="font-weight-bold mb-4">Apply Now</h5>
-                    <p class="text-muted mb-4">To apply for this position, please contact the clinic directly or send your CV/Resume.</p>
+                    
+                    @auth
+                        @if(auth()->user()->type === 'therapist')
+                            @if(isset($hasApplied) && $hasApplied)
+                                <div class="alert alert-success">
+                                    <i class="las la-check-circle"></i> You have applied for this job.
+                                </div>
+                            @else
+                                @if(isset($matchScore) && $matchScore < 50)
+                                    <div class="alert alert-warning small">
+                                        Your profile match score is low ({{ round($matchScore) }}%). Consider updating your profile skills before applying.
+                                    </div>
+                                @endif
+                                <form action="{{ route('web.jobs.apply', $job->id) }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <textarea name="cover_letter" class="form-control" placeholder="Optional Cover Letter..." rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block btn-lg">
+                                        <i class="las la-paper-plane"></i> Submit Application
+                                    </button>
+                                </form>
+                            @endif
+                        @else
+                             <p class="text-muted">Login as a therapist to apply directly.</p>
+                             <a href="{{ route('web.jobs.index') }}" class="btn btn-outline-primary btn-block">Find Matching Jobs</a>
+                        @endif
+                    @else
+                        <p class="text-muted">Please login to apply for this position.</p>
+                        <a href="{{ route('view_login') }}" class="btn btn-primary btn-block">Login to Apply</a>
+                    @endauth
+
+                    <hr>
+                    <p class="text-muted small mb-2 text-center">Or contact directly</p>
                     
                     @if($job->clinic && $job->clinic->email)
-                        <a href="mailto:{{ $job->clinic->email }}?subject=Application for {{ $job->title }}" class="btn btn-primary btn-block btn-lg mb-3">
-                            <i class="las la-envelope"></i> Email Application
+                        <a href="mailto:{{ $job->clinic->email }}?subject=Application for {{ $job->title }}" class="btn btn-outline-secondary btn-block mb-2">
+                            <i class="las la-envelope"></i> Email Clinic
                         </a>
                     @endif
                     
                     @if($job->clinic && $job->clinic->phone)
-                        <a href="tel:{{ $job->clinic->phone }}" class="btn btn-outline-success btn-block btn-lg">
+                        <a href="tel:{{ $job->clinic->phone }}" class="btn btn-outline-success btn-block">
                             <i class="las la-phone"></i> Call Clinic
                         </a>
                     @endif

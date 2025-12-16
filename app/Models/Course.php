@@ -10,15 +10,31 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'instructor_id',
         'title',
         'description',
-        'price',
         'thumbnail',
-        'status',
-        'type',
-        'video_url',
-        'duration_minutes'
+        'price',
+        'instructor_id',
+        'category_id',
+        'status', // draft, published, archived
+        // Enhanced Fields
+        'specialty',
+        'level',
+        'total_hours',
+        'practical_hours',
+        'clinical_focus',
+        'equipment_required', // json
+        'accreditation_status',
+        'subscription_included', // boolean
+        'video_file', // from previous migration
+        'type' // from previous migration
+    ];
+
+    protected $casts = [
+        'equipment_required' => 'array',
+        'subscription_included' => 'boolean',
+        'total_hours' => 'decimal:2',
+        'practical_hours' => 'decimal:2',
     ];
 
     public function instructor()
@@ -26,9 +42,30 @@ class Course extends Model
         return $this->belongsTo(User::class, 'instructor_id');
     }
 
-    public function lessons()
+    public function category()
     {
-        return $this->hasMany(Lesson::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function modules()
+    {
+        return $this->hasMany(CourseModule::class)->orderBy('order');
+    }
+
+    public function units()
+    {
+        return $this->hasManyThrough(CourseUnit::class, CourseModule::class);
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'course_skills')
+                    ->withPivot('mastery_level_required');
+    }
+
+    public function clinicalCases()
+    {
+        return $this->hasMany(ClinicalCase::class);
     }
 
     public function enrollments()

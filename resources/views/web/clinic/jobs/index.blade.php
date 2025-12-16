@@ -22,6 +22,7 @@
                                 <th>Location</th>
                                 <th>Salary/Stipend</th>
                                 <th>Posted At</th>
+                                <th>Applicants</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -38,11 +39,22 @@
                                 <td>{{ $job->salary_range ?? 'N/A' }}</td>
                                 <td>{{ $job->created_at->format('M d, Y') }}</td>
                                 <td>
-                                    <form action="{{ route('clinic.jobs.destroy', $job->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-sm btn-danger"><i class="las la-trash"></i></button>
-                                    </form>
+                                    @if($job->applications_count > 0)
+                                        <a href="{{ route('clinic.jobs.applicants', $job->id) }}" class="badge badge-primary px-2 py-1">
+                                            {{ $job->applications_count }} Applicants
+                                        </a>
+                                    @else
+                                        <span class="badge badge-secondary">0 Applicants</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <form action="{{ route('clinic.jobs.destroy', $job->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-sm btn-danger" title="Delete"><i class="las la-trash"></i></button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty

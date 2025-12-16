@@ -83,6 +83,10 @@ class RegisterService
                 'status' => 'pending',
             ]);
         }
+        if ($data['type'] === 'company') {
+            $user->assignRole('company'); // Assuming role 'company' exists or will be created
+            $user->update(['status' => 'inactive']); // Require approval
+        }
 
         return $user;
     }

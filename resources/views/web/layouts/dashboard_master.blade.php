@@ -7,7 +7,7 @@
     <title>@yield('title') - {{ config('app.name', 'Phyzioline') }}</title>
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
@@ -22,13 +22,41 @@
             --bg-color: #f8f9fa;
             --sidebar-width: 260px;
             --text-color: #333;
+            --font-english: 'Inter', sans-serif;
+            --font-arabic: 'Cairo', sans-serif;
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--font-arabic); /* Default to Cairo for uniform look, or switch based on logic */
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
+            font-size: 14px; /* Base size */
+            font-weight: 400;
+        }
+        
+        /* Typography Rules */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700 !important; /* Bold headers only */
+        }
+        h1 { font-size: 24px; }
+        h2 { font-size: 22px; }
+        h3 { font-size: 20px; }
+        h4 { font-size: 18px; }
+
+        /* Table Rules */
+        table, .table {
+            font-size: 12px !important;
+        }
+        .table thead th {
+             font-size: 11px;
+             text-transform: uppercase;
+             font-weight: 600;
+        }
+
+        /* English specific overrides if needed */
+        .lang-en {
+            font-family: var(--font-english);
         }
 
         /* Sidebar Styles */

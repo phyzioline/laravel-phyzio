@@ -3,27 +3,46 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use Illuminate\Support\Facades\Cache;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-use Illuminate\Support\Facades\Log;
+use App\Models\FeedItem;
+use App\Services\Feed\FeedTrackingService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FeedController extends Controller
 {
-    public function google($lang = 'en')
+    protected $trackingService;
+
+    public function __construct(FeedTrackingService $service)
     {
-        if (! in_array($lang, ['en', 'ar'])) {
-            abort(404);
-        }
+        $this->middleware('auth'); // CRITICAL: Prevent crash when Auth::user() is null
+        $this->trackingService = $service;
+    }
 
-        $products = Cache::remember("google_feed_{$lang}", 600, function () use ($lang) {
-            return Product::where('status', 'active')->with('productImages', 'vendor')->get();
-        });
+    public function index()
+    {
+        $user = Auth::user();
+        
+        // Fetch Feed Items relevant to user
+        $feedItems = FeedItem::forUser($user)->paginate(10);
+        
+        return view('web.feed.index', compact('feedItems'));
+    }
 
-        // Prepare localized data in the view
-        return response()
-            ->view('feeds.google', compact('products', 'lang'))
-            ->header('Content-Type', 'application/xml; charset=utf-8')
-            ->header('Cache-Control', 'public, max-age=600');
+    /**
+     * AJAX endpoint to log interactions (clicks/views)
+     */
+    public function logInteraction(Request $request, $id)
+    {
+        $this->trackingService->logInteraction($id, $request->type, $request->meta ?? []);
+        return response()->json(['status' => 'success']);
+    }
+
+    /**
+     * AJAX endpoint to toggle like
+     */
+    public function toggleLike($id)
+    {
+        $liked = $this->trackingService->toggleLike($id);
+        return response()->json(['liked' => $liked]);
     }
 }

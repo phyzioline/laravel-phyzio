@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'password' => 'required|confirmed|min:8',
             'phone' => 'required|string|unique:users,phone',
             'image' => 'nullable|image|max:10240',
-            'type' => 'required|in:vendor,buyer,therapist',
+            'type' => 'required|in:vendor,buyer,therapist,company',
             'account_statement' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
             'commercial_register' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
             'tax_card' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',
