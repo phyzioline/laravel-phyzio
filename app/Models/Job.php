@@ -60,4 +60,10 @@ class Job extends Model
     {
         return $query->where('is_active', true);
     }
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'job_skills')
+                    ->withPivot(['required_level', 'is_mandatory'])
+                    ->withTimestamps();
+    }
 }

@@ -48,4 +48,17 @@ class TherapistProfile extends Model
     {
         return $this->hasMany(Appointment::class, 'therapist_id', 'user_id');
     }
+
+    // New AI Feature: Verified Skills
+    public function verifiedSkills()
+    {
+        return $this->hasManyThrough(
+            Skill::class,
+            SkillVerification::class,
+            'user_id', // Foreign key on skill_verifications table...
+            'id',      // Foreign key on skills table...
+            'user_id', // Local key on therapist_profiles table...
+            'skill_id' // Local key on skill_verifications table...
+        )->where('skill_verifications.status', 'approved');
+    }
 }
