@@ -12,7 +12,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = \App\Models\TherapistProfile::where('user_id', $user->id)->firstOrCreate(['user_id' => $user->id]);
-        return view('web.therapist.profile', compact('user', 'profile'));
+        $locations = config('locations');
+        return view('web.therapist.profile', compact('user', 'profile', 'locations'));
     }
 
     public function update(Request $request)

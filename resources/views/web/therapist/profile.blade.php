@@ -130,19 +130,75 @@
 
                         <h6 class="text-uppercase text-muted small font-weight-bold mb-3 mt-4 border-bottom pb-2">{{ __('Service Areas') }}</h6>
                         <div class="form-group">
-                            <label class="small font-weight-bold text-dark d-block mb-2">{{ __('Select areas you cover for home visits') }}</label>
-                            <div class="row">
-                                @foreach(['Nasr City', 'New Cairo', 'Maadi', 'Giza', 'Dokki', 'Mohandessin', 'Zamalek', 'Sheikh Zayed', '6th of October'] as $area)
-                                    <div class="col-md-4 mb-2">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="available_areas[]" value="{{ $area }}" class="custom-control-input" id="area_{{ $loop->index }}" 
-                                                {{ in_array($area, $profile->available_areas ?? []) ? 'checked' : '' }}>
-                                            <label class="custom-control-label" for="area_{{ $loop->index }}">{{ $area }}</label>
+                            <label class="small font-weight-bold text-dark d-block mb-3">{{ __('Select areas you cover for home visits') }}</label>
+                            
+                            <!-- Location Filters -->
+                            <div class="form-row mb-3">
+                                <div class="col-md-6">
+                                    <label class="small text-muted">{{ __('Country') }}</label>
+                                    <select class="form-control custom-select" id="countrySelect" disabled>
+                                        <option value="Egypt" selected>Egypt</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="small text-muted">{{ __('Governorate / City') }}</label>
+                                    <select class="form-control custom-select" id="citySelect">
+                                        <option value="all">{{ __('Show All') }}</option>
+                                        @if(isset($locations['Egypt']))
+                                            @foreach(array_keys($locations['Egypt']) as $city)
+                                                <option value="{{ $city }}">{{ $city }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-3">
+
+                            <!-- Area Checkboxes -->
+                            <div id="areasContainer" style="max-height: 400px; overflow-y: auto;">
+                                @if(isset($locations['Egypt']))
+                                    @foreach($locations['Egypt'] as $city => $areas)
+                                        <div class="area-group" data-city="{{ $city }}">
+                                            <h6 class="font-weight-bold text-primary mb-2 mt-2 px-1">{{ $city }}</h6>
+                                            <div class="row px-1">
+                                                @foreach($areas as $area)
+                                                    <div class="col-md-4 mb-2">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" name="available_areas[]" value="{{ $area }}" class="custom-control-input" id="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}" 
+                                                                {{ in_array($area, $profile->available_areas ?? []) ? 'checked' : '' }}>
+                                                            <label class="custom-control-label" for="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}">{{ $area }}</label>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                @else
+                                    <p class="text-muted text-center">No location data available.</p>
+                                @endif
                             </div>
                         </div>
+
+                        <!-- JS for Filtering -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const citySelect = document.getElementById('citySelect');
+                                const areaGroups = document.querySelectorAll('.area-group');
+
+                                citySelect.addEventListener('change', function() {
+                                    const selectedCity = this.value;
+
+                                    areaGroups.forEach(group => {
+                                        if (selectedCity === 'all' || group.getAttribute('data-city') === selectedCity) {
+                                            group.style.display = 'block';
+                                        } else {
+                                            group.style.display = 'none';
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
 
                     </form>
                 </div>
