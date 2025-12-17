@@ -9,7 +9,12 @@
         <div class="row align-items-center">
             <div class="col-lg-8 py-5">
                 <span class="badge badge-warning mb-2">{{ $course->level }}</span>
-                <span class="badge badge-light mb-2 ml-2">{{ $course->category_id ?? 'General' }}</span>
+                @if($course->specialty)
+                    <span class="badge badge-info mb-2 ml-2">{{ $course->specialty }}</span>
+                @endif
+                @if($course->clinical_focus)
+                    <span class="badge badge-primary mb-2 ml-2">{{ $course->clinical_focus }}</span>
+                @endif
                 <h1 class="display-4 font-weight-bold">{{ $course->title }}</h1>
                 <p class="lead mb-4">{{ Str::limit(strip_tags($course->description), 150) }}</p>
                 
@@ -76,45 +81,83 @@
                 </div>
             </div>
 
+            <!-- Verified Clinical Skills (New) -->
+            @if($course->skills && $course->skills->count() > 0)
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="font-weight-bold mb-0 text-primary">{{ __('Verified Clinical Skills') }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Skill Name</th>
+                                        <th>Risk Level</th>
+                                        <th>Mastery Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($course->skills as $skill)
+                                        <tr>
+                                            <td class="font-weight-bold">{{ $skill->skill_name }}</td>
+                                            <td>
+                                                <span class="badge badge-{{ $skill->risk_level == 'high' ? 'danger' : ($skill->risk_level == 'medium' ? 'warning' : 'success') }}">
+                                                    {{ ucfirst($skill->risk_level) }} Risk
+                                                </span>
+                                            </td>
+                                            <td>{{ ucfirst($skill->pivot->mastery_level_required) }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Course Content / Curriculum -->
             <div class="mb-5">
-                <h4 class="font-weight-bold mb-3">{{ __('Course Content') }}</h4>
+                <h4 class="font-weight-bold mb-3">{{ __('Clinical Curriculum') }}</h4>
                 <div class="d-flex justify-content-between mb-2 small text-muted">
-                    <span>{{ $course->lessons->count() }} lessons</span>
-                    <span>{{ $course->lessons->sum('duration_minutes') }}m total length</span>
+                    <span>{{ $course->modules->count() }} modules</span>
+                    <span>{{ $course->total_hours }}h total clinical practice</span>
                 </div>
                 
                 <div class="accordion" id="accordionCurriculum">
-                    <!-- Grouping by simplistic approach for now, usually modules -->
-                    <div class="card">
-                        <div class="card-header bg-light" id="headingOne">
-                             <h2 class="mb-0">
-                                <button class="btn btn-link btn-block text-left text-dark font-weight-bold text-decoration-none" type="button" data-toggle="collapse" data-target="#collapseOne">
-                                    {{ __('Module 1: Introduction & Basics') }}
-                                </button>
-                            </h2>
-                        </div>
-                        <div id="collapseOne" class="collapse show" data-parent="#accordionCurriculum">
-                            <div class="card-body p-0">
-                                <ul class="list-group list-group-flush">
-                                    @forelse($course->lessons as $lesson)
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <i class="las la-play-circle text-muted mr-2"></i>
-                                                {{ $lesson->title }}
-                                                @if($lesson->is_preview) 
-                                                    <span class="badge badge-light text-primary ml-2">{{ __('Preview') }}</span>
-                                                @endif
-                                            </div>
-                                            <span class="text-muted small">{{ $lesson->duration_minutes }}m</span>
-                                        </li>
-                                    @empty
-                                        <li class="list-group-item text-muted">{{ __('No lessons yet.') }}</li>
-                                    @endforelse
-                                </ul>
+                    @forelse($course->modules as $module)
+                        <div class="card">
+                            <div class="card-header bg-light" id="heading{{ $module->id }}">
+                                 <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left text-dark font-weight-bold text-decoration-none" type="button" data-toggle="collapse" data-target="#collapse{{ $module->id }}">
+                                        {{ $module->title }}
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapse{{ $module->id }}" class="collapse {{ $loop->first ? 'show' : '' }}" data-parent="#accordionCurriculum">
+                                <div class="card-body p-0">
+                                    <ul class="list-group list-group-flush">
+                                        @forelse($module->units as $unit)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <i class="las {{ $unit->unit_type == 'case' ? 'la-user-injured text-danger' : 'la-play-circle text-muted' }} mr-2"></i>
+                                                    {{ $unit->title }}
+                                                    @if($unit->unit_type == 'case')
+                                                        <span class="badge badge-danger ml-2">Clinical Case</span>
+                                                    @endif
+                                                </div>
+                                                <span class="text-muted small">{{ $unit->duration_minutes }}m</span>
+                                            </li>
+                                        @empty
+                                            <li class="list-group-item text-muted">{{ __('No units in this module.') }}</li>
+                                        @endforelse
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @empty
+                        <div class="alert alert-light">{{ __('Curriculum is being updated.') }}</div>
+                    @endforelse
                 </div>
             </div>
 
@@ -158,6 +201,14 @@
                     @endif
                 </div>
                 <div class="card-body p-4">
+                    @if($course->accreditation_status)
+                        <div class="mb-3 text-center">
+                            <span class="badge badge-success p-2 w-100">
+                                <i class="las la-check-circle mr-1"></i> {{ $course->accreditation_status }}
+                            </span>
+                        </div>
+                    @endif
+
                     <div class="mb-3">
                         @if($course->discount_price)
                             <h2 class="font-weight-bold mb-0 text-primary">{{ $course->discount_price }} EGP</h2>
@@ -183,11 +234,19 @@
                     @endif
 
                     <div class="small">
-                        <p class="mb-2"><i class="las la-video mr-2"></i> {{ $course->lessons->sum('duration_minutes') }} mins on-demand video</p>
-                        <p class="mb-2"><i class="las la-file-download mr-2"></i> 5 downloadable resources</p>
-                        <p class="mb-2"><i class="las la-infinity mr-2"></i> Full lifetime access</p>
-                        <p class="mb-2"><i class="las la-mobile mr-2"></i> Access on mobile and TV</p>
-                        <p class="mb-0"><i class="las la-certificate mr-2"></i> Certificate of completion</p>
+                        <p class="mb-2"><i class="las la-video mr-2"></i> {{ $course->total_hours }}h clinical practice</p>
+                        <p class="mb-2"><i class="las la-file-download mr-2"></i> {{ $course->modules->count() }} modules</p>
+                        <p class="mb-2"><i class="las la-infinity mr-2"></i> Lifetime access</p>
+                        
+                        @if($course->equipment_required)
+                            <hr>
+                            <h6 class="font-weight-bold text-muted mb-2">{{ __('Required Equipment:') }}</h6>
+                            <ul class="list-unstyled text-muted small">
+                                @foreach($course->equipment_required as $equipment)
+                                    <li><i class="las la-tools mr-1"></i> {{ $equipment }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>

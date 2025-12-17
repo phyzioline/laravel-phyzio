@@ -84,7 +84,7 @@ class CourseController extends Controller
 
     public function show($id)
     {
-        $course = Course::with(['lessons', 'instructor', 'enrollments'])->findOrFail($id);
+        $course = Course::with(['modules.units', 'instructor', 'enrollments', 'skills', 'clinicalCases'])->findOrFail($id);
         
         // Check if user is enrolled
         $isEnrolled = false;

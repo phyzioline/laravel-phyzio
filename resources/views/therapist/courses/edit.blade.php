@@ -80,14 +80,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     @error('thumbnail') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="col-md-12 mb-3">
-                    <label>Status</label>
-                    <select name="status" class="form-control" required>
-                        <option value="draft" {{ old('status', $course->status) == 'draft' ? 'selected' : '' }}>Draft (Hidden)</option>
-                        <option value="published" {{ old('status', $course->status) == 'published' ? 'selected' : '' }}>Published (Visible)</option>
-                    </select>
+                <div class="col-md-6 mb-3">
+                    <label>Specialty</label>
+                    <input type="text" name="specialty" class="form-control" value="{{ old('specialty', $course->specialty) }}" placeholder="e.g. Orthopedics, Neuro">
                 </div>
-            </div>     <div class="col-md-12 mb-3">
+
+                <div class="col-md-6 mb-3">
+                    <label>Clinical Focus</label>
+                    <input type="text" name="clinical_focus" class="form-control" value="{{ old('clinical_focus', $course->clinical_focus) }}" placeholder="e.g. Post-op ACL Rehab">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Accreditation Status</label>
+                    <input type="text" name="accreditation_status" class="form-control" value="{{ old('accreditation_status', $course->accreditation_status) }}" placeholder="e.g. CPD Accredited">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Practical Hours</label>
+                    <input type="number" step="0.1" name="practical_hours" class="form-control" value="{{ old('practical_hours', $course->practical_hours) }}">
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <label>Total Hours</label>
+                    <input type="number" step="0.1" name="total_hours" class="form-control" value="{{ old('total_hours', $course->total_hours) }}">
+                </div>
+
+                <div class="col-md-12 mb-3">
                     <label>Status</label>
                     <select name="status" class="form-control" required>
                         <option value="draft" {{ old('status', $course->status) == 'draft' ? 'selected' : '' }}>Draft (Hidden)</option>
