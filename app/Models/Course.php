@@ -20,19 +20,24 @@ class Course extends Model
         'status', // draft, published, archived
         // Enhanced Fields
         'specialty',
-        'level',
-        'total_hours',
-        'practical_hours',
         'clinical_focus',
         'equipment_required', // json
+        'practical_hours',
+        'total_hours',
         'accreditation_status',
         'subscription_included', // boolean
+        'countries_supported', // json
+        'regulatory_mapping', // json
+        'level',
         'video_file', // from previous migration
-        'type' // from previous migration
+        'type', // from previous migration
+        'seats'
     ];
 
     protected $casts = [
         'equipment_required' => 'array',
+        'countries_supported' => 'array',
+        'regulatory_mapping' => 'array',
         'subscription_included' => 'boolean',
         'total_hours' => 'decimal:2',
         'practical_hours' => 'decimal:2',

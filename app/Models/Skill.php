@@ -15,7 +15,11 @@ class Skill extends Model
         'body_region',
         'indications',
         'contraindications',
-        'risk_level' // low, medium, high
+        'risk_level', // low, medium, high
+        'force_level',
+        'therapist_position',
+        'patient_position',
+        'safety_risk_score'
     ];
 
     public function courses()
