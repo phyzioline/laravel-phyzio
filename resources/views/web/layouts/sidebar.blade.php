@@ -163,8 +163,6 @@
                 <li class="menu-item-box {{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
                 <li class="menu-item-box {{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
                 <li class="menu-item-box {{ Route::is('patient.visits.create') ? 'active' : '' }}"><a href="{{ route('patient.visits.create') }}">{{ __('Book Home Visit') }}</a></li>
-                <li class="menu-item-box {{ Route::is('web.appointments.index') ? 'active' : '' }}"><a href="{{ route('web.appointments.index') }}">{{ __('Appointments') }}</a></li>
-                <li class="menu-item-box {{ Route::is('clinic.episodes.index') ? 'active' : '' }}"><a href="{{ route('clinic.episodes.index') }}">{{ __('Clinical Episodes') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.jobs.index') ? 'active' : '' }}"><a href="{{ route('web.jobs.index') }}">{{ __('Jobs') }}</a></li>

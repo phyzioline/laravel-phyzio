@@ -14,13 +14,23 @@ class JobController extends Controller
         
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
-            $jobs = $query->get()->map(function($job) use ($service) {
+            $allJobs = $query->get()->map(function($job) use ($service) {
                 $job->match_score = $service->calculateScore($job, auth()->user());
                 return $job;
             })->sortByDesc('match_score');
-             // Pagination manually if using collection, or just simple list for now
-             // For simplicity, we'll just return all or slice.
-             // Converting back to pagination is complex with custom sort, so we'll just pass collection
+
+            // Manual Pagination
+            $page = Request::get('page', 1);
+            $perPage = 10;
+            $items = $allJobs->forPage($page, $perPage);
+            $jobs = new \Illuminate\Pagination\LengthAwarePaginator(
+                $items, 
+                $allJobs->count(), 
+                $perPage, 
+                $page, 
+                ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+            );
+
             return view('web.pages.jobs.index', compact('jobs'));
         }
 

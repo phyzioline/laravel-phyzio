@@ -43,6 +43,7 @@ Route::group(
             Route::resource('appointments', \App\Http\Controllers\Dashboard\AppointmentController::class);
             Route::resource('clinic_profiles', \App\Http\Controllers\Dashboard\ClinicProfileController::class);
             Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
+            Route::resource('jobs', \App\Http\Controllers\Dashboard\JobController::class);
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
 
             // Financial Management

@@ -146,6 +146,7 @@
                       <li><a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Home Visits") }}</a></li>
                       <li><a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Clinics") }}</a></li>
                       <li><a href="{{ route('dashboard.courses.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Courses") }}</a></li>
+                      <li><a href="{{ route('dashboard.jobs.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Jobs") }}</a></li>
                       <li><a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Data Points") }}</a></li>
                   </ul>
               </li>

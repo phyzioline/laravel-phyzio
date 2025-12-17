@@ -264,12 +264,15 @@
 
         <ul class="sidebar-menu">
             <!-- Common Links -->
+            <!-- Common Links (Hidden for Clinic to avoid 403) -->
+            @if(!request()->routeIs('clinic.*') && !auth()->user()->hasRole('clinic'))
             <li>
                 <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('*.dashboard') ? 'active' : '' }}">
                     <span class="las la-igloo"></span>
                     <span>{{ __('Dashboard') }}</span>
                 </a>
             </li>
+            @endif
 
             <!-- Instructor Portal (Hidden for Clinics) -->
             @if(!request()->routeIs('clinic.*') && (auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist'))
@@ -320,6 +323,14 @@
                     <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
                         <span class="las la-briefcase"></span>
                         <span>{{ __('Job System') }}</span>
+                    </a>
+                </li>
+
+                <!-- Clinic Episodes (New ERP Module) -->
+                <li>
+                    <a href="{{ route('clinic.episodes.index') }}" class="{{ request()->routeIs('clinic.episodes.*') ? 'active' : '' }}">
+                        <span class="las la-notes-medical"></span>
+                        <span>{{ __('Clinical Episodes') }}</span>
                     </a>
                 </li>
 

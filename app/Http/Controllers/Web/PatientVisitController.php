@@ -13,7 +13,6 @@ class PatientVisitController extends Controller
 
     public function __construct(HomeVisitService $visitService)
     {
-        $this->middleware('auth');
         $this->visitService = $visitService;
     }
 

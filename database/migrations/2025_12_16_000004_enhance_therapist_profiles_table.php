@@ -12,10 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('therapist_profiles', function (Blueprint $table) {
-            $table->json('skills_matrix')->nullable(); // { "manual_therapy": 5, "dry_needling": 3 }
-            $table->json('equipment_proficiency')->nullable();
-            $table->json('case_experience_log')->nullable();
-            $table->timestamp('verified_at')->nullable();
+            if (!Schema::hasColumn('therapist_profiles', 'skills_matrix')) {
+                $table->json('skills_matrix')->nullable(); 
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'equipment_proficiency')) {
+                $table->json('equipment_proficiency')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'case_experience_log')) {
+                $table->json('case_experience_log')->nullable();
+            }
+            if (!Schema::hasColumn('therapist_profiles', 'verified_at')) {
+                $table->timestamp('verified_at')->nullable();
+            }
         });
     }
 
