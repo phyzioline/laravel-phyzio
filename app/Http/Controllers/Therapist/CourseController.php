@@ -36,6 +36,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
+            'seats' => 'nullable|integer|min:0', // Added seats validation
             'level' => 'required|in:beginner,intermediate,advanced',
             'type' => 'required|in:online,offline',
             'status' => 'required|in:draft,published',
@@ -80,6 +81,7 @@ class CourseController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric',
+            'seats' => 'nullable|integer|min:0', // Added seats validation
             'level' => 'required|in:beginner,intermediate,advanced',
             'type' => 'required|in:online,offline',
             'status' => 'required|in:draft,published',

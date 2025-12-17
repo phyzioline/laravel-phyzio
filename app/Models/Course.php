@@ -14,6 +14,7 @@ class Course extends Model
         'description',
         'thumbnail',
         'price',
+        'seats', // Added seats
         'instructor_id',
         'category_id',
         'status', // draft, published, archived

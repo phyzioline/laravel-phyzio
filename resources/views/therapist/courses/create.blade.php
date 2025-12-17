@@ -29,6 +29,12 @@
                 </div>
 
                 <div class="col-md-6 mb-3">
+                    <label>Total Seats (Quota)</label>
+                    <input type="number" name="seats" class="form-control" value="{{ old('seats') }}" placeholder="Subject to availability">
+                    @error('seats') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
                     <label>Level</label>
                     <select name="level" class="form-control" required>
                         <option value="">Select Level</option>
