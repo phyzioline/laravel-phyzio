@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('job_skills', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('job_id')->constrained('clinic_jobs')->onDelete('cascade');
-            $table->foreignId('skill_id')->constrained()->onDelete('cascade');
-            $table->enum('required_level', ['basic', 'advanced', 'expert'])->default('basic');
-            $table->boolean('is_mandatory')->default(true); // Must-have vs Nice-to-have
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('job_skills')) {
+            Schema::create('job_skills', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('job_id')->constrained('clinic_jobs')->onDelete('cascade');
+                $table->foreignId('skill_id')->constrained()->onDelete('cascade');
+                $table->enum('required_level', ['basic', 'advanced', 'expert'])->default('basic');
+                $table->boolean('is_mandatory')->default(true); // Must-have vs Nice-to-have
+                $table->timestamps();
+            });
+        }
     }
 
     /**
