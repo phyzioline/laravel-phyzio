@@ -33,8 +33,16 @@ return new class extends Migration
             if (!Schema::hasColumn('courses', 'subscription_included')) {
                 $table->boolean('subscription_included')->default(false)->after('price');
             }
+
+            // Ensure language exists, or add it if missing
+            if (!Schema::hasColumn('courses', 'language')) {
+                 $table->string('language')->default('English')->after('level');
+            }
+
             if (!Schema::hasColumn('courses', 'countries_supported')) {
-                $table->json('countries_supported')->nullable()->after('language');
+                // Position after language (now guaranteed to exist or we use level/status fallback)
+                $afterColumn = Schema::hasColumn('courses', 'language') ? 'language' : 'status';
+                $table->json('countries_supported')->nullable()->after($afterColumn);
             }
             if (!Schema::hasColumn('courses', 'regulatory_mapping')) {
                 $table->json('regulatory_mapping')->nullable()->after('countries_supported');
