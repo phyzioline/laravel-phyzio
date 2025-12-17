@@ -60,8 +60,8 @@
   </script>
 
   @stack('meta')
-  <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}" />
-  <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}" />
+  <link rel="icon" type="image/png" href="{{ asset('web/assets/images/logo.png') }}" />
+  <link rel="apple-touch-icon" href="{{ asset('web/assets/images/logo.png') }}" />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- css include -->

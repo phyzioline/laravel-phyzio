@@ -21,38 +21,56 @@ class SocialLoginController extends Controller
         try {
             $user = Socialite::driver($provider)->user();
 
+            // 1. Check if user already linked this Google account
             $provider_user = User::where([
                 'provider_name' => $provider,
                 'provider_id'   => $user->getId(),
             ])->first();
 
-            if (! $provider_user) {
-                $provider_user = User::create([
-                    'name'           => $user->getName(),
-                    'email'          => $user->getEmail(),
-                    'password'       => Crypt::encrypt(Str::random(8)),
-                    'email_verified_at' => now(),
-                    'provider_name'  => $provider,
-                    'provider_id'    => $user->getId(),
-                    'provider_token' => $user->token,
-                    'phone'          => null, // Google doesn't provide phone
-                    'country'        => null, // Will be collected later if needed
-                    'type'           => 'buyer', // Default type for social login
-                    'status'         => 'active', // Auto-activate Google users
-                ]);
-
-                Auth::login($provider_user);
-                 return redirect()->route('complecet_info_view');
-            } else {
+            if ($provider_user) {
                 Auth::login($provider_user);
                 return redirect()->route('home');
             }
 
+            // 2. Check if email already exists (Manual Registration)
+            $existing_user = User::where('email', $user->getEmail())->first();
+
+            if ($existing_user) {
+                // Link Google to existing account
+                $existing_user->update([
+                    'provider_name'  => $provider,
+                    'provider_id'    => $user->getId(),
+                    'provider_token' => $user->token,
+                    // Don't overwrite verification if verify date is set
+                    'email_verified_at' => $existing_user->email_verified_at ?? now(),
+                ]);
+
+                Auth::login($existing_user);
+                return redirect()->route('home');
+            }
+
+            // 3. Create NEW User (if email doesn't exist)
+            $new_user = User::create([
+                'name'           => $user->getName(),
+                'email'          => $user->getEmail(),
+                'password'       => Crypt::encrypt(Str::random(8)),
+                'email_verified_at' => now(),
+                'provider_name'  => $provider,
+                'provider_id'    => $user->getId(),
+                'provider_token' => $user->token,
+                'phone'          => null, 
+                'country'        => null,
+                'type'           => 'buyer', 
+                'status'         => 'active',
+            ]);
+
+            Auth::login($new_user);
+            return redirect()->route('complecet_info_view');
+
         } catch (Throwable $e) {
             return redirect()->route('register')->withErrors([
-                'email' => $e->getMessage(),
+                'email' => 'Login Failed: ' . $e->getMessage(),
             ]);
         }
     }
-
 }
