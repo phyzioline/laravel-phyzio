@@ -52,9 +52,9 @@
                 <i class="las la-user-injured"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">156</h3>
+                <h3 class="font-weight-bold mb-0">{{ $activePatientsCount ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Active Patients') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ __('5 new this week') }}</div>
+                <div class="text-success small mt-1"><i class="las la-users"></i> {{ __('Total Distinct') }}</div>
             </div>
         </div>
     </div>
@@ -66,9 +66,9 @@
                 <i class="las la-calendar-check"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">12</h3>
+                <h3 class="font-weight-bold mb-0">{{ $todaysAppointmentsCount ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Today\'s Visits') }}</small>
-                <div class="text-info small mt-1"><i class="las la-clock"></i> {{ __('3 pending') }}</div>
+                <div class="text-info small mt-1"><i class="las la-clock"></i> {{ __('Scheduled') }}</div>
             </div>
         </div>
     </div>
@@ -80,9 +80,9 @@
                 <i class="las la-clock"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">8</h3>
+                <h3 class="font-weight-bold mb-0">{{ $pendingRequestsCount ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Pending Requests') }}</small>
-                <div class="text-primary small mt-1">{{ __('Review Now') }}</div>
+                <div class="text-primary small mt-1"><a href="{{ route('therapist.schedule.index') }}">{{ __('Review Now') }}</a></div>
             </div>
         </div>
     </div>
@@ -94,9 +94,13 @@
                 <i class="las la-wallet"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">$2,450</h3>
+                <h3 class="font-weight-bold mb-0">{{ number_format($monthlyEarnings ?? 0) }} EGP</h3>
                 <small class="text-muted">{{ __('Monthly Earnings') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ __('15% vs last month') }}</div>
+                @if($earningsGrowth > 0)
+                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ number_format($earningsGrowth, 1) }}% {{ __('vs last month') }}</div>
+                @else
+                <div class="text-muted small mt-1"><i class="las la-minus"></i> {{ __('Stable') }}</div>
+                @endif
             </div>
         </div>
     </div>
@@ -118,27 +122,27 @@
          <div class="card border-0 shadow-sm" style="border-radius: 15px;">
             <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
                  <h5 class="card-title font-weight-bold mb-0">{{ __('Recent Activity') }}</h5>
-                 <a href="#" class="btn btn-sm btn-outline-primary">{{ __('View All') }}</a>
+                 <!-- <a href="#" class="btn btn-sm btn-outline-primary">{{ __('View All') }}</a> -->
             </div>
             <div class="card-body px-4">
+                @forelse($recentActivities as $activity)
                 <div class="d-flex align-items-center mb-4">
-                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: #00897b !important; flex-shrink: 0;">
-                        <i class="las la-user-plus"></i>
+                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: {{ $activity->status == 'completed' ? '#43a047' : '#00897b' }} !important; flex-shrink: 0;">
+                        <i class="las {{ $activity->status == 'completed' ? 'la-check-circle' : 'la-calendar' }}"></i>
                     </div>
                     <div class="flex-grow-1">
-                        <h6 class="font-weight-bold text-dark mb-0">{{ __('New Patient Assigned') }}</h6>
-                        <small class="text-muted">{{ __('Patient Alex Johnson added to your list') }}</small>
+                        <h6 class="font-weight-bold text-dark mb-0">
+                            {{ $activity->status == 'completed' ? __('Visit Completed') : __('Appointment Updated') }}
+                        </h6>
+                        <small class="text-muted">
+                            {{ $activity->patient->name ?? 'Patient' }} - {{ $activity->status }}
+                        </small>
                     </div>
+                    <small class="text-muted">{{ $activity->updated_at->diffForHumans() }}</small>
                 </div>
-                 <div class="d-flex align-items-center mb-4">
-                    <div class="bg-success text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; flex-shrink: 0;">
-                        <i class="las la-check-circle"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <h6 class="font-weight-bold text-dark mb-0">{{ __('Visit Completed') }}</h6>
-                        <small class="text-muted">{{ __('Home visit with Sarah Doe marked as done') }}</small>
-                    </div>
-                </div>
+                @empty
+                <p class="text-muted text-center py-3">{{ __('No recent activity.') }}</p>
+                @endforelse
             </div>
         </div>
     </div>
@@ -152,26 +156,19 @@
                  <h5 class="card-title font-weight-bold mb-0">{{ __('Today\'s Schedule') }}</h5>
             </div>
             <div class="card-body px-4">
-                 <!-- Item 1 -->
+                 @forelse($todaysAppointments as $appt)
                  <div class="d-flex align-items-center mb-3">
                      <div class="bg-light text-primary rounded mr-3 d-flex align-items-center justify-content-center font-weight-bold" style="width: 50px; height: 50px;">
-                         10:00
+                         {{ \Carbon\Carbon::parse($appt->appointment_time)->format('H:i') }}
                      </div>
                      <div class="flex-grow-1">
-                         <h6 class="mb-0 font-weight-bold">John Doe</h6>
-                         <small class="text-muted">{{ __('Home Visit - Cardiology') }}</small>
+                         <h6 class="mb-0 font-weight-bold">{{ $appt->patient->name ?? 'Unknown' }}</h6>
+                         <small class="text-muted">{{ $appt->location_address ?? 'Home Visit' }}</small>
                      </div>
                  </div>
-                 <!-- Item 2 -->
-                 <div class="d-flex align-items-center mb-3">
-                     <div class="bg-light text-primary rounded mr-3 d-flex align-items-center justify-content-center font-weight-bold" style="width: 50px; height: 50px;">
-                         14:00
-                     </div>
-                     <div class="flex-grow-1">
-                         <h6 class="mb-0 font-weight-bold">Sarah Miller</h6>
-                         <small class="text-muted">{{ __('Follow-up') }}</small>
-                     </div>
-                 </div>
+                 @empty
+                 <p class="text-muted text-center">{{ __('No visits scheduled today.') }}</p>
+                 @endforelse
             </div>
              <div class="card-footer bg-white border-0 pb-4 px-4">
                 <a href="{{ route('therapist.schedule.index') }}" class="btn btn-outline-primary btn-block rounded-pill">{{ __('Manage Schedule') }}</a>
@@ -207,10 +204,10 @@
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: {!! json_encode($chartLabels) !!},
             datasets: [{
                 label: 'Visits',
-                data: [4, 6, 5, 8, 7, 4, 2],
+                data: {!! json_encode($chartData) !!},
                 backgroundColor: '#00897b',
                 borderRadius: 5
             }]
@@ -221,7 +218,7 @@
                 legend: { display: false }
             },
             scales: {
-                y: { beginAtZero: true, grid: { drawBorder: false } },
+                y: { beginAtZero: true, grid: { drawBorder: false }, ticks: { stepSize: 1 } },
                 x: { grid: { display: false } }
             }
         }

@@ -14,54 +14,81 @@ class TherapistDashboardController extends Controller
 {
     public function index()
     {
-        $therapist = TherapistProfile::where('user_id', Auth::id())->first();
+        $user = Auth::user();
+        $therapist = $user->therapistProfile;
 
-        // If not onboarding, redirect (optional logic)
-        // if (!$therapist || $therapist->status == 'new') return redirect()->route('therapist.onboarding.step1');
+        // Fallback if no profile
+        if (!$therapist) {
+           return redirect()->route('therapist.profile.edit')->with('warning', 'Please complete your profile');
+        }
 
         $today = Carbon::today();
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
 
         // 1. KPI Cards Data
-        $todaysAppointmentsCount = Appointment::where('therapist_id', $therapist->id)
-                                            ->whereDate('appointment_date', $today)
-                                            ->count();
+        $todaysAppointmentsQuery = Appointment::where('therapist_id', $user->id)
+                                            ->whereDate('appointment_date', $today);
         
-        $activePatientsCount = Patient::where('therapist_id', $therapist->id)->where('status', 'active')->count();
+        $todaysAppointmentsCount = $todaysAppointmentsQuery->count();
+        $todaysAppointments = $todaysAppointmentsQuery->with('patient')->orderBy('appointment_time')->get();
+
+        // Active Patients: Unique patients in the last 6 months
+        $activePatientsCount = Appointment::where('therapist_id', $user->id)
+                                        ->where('appointment_date', '>=', Carbon::now()->subMonths(6))
+                                        ->distinct('patient_id')
+                                        ->count('patient_id');
+
+        // Pending Requests (Appointments with status 'pending')
+        $pendingRequestsCount = Appointment::where('therapist_id', $user->id)
+                                           ->where('status', 'pending')
+                                           ->count();
+
+        // Monthly Earnings
+        $monthlyEarnings = Appointment::where('therapist_id', $user->id)
+                                    ->where('status', 'completed')
+                                    ->where('payment_status', 'paid')
+                                    ->whereMonth('appointment_date', Carbon::now()->month)
+                                    ->sum('price');
         
-        $completedSessionsWeek = Appointment::where('therapist_id', $therapist->id)
-                                            ->where('status', 'completed')
-                                            ->whereBetween('appointment_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-                                            ->count();
+        // Calculate growth vs last month
+        $lastMonthEarnings = Appointment::where('therapist_id', $user->id)
+                                    ->where('status', 'completed')
+                                    ->where('payment_status', 'paid')
+                                    ->whereMonth('appointment_date', Carbon::now()->subMonth()->month)
+                                    ->sum('price');
         
-        $monthlyEarnings = $therapist->total_earnings; // Assuming this is aggregated elsewhere or calculated here
+        $earningsGrowth = $lastMonthEarnings > 0 ? (($monthlyEarnings - $lastMonthEarnings) / $lastMonthEarnings) * 100 : 100;
 
-        // 2. Today's Timeline
-        $todaysAppointments = Appointment::where('therapist_id', $therapist->id)
-                                         ->whereDate('appointment_date', $today)
-                                         ->orderBy('appointment_time')
-                                         ->get();
+        // 2. Chart Data (Last 7 Days)
+        $chartLabels = [];
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $chartLabels[] = $date->format('D'); // Mon, Tue...
+            $chartData[] = Appointment::where('therapist_id', $user->id)
+                                    ->whereDate('appointment_date', $date)
+                                    ->count();
+        }
 
-        // 3. Active Patients List (Limit 5)
-        $activePatients = Patient::where('therapist_id', $therapist->id)
-                                 ->where('status', 'active')
-                                 ->take(5)
-                                 ->get();
-
-        // 4. Pending Tasks
-        $pendingNotes = Appointment::where('therapist_id', $therapist->id)
-                                   ->where('status', 'completed')
-                                   ->where('notes_completed', false)
-                                   ->count();
+        // 3. Recent Activity (Latest 5 completed appointments)
+        $recentActivities = Appointment::where('therapist_id', $user->id)
+                                    ->with('patient')
+                                    ->latest('updated_at')
+                                    ->take(5)
+                                    ->get();
 
         return view('web.therapist.dashboard', compact(
             'therapist', 
             'todaysAppointmentsCount', 
             'activePatientsCount', 
-            'completedSessionsWeek', 
-            'monthlyEarnings',
+            'pendingRequestsCount',
+            'monthlyEarnings', 
+            'earningsGrowth',
             'todaysAppointments',
-            'activePatients',
-            'pendingNotes'
+            'chartLabels',
+            'chartData',
+            'recentActivities' // passed but seemingly used for "New Patient" static text previously
         ));
     }
 }
