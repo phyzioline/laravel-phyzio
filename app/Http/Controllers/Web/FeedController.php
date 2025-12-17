@@ -14,7 +14,7 @@ class FeedController extends Controller
 
     public function __construct(FeedTrackingService $service)
     {
-        $this->middleware('auth'); // CRITICAL: Prevent crash when Auth::user() is null
+        // $this->middleware('auth'); // Removed: Handled in routes
         $this->trackingService = $service;
     }
 

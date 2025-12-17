@@ -20,7 +20,7 @@ class JobController extends Controller
             })->sortByDesc('match_score');
 
             // Manual Pagination
-            $page = Request::get('page', 1);
+            $page = request()->get('page', 1);
             $perPage = 10;
             $items = $allJobs->forPage($page, $perPage);
             $jobs = new \Illuminate\Pagination\LengthAwarePaginator(

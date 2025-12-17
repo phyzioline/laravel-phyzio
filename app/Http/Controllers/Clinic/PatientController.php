@@ -63,7 +63,7 @@ class PatientController extends Controller
         $patient->last_name = $request->last_name;
         $patient->phone = $request->phone;
         $patient->email = $request->email;
-        $patient->dob = $request->dob; // Make sure model has 'dob' in fillable or map to 'date_of_birth'
+        $patient->date_of_birth = $request->dob; // Mapped to correct column
         $patient->gender = $request->gender;
         $patient->address = $request->address;
         $patient->medical_history = $request->medical_history;
