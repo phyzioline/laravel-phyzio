@@ -10,38 +10,140 @@
 @section('content')
 <main>
     <!-- Hero Section -->
-    <section class="hero-section py-5" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 200px !important;">
+    <!-- Hero Section -->
+    <section class="hero-section py-5 position-relative" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 180px !important; padding-bottom: 100px !important;">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="text-white font-weight-bold mb-4">{{ __('Book a Home Visit Physiotherapist') }}</h1>
-                    <p class="text-white lead mb-5">{{ __('Professional care in the comfort of your home') }}</p>
+            <div class="row align-items-start">
+                <!-- Left: Title & Context -->
+                <div class="col-lg-5 text-white mb-5 mb-lg-0 pt-lg-5">
+                    <h1 class="font-weight-bold mb-4 display-4">{{ __('Home Physical Therapy') }}</h1>
+                    <p class="lead mb-5 opacity-90">{{ __('Expert physiotherapists at your doorstep. Urgent requests or scheduled appointments.') }}</p>
                     
-                    <!-- Search Box -->
-                    <div class="bg-white p-4 rounded shadow-lg">
-                        <form action="{{ url('/appointments') }}" method="GET" class="row">
-                            <div class="col-md-4 mb-3 mb-md-0">
-                                <select name="specialization" class="form-control border-0 bg-light" style="height: 50px;">
-                                    <option value="">{{ __('Select Specialization') }}</option>
-                                    @foreach($specializations as $spec)
-                                        <option value="{{ $spec }}" {{ request('specialization') == $spec ? 'selected' : '' }}>{{ $spec }}</option>
-                                    @endforeach
-                                </select>
+                    <div class="d-none d-lg-block">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px;">
+                                <i class="las la-check-circle la-2x"></i>
                             </div>
-                            <div class="col-md-4 mb-3 mb-md-0">
-                                <select name="area" class="form-control border-0 bg-light" style="height: 50px;">
-                                    <option value="">{{ __('Select Area') }}</option>
-                                    @foreach($areas as $area)
-                                        <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>{{ $area }}</option>
-                                    @endforeach
-                                </select>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">{{ __('Certified Specialists') }}</h5>
+                                <small class="opacity-75">{{ __('Verified professionals') }}</small>
                             </div>
-                            <div class="col-md-4">
-                                <button type="submit" class="btn btn-block text-white font-weight-bold shadow" style="background-color: #02767F; height: 50px; border-bottom: 3px solid #FFD700;">
-                                    {{ __('Search Therapists') }}
-                                </button>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px;">
+                                <i class="las la-shield-alt la-2x"></i>
                             </div>
-                        </form>
+                            <div>
+                                <h5 class="mb-0 font-weight-bold">{{ __('Safe & Secure') }}</h5>
+                                <small class="opacity-75">{{ __('Health & Safety protocols') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Unified Request Box -->
+                <div class="col-lg-7">
+                    <div class="card shadow-2xl border-0 overflow-hidden" style="border-radius: 20px;">
+                        <div class="card-header bg-white p-0 border-0">
+                            <ul class="nav nav-pills nav-fill" id="pills-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active py-3 font-weight-bold rounded-0" id="pills-request-tab" data-toggle="pill" href="#pills-request" role="tab" aria-controls="pills-request" aria-selected="true" style="font-size: 1.1rem;">
+                                        <i class="las la-ambulance mr-2"></i> {{ __('Request Visit') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link py-3 font-weight-bold rounded-0" id="pills-search-tab" data-toggle="pill" href="#pills-search" role="tab" aria-controls="pills-search" aria-selected="false" style="font-size: 1.1rem;">
+                                        <i class="las la-search mr-2"></i> {{ __('Search Therapist') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="card-body p-4 bg-light">
+                            <div class="tab-content" id="pills-tabContent">
+                                
+                                <!-- Tab 1: Direct Request (from visits/create) -->
+                                <div class="tab-pane fade show active" id="pills-request" role="tabpanel">
+                                    <form action="{{ route('patient.visits.store') }}" method="POST" id="visitForm">
+                                        @csrf
+                                        
+                                        <!-- Condition -->
+                                        <h6 class="text-primary font-weight-bold mb-3"><i class="las la-stethoscope"></i> {{ __('Condition Type') }}</h6>
+                                        <div class="row no-gutters mb-3">
+                                            @foreach(['Orthopedic' => 'bone', 'Neurological' => 'brain', 'Post-Surgery' => 'procedure', 'Elderly' => 'blind', 'Pediatric' => 'baby', 'Sports' => 'running'] as $label => $icon)
+                                            <div class="col-4 col-md-4 p-1">
+                                                <label class="btn btn-outline-white bg-white text-dark btn-block border p-2 shadow-sm complain-option mb-0 h-100 d-flex flex-column align-items-center justify-content-center">
+                                                    <input type="radio" name="complain_type" value="{{ $label }}" class="d-none" required>
+                                                    <i class="las la-{{ $icon }} la-2x mb-1 text-primary"></i>
+                                                    <small class="font-weight-bold" style="font-size: 0.75rem; line-height: 1.1;">{{ $label }}</small>
+                                                </label>
+                                            </div>
+                                            @endforeach
+                                        </div>
+
+                                        <!-- Address -->
+                                        <div class="form-group mb-3">
+                                            <div class="input-group input-group-lg shadow-sm">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text bg-white border-0"><i class="las la-map-marker text-danger"></i></span>
+                                                </div>
+                                                <input type="text" name="address" class="form-control border-0" placeholder="Address (Area, Street, Building...)" required>
+                                            </div>
+                                            <!-- Hidden Lat/Lng defaults -->
+                                            <input type="hidden" name="lat" value="30.0444">
+                                            <input type="hidden" name="lng" value="31.2357">
+                                        </div>
+
+                                        <!-- Urgency -->
+                                        <div class="form-group mb-4">
+                                            <div class="btn-group btn-group-toggle w-100 shadow-sm" data-toggle="buttons">
+                                                <label class="btn btn-white border active py-3">
+                                                    <input type="radio" name="urgency" value="urgent" checked> 
+                                                    <i class="las la-exclamation-circle text-danger"></i> <span class="font-weight-bold">{{ __('ASAP') }}</span>
+                                                </label>
+                                                <label class="btn btn-white border py-3">
+                                                    <input type="radio" name="urgency" value="normal"> 
+                                                    <i class="las la-calendar text-primary"></i> <span class="font-weight-bold">{{ __('Schedule Later') }}</span>
+                                                </label>
+                                            </div>
+                                            <input type="datetime-local" name="scheduled_at" id="scheduleInput" class="form-control mt-2 shadow-sm border-0" style="display:none;">
+                                        </div>
+
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block shadow-lg font-weight-bold" style="background-color: #02767F; border-color: #02767F;">
+                                            {{ __('Request Now') }} <i class="las la-arrow-right ml-2"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Tab 2: Search (Existing) -->
+                                <div class="tab-pane fade" id="pills-search" role="tabpanel">
+                                    <form action="{{ url('/appointments') }}" method="GET">
+                                        <div class="form-group mb-4">
+                                            <label class="font-weight-bold text-muted">{{ __('Specialization') }}</label>
+                                            <select name="specialization" class="form-control form-control-lg border-0 shadow-sm">
+                                                <option value="">{{ __('All Specializations') }}</option>
+                                                @foreach($specializations as $spec)
+                                                    <option value="{{ $spec }}" {{ request('specialization') == $spec ? 'selected' : '' }}>{{ $spec }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-4">
+                                            <label class="font-weight-bold text-muted">{{ __('Area / Governance') }}</label>
+                                            <select name="area" class="form-control form-control-lg border-0 shadow-sm">
+                                                <option value="">{{ __('All Areas') }}</option>
+                                                @foreach($areas as $area)
+                                                    <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>{{ $area }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary btn-lg btn-block shadow-lg font-weight-bold" style="background-color: #02767F; border-color: #02767F;">
+                                            {{ __('Find Therapist') }} <i class="las la-search ml-2"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -181,4 +283,38 @@ header,
     z-index: 9999;
 }
 </style>
+@section('scripts')
+<script>
+    // Tab visuals
+    $('#pills-tab a').on('click', function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    });
+
+    // Option Selection
+    document.querySelectorAll('input[name="complain_type"]').forEach(input => {
+        input.addEventListener('change', function() {
+            document.querySelectorAll('.complain-option').forEach(l => {
+                l.classList.remove('bg-primary', 'text-white'); 
+                l.classList.add('bg-white', 'text-dark');
+                l.querySelector('i').classList.add('text-primary');
+                l.querySelector('i').classList.remove('text-white');
+            });
+            
+            const label = this.closest('label');
+            label.classList.remove('bg-white', 'text-dark');
+            label.classList.add('bg-primary', 'text-white');
+            label.querySelector('i').classList.remove('text-primary');
+            label.querySelector('i').classList.add('text-white');
+        });
+    });
+
+    // Schedule Toggle
+    document.querySelectorAll('input[name="urgency"]').forEach(input => {
+        input.addEventListener('change', function() {
+            document.getElementById('scheduleInput').style.display = this.value === 'normal' ? 'block' : 'none';
+        });
+    });
+</script>
+@endsection
 @endsection
