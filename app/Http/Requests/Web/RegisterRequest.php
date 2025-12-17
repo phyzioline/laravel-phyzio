@@ -25,7 +25,8 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|confirmed|min:8',
-            'phone' => 'required|string|unique:users,phone',
+            'phone' => 'nullable|string|unique:users,phone', // Nullable for Google OAuth
+            'country' => 'nullable|string|max:2', // Country code (EG, SA, etc.)
             'image' => 'nullable|image|max:10240',
             'type' => 'required|in:vendor,buyer,therapist,company',
             'account_statement' => 'nullable|file|max:10240|mimes:png,jpg,jpeg,pdf',

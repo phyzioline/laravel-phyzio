@@ -35,6 +35,10 @@ class SocialLoginController extends Controller
                     'provider_name'  => $provider,
                     'provider_id'    => $user->getId(),
                     'provider_token' => $user->token,
+                    'phone'          => null, // Google doesn't provide phone
+                    'country'        => null, // Will be collected later if needed
+                    'type'           => 'buyer', // Default type for social login
+                    'status'         => 'active', // Auto-activate Google users
                 ]);
 
                 Auth::login($provider_user);
