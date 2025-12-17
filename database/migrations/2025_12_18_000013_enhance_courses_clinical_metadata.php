@@ -15,14 +15,30 @@ return new class extends Migration
             if (!Schema::hasColumn('courses', 'specialty')) {
                 $table->string('specialty')->nullable()->after('title');
             }
-            $table->string('clinical_focus')->nullable()->after('specialty');
-            $table->json('equipment_required')->nullable()->after('clinical_focus');
-            $table->decimal('practical_hours', 8, 2)->default(0)->after('duration_minutes');
-            $table->decimal('total_hours', 8, 2)->default(0)->after('practical_hours');
-            $table->string('accreditation_status')->nullable()->after('status');
-            $table->boolean('subscription_included')->default(false)->after('price');
-            $table->json('countries_supported')->nullable()->after('language');
-            $table->json('regulatory_mapping')->nullable()->after('countries_supported');
+            if (!Schema::hasColumn('courses', 'clinical_focus')) {
+                $table->string('clinical_focus')->nullable()->after('specialty');
+            }
+            if (!Schema::hasColumn('courses', 'equipment_required')) {
+                $table->json('equipment_required')->nullable()->after('clinical_focus');
+            }
+            if (!Schema::hasColumn('courses', 'practical_hours')) {
+                $table->decimal('practical_hours', 8, 2)->default(0)->after('duration_minutes');
+            }
+            if (!Schema::hasColumn('courses', 'total_hours')) {
+                $table->decimal('total_hours', 8, 2)->default(0)->after('practical_hours');
+            }
+            if (!Schema::hasColumn('courses', 'accreditation_status')) {
+                $table->string('accreditation_status')->nullable()->after('status');
+            }
+            if (!Schema::hasColumn('courses', 'subscription_included')) {
+                $table->boolean('subscription_included')->default(false)->after('price');
+            }
+            if (!Schema::hasColumn('courses', 'countries_supported')) {
+                $table->json('countries_supported')->nullable()->after('language');
+            }
+            if (!Schema::hasColumn('courses', 'regulatory_mapping')) {
+                $table->json('regulatory_mapping')->nullable()->after('countries_supported');
+            }
         });
     }
 
