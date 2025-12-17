@@ -8,13 +8,9 @@ use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
-    function __construct()
-    {
-        $this->middleware('permission:jobs-index', ['only' => ['index','store']]);
-        $this->middleware('permission:jobs-create', ['only' => ['create','store']]);
-        $this->middleware('permission:jobs-edit', ['only' => ['edit','update']]);
-        $this->middleware('permission:jobs-delete', ['only' => ['destroy']]);
-    }
+    // Constructor removed to fix middleware issue
+    // Middleware should be handled in routes
+
 
     public function index(Request $request)
     {

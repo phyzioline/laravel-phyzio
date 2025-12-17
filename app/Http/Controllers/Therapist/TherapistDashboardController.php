@@ -78,17 +78,17 @@ class TherapistDashboardController extends Controller
                                     ->take(5)
                                     ->get();
 
-        return view('web.therapist.dashboard', compact(
-            'therapist', 
-            'todaysAppointmentsCount', 
-            'activePatientsCount', 
-            'pendingRequestsCount',
-            'monthlyEarnings', 
-            'earningsGrowth',
-            'todaysAppointments',
-            'chartLabels',
-            'chartData',
-            'recentActivities' // passed but seemingly used for "New Patient" static text previously
-        ));
+        return view('web.therapist.dashboard', [
+            'therapist' => $therapist,
+            'todaysAppointmentsCount' => $todaysAppointmentsCount,
+            'activePatientsCount' => $activePatientsCount,
+            'pendingRequestsCount' => $pendingRequestsCount,
+            'monthlyEarnings' => $monthlyEarnings,
+            'earningsGrowth' => $earningsGrowth ?? 0, // Fallback to 0 if null
+            'todaysAppointments' => $todaysAppointments,
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
+            'recentActivities' => $recentActivities
+        ]);
     }
 }
