@@ -8,9 +8,23 @@ use App\Models\Category;
 use App\Services\Dashboard\SubCategoryService;
 use App\Traits\HasImage;
 
-class SubCategoryController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class SubCategoryController extends Controller implements HasMiddleware
 {
     use HasImage;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:sub_categories-index', only: ['index']),
+            new Middleware('can:sub_categories-create', only: ['create', 'store']),
+            new Middleware('can:sub_categories-show', only: ['show']),
+            new Middleware('can:sub_categories-update', only: ['edit', 'update']),
+            new Middleware('can:sub_categories-delete', only: ['destroy']),
+        ];
+    }
 
     public function __construct(public SubCategoryService $subCategoryService)
     {}

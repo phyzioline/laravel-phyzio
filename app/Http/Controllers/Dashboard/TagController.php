@@ -9,9 +9,23 @@ use App\Services\Dashboard\TagService;
  use App\Http\Requests\Dashboard\Tag\StoreTagRequest;
  use App\Http\Requests\Dashboard\Tag\UpdateTagRequest;
 
-class TagController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class TagController extends Controller implements HasMiddleware
 {
     use HasImage;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:tags-index', only: ['index']),
+            new Middleware('can:tags-create', only: ['create', 'store']),
+            new Middleware('can:tags-show', only: ['show']),
+            new Middleware('can:tags-update', only: ['edit', 'update']),
+            new Middleware('can:tags-delete', only: ['destroy']),
+        ];
+    }
 
     public function __construct(public TagService $TagService){}
     /**
