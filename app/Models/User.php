@@ -39,7 +39,9 @@ class User extends Authenticatable
         'bank_name',
         'bank_account_name',
         'iban',
-        'swift_code'
+        'swift_code',
+        'currency',
+        'country_code'
     ];
 
     /**

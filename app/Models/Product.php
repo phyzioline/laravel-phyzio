@@ -6,21 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'category_id',
-        'sub_category_id',
-        'product_name_ar',
-        'product_name_en',
-        'product_price',
-        'short_description_ar',
-        'short_description_en',
-        'long_description_ar',
-        'long_description_en',
-        'amount',
-        'sku',
-        'status',
-    ];
+    protected $guarded = [];
 
     public function user()
     {

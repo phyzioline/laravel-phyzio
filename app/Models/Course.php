@@ -9,30 +9,7 @@ class Course extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'title',
-        'description',
-        'thumbnail',
-        'price',
-        'seats', // Added seats
-        'instructor_id',
-        'category_id',
-        'status', // draft, published, archived
-        // Enhanced Fields
-        'specialty',
-        'clinical_focus',
-        'equipment_required', // json
-        'practical_hours',
-        'total_hours',
-        'accreditation_status',
-        'subscription_included', // boolean
-        'countries_supported', // json
-        'regulatory_mapping', // json
-        'level',
-        'video_file', // from previous migration
-        'type', // from previous migration
-        'seats'
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'equipment_required' => 'array',
