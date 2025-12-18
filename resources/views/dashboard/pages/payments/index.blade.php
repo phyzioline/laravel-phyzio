@@ -72,6 +72,44 @@
             </div>
         </div>
 
+        {{-- Filters (Admin Only) --}}
+        @if(auth()->user()->hasRole('admin'))
+        <div class="card rounded-4 border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <form action="{{ route('dashboard.payments.index') }}" method="GET" class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">{{ __('Filter by Vendor') }}</label>
+                        <select name="vendor_id" class="form-select rounded-pill">
+                            <option value="">{{ __('All Vendors') }}</option>
+                            @foreach($vendors as $vendor)
+                                <option value="{{ $vendor->id }}" {{ request('vendor_id') == $vendor->id ? 'selected' : '' }}>
+                                    {{ $vendor->name }} ({{ $vendor->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">{{ __('Filter by Status') }}</label>
+                        <select name="status" class="form-select rounded-pill">
+                            <option value="">{{ __('All Statuses') }}</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>{{ __('Pending') }}</option>
+                            <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>{{ __('Paid') }}</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>{{ __('Cancelled') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 me-2">
+                            <i class="bi bi-filter"></i> {{ __('Filter') }}
+                        </button>
+                        <a href="{{ route('dashboard.payments.index') }}" class="btn btn-light rounded-pill px-4">
+                            {{ __('Reset') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @endif
+
         {{-- Transactions Table --}}
         <div class="card rounded-4 border-0 shadow-sm">
             <div class="card-header bg-white py-3">
@@ -93,6 +131,9 @@
                                 <th>Commission ({{ $payments->first()->commission_rate ?? '15' }}%)</th>
                                 <th>Net Earning</th>
                                 <th>Status</th>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <th>Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -127,6 +168,21 @@
                                         <span class="badge bg-danger rounded-pill">Cancelled</span>
                                     @endif
                                 </td>
+                                @if(auth()->user()->hasRole('admin'))
+                                <td>
+                                    @if($payment->status == 'pending')
+                                        <form action="{{ route('dashboard.payments.update-status', $payment->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="paid">
+                                            <button type="submit" class="btn btn-sm btn-success rounded-pill" onclick="return confirm('Are you sure you want to mark this payment as PAID?')">
+                                                <i class="bi bi-check-circle me-1"></i> Mark Paid
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted"><i class="bi bi-lock"></i></span>
+                                    @endif
+                                </td>
+                                @endif
                             </tr>
                             @empty
                             <tr>

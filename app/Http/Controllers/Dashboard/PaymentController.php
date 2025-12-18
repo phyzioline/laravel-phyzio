@@ -14,13 +14,15 @@ class PaymentController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('can:financials-index', only: ['index', 'showVendorPayment', 'detail']),
+        return [
+            new Middleware('can:financials-index', only: ['index', 'showVendorPayment', 'detail', 'updateStatus']),
+        ];
         ];
     }
     /**
      * Display a listing of the vendor payments.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
 
@@ -35,10 +37,20 @@ class PaymentController extends Controller implements HasMiddleware
                 ->latest('paid_at')
                 ->first();
 
-            // All Transactions
-            $payments = VendorPayment::with(['order', 'orderItem.product', 'vendor']) // Eager load vendor
-                ->orderBy('created_at', 'desc')
-                ->paginate(15);
+            // All Transactions with Filters
+            $query = VendorPayment::with(['order', 'orderItem.product', 'vendor'])
+                ->orderBy('created_at', 'desc');
+
+            if ($request->filled('vendor_id')) {
+                $query->where('vendor_id', $request->vendor_id);
+            }
+
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            $payments = $query->paginate(15);
+            $vendors = \App\Models\User::role('vendor')->get(); // Get vendors for filter
         } else {
              // Vendor sees ONLY their stats
             $vendorId = $user->id;
@@ -58,15 +70,22 @@ class PaymentController extends Controller implements HasMiddleware
 
             $payments = VendorPayment::where('vendor_id', $vendorId)
                 ->with(['order', 'orderItem.product'])
-                ->orderBy('created_at', 'desc')
-                ->paginate(15);
+                ->orderBy('created_at', 'desc');
+            
+            if ($request->filled('status')) {
+                $payments->where('status', $request->status);
+            }
+                
+            $payments = $payments->paginate(15);
+            $vendors = []; // Not needed for vendor view
         }
 
         return view('dashboard.pages.payments.index', compact(
             'totalEarnings',
             'pendingPayments',
             'lastPayout',
-            'payments'
+            'payments',
+            'vendors'
         ));
     }
 
@@ -97,6 +116,28 @@ class PaymentController extends Controller implements HasMiddleware
 
         // Minimal JSON for now (view can be implemented later)
         return response()->json($payment->load('paymentable'));
+    }
+    /**
+     * Update payment status (Admin only)
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403);
+        }
+
+        $request->validate([
+            'status' => 'required|in:pending,paid,cancelled',
+        ]);
+
+        $vp = VendorPayment::findOrFail($id);
+        
+        $vp->update([
+            'status' => $request->status,
+            'paid_at' => $request->status === 'paid' ? now() : ($request->status === 'pending' ? null : $vp->paid_at),
+        ]);
+
+        return redirect()->back()->with('message', ['type' => 'success', 'text' => 'Payment status updated successfully']);
     }
 }
 
