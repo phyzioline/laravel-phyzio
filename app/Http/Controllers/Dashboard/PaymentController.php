@@ -14,9 +14,7 @@ class PaymentController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-        return [
             new Middleware('can:financials-index', only: ['index', 'showVendorPayment', 'detail', 'updateStatus']),
-        ];
         ];
     }
     /**
