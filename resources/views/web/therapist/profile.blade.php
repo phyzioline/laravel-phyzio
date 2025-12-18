@@ -209,3 +209,29 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function(e) {
+                var preview = document.getElementById('profile-preview');
+                var icon = document.getElementById('default-icon');
+                
+                if(preview) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                
+                if(icon) {
+                    icon.style.display = 'none';
+                }
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+@endpush
