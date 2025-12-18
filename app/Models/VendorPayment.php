@@ -10,6 +10,7 @@ class VendorPayment extends Model
         'vendor_id',
         'order_id',
         'order_item_id',
+        'appointment_id',
         'product_amount',
         'quantity',
         'subtotal',

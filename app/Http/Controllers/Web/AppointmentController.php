@@ -100,11 +100,34 @@ class AppointmentController extends Controller
     public function processPayment(Request $request, $id)
     {
         $appointment = \App\Models\Appointment::findOrFail($id);
-        
+        $user = auth()->user();
+
         // Simulate Payment Processing (Replace with Paymob/Stripe later)
         $appointment->payment_status = 'paid';
         $appointment->payment_method = $request->payment_method; // 'card' or 'cash'
         $appointment->save();
+
+        // Record payment in payments table with currency conversion
+        $currencySvc = new \App\Services\CurrencyService();
+        $baseCurrency = config('app.currency', 'EGP');
+        $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country_code ?? null);
+        $exchangeRate = $currencySvc->getRate($baseCurrency, $userCurrency);
+        $convertedAmount = $currencySvc->convert($appointment->price, $baseCurrency, $userCurrency);
+
+        \App\Models\Payment::create([
+            'paymentable_type' => \App\Models\Appointment::class,
+            'paymentable_id' => $appointment->id,
+            'type' => 'appointment',
+            'amount' => $convertedAmount,
+            'currency' => $userCurrency,
+            'status' => 'paid',
+            'method' => $appointment->payment_method,
+            'reference' => 'appt_' . $appointment->id . '_' . time(),
+            'original_amount' => $appointment->price,
+            'original_currency' => $baseCurrency,
+            'exchange_rate' => $exchangeRate,
+            'exchanged_at' => now(),
+        ]);
 
         return redirect()->route('web.appointments.success', $id);
     }

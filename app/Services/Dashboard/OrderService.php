@@ -59,12 +59,50 @@ class OrderService
     public function update($data, string $id)
     {
         $order = $this->show($id);
-        if($data['status'] == 'completed') {
-           $order->update(['payment_status' => 'paid']);
-        }elseif($data['status'] == 'cancelled') {
+        $shouldCreatePayment = false;
+
+        if ($data['status'] == 'completed') {
+            $order->update(['payment_status' => 'paid']);
+            $shouldCreatePayment = true;
+        } elseif ($data['status'] == 'cancelled') {
             $order->update(['payment_status' => 'faild']);
         }
-        return $order->update($data);
+
+        // Apply status update
+        $order->update($data);
+
+        // Create a Payment record (one per order) when marking completed/paid
+        if ($shouldCreatePayment) {
+            $exists = \App\Models\Payment::where('paymentable_type', \App\Models\Order::class)
+                ->where('paymentable_id', $order->id)
+                ->exists();
+
+            if (! $exists) {
+                $currencySvc = new \App\Services\CurrencyService();
+                $baseCurrency = config('app.currency', 'EGP');
+                $user = $order->user;
+                $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country ?? null);
+                $rate = $currencySvc->getRate($baseCurrency, $userCurrency);
+                $convertedAmount = $currencySvc->convert($order->total, $baseCurrency, $userCurrency);
+
+                \App\Models\Payment::create([
+                    'paymentable_type' => \App\Models\Order::class,
+                    'paymentable_id' => $order->id,
+                    'type' => 'order',
+                    'amount' => $convertedAmount,
+                    'currency' => $userCurrency,
+                    'status' => 'paid',
+                    'method' => $order->payment_method,
+                    'reference' => $order->order_number,
+                    'original_amount' => $order->total,
+                    'original_currency' => $baseCurrency,
+                    'exchange_rate' => $rate,
+                    'exchanged_at' => now(),
+                ]);
+            }
+        }
+
+        return $order;
     }
 
     public function destroy(string $id)

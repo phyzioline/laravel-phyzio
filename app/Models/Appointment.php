@@ -47,4 +47,9 @@ class Appointment extends Model
     {
         return $this->belongsTo(User::class, 'therapist_id');
     }
+
+    public function payments()
+    {
+        return $this->morphMany(\App\Models\Payment::class, 'paymentable');
+    }
 }

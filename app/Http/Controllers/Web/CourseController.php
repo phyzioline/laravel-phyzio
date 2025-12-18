@@ -89,9 +89,62 @@ class CourseController extends Controller
         // Check if user is enrolled
         $isEnrolled = false;
         if(auth()->check()) {
-            $isEnrolled = $course->enrollments()->where('user_id', auth()->id())->exists();
+            $isEnrolled = $course->enrollments()->where('student_id', auth()->id())->exists();
         }
 
         return view('web.courses.show', compact('course', 'isEnrolled'));
     }
+
+    public function purchase(Request $request, $id)
+    {
+        if (!auth()->check()) {
+            return redirect()->route('view_login')->with('error', 'Please login to purchase the course');
+        }
+
+        $course = Course::findOrFail($id);
+        $user = auth()->user();
+
+        // Prevent double-enroll
+        $already = \App\Models\Enrollment::where('course_id', $course->id)
+                    ->where('user_id', $user->id)
+                    ->exists();
+        if ($already) {
+            return redirect()->route('web.courses.show', $course->id)->with('message', ['type' => 'info', 'text' => 'You are already enrolled in this course.']);
+        }
+
+        // Simulate payment success (replace with gateway flow)
+        $currencySvc = new \App\Services\CurrencyService();
+        $baseCurrency = config('app.currency', 'EGP');
+        $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country ?? null);
+        $rate = $currencySvc->getRate($baseCurrency, $userCurrency);
+        $converted = $currencySvc->convert($course->price ?? 0, $baseCurrency, $userCurrency);
+
+        // Create enrollment
+        $enrollment = \App\Models\Enrollment::create([
+            'course_id' => $course->id,
+            'user_id' => $user->id,
+            'paid_amount' => $converted,
+            'status' => 'active',
+            'enrolled_at' => now(),
+        ]);
+
+        // Create Payment record
+        \App\Models\Payment::create([
+            'paymentable_type' => \App\Models\Course::class,
+            'paymentable_id' => $course->id,
+            'type' => 'course',
+            'amount' => $converted,
+            'currency' => $userCurrency,
+            'status' => 'paid',
+            'method' => $request->payment_method ?? 'card',
+            'reference' => 'course_' . $course->id . '_' . $user->id . '_' . time(),
+            'original_amount' => $course->price ?? 0,
+            'original_currency' => $baseCurrency,
+            'exchange_rate' => $rate,
+            'exchanged_at' => now(),
+        ]);
+
+        return redirect()->route('web.courses.show', $course->id)->with('message', ['type' => 'success', 'text' => 'Enrollment successful!']);
+    }
 }
+
