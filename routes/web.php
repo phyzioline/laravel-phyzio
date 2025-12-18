@@ -104,13 +104,13 @@ Route::group(
         Route::prefix('instructor')->name('instructor.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
             
-            // Course Management
-            Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name('courses.index');
-            Route::get('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'show'])->name('courses.show');
-            
-            // Course Wizard Routes
+            // Course Wizard Routes (Specific routes first)
             Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])->name('courses.create');
             Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name('courses.store');
+
+            // Course Management (Wildcard routes last)
+            Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name('courses.index');
+            Route::get('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'show'])->name('courses.show');
             Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name('courses.edit');
             Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name('courses.update');
             Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name('courses.destroy');

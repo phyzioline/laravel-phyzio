@@ -18,6 +18,15 @@ class CourseController extends Controller
         return view('instructor.courses.index', compact('courses'));
     }
 
+    public function show(Course $course)
+    {
+        if ($course->instructor_id !== Auth::id()) {
+            abort(403);
+        }
+        // For now, redirect 'show' to the curriculum/edit view as it is the main dashboard for a course
+        return redirect()->route('instructor.courses.edit', $course->id);
+    }
+
     public function create()
     {
         $categories = Category::all();
