@@ -103,11 +103,30 @@
                             </div>
 
                             <div class="form-group mb-3">
+                                <label>Course Format</label>
+                                <select name="type" class="form-control" required>
+                                    <option value="online">Online (Video Based)</option>
+                                    <option value="offline" selected>In-Person / Workshop</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label>Total Seats (Quota)</label>
+                                <input type="number" name="seats" class="form-control" min="0" placeholder="e.g. 25 (Leave empty for unlimited)">
+                                <small class="text-muted">For Offline workshops</small>
+                            </div>
+
+                            <div class="form-group mb-3">
                                 <label>Price (EGP)</label>
                                 <input type="number" name="price" class="form-control" min="0" value="0" required>
                                 <small class="text-muted">Set to 0 for Free</small>
                             </div>
                             
+                            <div class="form-group mb-3">
+                                <label>Intro Video URL (YouTube/Vimeo)</label>
+                                <input type="url" name="trailer_url" class="form-control" placeholder="https://youtube.com/...">
+                            </div>
+
                             <div class="form-group mb-3">
                                 <label>Thumbnail Image</label>
                                 <input type="file" name="thumbnail" class="form-control-file">

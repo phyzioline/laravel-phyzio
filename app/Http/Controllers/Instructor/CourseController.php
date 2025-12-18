@@ -38,6 +38,9 @@ class CourseController extends Controller
             'equipment_required' => 'nullable|array',
             'skills' => 'nullable|array',
             'skills.*' => 'exists:skills,id',
+            'type' => 'nullable|in:online,offline',
+            'seats' => 'nullable|integer',
+            'trailer_url' => 'nullable|url',
         ]);
 
         DB::beginTransaction();
@@ -53,6 +56,9 @@ class CourseController extends Controller
                 'equipment_required' => $validated['equipment_required'] ?? [],
                 'status' => 'draft',
                 'clinical_focus' => $request->clinical_focus,
+                'seats' => $validated['seats'] ?? null,
+                'type' => $validated['type'] ?? 'online',
+                'trailer_url' => $validated['trailer_url'] ?? null,
             ]);
 
             if ($request->has('skills')) {
