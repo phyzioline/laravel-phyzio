@@ -85,7 +85,7 @@ class OrderService
                 $rate = $currencySvc->getRate($baseCurrency, $userCurrency);
                 $convertedAmount = $currencySvc->convert($order->total, $baseCurrency, $userCurrency);
 
-                \App\Models\Payment::create([
+                $payment = \App\Models\Payment::create([
                     'paymentable_type' => \App\Models\Order::class,
                     'paymentable_id' => $order->id,
                     'type' => 'order',
@@ -99,6 +99,10 @@ class OrderService
                     'exchange_rate' => $rate,
                     'exchanged_at' => now(),
                 ]);
+
+                // Link vendor payments for this order to the payment record and mark paid
+                \App\Models\VendorPayment::where('order_id', $order->id)
+                    ->update(['payment_id' => $payment->id, 'status' => 'paid', 'paid_at' => now()]);
             }
         }
 

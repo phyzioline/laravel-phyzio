@@ -129,7 +129,7 @@ class CourseController extends Controller
         ]);
 
         // Create Payment record
-        \App\Models\Payment::create([
+        $payment = \App\Models\Payment::create([
             'paymentable_type' => \App\Models\Course::class,
             'paymentable_id' => $course->id,
             'type' => 'course',
@@ -142,6 +142,27 @@ class CourseController extends Controller
             'original_currency' => $baseCurrency,
             'exchange_rate' => $rate,
             'exchanged_at' => now(),
+        ]);
+
+        // Create vendor payment entry for the instructor (apply default commission)
+        $defaultCommissionRate = 15.00; // 15%
+        $subtotal = $converted;
+        $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
+        $vendorEarnings = $subtotal - $commissionAmount;
+
+        \App\Models\VendorPayment::create([
+            'vendor_id' => $course->instructor_id,
+            'order_id' => null,
+            'order_item_id' => null,
+            'product_amount' => $course->price ?? 0,
+            'quantity' => 1,
+            'subtotal' => $subtotal,
+            'commission_rate' => $defaultCommissionRate,
+            'commission_amount' => $commissionAmount,
+            'vendor_earnings' => $vendorEarnings,
+            'status' => 'pending',
+            'payment_id' => $payment->id,
+            'payment_reference' => $payment->reference,
         ]);
 
         return redirect()->route('web.courses.show', $course->id)->with('message', ['type' => 'success', 'text' => 'Enrollment successful!']);

@@ -20,7 +20,8 @@ class VendorPayment extends Model
         'vendor_earnings',
         'status',
         'paid_at',
-        'payment_reference'
+        'payment_reference',
+        'payment_id'
     ];
 
     protected $casts = [
@@ -32,6 +33,11 @@ class VendorPayment extends Model
         'vendor_earnings' => 'decimal:2',
         'paid_at' => 'datetime'
     ];
+
+    public function payment()
+    {
+        return $this->belongsTo(\App\Models\Payment::class, 'payment_id');
+    }
 
     /**
      * Get the vendor (user) that owns this payment.

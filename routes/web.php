@@ -76,6 +76,7 @@ Route::group(
         
         Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
         Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
+        Route::post('/courses/{id}/purchase', [App\Http\Controllers\Web\CourseController::class, 'purchase'])->name('web.courses.purchase');
         
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');

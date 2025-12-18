@@ -42,4 +42,34 @@ class PaymentController extends Controller
             'payments'
         ));
     }
+
+    /**
+     * Show vendor payment details (VendorPayment model).
+     */
+    public function showVendorPayment($id)
+    {
+        $vp = VendorPayment::with(['payment', 'order', 'orderItem.product'])->findOrFail($id);
+
+        $this->authorize('view', $vp);
+
+        if (request()->wantsJson()) {
+            return response()->json($vp->load('payment', 'order', 'orderItem'));
+        }
+
+        return view('dashboard.pages.payments.show', compact('vp'));
+    }
+
+    /**
+     * Show raw payment detail (Payment model) guarded by PaymentPolicy.
+     */
+    public function detail($id)
+    {
+        $payment = \App\Models\Payment::findOrFail($id);
+
+        $this->authorize('view', $payment);
+
+        // Minimal JSON for now (view can be implemented later)
+        return response()->json($payment->load('paymentable'));
+    }
 }
+

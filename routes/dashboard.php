@@ -48,6 +48,8 @@ Route::group(
 
             // Financial Management
             Route::get('/payments', [\App\Http\Controllers\Dashboard\PaymentController::class, 'index'])->name('payments.index');
+            Route::get('/payments/{id}', [\App\Http\Controllers\Dashboard\PaymentController::class, 'showVendorPayment'])->name('payments.show');
+            Route::get('/payments/{id}/detail', [\App\Http\Controllers\Dashboard\PaymentController::class, 'detail'])->name('payments.detail');
 
             // Inventory Management
             Route::prefix('inventory')->as('inventory.')->group(function () {
