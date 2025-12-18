@@ -87,6 +87,14 @@ See the [Deployment Guide](docs/deployment/deployment-guide.md) for detailed ins
 
 This project is prepared for future mobile app development with Python (Flutter backend/API integration).
 
+## Dashboard Role Separation & Payments 🔒
+
+- Implemented resource policies for payments and vendor payouts in `app/Policies` (`PaymentPolicy`, `VendorPaymentPolicy`).
+- Policies are registered in `app/Providers/AuthServiceProvider.php`.
+- Dashboard controllers now scope queries by authenticated user where appropriate (e.g., therapist dashboards use `therapist_id`, vendor dashboards use `vendor_id`).
+- Feature tests added: `tests/Feature/Dashboard/PaymentAuthorizationTest.php` to verify data isolation and admin access.
+- Recommendation: Add gateway webhook handlers to confirm external payment status before creating `Payment` records in production.
+
 ## Google Merchant Feed
 
 We expose localized product feeds for Google Merchant Center. Two public feeds are available:
