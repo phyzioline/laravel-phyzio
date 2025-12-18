@@ -86,8 +86,8 @@
                                                             style="width: 100%; height: 100%; object-fit: contain;">
                                                     </div>
                                                 </td>
-                                                <td>{{ $product->category->{'name_' . app()->getLocale()} }}</td>
-                                                <td>{{ $product->sub_category->{'name_' . app()->getLocale()} }}</td>
+                                                <td>{{ $product->category?->{'name_' . app()->getLocale()} }}</td>
+                                                <td>{{ $product->sub_category?->{'name_' . app()->getLocale()} }}</td>
                                                 <td>{{ $product->{'product_name_' . app()->getLocale()} }}</td>
                                                 <td>{{ $product->product_price }}</td>
                                                 <td>{{ $product->amount }}</td>
