@@ -12,6 +12,16 @@
                     <form action="{{ route('therapist.onboarding.step1.post') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        
                         <h5 class="mb-4 text-muted border-bottom pb-2">{{ __('1.1 Personal Information') }}</h5>
                         <div class="form-row">
                             <div class="form-group col-md-6">
