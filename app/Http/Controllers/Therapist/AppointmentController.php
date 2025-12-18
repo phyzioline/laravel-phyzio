@@ -10,7 +10,7 @@ class AppointmentController extends Controller
     public function index()
     {
         $appointments = \App\Models\Appointment::where('therapist_id', auth()->id())
-            ->with(['patient', 'service'])
+            ->with(['patient'])
             ->orderBy('appointment_date', 'asc')
             ->orderBy('appointment_time', 'asc')
             ->get();

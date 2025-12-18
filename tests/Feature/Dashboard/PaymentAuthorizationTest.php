@@ -155,4 +155,77 @@ class PaymentAuthorizationTest extends TestCase
             ->get(route('dashboard.payments.detail', $payment->id))
             ->assertStatus(200);
     }
+
+    public function test_vendor_payments_index_shows_only_their_payments()
+    {
+        $vendorA = User::factory()->create();
+        $vendorB = User::factory()->create();
+        $vendorA->assignRole('vendor');
+        $vendorB->assignRole('vendor');
+
+        VendorPayment::create([
+            'vendor_id' => $vendorA->id,
+            'order_id' => null,
+            'product_amount' => 50,
+            'quantity' => 1,
+            'subtotal' => 50,
+            'commission_rate' => 5,
+            'commission_amount' => 2.5,
+            'vendor_earnings' => 47.5,
+            'status' => 'pending'
+        ]);
+
+        VendorPayment::create([
+            'vendor_id' => $vendorB->id,
+            'order_id' => null,
+            'product_amount' => 150,
+            'quantity' => 1,
+            'subtotal' => 150,
+            'commission_rate' => 5,
+            'commission_amount' => 7.5,
+            'vendor_earnings' => 142.5,
+            'status' => 'pending'
+        ]);
+
+        $resp = $this->actingAs($vendorA)->get(route('dashboard.payments.index'));
+        $resp->assertStatus(200);
+        // page should show the vendor's transaction and not the other's
+        $resp->assertSee('$50.00');
+        $resp->assertDontSee('$150.00');
+    }
+
+    public function test_therapist_appointments_index_shows_only_their_appointments()
+    {
+        $therA = User::factory()->create(['type' => 'therapist']);
+        $therB = User::factory()->create(['type' => 'therapist']);
+        $therA->assignRole('therapist');
+        $therB->assignRole('therapist');
+
+        $patient = User::factory()->create(['type' => 'patient']);
+        $patient->assignRole('patient');
+
+        Appointment::create(['therapist_id' => $therA->id, 'patient_id' => $patient->id, 'price' => 50, 'status' => 'scheduled', 'appointment_time' => now(), 'appointment_date' => now()->toDateString()]);
+        Appointment::create(['therapist_id' => $therB->id, 'patient_id' => $patient->id, 'price' => 60, 'status' => 'scheduled', 'appointment_time' => now(), 'appointment_date' => now()->toDateString()]);
+
+        $this->actingAs($therA)->get(route('therapist.appointments.index'))
+            ->assertStatus(200);
+
+        $this->assertEquals(1, Appointment::where('therapist_id', $therA->id)->count());
+    }
+
+    public function test_instructor_dashboard_shows_only_their_courses()
+    {
+        $instructorA = User::factory()->create();
+        $instructorB = User::factory()->create();
+        $instructorA->assignRole('vendor');
+        $instructorB->assignRole('vendor');
+
+        Course::create(['title' => 'A Course', 'price' => 20, 'instructor_id' => $instructorA->id, 'level' => 'beginner']);
+        Course::create(['title' => 'B Course', 'price' => 40, 'instructor_id' => $instructorB->id, 'level' => 'beginner']);
+
+        $resp = $this->actingAs($instructorA)->get(route('instructor.dashboard'));
+        $resp->assertStatus(200);
+        $resp->assertSee('Active Courses');
+        $this->assertEquals(1, Course::where('instructor_id', $instructorA->id)->count());
+    }
 }
