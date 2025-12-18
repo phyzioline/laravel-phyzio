@@ -5,8 +5,21 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class CourseController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class CourseController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:courses-index', only: ['index']),
+            new Middleware('can:courses-create', only: ['create', 'store']),
+            new Middleware('can:courses-show', only: ['show']),
+            new Middleware('can:courses-update', only: ['edit', 'update']),
+            new Middleware('can:courses-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

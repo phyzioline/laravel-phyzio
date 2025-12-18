@@ -6,10 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Job;
 use Illuminate\Http\Request;
 
-class JobController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class JobController extends Controller implements HasMiddleware
 {
-    // Constructor removed to fix middleware issue
-    // Middleware should be handled in routes
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:jobs-index', only: ['index']),
+            new Middleware('can:jobs-create', only: ['create', 'store']),
+            new Middleware('can:jobs-show', only: ['show']),
+            new Middleware('can:jobs-update', only: ['edit', 'update']),
+            new Middleware('can:jobs-delete', only: ['destroy']),
+        ];
+    }
 
 
     public function index(Request $request)

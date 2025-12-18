@@ -5,8 +5,21 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ClinicProfileController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class ClinicProfileController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:clinic_profiles-index', only: ['index']),
+            new Middleware('can:clinic_profiles-create', only: ['create', 'store']),
+            new Middleware('can:clinic_profiles-show', only: ['show']),
+            new Middleware('can:clinic_profiles-update', only: ['edit', 'update']),
+            new Middleware('can:clinic_profiles-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

@@ -1,3 +1,4 @@
+
 <?php
 
 namespace Database\Seeders;
@@ -5,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class PermissionSeeder extends Seeder
 {
@@ -33,6 +35,12 @@ class PermissionSeeder extends Seeder
             'privacy_policy-update',
             'financials-index',
             'reports-index',
+            'therapist_profiles-index', 'therapist_profiles-show', 'therapist_profiles-create', 'therapist_profiles-update', 'therapist_profiles-delete',
+            'appointments-index', 'appointments-show', 'appointments-create', 'appointments-update', 'appointments-delete',
+            'clinic_profiles-index', 'clinic_profiles-show', 'clinic_profiles-create', 'clinic_profiles-update', 'clinic_profiles-delete',
+            'courses-index', 'courses-show', 'courses-create', 'courses-update', 'courses-delete',
+            'jobs-index', 'jobs-show', 'jobs-create', 'jobs-update', 'jobs-delete',
+            'data_points-index', 'data_points-show', 'data_points-create', 'data_points-update', 'data_points-delete',
 
 
 
@@ -40,6 +48,12 @@ class PermissionSeeder extends Seeder
         ];
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
+        }
+
+        // Auto-assign to Admin
+        $adminRole = Role::where('name', 'admin')->first();
+        if ($adminRole) {
+            $adminRole->syncPermissions(Permission::all());
         }
     }
 }

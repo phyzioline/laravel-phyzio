@@ -5,8 +5,21 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AppointmentController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class AppointmentController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:appointments-index', only: ['index']),
+            new Middleware('can:appointments-create', only: ['create', 'store']),
+            new Middleware('can:appointments-show', only: ['show']),
+            new Middleware('can:appointments-update', only: ['edit', 'update']),
+            new Middleware('can:appointments-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

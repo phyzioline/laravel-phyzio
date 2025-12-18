@@ -139,22 +139,34 @@
               @endcan
 
               <!-- Ecosystem Management -->
-              @role('admin')
+              @if(auth()->user()->can('therapist_profiles-index') || auth()->user()->can('appointments-index') || auth()->user()->can('clinic_profiles-index') || auth()->user()->can('courses-index') || auth()->user()->can('jobs-index') || auth()->user()->can('data_points-index'))
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="material-icons-outlined">public</i></div>
                       <div class="menu-title">{{ __("Ecosystem") }}</div>
                   </a>
                   <ul>
+                      @can('therapist_profiles-index')
                       <li><a href="{{ route('dashboard.therapist_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Therapists") }}</a></li>
+                      @endcan
+                      @can('appointments-index')
                       <li><a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Home Visits") }}</a></li>
+                      @endcan
+                      @can('clinic_profiles-index')
                       <li><a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Clinics") }}</a></li>
+                      @endcan
+                      @can('courses-index')
                       <li><a href="{{ route('dashboard.courses.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Courses") }}</a></li>
+                      @endcan
+                      @can('jobs-index')
                       <li><a href="{{ route('dashboard.jobs.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Jobs") }}</a></li>
+                      @endcan
+                      @can('data_points-index')
                       <li><a href="{{ route('dashboard.data_points.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Data Points") }}</a></li>
+                      @endcan
                   </ul>
               </li>
-              @endrole
+              @endif
 
               <!-- Settings -->
               <li>

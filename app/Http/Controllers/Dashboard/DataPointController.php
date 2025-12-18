@@ -5,8 +5,21 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class DataPointController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class DataPointController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:data_points-index', only: ['index']),
+            new Middleware('can:data_points-create', only: ['create', 'store']),
+            new Middleware('can:data_points-show', only: ['show']),
+            new Middleware('can:data_points-update', only: ['edit', 'update']),
+            new Middleware('can:data_points-delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

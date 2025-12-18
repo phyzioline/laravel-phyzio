@@ -13,12 +13,11 @@ class TherapistProfileController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware(function ($request, $next) {
-                if (!auth()->check() || !auth()->user()->hasRole('admin')) {
-                    abort(403, 'Unauthorized. Admin access required.');
-                }
-                return $next($request);
-            }),
+            new Middleware('can:therapist_profiles-index', only: ['index']),
+            new Middleware('can:therapist_profiles-create', only: ['create', 'store']),
+            new Middleware('can:therapist_profiles-show', only: ['show']),
+            new Middleware('can:therapist_profiles-update', only: ['edit', 'update']),
+            new Middleware('can:therapist_profiles-delete', only: ['destroy']),
         ];
     }
     /**
