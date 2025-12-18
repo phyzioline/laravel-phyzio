@@ -84,6 +84,9 @@
                             <tr>
                                 <th>Order #</th>
                                 <th>Date</th>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <th>Vendor</th>
+                                @endif
                                 <th>Item</th>
                                 <th>Qty</th>
                                 <th>Amount</th>
@@ -99,6 +102,9 @@
                                     <strong>{{ $payment->payment_reference ?? 'N/A' }}</strong>
                                 </td>
                                 <td>{{ $payment->created_at->format('M d, Y H:i') }}</td>
+                                @if(auth()->user()->hasRole('admin'))
+                                    <td>{{ $payment->vendor->name ?? 'N/A' }}</td>
+                                @endif
                                 <td>
                                     <div class="d-flex align-items-center">
                                         @if($payment->orderItem && $payment->orderItem->product)

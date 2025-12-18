@@ -13,27 +13,45 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $vendorId = auth()->user()->id;
+        $user = auth()->user();
 
-        // Statistics
-        $totalEarnings = VendorPayment::where('vendor_id', $vendorId)
-            ->where('status', 'paid')
-            ->sum('vendor_earnings');
+        // Check if user is Admin to show ALL payments
+        if ($user->hasRole('admin')) {
+             // Admin sees overall statistics
+            $totalEarnings = VendorPayment::where('status', 'paid')->sum('vendor_earnings');
+            $pendingPayments = VendorPayment::where('status', 'pending')->sum('vendor_earnings');
+            
+            // Latest payout across all vendors
+            $lastPayout = VendorPayment::where('status', 'paid')
+                ->latest('paid_at')
+                ->first();
 
-        $pendingPayments = VendorPayment::where('vendor_id', $vendorId)
-            ->where('status', 'pending')
-            ->sum('vendor_earnings');
+            // All Transactions
+            $payments = VendorPayment::with(['order', 'orderItem.product', 'vendor']) // Eager load vendor
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+        } else {
+             // Vendor sees ONLY their stats
+            $vendorId = $user->id;
 
-        $lastPayout = VendorPayment::where('vendor_id', $vendorId)
-            ->where('status', 'paid')
-            ->latest('paid_at')
-            ->first();
+            $totalEarnings = VendorPayment::where('vendor_id', $vendorId)
+                ->where('status', 'paid')
+                ->sum('vendor_earnings');
 
-        // Recent Transactions
-        $payments = VendorPayment::where('vendor_id', $vendorId)
-            ->with(['order', 'orderItem.product'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            $pendingPayments = VendorPayment::where('vendor_id', $vendorId)
+                ->where('status', 'pending')
+                ->sum('vendor_earnings');
+
+            $lastPayout = VendorPayment::where('vendor_id', $vendorId)
+                ->where('status', 'paid')
+                ->latest('paid_at')
+                ->first();
+
+            $payments = VendorPayment::where('vendor_id', $vendorId)
+                ->with(['order', 'orderItem.product'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(15);
+        }
 
         return view('dashboard.pages.payments.index', compact(
             'totalEarnings',
