@@ -19,14 +19,15 @@
              <div class="card shadow border-0 text-center">
                 <div class="card-body">
                     <div class="position-relative d-inline-block mb-3">
-                         <div class="avatar-circle rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                        <div class="avatar-circle rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden;">
                             @if(isset($user) && $user->profile_image)
-                                <img src="{{ asset('storage/' . $user->profile_image) }}" class="rounded-circle w-100 h-100" style="object-fit: cover;">
+                                <img src="{{ asset('storage/' . $user->profile_image) }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                             @else
-                                <i class="las la-user text-muted" style="font-size: 60px;"></i>
+                                <img id="profile-preview" src="" style="display:none;" class="rounded-circle w-100 h-100" style="object-fit: cover;">
+                                <i class="las la-user text-muted" id="default-icon" style="font-size: 60px;"></i>
                             @endif
                         </div>
-                        <button class="btn btn-sm btn-primary rounded-circle position-absolute" style="bottom: 0; right: 0; width: 35px; height: 35px; padding: 0;" title="Change Photo">
+                        <button type="button" onclick="document.getElementById('profile_image_input').click()" class="btn btn-sm btn-primary rounded-circle position-absolute" style="bottom: 0; right: 0; width: 35px; height: 35px; padding: 0;" title="Change Photo">
                             <i class="las la-camera"></i>
                         </button>
                     </div>
@@ -71,6 +72,7 @@
                     <form id="profile-form" method="POST" action="{{ route('therapist.profile.update') }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
+                        <input type="file" name="profile_image" id="profile_image_input" style="display: none;" accept="image/*" onchange="previewImage(this)">
 
                         <h6 class="text-uppercase text-muted small font-weight-bold mb-3 border-bottom pb-2">{{ __('Personal Information') }}</h6>
                         <div class="form-row">
