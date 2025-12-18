@@ -278,19 +278,19 @@
             @if(!request()->routeIs('clinic.*') && (auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist'))
                 <li class="menu-label mt-3 ml-3 text-white small">{{ __('Instructor Portal') }}</li>
                 <li>
-                    <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">
+                    <a href="{{ route('instructor.courses.index') }}" class="{{ request()->routeIs('instructor.courses.index') ? 'active' : '' }}">
                          <span class="las la-tachometer-alt"></span>
                         <span>{{ __('Dashboard') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('therapist.courses.create') }}" class="{{ request()->routeIs('therapist.courses.create') ? 'active' : '' }}">
+                    <a href="{{ route('instructor.courses.create') }}" class="{{ request()->routeIs('instructor.courses.create') ? 'active' : '' }}">
                         <span class="las la-plus-circle"></span>
                         <span>{{ __('Create Course') }}</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('therapist.courses.index') }}" class="{{ request()->routeIs('therapist.courses.index') ? 'active' : '' }}">
+                    <a href="{{ route('instructor.courses.index') }}" class="{{ request()->routeIs('instructor.courses.index') ? 'active' : '' }}">
                         <span class="las la-book"></span>
                         <span>{{ __('My Courses') }}</span>
                     </a>

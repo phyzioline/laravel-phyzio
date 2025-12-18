@@ -52,5 +52,5 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
     Route::get('/notifications', [\App\Http\Controllers\Therapist\NotificationController::class, 'index'])->name('notifications.index');
     
     // Course Management
-    Route::resource('courses', \App\Http\Controllers\Therapist\CourseController::class);
+    Route::resource('courses', \App\Http\Controllers\Instructor\CourseController::class);
 });
