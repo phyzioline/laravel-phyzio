@@ -46,7 +46,8 @@
                                                 <option value="" disabled {{ old('type') ? '' : 'selected' }}>Select User Type</option>
                                                 <option value="vendor" {{ old('type') == 'vendor' ? 'selected' : '' }}>Vendor</option>
                                                 <option value="therapist" {{ old('type') == 'therapist' ? 'selected' : '' }}>Therapist</option>
-                                                <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>Buyer</option>
+                                                <option value="buyer" {{ old('type') == 'buyer' ? 'selected' : '' }}>Buyer / Patient</option>
+                                                <option value="company" {{ old('type') == 'company' ? 'selected' : '' }}>Company (Clinic / Recruitment)</option>
                                             </select>
                                             <i class="input-icon material-icons">account_circle</i>
                                             @error('type')
@@ -117,8 +118,8 @@
                                             @enderror
                                         </div>
 
-                                        <!-- Vendor Fields Only -->
-                                        <div id="vendorFields" style="{{ old('type') == 'vendor' ? '' : 'display:none;' }}">
+                                        <!-- Vendor Only Fields -->
+                                        <div id="vendorOnlyFields" style="display:none;">
                                             <div class="form-group">
                                                 <label style="margin-bottom: 10px; display: block">Profile Image</label>
                                                 <input type="file" name="image" class="form-style">
@@ -136,7 +137,19 @@
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
+                                            
+                                             <div class="form-group">
+                                                <label style="margin-bottom: 10px; display: block">ID Card Image</label>
+                                                <input type="file" name="card_image" class="form-style">
+                                                <i class="input-icon material-icons">credit_card</i>
+                                                @error('card_image')
+                                                    <span class="text-danger">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
+                                        <!-- Business Docs (Vendor + Company) -->
+                                        <div id="businessDocsFields" style="display:none;">
                                             <div class="form-group">
                                                 <label style="margin-bottom: 10px; display: block">Commercial Register</label>
                                                 <input type="file" name="commercial_register" class="form-style">
@@ -151,15 +164,6 @@
                                                 <input type="file" name="tax_card" class="form-style">
                                                 <i class="input-icon material-icons">assignment</i>
                                                 @error('tax_card')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">ID Card Image</label>
-                                                <input type="file" name="card_image" class="form-style">
-                                                <i class="input-icon material-icons">credit_card</i>
-                                                @error('card_image')
                                                     <span class="text-danger">{{ $message }}</span>
                                                 @enderror
                                             </div>
@@ -271,18 +275,27 @@
 
         function handleUserTypeChange() {
             const userType = document.getElementById('userType').value;
-            const vendorFields = document.getElementById('vendorFields');
+            
+            const vendorOnlyFields = document.getElementById('vendorOnlyFields');
+            const businessDocsFields = document.getElementById('businessDocsFields');
             const therapistFields = document.getElementById('therapistFields');
+            
             const formWrapper = document.getElementById('formWrapper');
 
             // Hide all first
-            vendorFields.style.display = 'none';
+            vendorOnlyFields.style.display = 'none';
+            businessDocsFields.style.display = 'none';
             therapistFields.style.display = 'none';
-            formWrapper.style.minHeight = '850px'; // Slightly taller for new country field
+            
+            formWrapper.style.minHeight = '850px'; 
 
             if (userType === 'vendor') {
-                vendorFields.style.display = 'block';
-                formWrapper.style.minHeight = '1250px';
+                vendorOnlyFields.style.display = 'block';
+                businessDocsFields.style.display = 'block';
+                formWrapper.style.minHeight = '1450px';
+            } else if (userType === 'company') {
+                businessDocsFields.style.display = 'block';
+                formWrapper.style.minHeight = '1100px';
             } else if (userType === 'therapist') {
                 therapistFields.style.display = 'block';
                 formWrapper.style.minHeight = '950px';
