@@ -29,6 +29,41 @@ class FeedController extends Controller
     }
 
     /**
+     * Store a new user post in the feed
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'content' => 'required|string|max:1000',
+            'image' => 'nullable|image|max:2048' // 2MB Max
+        ]);
+
+        $user = Auth::user();
+        
+        $post = new FeedItem();
+        $post->type = 'post';
+        $post->title = $user->name; // User name as title for posts
+        $post->description = $request->content;
+        $post->status = 'active';
+        $post->target_audience = ['all']; // Visible to everyone
+        $post->ai_relevance_base_score = 1.0;
+        $post->scheduled_at = now();
+
+        // Polymorphic link to user
+        $post->sourceable_id = $user->id;
+        $post->sourceable_type = get_class($user);
+
+        if ($request->hasFile('image')) {
+             $path = $request->file('image')->store('feed_uploads', 'public');
+             $post->media_url = asset('storage/' . $path);
+        }
+
+        $post->save();
+
+        return redirect()->back()->with('success', 'Post published successfully!');
+    }
+
+    /**
      * AJAX endpoint to log interactions (clicks/views)
      */
     public function logInteraction(Request $request, $id)

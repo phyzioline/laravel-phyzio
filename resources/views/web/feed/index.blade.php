@@ -33,6 +33,34 @@
 
             <!-- Main Feed -->
             <div class="col-md-7">
+
+                <!-- Create Post Card -->
+                 <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="icon-box rounded-circle d-flex align-items-center justify-content-center bg-light text-primary mr-3" style="width: 45px; height: 45px;">
+                                <i class="las la-user-edit la-lg"></i>
+                            </div>
+                            <div class="w-100">
+                                <form action="{{ route('feed.store') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="form-group mb-2">
+                                        <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="Share your medical insights, cases, or questions..." style="resize: none;"></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <label class="btn btn-sm btn-light mb-0 text-muted" style="cursor: pointer;">
+                                                <i class="las la-image"></i> Photo
+                                                <input type="file" name="image" class="d-none">
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm px-4">Post</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 
                 @forelse($feedItems as $item)
                 <div class="card shadow-sm border-0 mb-4 feed-card" data-id="{{ $item->id }}">

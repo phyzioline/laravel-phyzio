@@ -135,6 +135,7 @@ Route::group(
 
         // Feed Routes (Public)
         Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name('feed.index');
+        Route::post('/feed', [App\Http\Controllers\Web\FeedController::class, 'store'])->name('feed.store'); // New
         Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name('feed.interact');
         Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name('feed.like');
 
