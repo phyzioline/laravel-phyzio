@@ -156,6 +156,73 @@ class PaymentAuthorizationTest extends TestCase
             ->assertStatus(200);
     }
 
+    public function test_admin_can_view_any_payment_detail()
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $ther = User::factory()->create(['type' => 'therapist']);
+        $patient = User::factory()->create(['type' => 'patient']);
+        $ther->assignRole('therapist');
+        $patient->assignRole('patient');
+
+        $appointment = Appointment::create(['therapist_id' => $ther->id, 'patient_id' => $patient->id, 'price' => 120, 'status' => 'confirmed', 'appointment_time' => now()]);
+
+        $payment = Payment::create([
+            'paymentable_type' => Appointment::class,
+            'paymentable_id' => $appointment->id,
+            'type' => 'appointment',
+            'amount' => 120,
+            'currency' => 'USD',
+            'status' => 'paid',
+            'method' => 'card',
+            'reference' => 'appt_' . time()
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('dashboard.payments.detail', $payment->id))
+            ->assertStatus(200);
+    }
+
+    public function test_vendor_can_view_payment_if_linked_via_vendor_payment()
+    {
+        $vendor = User::factory()->create();
+        $vendor->assignRole('vendor');
+
+        $customer = User::factory()->create();
+        $customer->assignRole('buyer');
+
+        $order = Order::create(['user_id' => $customer->id, 'total' => 200, 'status' => 'completed']);
+
+        $payment = Payment::create([
+            'paymentable_type' => Order::class,
+            'paymentable_id' => $order->id,
+            'type' => 'order',
+            'amount' => 200,
+            'currency' => 'USD',
+            'status' => 'paid',
+            'method' => 'card',
+            'reference' => 'order_' . $order->id
+        ]);
+
+        VendorPayment::create([
+            'vendor_id' => $vendor->id,
+            'order_id' => $order->id,
+            'product_amount' => 200,
+            'quantity' => 1,
+            'subtotal' => 200,
+            'commission_rate' => 10,
+            'commission_amount' => 20,
+            'vendor_earnings' => 180,
+            'status' => 'pending',
+            'payment_id' => $payment->id,
+        ]);
+
+        $this->actingAs($vendor)
+            ->get(route('dashboard.payments.detail', $payment->id))
+            ->assertStatus(200);
+    }
+
     public function test_vendor_payments_index_shows_only_their_payments()
     {
         $vendorA = User::factory()->create();

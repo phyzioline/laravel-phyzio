@@ -38,6 +38,8 @@ Route::group(
     Route::get('/otp', [RegisterController::class, 'otp'])->name('view_otp');
     Route::post('/verify', [RegisterController::class, 'verify'])->name('verify');
 
+        // Payment gateway webhooks (generic)
+        Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
     // Company Registration
     Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name('company.register');
     Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name('company.register.store');

@@ -12,6 +12,8 @@ class PaymentFactory extends Factory
     public function definition()
     {
         return [
+            'paymentable_type' => \App\Models\Order::class,
+            'paymentable_id' => 0,
             'type' => 'appointment',
             'amount' => $this->faker->randomFloat(2, 10, 1000),
             'currency' => 'USD',

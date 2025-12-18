@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'paymentable_type',
         'paymentable_id',
@@ -28,6 +30,7 @@ class Payment extends Model
         'original_amount' => 'decimal:2',
         'exchange_rate' => 'decimal:6',
         'exchanged_at' => 'datetime',
+        'paid_at' => 'datetime',
     ];
 
     public function paymentable()

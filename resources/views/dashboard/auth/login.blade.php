@@ -70,7 +70,7 @@
                             </div>
                             <h4 style="color: #02767F;" class="text-center my-3">Dashboard Login</h4>
                             <form class="form w-100" action="{{ route('loginAction') }}" method="post"
-                                data-kt-redirect-url="#" action="#">
+                                data-kt-redirect-url="#">
                                 @csrf
 
                                 @if ($errors->any())
