@@ -8,13 +8,22 @@ use App\Services\HomeVisit\HomeVisitService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class VisitManagementController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class VisitManagementController extends Controller implements HasMiddleware
 {
     protected $visitService;
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth'),
+        ];
+    }
+
     public function __construct(HomeVisitService $visitService)
     {
-        $this->middleware('auth');
         $this->visitService = $visitService;
     }
 

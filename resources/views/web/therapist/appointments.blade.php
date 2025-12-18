@@ -14,19 +14,57 @@
         </div>
     </div>
 
+    <!-- Active Home Visit Card (Merged from Visits) -->
+    @if(isset($activeVisit) && $activeVisit)
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-primary shadow-lg">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Active Home Visit: {{ $activeVisit->patient->name ?? 'Patient' }}</h4>
+                    <span class="badge badge-light text-primary p-2">{{ strtoupper($activeVisit->status) }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><i class="las la-map-marker"></i> {{ $activeVisit->address }}</p>
+                            <a href="https://maps.google.com/?q={{ $activeVisit->location_lat }},{{ $activeVisit->location_lng }}" target="_blank" class="btn btn-outline-primary">
+                                <i class="las la-directions"></i> Open Navigation
+                            </a>
+                        </div>
+                        <div class="col-md-6 text-center border-left">
+                            @if($activeVisit->status == 'accepted')
+                                <form action="{{ route('therapist.visits.status', $activeVisit->id) }}" method="POST">
+                                    @csrf <input type="hidden" name="status" value="on_way">
+                                    <button class="btn btn-warning btn-lg btn-block">Start Trip <i class="las la-car"></i></button>
+                                </form>
+                            @elseif($activeVisit->status == 'on_way')
+                                <form action="{{ route('therapist.visits.status', $activeVisit->id) }}" method="POST">
+                                    @csrf <input type="hidden" name="status" value="in_session">
+                                    <button class="btn btn-success btn-lg btn-block">Arrived <i class="las la-check-circle"></i></button>
+                                </form>
+                            @elseif($activeVisit->status == 'in_session')
+                                <button class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#completeVisitModal">Complete Session <i class="las la-file-medical"></i></button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Stats Row -->
     <div class="row mb-4">
+        <!-- New Visit Stats -->
         <div class="col-md-3">
-             <div class="card shadow-sm border-0 border-left-primary py-2">
+             <div class="card shadow-sm border-0 border-left-info py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('Total Appointments') }}</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $appointments->count() }}</div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{ __('Visit Requests') }}</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $availableVisits->count() ?? 0 }}</div>
                         </div>
-                        <div class="col-auto">
-                            <i class="las la-calendar fa-2x text-gray-300"></i>
-                        </div>
+                        <div class="col-auto"><i class="las la-car-side fa-2x text-gray-300"></i></div>
                     </div>
                 </div>
              </div>
@@ -90,6 +128,9 @@
                 </li>
                  <li class="nav-item">
                     <a class="nav-link" id="cancelled-tab" data-toggle="pill" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">{{ __('Cancelled') }}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="visits-tab" data-toggle="pill" href="#visits" role="tab" aria-controls="visits" aria-selected="false">{{ __('Home Visit Requests') }}</a>
                 </li>
             </ul>
         </div>
@@ -194,8 +235,89 @@
                         </table>
                     </div>
                 </div>
+                <!-- Home Visit Requests Tab -->
+                <div class="tab-pane fade" id="visits" role="tabpanel" aria-labelledby="visits-tab">
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                            <thead class="bg-light text-dark">
+                                <tr>
+                                    <th>Urgency</th>
+                                    <th>Condition</th>
+                                    <th>Location</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($availableVisits ?? [] as $visit)
+                                <tr>
+                                    <td>
+                                        @if($visit->urgency == 'urgent')
+                                            <span class="badge badge-danger">URGENT</span>
+                                        @else
+                                            <span class="badge badge-primary">Scheduled</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $visit->complain_type }}</td>
+                                    <td>{{ $visit->city }} <small class="text-muted d-block">{{ Str::limit($visit->address, 30) }}</small></td>
+                                    <td>{{ $visit->scheduled_at->diffForHumans() }}</td>
+                                    <td>
+                                        <form action="{{ route('therapist.visits.accept', $visit->id) }}" method="POST">
+                                            @csrf
+                                            <button class="btn btn-sm btn-primary">Accept Visit</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                    <tr><td colspan="5" class="text-center">No new visit requests nearby.</td></tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Complete Visit Modal (Merged) -->
+@if(isset($activeVisit) && $activeVisit)
+<div class="modal fade" id="completeVisitModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="{{ route('therapist.visits.complete', $activeVisit->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Complete Visit & Clinical Notes</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Chief Complaint</label>
+                        <input type="text" name="chief_complaint" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Assessment Findings</label>
+                        <textarea name="assessment_findings[]" class="form-control" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Treatment Performed</label>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" name="treatment_performed[]" value="Manual Therapy" class="custom-control-input" id="tx_manual">
+                            <label class="custom-control-label" for="tx_manual">Manual Therapy</label>
+                        </div>
+                         <div class="custom-control custom-checkbox">
+                            <input type="checkbox" name="treatment_performed[]" value="TherEx" class="custom-control-input" id="tx_ex">
+                            <label class="custom-control-label" for="tx_ex">Therapeutic Exercise</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info">Submit & Finish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
