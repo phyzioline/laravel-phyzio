@@ -9,7 +9,7 @@
                 <div class="col-12 col-xl-12">
                     <div class="card">
                         <div class="add d-flex justify-content-end p-2">
-                            @can('roles-create')
+                            @can('categories-create')
                                 <a href="{{ route('dashboard.categories.create') }}" class="btn btn-primary">
                                     <i class="fas fa-add"></i> {{ __('Add Category') }}
                                 </a>

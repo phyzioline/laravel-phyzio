@@ -45,7 +45,7 @@ class ProductService
     public function store($data)
     {
         $data['user_id'] = auth()->user()->id;
-        $product         = $this->model->create($data);
+        $product         = $this->model->create(\Illuminate\Support\Arr::except($data, ['images', 'tags']));
 
         if (! empty($data['images']) && is_array($data['images'])) {
             $imagesData = [];
