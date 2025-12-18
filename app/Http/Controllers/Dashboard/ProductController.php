@@ -162,8 +162,20 @@ class ProductController extends Controller
     public function import(\Illuminate\Http\Request $request)
     {
         $request->validate([
-            'file' => 'required|file|mimes:csv,txt,xml,xlsx,xls'
+            'file' => 'required|file|mimes:csv,txt,xml,xlsx,xls',
+            'vendor_email' => 'nullable|email'
         ]);
+
+        $userId = auth()->id();
+        
+        // Allow Admins to import for a specific vendor
+        if (auth()->user()->hasRole('admin') && $request->filled('vendor_email')) {
+            $vendor = \App\Models\User::where('email', $request->vendor_email)->first();
+            if (!$vendor) {
+                return redirect()->back()->with('error', 'Vendor with email ' . $request->vendor_email . ' not found.');
+            }
+            $userId = $vendor->id;
+        }
 
         $file = $request->file('file');
         $extension = $file->getClientOriginalExtension();
@@ -178,7 +190,7 @@ class ProductController extends Controller
                 if(empty($row[3])) continue;
 
                 \App\Models\Product::create([
-                    'user_id' => auth()->id(),
+                    'user_id' => $userId,
                     'product_name_en' => $row[3],
                     'product_name_ar' => $row[4] ?? $row[3],
                     'product_price' => floatval($row[5] ?? 0),
@@ -195,10 +207,11 @@ class ProductController extends Controller
             }
             fclose($handle);
         } elseif ($extension === 'xml') {
+            // ... (XML logic remains, update user_id)
             $xml = simplexml_load_file($file->getRealPath());
             foreach ($xml->product as $product) {
                 \App\Models\Product::create([
-                    'user_id' => auth()->id(),
+                    'user_id' => $userId,
                     'product_name_en' => (string)$product->name_en,
                     'product_name_ar' => (string)$product->name_ar,
                     'product_price' => floatval($product->price),
@@ -216,6 +229,6 @@ class ProductController extends Controller
              return redirect()->back()->with('error', 'For Excel (.xlsx) files, please convert to CSV first as server libraries are missing.');
         }
 
-        return redirect()->back()->with('success', "Imported $importedCount products successfully.");
+        return redirect()->back()->with('success', "Imported $importedCount products successfully for user ID: $userId.");
     }
 }

@@ -161,6 +161,13 @@
                 <form action="{{ route('dashboard.products.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
+                        @role('admin')
+                        <div class="mb-3">
+                            <label for="vendor_email" class="form-label">{{ __('Vendor Email (Optional)') }}</label>
+                            <input class="form-control" type="email" id="vendor_email" name="vendor_email" placeholder="e.g. phyzioline@gmail.com">
+                            <div class="form-text">{{ __('Leave empty to import for yourself.') }}</div>
+                        </div>
+                        @endrole
                         <div class="mb-3">
                             <label for="file" class="form-label">{{ __('Choose File (CSV, XML)') }}</label>
                             <input class="form-control" type="file" id="file" name="file" required accept=".csv,.xml,.txt,.xlsx">
