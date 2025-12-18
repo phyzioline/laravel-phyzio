@@ -10,17 +10,25 @@ use App\Http\Controllers\Controller;
 use App\Services\Dashboard\ProductService;
 use App\Http\Requests\Dashboard\Product\StoreProductRequest;
 use App\Http\Requests\Dashboard\Product\UpdateProductRequest;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class ProductController extends Controller
+class ProductController extends Controller implements HasMiddleware
 {
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:products-index', only: ['index', 'export']),
+            new Middleware('can:products-create', only: ['create', 'store', 'import']),
+            new Middleware('can:products-show', only: ['show']),
+            new Middleware('can:products-update', only: ['edit', 'update']),
+            new Middleware('can:products-delete', only: ['destroy']),
+        ];
+    }
 
     public function __construct(public ProductService $productService)
     {
-        $this->middleware('can:products-index')->only(['index', 'export']);
-        $this->middleware('can:products-create')->only(['create', 'store', 'import']);
-        $this->middleware('can:products-show')->only('show');
-        $this->middleware('can:products-update')->only(['edit', 'update']);
-        $this->middleware('can:products-delete')->only('destroy');
     }
     /**
      * Display a listing of the resource.

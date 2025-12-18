@@ -12,17 +12,26 @@ use App\Http\Requests\Dashboard\Category\StoreCategoryRequest;
 use App\Http\Requests\Dashboard\Category\CategoryUpdateRequest;
 use App\Http\Requests\Dashboard\Category\UpdateCategoryRequest;
 
-class CategoryController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class CategoryController extends Controller implements HasMiddleware
 {
     use HasImage;
 
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:categories-index', only: ['index']),
+            new Middleware('can:categories-create', only: ['create', 'store']),
+            new Middleware('can:categories-show', only: ['show']),
+            new Middleware('can:categories-update', only: ['edit', 'update']),
+            new Middleware('can:categories-delete', only: ['destroy']),
+        ];
+    }
+
     public function __construct(public CategoryService $categoryService)
     {
-        $this->middleware('can:categories-index')->only('index');
-        $this->middleware('can:categories-create')->only(['create', 'store']);
-        $this->middleware('can:categories-show')->only('show');
-        $this->middleware('can:categories-update')->only(['edit', 'update']);
-        $this->middleware('can:categories-delete')->only('destroy');
     }
     /**
      * Display a listing of the resource.

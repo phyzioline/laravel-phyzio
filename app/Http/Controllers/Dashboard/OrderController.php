@@ -7,14 +7,23 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\Dashboard\OrderService;
 
-class OrderController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class OrderController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+           new Middleware('can:orders-index', only: ['index', 'orderCash']),
+           new Middleware('can:orders-show', only: ['show', 'printLabel']),
+           new Middleware('can:orders-update', only: ['edit', 'update']),
+           new Middleware('can:orders-delete', only: ['destroy']),
+        ];
+    }
+
     public function __construct(public OrderService $orderService)
     {
-        $this->middleware('can:orders-index')->only(['index', 'orderCash']);
-        $this->middleware('can:orders-show')->only(['show', 'printLabel']);
-        $this->middleware('can:orders-update')->only(['edit', 'update']);
-        $this->middleware('can:orders-delete')->only('destroy');
     }
      public function index()
     {

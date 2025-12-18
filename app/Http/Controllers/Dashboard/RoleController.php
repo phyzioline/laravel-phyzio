@@ -7,17 +7,22 @@ use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\{DB,Session};
-use App\Http\Requests\Dashboard\Role\{RoleRequest,UpdateRoleRequest,PermissionRequest};
 
-class RoleController extends Controller
+use App\Http\Requests\Dashboard\Role\{RoleRequest,UpdateRoleRequest,PermissionRequest};
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class RoleController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('can:roles-index')->only('index');
-        $this->middleware('can:roles-create')->only(['create', 'store']);
-        $this->middleware('can:roles-show')->only('show');
-        $this->middleware('can:roles-update')->only(['edit', 'update']);
-        $this->middleware('can:roles-delete')->only('destroy');
+        return [
+            new Middleware('can:roles-index', only: ['index']),
+            new Middleware('can:roles-create', only: ['create', 'store']),
+            new Middleware('can:roles-show', only: ['show']),
+            new Middleware('can:roles-update', only: ['edit', 'update']),
+            new Middleware('can:roles-delete', only: ['destroy']),
+        ];
     }
     public function index(Request $request)
     {

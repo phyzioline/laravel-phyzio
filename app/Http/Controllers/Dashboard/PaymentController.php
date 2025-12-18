@@ -6,11 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\VendorPayment;
 use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class PaymentController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('can:financials-index')->only(['index', 'showVendorPayment', 'detail']);
+        return [
+            new Middleware('can:financials-index', only: ['index', 'showVendorPayment', 'detail']),
+        ];
     }
     /**
      * Display a listing of the vendor payments.

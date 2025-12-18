@@ -5,17 +5,21 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class TherapistProfileController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class TherapistProfileController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        // Enforce Admin Role
-        $this->middleware(function ($request, $next) {
-            if (!auth()->check() || !auth()->user()->hasRole('admin')) {
-                abort(403, 'Unauthorized. Admin access required.');
-            }
-            return $next($request);
-        });
+        return [
+            new Middleware(function ($request, $next) {
+                if (!auth()->check() || !auth()->user()->hasRole('admin')) {
+                    abort(403, 'Unauthorized. Admin access required.');
+                }
+                return $next($request);
+            }),
+        ];
     }
     /**
      * Display a listing of the resource.

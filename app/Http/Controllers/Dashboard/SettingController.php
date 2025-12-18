@@ -6,11 +6,20 @@ use App\Http\Requests\Dashboard\Setting\SettingRequest;
 use App\Services\Dashboard\SettingService;
 use Illuminate\Support\Facades\Session;
 
-class SettingController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class SettingController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:setting-update'),
+        ];
+    }
+
     public function __construct(public SettingService $settingService)
     {
-        $this->middleware('can:setting-update');
     }
 
     public function show()

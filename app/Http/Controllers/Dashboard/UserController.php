@@ -9,15 +9,23 @@ use App\Http\Controllers\Controller;
 use App\Services\Dashboard\UserService;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Dashboard\User\{StoreUserRequest,UpdateUserRequest};
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:users-index', only: ['index']),
+            new Middleware('can:users-create', only: ['create', 'store']),
+            new Middleware('can:users-update', only: ['edit', 'update']),
+            new Middleware('can:users-delete', only: ['destroy']),
+        ];
+    }
+
     public function __construct(public UserService $userService)
     {
-        $this->middleware('can:users-index')->only('index');
-        $this->middleware('can:users-create')->only(['create', 'store']);
-        $this->middleware('can:users-update')->only(['edit', 'update']);
-        $this->middleware('can:users-delete')->only('destroy');
     }
     use HasImage;
     public function index(Request $request)

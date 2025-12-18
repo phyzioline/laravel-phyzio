@@ -12,11 +12,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 
-class ReportsController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+
+class ReportsController extends Controller implements HasMiddleware
 {
-    public function __construct()
+    public static function middleware(): array
     {
-        $this->middleware('can:reports-index');
+        return [
+            new Middleware('can:reports-index'),
+        ];
     }
     /**
      * Sales Dashboard - Amazon-style
