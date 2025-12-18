@@ -92,9 +92,13 @@ Route::group(
 
         // Authenticated routes
     Route::group(['middleware' => ['auth']], function () {
-          Route::resources([
+        Route::resources([
             'carts' => CartController::class ,
         ]);
+
+        // Generic Profile Routes (Vendor, Buyer, Patient)
+        Route::get('/profile', [App\Http\Controllers\Web\ProfileController::class, 'index'])->name('web.profile.index');
+        Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('web.profile.update');
 
         // Instructor Routes
         Route::prefix('instructor')->name('instructor.')->group(function () {
@@ -227,7 +231,9 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');
         Route::get('/notifications', [\App\Http\Controllers\Clinic\NotificationController::class, 'index'])->name('notifications.index');
-        Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index'); // Check if ProfileController exists or create
+        
+        Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index');
+        Route::put('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'update'])->name('profile.update');
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
