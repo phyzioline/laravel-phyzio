@@ -58,11 +58,11 @@
                     <div class="menu-title">{{ __('Courses Management') }}</div>
                 </a>
                 <ul>
-                    <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
+                    <li> <a href="{{ route('instructor.dashboard') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
                     </li>
-                    <li> <a href="{{ route('therapist.courses.create') }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
+                    <li> <a href="{{ route('instructor.courses.create') }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
                     </li>
-                    <li> <a href="{{ route('therapist.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
+                    <li> <a href="{{ route('instructor.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
                     </li>
                     <li> <a href="javascript:;"><i class="las la-users"></i>{{ __('Students') }}</a>
                     </li>

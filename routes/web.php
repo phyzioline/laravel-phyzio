@@ -104,6 +104,10 @@ Route::group(
         Route::prefix('instructor')->name('instructor.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
             
+            // Course Management
+            Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name('courses.index');
+            Route::get('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'show'])->name('courses.show');
+            
             // Course Wizard Routes
             Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])->name('courses.create');
             Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name('courses.store');
