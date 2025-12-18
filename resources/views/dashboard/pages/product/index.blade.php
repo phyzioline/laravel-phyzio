@@ -51,7 +51,24 @@
             <div class="row mb-5">
                 <div class="col-12 col-xl-12">
                     <div class="card">
-                        <div class="add d-flex justify-content-end p-2">
+                        <div class="add d-flex justify-content-end p-2 gap-2">
+                             <!-- Export Dropdown -->
+                             <div class="btn-group">
+                                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-file-export"></i> {{ __('Export') }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'csv') }}">CSV</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xlsx') }}">Excel</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xml') }}">XML</a></li>
+                                </ul>
+                            </div>
+
+                            <!-- Import Button -->
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
+                                <i class="fas fa-file-import"></i> {{ __('Import') }}
+                            </button>
+
                             @can('products-create')
                                 <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
                                     <i class="fas fa-add"></i> {{ __('Add Product') }}
@@ -133,6 +150,35 @@
         </div>
     </main>
     <!--end main wrapper-->
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">{{ __('Import Products') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('dashboard.products.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="file" class="form-label">{{ __('Choose File (CSV, XML)') }}</label>
+                            <input class="form-control" type="file" id="file" name="file" required accept=".csv,.xml,.txt,.xlsx">
+                            <div class="form-text">
+                                {{ __('Supported formats: CSV, XML. For Excel, convert to CSV first.') }}
+                                <br>
+                                <a href="{{ route('dashboard.products.export', 'csv') }}" class="text-primary">{{ __('Download CSV Template') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('Upload & Import') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')

@@ -33,6 +33,8 @@ Route::group(
             Route::resource('categories', CategoryController::class);
             Route::resource('sub_categories', SubCategoryController::class);
             Route::resource('tags', TagController::class);
+            Route::get('products/export/{format?}', [ProductController::class, 'export'])->name('products.export');
+            Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
             Route::resource('products', ProductController::class);
             Route::resource('orders', OrderController::class);
             Route::get('orders/{id}/print-label', [OrderController::class, 'printLabel'])->name('orders.print-label');
