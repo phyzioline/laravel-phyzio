@@ -14,7 +14,14 @@ use App\Http\Requests\Dashboard\Product\UpdateProductRequest;
 class ProductController extends Controller
 {
 
-    public function __construct(public ProductService $productService){}
+    public function __construct(public ProductService $productService)
+    {
+        $this->middleware('can:products-index')->only(['index', 'export']);
+        $this->middleware('can:products-create')->only(['create', 'store', 'import']);
+        $this->middleware('can:products-show')->only('show');
+        $this->middleware('can:products-update')->only(['edit', 'update']);
+        $this->middleware('can:products-delete')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */

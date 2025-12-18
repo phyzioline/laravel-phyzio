@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:reports-index');
+    }
     /**
      * Sales Dashboard - Amazon-style
      */

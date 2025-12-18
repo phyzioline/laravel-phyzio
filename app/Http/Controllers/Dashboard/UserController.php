@@ -12,7 +12,13 @@ use App\Http\Requests\Dashboard\User\{StoreUserRequest,UpdateUserRequest};
 
 class UserController extends Controller
 {
-    public function __construct(public UserService $userService){}
+    public function __construct(public UserService $userService)
+    {
+        $this->middleware('can:users-index')->only('index');
+        $this->middleware('can:users-create')->only(['create', 'store']);
+        $this->middleware('can:users-update')->only(['edit', 'update']);
+        $this->middleware('can:users-delete')->only('destroy');
+    }
     use HasImage;
     public function index(Request $request)
     {

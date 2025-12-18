@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:financials-index')->only(['index', 'showVendorPayment', 'detail']);
+    }
     /**
      * Display a listing of the vendor payments.
      */

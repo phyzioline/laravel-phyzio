@@ -146,6 +146,11 @@ class InventoryController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
+
+        if (!auth()->user()->hasRole('admin') && $product->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $product->update(['amount' => $request->amount]);
 
         return redirect()->back()->with('success', 'Stock updated successfully');

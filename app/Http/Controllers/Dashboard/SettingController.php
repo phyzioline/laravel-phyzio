@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Session;
 class SettingController extends Controller
 {
     public function __construct(public SettingService $settingService)
-    {}
+    {
+        $this->middleware('can:setting-update');
+    }
 
     public function show()
     {

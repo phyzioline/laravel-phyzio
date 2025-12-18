@@ -11,6 +11,14 @@ use App\Http\Requests\Dashboard\Role\{RoleRequest,UpdateRoleRequest,PermissionRe
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:roles-index')->only('index');
+        $this->middleware('can:roles-create')->only(['create', 'store']);
+        $this->middleware('can:roles-show')->only('show');
+        $this->middleware('can:roles-update')->only(['edit', 'update']);
+        $this->middleware('can:roles-delete')->only('destroy');
+    }
     public function index(Request $request)
     {
 

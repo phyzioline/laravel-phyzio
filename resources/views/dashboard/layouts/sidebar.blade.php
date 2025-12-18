@@ -95,6 +95,7 @@
               @endcan
 
               <!-- Financials (Vendor & Admin) -->
+              @can('financials-index')
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-wallet2"></i></div>
@@ -104,8 +105,10 @@
                       <li><a href="{{ route('dashboard.payments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Earnings & Payouts") }}</a></li>
                   </ul>
               </li>
+              @endcan
 
               <!-- Business Reports & Analytics -->
+              @can('reports-index')
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-graph-up-arrow"></i></div>
@@ -119,6 +122,7 @@
                       <li><a href="{{ route('dashboard.reports.customers') }}"><i class="bi bi-arrow-right-short"></i>Customer Analytics</a></li>
                   </ul>
               </li>
+              @endcan
 
               <!-- Customers -->
               @can('users-index')

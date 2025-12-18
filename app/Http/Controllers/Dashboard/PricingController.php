@@ -15,6 +15,10 @@ class PricingController extends Controller
     {
         $query = Product::with(['category', 'productImages']);
 
+        if (!auth()->user()->hasRole('admin')) {
+            $query->where('user_id', auth()->id());
+        }
+
         // Search
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
@@ -35,11 +39,16 @@ class PricingController extends Controller
 
         $products = $query->paginate(50);
 
+        $statsQuery = Product::query();
+        if (!auth()->user()->hasRole('admin')) {
+            $statsQuery->where('user_id', auth()->id());
+        }
+
         $stats = [
-            'total_products' => Product::count(),
-            'avg_price' => round(Product::avg('product_price'), 2),
-            'highest_price' => Product::max('product_price'),
-            'lowest_price' => Product::min('product_price'),
+            'total_products' => (clone $statsQuery)->count(),
+            'avg_price' => round((clone $statsQuery)->avg('product_price'), 2),
+            'highest_price' => (clone $statsQuery)->max('product_price'),
+            'lowest_price' => (clone $statsQuery)->min('product_price'),
         ];
 
         return view('dashboard.pages.pricing.manage', compact('products', 'stats'));
@@ -65,6 +74,11 @@ class PricingController extends Controller
         ]);
 
         $product = Product::findOrFail($request->product_id);
+        
+        if (!auth()->user()->hasRole('admin') && $product->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $product->update(['product_price' => $request->price]);
 
         return redirect()->back()->with('success', 'Price updated successfully');

@@ -31,6 +31,8 @@ class PermissionSeeder extends Seeder
             'profile-update',
             'tearms_conditions-update',
             'privacy_policy-update',
+            'financials-index',
+            'reports-index',
 
 
 

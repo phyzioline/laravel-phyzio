@@ -9,7 +9,13 @@ use App\Services\Dashboard\OrderService;
 
 class OrderController extends Controller
 {
-    public function __construct(public OrderService $orderService){}
+    public function __construct(public OrderService $orderService)
+    {
+        $this->middleware('can:orders-index')->only(['index', 'orderCash']);
+        $this->middleware('can:orders-show')->only(['show', 'printLabel']);
+        $this->middleware('can:orders-update')->only(['edit', 'update']);
+        $this->middleware('can:orders-delete')->only('destroy');
+    }
      public function index()
     {
         $data = $this->orderService->index();

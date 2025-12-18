@@ -16,7 +16,14 @@ class CategoryController extends Controller
 {
     use HasImage;
 
-    public function __construct(public CategoryService $categoryService){}
+    public function __construct(public CategoryService $categoryService)
+    {
+        $this->middleware('can:categories-index')->only('index');
+        $this->middleware('can:categories-create')->only(['create', 'store']);
+        $this->middleware('can:categories-show')->only('show');
+        $this->middleware('can:categories-update')->only(['edit', 'update']);
+        $this->middleware('can:categories-delete')->only('destroy');
+    }
     /**
      * Display a listing of the resource.
      */
