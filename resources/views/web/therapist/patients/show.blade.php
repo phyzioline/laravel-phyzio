@@ -53,7 +53,7 @@
                         <a class="nav-link" id="records-tab" data-toggle="tab" href="#records" role="tab">{{ __('Medical Records') }}</a>
                     </li>
                      <li class="nav-item">
-                        <a class="nav-link" id="appointments-tab" data-toggle="tab" href="#appointments" role="tab">{{ __('Appointments') }}</a>
+                        <a class="nav-link" id="appointments-tab" data-toggle="tab" href="#appointments" role="tab">{{ __('Home Visits') }}</a>
                     </li>
                 </ul>
             </div>

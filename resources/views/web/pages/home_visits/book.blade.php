@@ -13,7 +13,7 @@
                         <div class="card-body p-4">
                             <!-- Therapist Summary -->
                             <div class="d-flex align-items-center mb-4 p-3 bg-light rounded">
-                                <img src="{{ $therapist->user->image ?? asset('web/assets/images/default-user.png') }}" 
+                                <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
                                      class="rounded-circle mr-3" 
                                      style="width: 60px; height: 60px; object-fit: cover;">
                                 <div>
@@ -26,7 +26,7 @@
                                 </div>
                             </div>
 
-                            <form action="{{ route('web.appointments.store') }}" method="POST">
+                            <form action="{{ route('web.home_visits.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="therapist_id" value="{{ $therapist->id }}">
                                 

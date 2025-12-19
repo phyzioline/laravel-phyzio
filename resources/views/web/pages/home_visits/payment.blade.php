@@ -9,31 +9,31 @@
                     <div class="card border-0 shadow-lg">
                         <div class="card-header bg-white border-bottom p-4 text-center">
                             <h3 class="font-weight-bold mb-0">Complete Payment</h3>
-                            <p class="text-muted mb-0">Appointment ID: #{{ $appointment->id }}</p>
+                            <p class="text-muted mb-0">Visit ID: #{{ $visit->id }}</p>
                         </div>
                         <div class="card-body p-4">
                             <!-- Summary -->
                             <div class="bg-light p-3 rounded mb-4">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Therapist</span>
-                                    <span class="font-weight-bold">{{ $appointment->therapist->name }}</span>
+                                    <span class="font-weight-bold">{{ $visit->therapist->name }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Date & Time</span>
-                                    <span class="font-weight-bold">{{ $appointment->appointment_time->format('d M Y, h:i A') }}</span>
+                                    <span class="font-weight-bold">{{ $visit->scheduled_at }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Location</span>
-                                    <span class="font-weight-bold">{{ Str::limit($appointment->location_address, 30) }}</span>
+                                    <span class="font-weight-bold">{{ Str::limit($visit->address, 30) }}</span>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between font-weight-bold h5">
                                     <span>Total Amount</span>
-                                    <span class="text-primary">{{ $appointment->price }} EGP</span>
+                                    <span class="text-primary">{{ $visit->total_amount }} EGP</span>
                                 </div>
                             </div>
 
-                            <form action="{{ route('web.appointments.process_payment', $appointment->id) }}" method="POST">
+                            <form action="{{ route('web.home_visits.process_payment', $visit->id) }}" method="POST">
                                 @csrf
                                 <h5 class="font-weight-bold mb-3">Select Payment Method</h5>
                                 
@@ -62,7 +62,7 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-block text-white font-weight-bold py-3 mt-4" style="background-color: #04b8c4;">
-                                    Pay {{ $appointment->price }} EGP
+                                    Pay {{ $visit->total_amount }} EGP
                                 </button>
                             </form>
                         </div>

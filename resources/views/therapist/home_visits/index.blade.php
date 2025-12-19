@@ -40,18 +40,18 @@
                         <td>
                             <div class="d-flex gap-2">
                                 @if($appointment->status == 'pending')
-                                    <form action="{{ route('therapist.appointments.status', $appointment->id) }}" method="POST">
+                                    <form action="{{ route('therapist.home_visits.status', $appointment->id) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="status" value="confirmed">
                                         <button class="btn btn-sm btn-success">Accept</button>
                                     </form>
-                                    <form action="{{ route('therapist.appointments.status', $appointment->id) }}" method="POST">
+                                    <form action="{{ route('therapist.home_visits.status', $appointment->id) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="status" value="cancelled">
                                         <button class="btn btn-sm btn-danger">Reject</button>
                                     </form>
                                 @elseif($appointment->status == 'confirmed')
-                                    <form action="{{ route('therapist.appointments.status', $appointment->id) }}" method="POST">
+                                    <form action="{{ route('therapist.home_visits.status', $appointment->id) }}" method="POST">
                                         @csrf
                                         <input type="hidden" name="status" value="completed">
                                         <button class="btn btn-sm btn-primary">Complete</button>
