@@ -39,8 +39,6 @@
                             {{ strip_tags($tearms_condition->{'product_usage_' . app()->getLocale()} ?? '' ) }}</li>
                         <li class="terms-item"><i class="fas fa-user-shield"></i> <strong>Account Security:</strong>
                             {{ strip_tags($tearms_condition->{'account_security_' . app()->getLocale()} ?? '') }}</li>
-                        <li class="terms-item"><i class="fas fa-truck"></i> <strong>Shipping & Delivery:</strong>
-                            {{ strip_tags($tearms_condition->{'shipping_delivery_' . app()->getLocale()} ?? '') }}</li>
                         <li class="terms-item"><i class="fas fa-undo"></i> <strong>Returns & Refunds:</strong>
                             {{ strip_tags($tearms_condition->{'returns_refund_' . app()->getLocale()} ?? '' ) }}</li>
                         <li class="terms-item"><i class="fas fa-credit-card"></i> <strong>Payment Policy:</strong>

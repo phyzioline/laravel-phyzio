@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', __('Shipping Policy'))
+@section('title', __('Privacy Policy'))
 @section('content')
  <!-- main body - start
 		================================================== -->
@@ -21,9 +21,9 @@
             <!-- New Delivery Policies Section -->
             <section id="delivery-policies-section" class="delivery-policies-section">
                 <div class="container">
-                    <h2 style="color: #000;" class="section-title">Shipping Policies</h2>
+                    <h2 style="color: #000;" class="section-title">Privacy Policies</h2>
                     <ul class="delivery-policies-list">
-                        {{ $privacy_policy->{'description_' . app()->getLocale()} ?? 'No shipping policy available.' }}
+                        {{ $privacy_policy->{'description_' . app()->getLocale()} ?? 'No privacy policy available.' }}
                         {{-- <li>Free delivery on orders over $100.</li>
                         <li>Delivery typically takes 3-5 business days.</li>
                         <li>Orders will be shipped within 2 business days of order placement.</li>

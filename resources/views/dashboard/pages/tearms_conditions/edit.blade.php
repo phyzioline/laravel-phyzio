@@ -61,28 +61,6 @@
                             </div>
                         </div>
 
-                        {{-- Shipping & Delivery --}}
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingShippingDelivery">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShippingDelivery">
-                                    {{ __('Shipping & Delivery') }}
-                                </button>
-                            </h2>
-                            <div id="collapseShippingDelivery" class="accordion-collapse collapse" data-bs-parent="#termsAccordion">
-                                <div class="accordion-body row">
-                                    <div class="col-md-6">
-                                        <label>{{ __('English') }}</label>
-                                        <textarea id="shipping_delivery_en" name="shipping_delivery_en" class="form-control" rows="5">{{ old('shipping_delivery_en', $tearms_conditions->shipping_delivery_en ?? '') }}</textarea>
-                                        @error('shipping_delivery_en') <span class="text-danger">{{ $message }}</span> @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>{{ __('Arabic') }}</label>
-                                        <textarea id="shipping_delivery_ar" name="shipping_delivery_ar" class="form-control" rows="5">{{ old('shipping_delivery_ar', $tearms_conditions->shipping_delivery_ar ?? '') }}</textarea>
-                                        @error('shipping_delivery_ar') <span class="text-danger">{{ $message }}</span> @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         {{-- Returns & Refund --}}
                         <div class="accordion-item">
@@ -194,8 +172,6 @@
     CKEDITOR.replace('product_usage_ar');
     CKEDITOR.replace('account_security_en');
     CKEDITOR.replace('account_security_ar');
-    CKEDITOR.replace('shipping_delivery_en');
-    CKEDITOR.replace('shipping_delivery_ar');
     CKEDITOR.replace('returns_refund_en');
     CKEDITOR.replace('returns_refund_ar');
     CKEDITOR.replace('payment_policy_en');

@@ -27,8 +27,6 @@ class TearmsConditionRequest extends FormRequest
             'account_security_en'  => 'required|string|max:1000000',
             'account_security_ar'  => 'required|string|max:1000000',
 
-            'shipping_delivery_ar' => 'required|string|max:1000000',
-            'shipping_delivery_en' => 'required|string|max:1000000',
 
             'returns_refund_ar'    => 'required|string|max:1000000',
             'returns_refund_en'    => 'required|string|max:1000000',
