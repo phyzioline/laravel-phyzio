@@ -64,6 +64,14 @@ class VendorPayment extends Model
     }
 
     /**
+     * Get the home visit this payment belongs to.
+     */
+    public function homeVisit()
+    {
+        return $this->belongsTo(HomeVisit::class, 'appointment_id');
+    }
+
+    /**
      * Scope to filter pending payments.
      */
     public function scopePending($query)

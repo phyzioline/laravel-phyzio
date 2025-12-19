@@ -11,10 +11,10 @@ class ScheduleController extends Controller
     {
         $user = auth()->user();
         
-        // Fetch Appointments (Booked Slots)
-        $appointments = \App\Models\Appointment::where('therapist_id', $user->id)
-            ->whereDate('appointment_date', '>=', now()->startOfMonth())
-            ->whereDate('appointment_date', '<=', now()->endOfMonth())
+        // Fetch Home Visits (Booked Slots)
+        $appointments = \App\Models\HomeVisit::where('therapist_id', $user->id)
+            ->whereDate('scheduled_at', '>=', now()->startOfMonth())
+            ->whereDate('scheduled_at', '<=', now()->endOfMonth())
             ->get();
             
         // Fetch Availability Schedules
@@ -28,7 +28,7 @@ class ScheduleController extends Controller
         foreach($appointments as $appt) {
             $events[] = [
                 'title' => 'Booked: ' . ($appt->patient->name ?? 'Patient'),
-                'start' => $appt->appointment_date . 'T' . $appt->time,
+                'start' => $appt->scheduled_at ? $appt->scheduled_at->toIso8601String() : now()->toIso8601String(),
                 'color' => '#dc3545' // Red
             ];
         }

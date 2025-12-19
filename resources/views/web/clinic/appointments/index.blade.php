@@ -22,8 +22,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>{{ __('Therapist') }}</label>
-                        <select name="therapist_id" class="form-control">
+                        <label>{{ __('Doctor') }}</label>
+                        <select name="doctor_id" class="form-control">
                             <option value="">Any Available</option>
                             @foreach($therapists as $t)
                                 <option value="{{ $t->id }}">{{ $t->name }}</option>
@@ -87,7 +87,7 @@
                                             $currentSlot = $startOfWeek->copy()->addDays($day)->setHour($hour)->startOfHour();
                                             // Find appointment in this slot
                                             $appt = $appointments->filter(function($a) use ($currentSlot) {
-                                                return \Carbon\Carbon::parse($a->start_time)->format('Y-m-d H') == $currentSlot->format('Y-m-d H');
+                                                return \Carbon\Carbon::parse($a->appointment_date)->format('Y-m-d H') == $currentSlot->format('Y-m-d H');
                                             })->first();
                                         @endphp
                                         <td class="p-1">
@@ -95,7 +95,7 @@
                                                 <div class="rounded p-1 small text-left text-white shadow-sm" 
                                                      style="background-color: {{ $appt->type == 'evaluation' ? '#fb8c00' : '#00897b' }}; font-size: 0.75rem; cursor: pointer;">
                                                     <div class="font-weight-bold text-truncate">{{ $appt->patient->first_name }}</div>
-                                                    <div class="text-truncate">{{ \Carbon\Carbon::parse($appt->start_time)->format('H:i') }}</div>
+                                                    <div class="text-truncate">{{ \Carbon\Carbon::parse($appt->appointment_date)->format('H:i') }}</div>
                                                 </div>
                                             @else
                                                 <div style="height: 40px;"></div>

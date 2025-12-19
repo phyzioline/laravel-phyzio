@@ -62,8 +62,8 @@ class PaymentWebhookController extends Controller
                 ->update(['payment_id' => $payment->id, 'payment_reference' => $payment->reference]);
         }
 
-        // If appointment
-        if ($payment->paymentable_type === \App\Models\Appointment::class) {
+        // If home visit
+        if ($payment->paymentable_type === \App\Models\HomeVisit::class) {
             VendorPayment::where('appointment_id', $payment->paymentable_id)
                 ->update(['payment_id' => $payment->id, 'payment_reference' => $payment->reference]);
         }

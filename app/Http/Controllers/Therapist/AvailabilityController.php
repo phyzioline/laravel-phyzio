@@ -22,9 +22,9 @@ class AvailabilityController extends Controller
             return $start->diffInMinutes($end) / ($schedule->slot_duration ?: 30);
         });
         
-        // Blocked slots could be appointments
-        $blockedSlots = \App\Models\Appointment::where('therapist_id', auth()->id())
-            ->whereDate('appointment_date', '>=', now())
+        // Blocked slots could be home visits
+        $blockedSlots = \App\Models\HomeVisit::where('therapist_id', auth()->id())
+            ->whereDate('scheduled_at', '>=', now())
             ->count();
             
         $utilizationRate = $availableSlots > 0 ? round(($blockedSlots / $availableSlots) * 100) : 0;

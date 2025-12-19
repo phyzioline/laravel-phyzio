@@ -107,7 +107,7 @@ class HomeController extends Controller
         // Ecosystem Counts
         $therapist_count = \App\Models\TherapistProfile::count();
         $clinic_count = \App\Models\ClinicProfile::count();
-        $appointment_count = \App\Models\Appointment::count();
+        $appointment_count = \App\Models\HomeVisit::count();
         $course_count = \App\Models\Course::count();
 
         // Admin-only enhanced data
@@ -147,15 +147,15 @@ class HomeController extends Controller
             });
             
             // Recent appointments
-            $recentAppointments = \App\Models\Appointment::with('patient', 'therapist')->latest()->take(5)->get()->map(function($appt) {
+            $recentAppointments = \App\Models\HomeVisit::with('patient', 'therapist')->latest()->take(5)->get()->map(function($appt) {
                 return [
                     'type' => 'appointment',
                     'icon' => 'fa-calendar-check',
                     'color' => 'warning',
-                    'title' => 'New Appointment',
+                    'title' => 'New Home Visit',
                     'description' => ($appt->patient->name ?? 'N/A') . ' with ' . ($appt->therapist->name ?? 'N/A'),
                     'time' => $appt->created_at,
-                    'link' => route('dashboard.appointments.show', $appt->id)
+                    'link' => route('dashboard.home_visits.show', $appt->id)
                 ];
             });
             
@@ -213,7 +213,7 @@ class HomeController extends Controller
             $totalRevenue = Order::where('payment_status', 'paid')->sum('total');
 
             // Today's Appointments
-            $todayAppointments = \App\Models\Appointment::whereDate('appointment_date', today())->count();
+            $todayAppointments = \App\Models\HomeVisit::whereDate('scheduled_at', today())->count();
 
             // Low Stock Products (Admin View - Global)
             $lowStockProducts = Product::where('amount', '<', 5)->count();

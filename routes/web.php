@@ -242,7 +242,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
-        Route::resource('home_visits', \App\Http\Controllers\Clinic\HomeVisitController::class);
+        Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');

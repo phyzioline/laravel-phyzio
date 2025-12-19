@@ -44,9 +44,9 @@ class TherapistProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function appointments()
+    public function homeVisits()
     {
-        return $this->hasMany(Appointment::class, 'therapist_id', 'user_id');
+        return $this->hasMany(HomeVisit::class, 'therapist_id', 'user_id');
     }
 
     // New AI Feature: Verified Skills

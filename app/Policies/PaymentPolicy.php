@@ -6,7 +6,7 @@ use App\Models\Payment;
 use App\Models\User;
 use App\Models\VendorPayment;
 use App\Models\Order;
-use App\Models\Appointment;
+use App\Models\HomeVisit;
 use App\Models\Course;
 use App\Models\Enrollment;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -33,10 +33,10 @@ class PaymentPolicy
                 // vendor can see if they have a vendor payment for this order
                 return VendorPayment::where('order_id', $order->id)->where('vendor_id', $user->id)->exists();
 
-            case Appointment::class:
-                $appointment = Appointment::find($id);
-                if (!$appointment) return false;
-                return $appointment->therapist_id === $user->id || $appointment->patient_id === $user->id;
+            case HomeVisit::class:
+                $visit = HomeVisit::find($id);
+                if (!$visit) return false;
+                return $visit->therapist_id === $user->id || $visit->patient_id === $user->id;
 
             case Course::class:
                 $course = Course::find($id);

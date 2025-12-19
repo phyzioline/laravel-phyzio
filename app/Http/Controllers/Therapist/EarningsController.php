@@ -11,15 +11,15 @@ class EarningsController extends Controller
     {
         $user = auth()->user();
 
-        // 1. Home Visits / Appointments Earnings
-        $appointmentEarningsQuery = \App\Models\Appointment::where('therapist_id', $user->id)
+        // 1. Home Visits Earnings
+        $appointmentEarningsQuery = \App\Models\HomeVisit::where('therapist_id', $user->id)
             ->where('status', 'completed');
         
-        $totalAppointmentEarnings = $appointmentEarningsQuery->sum('price');
+        $totalAppointmentEarnings = $appointmentEarningsQuery->sum('total_amount');
         $monthlyAppointmentEarnings = (clone $appointmentEarningsQuery)
             ->whereMonth('completed_at', now()->month)
             ->whereYear('completed_at', now()->year)
-            ->sum('price');
+            ->sum('total_amount');
             
         // 2. Course Earnings
         // Get courses taught by this user
@@ -39,25 +39,25 @@ class EarningsController extends Controller
         // Pending Payouts (Assumption: Earnings not yet withdrawn/paid out)
         // For now, let's assume 'pending' status on appointments/enrollments implies pending payout or use a Wallet model if available. 
         // If not, we'll placeholder this or calculate based on payment_status = 'pending'
-        $pendingAppointmentEarnings = \App\Models\Appointment::where('therapist_id', $user->id)
+        $pendingAppointmentEarnings = \App\Models\HomeVisit::where('therapist_id', $user->id)
             ->where('status', 'completed')
             ->where('payment_status', 'pending') // Assuming such field exists or logic needs it
-            ->sum('price');
+            ->sum('total_amount');
              
         $pendingPayouts = $pendingAppointmentEarnings; // + Course pending if applicable
 
-        // Recent Transactions (Merge Appointments and Enrollments)
-        $appointments = \App\Models\Appointment::where('therapist_id', $user->id)
-            ->latest('appointment_date')
+        // Recent Transactions (Merge Visits and Enrollments)
+        $appointments = \App\Models\HomeVisit::where('therapist_id', $user->id)
+            ->latest('scheduled_at')
             ->take(5)
             ->get()
             ->map(function($appt) {
                 return (object)[
-                    'id' => '#APT-' . $appt->id,
-                    'date' => $appt->appointment_date ? $appt->appointment_date->format('M d, Y') : 'N/A',
+                    'id' => '#VST-' . $appt->id,
+                    'date' => $appt->scheduled_at ? $appt->scheduled_at->format('M d, Y') : 'N/A',
                     'patient' => optional($appt->patient)->name ?? 'Guest',
                     'service' => 'Home Visit',
-                    'amount' => $appt->price,
+                    'amount' => $appt->total_amount,
                     'status' => $appt->status
                 ];
             });

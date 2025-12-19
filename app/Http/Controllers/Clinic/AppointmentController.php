@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class HomeVisitController extends Controller
+class AppointmentController extends Controller
 {
     /**
      * Display the calendar view.
@@ -19,15 +19,16 @@ class HomeVisitController extends Controller
     {
         $startOfWeek = Carbon::now()->startOfWeek();
         $endOfWeek = Carbon::now()->endOfWeek();
-
-        $appointments = ClinicAppointment::with(['patient', 'therapist'])
+        $endOfWeek = $endOfWeek->addDays(7); // Show 2 weeks
+        
+        $appointments = ClinicAppointment::with(['patient', 'doctor'])
                         ->whereBetween('appointment_date', [$startOfWeek, $endOfWeek])
                         ->get();
 
         $patients = Patient::all(); 
         $therapists = User::where('type', 'therapist')->get(); // Adjust based on user types
 
-        return view('web.clinic.home_visits.index', compact('appointments', 'startOfWeek', 'patients', 'therapists'));
+        return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists'));
     }
 
     /**
@@ -37,7 +38,7 @@ class HomeVisitController extends Controller
     {
         $request->validate([
             'patient_id' => 'required|exists:patients,id',
-            'therapist_id' => 'nullable|exists:users,id',
+            'doctor_id' => 'nullable|exists:users,id',
             'appointment_date' => 'required|date',
             'appointment_time' => 'required',
             'type' => 'required|string'
@@ -48,7 +49,7 @@ class HomeVisitController extends Controller
         $appointment = new ClinicAppointment();
         $appointment->clinic_id = 1; // Default or Auth::user()->clinic_id
         $appointment->patient_id = $request->patient_id;
-        $appointment->therapist_id = $request->therapist_id;
+        $appointment->doctor_id = $request->doctor_id;
         $appointment->appointment_date = $start;
         $appointment->duration_minutes = 60; // Default 1 hour duration
         $appointment->type = $request->type;
