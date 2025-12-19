@@ -44,8 +44,40 @@ class HomeVisitController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        // Logic to update visit status
-        return redirect()->back()->with('success', 'Visit status updated.');
+        $visit = HomeVisit::findOrFail($id);
+        $status = $request->status;
+        
+        if ($status == 'on_way') {
+            $this->visitService->startTrip($visit);
+        } elseif ($status == 'in_session') {
+            $this->visitService->arrive($visit);
+        }
+
+        return back()->with('success', 'Visit status updated.');
+    }
+
+    public function accept($id)
+    {
+        try {
+            $visit = HomeVisit::findOrFail($id);
+            $this->visitService->acceptVisit(auth()->user(), $visit);
+            return back()->with('success', 'Visit Accepted! Navigate to patient.' );
+        } catch(\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function complete(Request $request, $id)
+    {
+        $visit = HomeVisit::findOrFail($id);
+        $data = $request->validate([
+            'chief_complaint' => 'required',
+            'treatment_performed' => 'required|array',
+            'assessment_findings' => 'nullable|array'
+        ]);
+
+        $this->visitService->completeVisit($visit, $data);
+        return redirect()->route('therapist.home_visits.index')->with('success', 'Visit Completed & Paid.');
     }
 
     public function show($id)

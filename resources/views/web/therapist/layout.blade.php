@@ -29,8 +29,8 @@
             <a href="{{ route('therapist.dashboard') }}" class="nav-link {{ request()->routeIs('therapist.dashboard') ? 'active' : '' }}">
                 <i class="las la-tachometer-alt"></i> Dashboard
             </a>
-            <a href="{{ route('therapist.appointments.index') }}" class="nav-link {{ request()->routeIs('therapist.appointments.index') ? 'active' : '' }}">
-                <i class="las la-calendar-check"></i> Appointments
+            <a href="{{ route('therapist.home_visits.index') }}" class="nav-link {{ request()->routeIs('therapist.home_visits.index') ? 'active' : '' }}">
+                <i class="las la-calendar-check"></i> Home Visits
             </a>
             <a href="{{ route('therapist.availability.edit') }}" class="nav-link {{ request()->routeIs('therapist.availability.edit') ? 'active' : '' }}">
                 <i class="las la-clock"></i> Availability

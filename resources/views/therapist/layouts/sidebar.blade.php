@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('therapist.appointments.index') }}">
+                <a href="{{ route('therapist.home_visits.index') }}">
                     <div class="parent-icon"><i class="las la-calendar-check"></i></div>
                     <div class="menu-title">{{ __('My Visits') }}</div>
                 </a>

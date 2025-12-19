@@ -148,7 +148,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
                                     <h5 class="mb-0">
-                                        <i class="fa fa-calendar-check text-warning"></i> {{ __('Appointments')  }}
+                                        <i class="fa fa-calendar-check text-warning"></i> {{ __('Home Visits')  }}
                                     </h5>
                                 </div>
                                 <h2 class="mt-4 fw-bold">{{ $appointment_count ?? 0 }}</h2>
@@ -229,7 +229,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <p class="text-muted mb-1 small">Today's Appointments</p>
+                                        <p class="text-muted mb-1 small">Today's Home Visits</p>
                                         <h3 class="mb-0 fw-bold">{{ $todayAppointments }}</h3>
                                     </div>
                                     <i class="fa fa-calendar-day fa-2x text-warning opacity-50"></i>
@@ -298,11 +298,11 @@
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-6">
-                        <a href="{{ route('dashboard.appointments.index') }}" class="text-decoration-none">
+                        <a href="{{ route('dashboard.home_visits.index') }}" class="text-decoration-none">
                             <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
                                 <div class="card-body text-center py-4">
                                     <i class="fa fa-calendar-check fa-3x mb-3 text-warning"></i>
-                                    <h6 class="fw-bold mb-1">Appointments</h6>
+                                    <h6 class="fw-bold mb-1">Home Visits</h6>
                                     <small class="text-muted">View all bookings</small>
                                 </div>
                             </div>

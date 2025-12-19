@@ -127,11 +127,11 @@ Route::group(
         Route::post('/visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.visits.store');
         Route::get('/visits/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.visits.show');
 
-        // Therapist Flow
-        Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');
-        Route::post('/therapist/visits/{visit}/accept', [App\Http\Controllers\Therapist\VisitManagementController::class, 'accept'])->name('therapist.visits.accept');
-        Route::post('/therapist/visits/{visit}/status', [App\Http\Controllers\Therapist\VisitManagementController::class, 'updateStatus'])->name('therapist.visits.status');
-        Route::post('/therapist/visits/{visit}/complete', [App\Http\Controllers\Therapist\VisitManagementController::class, 'complete'])->name('therapist.visits.complete');
+        // Therapist Flow (Legacy - Consolidated into therapist.php)
+        // Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');
+        // Route::post('/therapist/visits/{visit}/accept', [App\Http\Controllers\Therapist\VisitManagementController::class, 'accept'])->name('therapist.visits.accept');
+        // Route::post('/therapist/visits/{visit}/status', [App\Http\Controllers\Therapist\VisitManagementController::class, 'updateStatus'])->name('therapist.visits.status');
+        // Route::post('/therapist/visits/{visit}/complete', [App\Http\Controllers\Therapist\VisitManagementController::class, 'complete'])->name('therapist.visits.complete');
 
         // Feed Routes (Public)
         Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name('feed.index');

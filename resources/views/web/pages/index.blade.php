@@ -66,7 +66,7 @@
                             </div>
                             <h5 class="font-weight-bold mb-3">Home Visits</h5>
                             <p class="text-muted small mb-4">Book certified physiotherapists for home sessions.</p>
-                            <a href="{{ route('web.appointments.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Book Now</a>
+                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Book Now</a>
                         </div>
                     </div>
 

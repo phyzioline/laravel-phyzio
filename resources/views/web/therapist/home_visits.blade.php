@@ -5,12 +5,12 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="font-weight-bold text-dark mb-0">{{ __('Appointments') }}</h2>
+            <h2 class="font-weight-bold text-dark mb-0">{{ __('Home Visits') }}</h2>
             <p class="text-muted">{{ __('View and manage your consultation schedule') }}</p>
         </div>
         <div>
              <button class="btn btn-outline-secondary mr-2 shadow-sm"><i class="las la-history"></i> {{ __('History') }}</button>
-             <button class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('New Appointment') }}</button>
+             <button class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('New Visit') }}</button>
         </div>
     </div>
 
@@ -33,12 +33,12 @@
                         </div>
                         <div class="col-md-6 text-center border-left">
                             @if($activeVisit->status == 'accepted')
-                                <form action="{{ route('therapist.visits.status', $activeVisit->id) }}" method="POST">
+                                <form action="{{ route('therapist.home_visits.status', $activeVisit->id) }}" method="POST">
                                     @csrf <input type="hidden" name="status" value="on_way">
                                     <button class="btn btn-warning btn-lg btn-block">Start Trip <i class="las la-car"></i></button>
                                 </form>
                             @elseif($activeVisit->status == 'on_way')
-                                <form action="{{ route('therapist.visits.status', $activeVisit->id) }}" method="POST">
+                                <form action="{{ route('therapist.home_visits.status', $activeVisit->id) }}" method="POST">
                                     @csrf <input type="hidden" name="status" value="in_session">
                                     <button class="btn btn-success btn-lg btn-block">Arrived <i class="las la-check-circle"></i></button>
                                 </form>
@@ -166,13 +166,13 @@
                                     <td>{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
                                     <td><span class="badge badge-warning">{{ ucfirst($appointment->status) }}</span></td>
                                     <td class="text-center">
-                                        <a href="{{ route('therapist.appointments.show', $appointment->id) }}" class="btn btn-sm btn-light border shadow-sm" title="View Details"><i class="las la-eye"></i></a>
+                                        <a href="{{ route('therapist.home_visits.show', $appointment->id) }}" class="btn btn-sm btn-light border shadow-sm" title="View Details"><i class="las la-eye"></i></a>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="6" class="text-center py-4">
-                                        <div class="text-gray-500">No upcoming appointments found.</div>
+                                         <div class="text-gray-500">No upcoming home visits found.</div>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -204,7 +204,7 @@
                                     </td>
                                 </tr>
                                 @empty
-                                    <tr><td colspan="4" class="text-center">No past appointments.</td></tr>
+                                     <tr><td colspan="4" class="text-center">No past home visits.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -229,7 +229,7 @@
                                     <td>{{ $appointment->notes ?? 'No reason provided' }}</td>
                                 </tr>
                                 @empty
-                                    <tr><td colspan="3" class="text-center">No cancelled appointments.</td></tr>
+                                     <tr><td colspan="3" class="text-center">No cancelled home visits.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -262,7 +262,7 @@
                                     <td>{{ $visit->city }} <small class="text-muted d-block">{{ Str::limit($visit->address, 30) }}</small></td>
                                     <td>{{ $visit->scheduled_at->diffForHumans() }}</td>
                                     <td>
-                                        <form action="{{ route('therapist.visits.accept', $visit->id) }}" method="POST">
+                                        <form action="{{ route('therapist.home_visits.accept', $visit->id) }}" method="POST">
                                             @csrf
                                             <button class="btn btn-sm btn-primary">Accept Visit</button>
                                         </form>
@@ -285,7 +285,7 @@
 <div class="modal fade" id="completeVisitModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="{{ route('therapist.visits.complete', $activeVisit->id) }}" method="POST">
+            <form action="{{ route('therapist.home_visits.complete', $activeVisit->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">Complete Visit & Clinical Notes</h5>

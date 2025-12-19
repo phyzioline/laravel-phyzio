@@ -31,6 +31,8 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
     // Home Visits
     Route::get('/home_visits', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'index'])->name('home_visits.index');
     Route::post('/home_visits/{id}/status', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'updateStatus'])->name('home_visits.status');
+    Route::post('/home_visits/{id}/accept', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'accept'])->name('home_visits.accept');
+    Route::post('/home_visits/{id}/complete', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'complete'])->name('home_visits.complete');
     
     // Availability / Schedule (Updated)
     Route::get('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'edit'])->name('availability.edit');

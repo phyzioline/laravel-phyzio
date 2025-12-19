@@ -24,7 +24,7 @@
         <div class="footer-widget">
           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Services</h4>
           <ul class="list-unstyled">
-             <li class="mb-2"><a href="{{ route('web.appointments.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home Visits</a></li>
+             <li class="mb-2"><a href="{{ route('web.home_visits.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home Visits</a></li>
              <li class="mb-2"><a href="{{ route('web.jobs.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Find Jobs</a></li>
              <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Courses</a></li>
              <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Products</a></li>

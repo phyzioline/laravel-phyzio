@@ -150,7 +150,7 @@
                       <li><a href="{{ route('dashboard.therapist_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Therapists") }}</a></li>
                       @endcan
                       @can('appointments-index')
-                      <li><a href="{{ route('dashboard.appointments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Home Visits") }}</a></li>
+                      <li><a href="{{ route('dashboard.home_visits.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Home Visits") }}</a></li>
                       @endcan
                       @can('clinic_profiles-index')
                       <li><a href="{{ route('dashboard.clinic_profiles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Clinics") }}</a></li>
