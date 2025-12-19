@@ -66,13 +66,13 @@ Route::group(
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name('web.shop.category');
 
         // Ecosystem Routes
-        Route::get('/appointments', [App\Http\Controllers\Web\AppointmentController::class, 'index'])->name('web.appointments.index');
-        Route::get('/appointments/therapist/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'show'])->name('web.appointments.show');
-        Route::get('/appointments/book/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'book'])->name('web.appointments.book');
-        Route::post('/appointments/book', [App\Http\Controllers\Web\AppointmentController::class, 'store'])->name('web.appointments.store');
-        Route::get('/appointments/payment/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'payment'])->name('web.appointments.payment');
-        Route::post('/appointments/payment/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'processPayment'])->name('web.appointments.process_payment');
-        Route::get('/appointments/success/{id}', [App\Http\Controllers\Web\AppointmentController::class, 'success'])->name('web.appointments.success');
+        Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name('web.home_visits.index');
+        Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name('web.home_visits.show');
+        Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name('web.home_visits.book');
+        Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name('web.home_visits.store');
+        Route::get('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'payment'])->name('web.home_visits.payment');
+        Route::post('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'processPayment'])->name('web.home_visits.process_payment');
+        Route::get('/home_visits/success/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'success'])->name('web.home_visits.success');
         
         Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
         
@@ -242,7 +242,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
-        Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
+        Route::resource('home_visits', \App\Http\Controllers\Clinic\HomeVisitController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');

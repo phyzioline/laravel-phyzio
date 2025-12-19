@@ -20,20 +20,31 @@ class HomeVisit extends Model
         'scheduled_at',
         'arrived_at',
         'completed_at',
+        'confirmed_at',
+        'cancelled_at',
         'status',
         'complain_type',
         'urgency',
         'total_amount',
         'payment_method',
-        'payment_status'
+        'payment_status',
+        'duration_hours',
+        'notes',
+        'patient_notes',
+        'therapist_notes',
+        'cancellation_reason',
+        'payment_transaction_id'
     ];
 
     protected $casts = [
         'scheduled_at' => 'datetime',
         'arrived_at' => 'datetime',
         'completed_at' => 'datetime',
+        'confirmed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'location_lat' => 'float',
         'location_lng' => 'float',
+        'total_amount' => 'decimal:2',
     ];
 
     public function patient()
@@ -54,5 +65,10 @@ class HomeVisit extends Model
     public function package()
     {
         return $this->belongsTo(VisitPackage::class);
+    }
+
+    public function payments()
+    {
+        return $this->morphMany(\App\Models\Payment::class, 'paymentable');
     }
 }

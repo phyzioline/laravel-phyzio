@@ -211,8 +211,8 @@
                                 <td><strong>Image</strong></td>
                                 @foreach($compareItems as $item)
                                     <td style="text-align: center;">
-                                        <img src="{{ asset($item->product->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
-                                             alt="{{ $item->product->{'product_name_' . app()->getLocale()} }}" 
+                                        <img src="{{ asset($item->product?->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
+                                             alt="{{ $item->product?->{'product_name_' . app()->getLocale()} ?? 'Product' }}" 
                                              class="compare-product-image" />
                                     </td>
                                 @endforeach
@@ -222,9 +222,13 @@
                                 @foreach($compareItems as $item)
                                     <td>
                                         <div class="compare-product-title">
-                                            <a href="{{ route('product.show', $item->product->id) }}">
-                                                {{ $item->product->{'product_name_' . app()->getLocale()} }}
-                                            </a>
+                                            @if($item->product)
+                                                <a href="{{ route('product.show', $item->product->id) }}">
+                                                    {{ $item->product->{'product_name_' . app()->getLocale()} }}
+                                                </a>
+                                            @else
+                                                <span>{{ __('Product Not Found') }}</span>
+                                            @endif
                                         </div>
                                     </td>
                                 @endforeach
@@ -233,26 +237,26 @@
                                 <td><strong>Price</strong></td>
                                 @foreach($compareItems as $item)
                                     <td>
-                                        <div class="compare-product-price">{{ number_format($item->product->product_price, 2) }} EGP</div>
+                                        <div class="compare-product-price">{{ $item->product ? number_format($item->product->product_price, 2) . ' EGP' : 'N/A' }}</div>
                                     </td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <td><strong>Category</strong></td>
                                 @foreach($compareItems as $item)
-                                    <td>{{ $item->product->category->{'name_' . app()->getLocale()} }}</td>
+                                    <td>{{ $item->product?->category?->{'name_' . app()->getLocale()} ?? __('N/A') }}</td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <td><strong>Sub Category</strong></td>
                                 @foreach($compareItems as $item)
-                                    <td>{{ $item->product->sub_category->{'name_' . app()->getLocale()} }}</td>
+                                    <td>{{ $item->product?->sub_category?->{'name_' . app()->getLocale()} ?? __('N/A') }}</td>
                                 @endforeach
                             </tr>
                             <tr>
                                 <td><strong>SKU</strong></td>
                                 @foreach($compareItems as $item)
-                                    <td>{{ $item->product->sku }}</td>
+                                    <td>{{ $item->product?->sku ?? 'N/A' }}</td>
                                 @endforeach
                             </tr>
                             <tr>
@@ -274,17 +278,19 @@
                                 @foreach($compareItems as $item)
                                     <td>
                                         <div class="compare-actions">
-                                            <form action="{{ route('carts.store') }}" method="POST" style="display: inline;">
-                                                @csrf
-                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
-                                                <input type="hidden" name="quantity" value="1">
-                                                <button type="submit" class="compare-btn compare-btn-cart">
-                                                    <i class="las la-shopping-basket"></i> Add to Cart
-                                                </button>
-                                            </form>
-                                            <a href="{{ route('product.show', $item->product->id) }}" class="compare-btn" style="background: #04b8c4; color: white;">
-                                                View Details
-                                            </a>
+                                            @if($item->product)
+                                                <form action="{{ route('carts.store') }}" method="POST" style="display: inline;">
+                                                    @csrf
+                                                    <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                                    <input type="hidden" name="quantity" value="1">
+                                                    <button type="submit" class="compare-btn compare-btn-cart">
+                                                        <i class="las la-shopping-basket"></i> Add to Cart
+                                                    </button>
+                                                </form>
+                                                <a href="{{ route('product.show', $item->product->id) }}" class="compare-btn" style="background: #04b8c4; color: white;">
+                                                    View Details
+                                                </a>
+                                            @endif
                                         </div>
                                     </td>
                                 @endforeach

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class AppointmentController extends Controller
+class HomeVisitController extends Controller
 {
     /**
      * Display the calendar view.
@@ -27,7 +27,7 @@ class AppointmentController extends Controller
         $patients = Patient::all(); 
         $therapists = User::where('type', 'therapist')->get(); // Adjust based on user types
 
-        return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists'));
+        return view('web.clinic.home_visits.index', compact('appointments', 'startOfWeek', 'patients', 'therapists'));
     }
 
     /**

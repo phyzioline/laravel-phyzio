@@ -28,9 +28,9 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
     Route::get('/profile', [\App\Http\Controllers\Therapist\ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [\App\Http\Controllers\Therapist\ProfileController::class, 'update'])->name('profile.update');
     
-    // Appointments
-    Route::get('/appointments', [\App\Http\Controllers\Therapist\AppointmentController::class, 'index'])->name('appointments.index');
-    Route::post('/appointments/{id}/status', [\App\Http\Controllers\Therapist\AppointmentController::class, 'updateStatus'])->name('appointments.status');
+    // Home Visits
+    Route::get('/home_visits', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'index'])->name('home_visits.index');
+    Route::post('/home_visits/{id}/status', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'updateStatus'])->name('home_visits.status');
     
     // Availability / Schedule (Updated)
     Route::get('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'edit'])->name('availability.edit');
@@ -42,8 +42,8 @@ Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'a
     Route::get('/patients/create', [\App\Http\Controllers\Therapist\PatientController::class, 'create'])->name('patients.create');
     Route::get('/patients/{id}', [\App\Http\Controllers\Therapist\PatientController::class, 'show'])->name('patients.show');
     
-    // Appointment Details
-    Route::get('/appointments/{id}', [\App\Http\Controllers\Therapist\AppointmentController::class, 'show'])->name('appointments.show');
+    // Home Visit Details
+    Route::get('/home_visits/{id}', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'show'])->name('home_visits.show');
 
     // Earnings (New)
     Route::get('/earnings', [\App\Http\Controllers\Therapist\EarningsController::class, 'index'])->name('earnings.index');

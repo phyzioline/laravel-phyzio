@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
-class AppointmentController extends Controller implements HasMiddleware
+class HomeVisitController extends Controller implements HasMiddleware
 {
     public static function middleware(): array
     {
@@ -25,8 +25,8 @@ class AppointmentController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $appointments = \App\Models\Appointment::with(['patient', 'therapist'])->get();
-        return view('dashboard.appointments.index', compact('appointments'));
+        $appointments = \App\Models\HomeVisit::with(['patient', 'therapist'])->get();
+        return view('dashboard.home_visits.index', compact('appointments'));
     }
 
     /**

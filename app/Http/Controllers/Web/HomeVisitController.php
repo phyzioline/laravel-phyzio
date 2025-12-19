@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AppointmentController extends Controller
+class HomeVisitController extends Controller
 {
     public function index(Request $request)
     {
@@ -33,27 +33,27 @@ class AppointmentController extends Controller
         // For areas, we might need to collect them from JSON, but for now let's hardcode common ones or extract
         $areas = ['Nasr City', 'New Cairo', 'Maadi', 'Giza', 'Dokki', 'Mohandessin', 'Zamalek', 'Heliopolis', 'Sheikh Zayed', '6th of October'];
 
-        return view('web.pages.appointments.index', compact('therapists', 'specializations', 'areas'));
+        return view('web.pages.home_visits.index', compact('therapists', 'specializations', 'areas'));
     }
 
     public function show($id)
     {
-        $therapist = \App\Models\TherapistProfile::with(['user', 'appointments' => function($q) {
+        $therapist = \App\Models\TherapistProfile::with(['user', 'homeVisits' => function($q) {
             $q->where('status', 'completed');
         }])->findOrFail($id);
 
-        return view('web.pages.appointments.show', compact('therapist'));
+        return view('web.pages.home_visits.show', compact('therapist'));
     }
 
     public function book($id)
     {
         // Ensure user is logged in
         if (!auth()->check()) {
-            return redirect()->route('view_login')->with('error', 'Please login to book an appointment');
+            return redirect()->route('view_login')->with('error', 'Please login to book a home visit');
         }
 
         $therapist = \App\Models\TherapistProfile::with('user')->findOrFail($id);
-        return view('web.pages.appointments.book', compact('therapist'));
+        return view('web.pages.home_visits.book', compact('therapist'));
     }
 
     public function store(Request $request)
@@ -69,72 +69,71 @@ class AppointmentController extends Controller
         // Get Therapist User ID
         $therapistProfile = \App\Models\TherapistProfile::findOrFail($request->therapist_id);
 
-        $appointment = new \App\Models\Appointment();
-        $appointment->patient_id = auth()->id();
-        $appointment->therapist_id = $therapistProfile->user_id;
-        $appointment->appointment_date = $request->appointment_date;
-        $appointment->appointment_time = $request->appointment_date . ' ' . $request->appointment_time;
-        $appointment->location_address = $request->location_address;
-        $appointment->patient_notes = $request->patient_notes;
-        $appointment->price = $therapistProfile->home_visit_rate;
-        $appointment->status = 'pending'; // Waiting for therapist approval
-        $appointment->payment_status = 'pending';
-        $appointment->save();
+        $visit = new \App\Models\HomeVisit();
+        $visit->patient_id = auth()->id();
+        $visit->therapist_id = $therapistProfile->user_id;
+        $visit->scheduled_at = $request->appointment_date . ' ' . $request->appointment_time;
+        $visit->address = $request->location_address;
+        $visit->patient_notes = $request->patient_notes;
+        $visit->total_amount = $therapistProfile->home_visit_rate;
+        $visit->status = 'pending'; // Waiting for therapist approval
+        $visit->payment_status = 'pending';
+        $visit->save();
 
         // Redirect to payment page
-        return redirect()->route('web.appointments.payment', $appointment->id);
+        return redirect()->route('web.home_visits.payment', $visit->id);
     }
 
     public function payment($id)
     {
-        $appointment = \App\Models\Appointment::with(['therapist', 'patient'])->findOrFail($id);
+        $visit = \App\Models\HomeVisit::with(['therapist', 'patient'])->findOrFail($id);
         
         // If already paid, redirect to success
-        if ($appointment->payment_status == 'paid') {
-            return redirect()->route('web.appointments.success', $id);
+        if ($visit->payment_status == 'paid') {
+            return redirect()->route('web.home_visits.success', $id);
         }
 
-        return view('web.pages.appointments.payment', compact('appointment'));
+        return view('web.pages.home_visits.payment', compact('visit'));
     }
 
     public function processPayment(Request $request, $id)
     {
-        $appointment = \App\Models\Appointment::findOrFail($id);
+        $visit = \App\Models\HomeVisit::findOrFail($id);
         $user = auth()->user();
 
         // Simulate Payment Processing (Replace with Paymob/Stripe later)
-        $appointment->payment_status = 'paid';
-        $appointment->payment_method = $request->payment_method; // 'card' or 'cash'
-        $appointment->save();
+        $visit->payment_status = 'paid';
+        $visit->payment_method = $request->payment_method; // 'card' or 'cash'
+        $visit->save();
 
         // Record payment in payments table with currency conversion
         $currencySvc = new \App\Services\CurrencyService();
         $baseCurrency = config('app.currency', 'EGP');
         $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country_code ?? null);
         $exchangeRate = $currencySvc->getRate($baseCurrency, $userCurrency);
-        $convertedAmount = $currencySvc->convert($appointment->price, $baseCurrency, $userCurrency);
+        $convertedAmount = $currencySvc->convert($visit->total_amount, $baseCurrency, $userCurrency);
 
         \App\Models\Payment::create([
-            'paymentable_type' => \App\Models\Appointment::class,
-            'paymentable_id' => $appointment->id,
-            'type' => 'appointment',
+            'paymentable_type' => \App\Models\HomeVisit::class,
+            'paymentable_id' => $visit->id,
+            'type' => 'home_visit',
             'amount' => $convertedAmount,
             'currency' => $userCurrency,
             'status' => 'paid',
-            'method' => $appointment->payment_method,
-            'reference' => 'appt_' . $appointment->id . '_' . time(),
-            'original_amount' => $appointment->price,
+            'method' => $visit->payment_method,
+            'reference' => 'visit_' . $visit->id . '_' . time(),
+            'original_amount' => $visit->total_amount,
             'original_currency' => $baseCurrency,
             'exchange_rate' => $exchangeRate,
             'exchanged_at' => now(),
         ]);
 
-        return redirect()->route('web.appointments.success', $id);
+        return redirect()->route('web.home_visits.success', $id);
     }
 
     public function success($id)
     {
-        $appointment = \App\Models\Appointment::findOrFail($id);
-        return view('web.pages.appointments.success', compact('appointment'));
+        $visit = \App\Models\HomeVisit::findOrFail($id);
+        return view('web.pages.home_visits.success', compact('visit'));
     }
 }

@@ -42,7 +42,7 @@ Route::group(
 
             // Ecosystem Management
             Route::resource('therapist_profiles', \App\Http\Controllers\Dashboard\TherapistProfileController::class);
-            Route::resource('appointments', \App\Http\Controllers\Dashboard\AppointmentController::class);
+            Route::resource('home_visits', \App\Http\Controllers\Dashboard\HomeVisitController::class);
             Route::resource('clinic_profiles', \App\Http\Controllers\Dashboard\ClinicProfileController::class);
             Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
             Route::resource('jobs', \App\Http\Controllers\Dashboard\JobController::class);
