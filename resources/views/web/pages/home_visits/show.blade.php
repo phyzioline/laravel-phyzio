@@ -7,7 +7,7 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-3 text-center">
-                    <img src="{{ $therapist->user->image ?? asset('web/assets/images/default-user.png') }}" 
+                    <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
                          class="rounded-circle img-fluid shadow-sm mb-3 mb-md-0" 
                          style="width: 180px; height: 180px; object-fit: cover; border: 4px solid #fff;">
                 </div>
@@ -48,7 +48,7 @@
                             <h6 class="text-muted mb-3">Home Visit Fees</h6>
                             <h2 class="text-primary font-weight-bold mb-4">{{ $therapist->home_visit_rate }} EGP</h2>
                             
-                            <a href="{{ url('/appointments/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold py-3 mb-2" style="background-color: #ea3d2f;">
+                            <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold py-3 mb-2" style="background-color: #ea3d2f;">
                                 Book Appointment
                             </a>
                             <p class="small text-muted mb-0">No booking fees</p>
@@ -107,7 +107,7 @@
                     <div class="mb-5">
                         <h4 class="font-weight-bold mb-3">Patient Reviews</h4>
                         
-                        @if($therapist->appointments->count() > 0)
+                        @if($therapist->homeVisits->count() > 0)
                             <!-- Loop through reviews if we had a review model, for now placeholder -->
                             <div class="card border-0 shadow-sm mb-3">
                                 <div class="card-body">

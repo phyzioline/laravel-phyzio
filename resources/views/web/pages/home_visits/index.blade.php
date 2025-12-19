@@ -64,7 +64,7 @@
                                 
                                 <!-- Tab 1: Direct Request (from visits/create) -->
                                 <div class="tab-pane fade show active" id="pills-request" role="tabpanel">
-                                    <form action="{{ route('patient.visits.store') }}" method="POST" id="visitForm">
+                                    <form action="{{ route('patient.home_visits.store') }}" method="POST" id="visitForm">
                                         @csrf
                                         
                                         <!-- Condition -->
@@ -117,7 +117,7 @@
 
                                 <!-- Tab 2: Search (Existing) -->
                                 <div class="tab-pane fade" id="pills-search" role="tabpanel">
-                                    <form action="{{ url('/appointments') }}" method="GET">
+                                    <form action="{{ url('/home_visits') }}" method="GET">
                                         <div class="form-group mb-4">
                                             <label class="font-weight-bold text-muted">{{ __('Specialization') }}</label>
                                             <select name="specialization" class="form-control form-control-lg border-0 shadow-sm">
@@ -158,7 +158,7 @@
                 <div class="col-lg-3 mb-4">
                     <div class="bg-white p-4 rounded shadow-sm">
                         <h5 class="font-weight-bold mb-4">{{ __('Filters') }}</h5>
-                        <form action="{{ url('/appointments') }}" method="GET">
+                                <form action="{{ url('/home_visits') }}" method="GET">
                             <div class="form-group">
                                 <label class="font-weight-bold">{{ __('Gender') }}</label>
                                 <div class="custom-control custom-checkbox">
@@ -197,13 +197,13 @@
                         <div class="card-body p-4">
                             <div class="row">
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
-                                    <img src="{{ $therapist->user->image ?? asset('web/assets/images/default-user.png') }}" 
+                                    <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
                                          class="rounded-circle img-fluid mb-2" 
                                          style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #f8f9fa;">
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="font-weight-bold mb-1">
-                                        <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="text-dark text-decoration-none">
+                                        <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="text-dark text-decoration-none">
                                             {{ $therapist->user->name }}
                                         </a>
                                     </h4>
@@ -237,10 +237,10 @@
                                         <span class="h4 font-weight-bold text-primary">{{ $therapist->home_visit_rate }} {{ __('EGP') }}</span>
                                     </div>
                                     
-                                    <a href="{{ url('/appointments/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2 shadow-lg" style="background-color: #02767F; border-bottom: 3px solid #FFD700; transition: all 0.3s ease;">
+                                    <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2 shadow-lg" style="background-color: #02767F; border-bottom: 3px solid #FFD700; transition: all 0.3s ease;">
                                         {{ __('Book Now') }}
                                     </a>
-                                    <a href="{{ url('/appointments/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-info btn-sm font-weight-bold" style="color: #02767F; border-color: #02767F;">
+                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-info btn-sm font-weight-bold" style="color: #02767F; border-color: #02767F;">
                                         {{ __('View Profile') }}
                                     </a>
                                 </div>

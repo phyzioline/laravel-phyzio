@@ -43,8 +43,8 @@ class ProfileController extends Controller
         $data = $request->only(['specialization', 'bio', 'home_visit_rate', 'available_areas', 'bank_name', 'bank_account_name', 'iban', 'swift_code']);
         
         if ($request->hasFile('profile_image')) {
-            $path = $request->file('profile_image')->store('therapists', 'public');
-            $data['profile_image'] = $path;
+            $path = $request->file('profile_image')->store('profiles', 'public');
+            $user->update(['image' => 'storage/' . $path]);
         }
 
         $profile->update($data);

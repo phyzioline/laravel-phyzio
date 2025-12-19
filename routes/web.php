@@ -123,9 +123,9 @@ Route::group(
         // --- Home Visit System Routes ---
         
         // Patient Flow
-        Route::get('/visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name('patient.visits.create');
-        Route::post('/visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.visits.store');
-        Route::get('/visits/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.visits.show');
+        Route::get('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name('patient.home_visits.create');
+        Route::post('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.home_visits.store');
+        Route::get('/home_visits/status/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.home_visits.show');
 
         // Therapist Flow (Legacy - Consolidated into therapist.php)
         // Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');

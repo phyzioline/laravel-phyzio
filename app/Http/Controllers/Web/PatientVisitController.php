@@ -18,7 +18,7 @@ class PatientVisitController extends Controller
 
     public function create()
     {
-        return view('web.visits.patient.create');
+        return view('web.patient_home_visits.create');
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class PatientVisitController extends Controller
 
         try {
             $visit = $this->visitService->requestVisit(Auth::user(), $data);
-            return redirect()->route('patient.visits.show', $visit->id)->with('success', 'Therapists are being notified!');
+            return redirect()->route('patient.home_visits.show', $visit->id)->with('success', 'Therapists are being notified!');
         } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -42,6 +42,6 @@ class PatientVisitController extends Controller
     public function show($id)
     {
         $visit = Auth::user()->homeVisits()->findOrFail($id);
-        return view('web.visits.patient.show', compact('visit'));
+        return view('web.patient_home_visits.show', compact('visit'));
     }
 }
