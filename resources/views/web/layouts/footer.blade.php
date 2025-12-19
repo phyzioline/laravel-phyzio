@@ -42,6 +42,7 @@
              <li class="mb-2"><a href="{{ route('feedback.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Contact Support</a></li>
              <li class="mb-2"><a href="{{ route('shipping_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shipping Policy</a></li>
               <li class="mb-2"><a href="{{ route('privacy_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Privacy Policy</a></li>
+              <li class="mb-2"><a href="{{ route('tearms_condition.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Terms & Conditions</a></li>
           </ul>
         </div>
       </div>
