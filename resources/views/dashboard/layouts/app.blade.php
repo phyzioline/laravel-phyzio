@@ -53,12 +53,12 @@
    
    @stack('styles')
    <style>
-     /* EXTREME SPECIFICITY - Override any theme CSS */
-     html[data-bs-theme] body .top-header,
-     html[data-bs-theme] body .top-header .navbar,
-     html[data-bs-theme] body .sidebar-header,
+     /* NUCLEAR SPECIFICITY - Kill Teal Header and Sidebar Header once and for all */
      html body .top-header,
-     html body .sidebar-header,
+     html body .top-header .navbar,
+     html body .sidebar-wrapper .sidebar-header,
+     html[data-bs-theme=blue-theme] body .top-header,
+     html[data-bs-theme=blue-theme] body .sidebar-header,
      .top-header,
      .sidebar-header {
        background-color: #ffffff !important;
@@ -67,24 +67,47 @@
        transition: none !important;
      }
 
-     /* Fix Hamburger Toggle Layout */
+     /* Ensure Logo is visible on white Sidebar Header */
+     .sidebar-header img, .sidebar-wrapper .sidebar-header img {
+       filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(468%) hue-rotate(130deg) brightness(92%) contrast(101%) !important;
+       opacity: 1 !important;
+     }
+
+     /* Fix Hamburger Toggle Layout & Clicking Area */
      .btn-toggle {
        width: 45px !important;
        height: 45px !important;
        display: flex !important;
        align-items: center !important;
        justify-content: center !important;
-       z-index: 9999 !important;
+       z-index: 1050 !important; /* Ensure it's above everything */
+       cursor: pointer !important;
      }
      
-     .btn-toggle i {
+     .btn-toggle a {
+       padding: 0 !important;
+       margin: 0 !important;
+       display: flex !important;
+       align-items: center !important;
+       justify-content: center !important;
+       width: 100% !important;
+       height: 100% !important;
+     }
+
+     .btn-toggle i, .btn-toggle a i {
        color: #0d9488 !important; /* Brand Teal */
-       font-size: 24px !important;
+       font-size: 26px !important;
+     }
+
+     /* Search Area Safety - Don't Block Toggle */
+     .search-content {
+       max-width: 600px !important;
+       pointer-events: auto !important;
      }
 
      /* GLOBAL DENSITY - "The Amazon Look" */
      html {
-       zoom: 0.9 !important; /* Nuclear Scale Fix - Achieve high density instantly */
+       zoom: 0.9 !important; /* Scale to show more data */
        -moz-transform: scale(0.9);
        -moz-transform-origin: 0 0;
      }
@@ -114,12 +137,6 @@
        font-size: 12px !important;
      }
 
-     .form-control, .form-select, .btn {
-       font-size: 13px !important;
-       height: 30px !important;
-       padding: 2px 8px !important;
-     }
-
      /* Global Title Scaling */
      h1, .h1 { font-size: 18px !important; font-weight: 700 !important; }
      h2, .h2 { font-size: 16px !important; font-weight: 700 !important; }
@@ -141,7 +158,7 @@
 
      /* Responsive fixes */
      @media screen and (max-width: 991px) {
-       html[data-bs-theme] body .top-header { left: 0 !important; }
+       html body .top-header { left: 0 !important; }
        .page-wrapper { margin-left: 0 !important; }
      }
    </style>
@@ -165,21 +182,7 @@
 
 
   <!--bootstrap js-->
-  <script src="{{ asset('dashboard/assets/js/bootstrap.bundle.min.js')}}"></script>
-
-  <script>
-document.getElementById('toggle-button').addEventListener('click', function() {
-
-  var footer = document.getElementById('footer-section');
-
-
-  if (footer.style.display === "none") {
-    footer.style.display = "block";
-  } else {
-    footer.style.display = "none";
-  }
-});
-  </script>
+   <script src="{{ asset('dashboard/assets/js/bootstrap.bundle.min.js')}}"></script>
 
   @stack('scripts')
 
@@ -200,9 +203,7 @@ document.getElementById('toggle-button').addEventListener('click', function() {
   <script src="{{ asset('dashboard/assets/js/data-widgets.js')}}"></script>
   <script src="{{ asset('dashboard/assets/js/main.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  </script>
-   @if (\Session::has('message'))
+@if (\Session::has('message'))
         <script type="text/javascript">
             $(function() {
                 toastr["{{ \Session::get('message')['type'] }}"]('{!! \Session::get('message')['text'] !!}',
