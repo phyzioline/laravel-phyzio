@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>PHYZIOLINE | Dashboard</title>
   <!--favicon-->
   <link rel="icon" href="{{ asset('dashboard/images/Frame 127.svg') }}" type="image/png">
@@ -53,18 +54,18 @@
    
    @stack('styles')
    <style>
-     /* NUCLEAR SPECIFICITY - Kill Teal Header and Sidebar Header once and for all */
      html body .top-header,
      html body .top-header .navbar,
      html body .sidebar-wrapper .sidebar-header,
-     html[data-bs-theme=blue-theme] body .top-header,
-     html[data-bs-theme=blue-theme] body .sidebar-header,
-     .top-header,
-     .sidebar-header {
+     html[data-bs-theme] body .top-header,
+     html[data-bs-theme] body .sidebar-header,
+     header, .top-header, .sidebar-header, .navbar {
        background-color: #ffffff !important;
        background: #ffffff !important;
+       background-image: none !important;
        border-bottom: 1px solid #e0e0e0 !important;
        transition: none !important;
+       box-shadow: none !important;
      }
 
      /* Ensure Logo is visible on white Sidebar Header */
@@ -90,13 +91,16 @@
        display: flex !important;
        align-items: center !important;
        justify-content: center !important;
-       width: 100% !important;
-       height: 100% !important;
+       width: 45px !important;
+       height: 45px !important;
+       background: transparent !important;
+       border-radius: 50% !important;
      }
 
      .btn-toggle i, .btn-toggle a i {
        color: #0d9488 !important; /* Brand Teal */
        font-size: 26px !important;
+       pointer-events: none !important;
      }
 
      /* Search Area Safety - Don't Block Toggle */
