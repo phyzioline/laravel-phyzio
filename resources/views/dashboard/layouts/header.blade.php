@@ -1,17 +1,19 @@
  <header class="top-header">
-    <nav class="navbar navbar-expand align-items-center gap-4">
-      <div class="btn-toggle" id="toggle-button">
-        <a href="javascript:;" style="color: #0F1111;"><i class="material-icons-outlined">menu</i></a>
+    <nav class="navbar navbar-expand align-items-center gap-2">
+      <div class="btn-toggle flex-shrink-0" id="toggle-button">
+        <a href="javascript:;" style="color: var(--brand-color); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;">
+          <i class="material-icons-outlined" style="font-size: 26px;">menu</i>
+        </a>
       </div>
-      <div class="flex-grow-1 search-content">
-          <div class="input-group" style="max-width: 600px;">
-              <input type="text" class="form-control" placeholder="Search..." style="border-radius: 4px 0 0 4px !important;">
-              <button class="btn btn-warning" type="button" style="background: #febd69; border: none; color: #000; border-radius: 0 4px 4px 0 !important;">
-                  <i class="material-icons-outlined" style="font-size: 20px; vertical-align: middle;">search</i>
+      <div class="flex-grow-1 search-content d-flex align-items-center px-2">
+          <div class="input-group" style="max-width: 500px; height: 32px;">
+              <input type="text" class="form-control" placeholder="Search..." style="border-radius: 4px 0 0 4px !important; height: 32px !important; border: 1px solid #888C8C !important;">
+              <button class="btn btn-warning" type="button" style="background: #febd69; border: 1px solid #888C8C; border-left: none; color: #000; border-radius: 0 4px 4px 0 !important; width: 45px; height: 32px; padding: 0;">
+                  <i class="material-icons-outlined" style="font-size: 20px;">search</i>
               </button>
           </div>
       </div>
-      <ul class="navbar-nav gap-1 nav-right-links align-items-center">
+      <ul class="navbar-nav gap-1 nav-right-links align-items-center flex-shrink-0">
         {{-- Translation Button --}}
         <li class="nav-item">
             <a href="{{ LaravelLocalization::getLocalizedURL(LaravelLocalization::getCurrentLocale() == 'en' ? 'ar' : 'en') }}" 
