@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('country_code')->nullable()->after('email'); // Store 2-letter ISO code e.g., EG, SA
-        });
+        if (!Schema::hasColumn('users', 'country_code')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('country_code')->nullable()->after('email'); // Store 2-letter ISO code e.g., EG, SA
+            });
+        }
     }
 
     /**
