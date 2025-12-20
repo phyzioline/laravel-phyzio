@@ -69,7 +69,8 @@
        background-color: #F2F4F8 !important;
      }
 
-     /* Header Overrides - White Theme but with Brand Icons */
+     /* Header Overrides - Force White with High Specificity */
+     [data-bs-theme=blue-theme] body .top-header,
      .top-header {
        background-color: #ffffff !important;
        border-bottom: 1px solid #D5D9D9 !important;
@@ -79,10 +80,14 @@
      
      .top-header .navbar {
        padding: 5px 20px !important;
+       background: #ffffff !important; /* Explicitly white nav too */
      }
      
+     /* Ensure Icons and Text are visible on white background */
      .top-header .material-icons-outlined, 
-     .top-header .nav-link {
+     .top-header .nav-link,
+     .top-header .btn-toggle a i,
+     .top-header .user-name {
        color: var(--brand-color) !important;
      }
 
