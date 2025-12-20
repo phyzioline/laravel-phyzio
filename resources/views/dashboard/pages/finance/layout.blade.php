@@ -3,21 +3,23 @@
 
 @push('styles')
 <style>
-    /* Aggressive Overrides to hide default Dashboard Header */
-    .top-header, .page-footer {
+    /* Aggressive Overrides to hide default Dashboard Header and Sidebar */
+    .top-header, .page-footer, .sidebar-wrapper {
         display: none !important;
     }
     
-    /* Adjust content margin since header is gone */
+    /* Force fluid width and remove sidebar margin */
     .page-wrapper {
         margin-top: 0 !important;
+        margin-left: 0 !important;
         background: #F2F4F8 !important;
+        width: 100% !important;
+        min-height: 100vh;
     }
     
-    /* Ensure Sidebar fits */
+    /* Adjust sidebar-wrapper to not occupy space if needed by parent layout */
     .sidebar-wrapper {
-        top: 0 !important;
-        height: 100vh !important;
+        width: 0 !important;
     }
 
     /* Amazon-style Finance Dashboard Overrides */
@@ -26,8 +28,8 @@
         color: #0F1111;
         background-color: #ffffff; 
         min-height: 100vh;
-        width: 100%; /* Fluid Width */
-        max-width: 100%;
+        width: 100% !important; 
+        max-width: 100% !important;
         margin: 0;
         font-size: 13px; /* Base size */
     }
