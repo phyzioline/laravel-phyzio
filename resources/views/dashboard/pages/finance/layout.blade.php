@@ -3,12 +3,40 @@
 
 @push('styles')
 <style>
+    /* Aggressive Overrides to hide default Dashboard Header */
+    .top-header, .page-footer {
+        display: none !important;
+    }
+    
+    /* Adjust content margin since header is gone */
+    .page-wrapper {
+        margin-top: 0 !important;
+        background: #F2F4F8 !important;
+    }
+    
+    /* Ensure Sidebar fits */
+    .sidebar-wrapper {
+        top: 0 !important;
+        height: 100vh !important;
+    }
+
     /* Amazon-style Finance Dashboard Overrides */
     .finance-wrapper {
         font-family: "Amazon Ember", Arial, sans-serif;
         color: #0F1111;
-        background-color: #ffffff; /* Main background white as requested for header area */
+        background-color: #ffffff; 
         min-height: 100vh;
+        margin-left: 0px; /* Adjust if sidebar pushes it */
+    }
+    
+    /* New: Force white header for this section only */
+    header.finance-top-bar {
+        background: white;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
     
     .finance-body {
@@ -242,26 +270,29 @@
 
 @section('content')
 <div class="finance-wrapper">
-    {{-- Header --}}
-    <div class="finance-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-        <div class="mb-3 mb-md-0">
-             {{-- Logo logic if needed, or just Title --}}
-            <h4 class="mb-0 fw-bold" style="color: #0F1111;">Payments &amp; Financials</h4>
+    {{-- Amazon Header Structure --}}
+    <header class="finance-top-bar">
+        <div>
+            <h2 style="font-size: 24px; font-weight: 700; color: #000; margin: 0;">Payments Dashboard</h2>
+            <div class="test-links mt-1">
+                 <a href="#" style="font-size: 13px; color: #007185; text-decoration: none;">Learn More</a> 
+                 <span class="mx-1 text-muted">|</span>
+                 <a href="#" style="font-size: 13px; color: #007185; text-decoration: none;">Take Tour</a>
+                 <span class="mx-1 text-muted">|</span>
+                 <a href="#" style="font-size: 13px; color: #007185; text-decoration: none;">Rate this page</a>
+            </div>
         </div>
         
-        {{-- Language / Tools --}}
-        <div class="d-flex align-items-center flex-wrap">
-           <a href="#" class="text-decoration-none text-dark me-3" style="font-size: 13px;">Learn More</a>
-           <a href="#" class="text-decoration-none text-dark me-3" style="font-size: 13px;">Take Tour</a>
-           <a href="#" class="text-decoration-none text-dark me-3" style="font-size: 13px;">Rate this page</a>
-           <span class="text-muted d-none d-md-inline me-3">|</span>
-           
-           {{-- Arabic Translation Toggle --}}
-           <a href="{{ LaravelLocalization::getLocalizedURL(LaravelLocalization::getCurrentLocale() == 'en' ? 'ar' : 'en') }}" class="btn btn-link text-dark text-decoration-none p-0 d-flex align-items-center">
-                <i class="fa fa-globe me-1"></i> {{ LaravelLocalization::getCurrentLocale() == 'en' ? 'AR' : 'EN' }}
+        <div class="d-flex align-items-center gap-3">
+             {{-- Language Toggle --}}
+           <a href="{{ LaravelLocalization::getLocalizedURL(LaravelLocalization::getCurrentLocale() == 'en' ? 'ar' : 'en') }}" 
+              class="d-flex align-items-center text-dark text-decoration-none border rounded px-3 py-1" 
+              style="background: #f8f8f8;">
+                 <i class="fa fa-globe me-2"></i> 
+                 <span class="fw-bold">{{ LaravelLocalization::getCurrentLocale() == 'en' ? 'AR' : 'EN' }}</span>
            </a>
         </div>
-    </div>
+    </header>
 
     {{-- Tabs --}}
     <div class="finance-tabs d-flex align-items-center overflow-auto">
