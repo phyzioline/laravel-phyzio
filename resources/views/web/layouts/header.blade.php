@@ -524,6 +524,25 @@ body.has-hero .shop-hero-banner {
                     <div class="btns-group ul-li-right clearfix">
                         <ul class="clearfix">
 
+                            {{-- Currency Switcher --}}
+                            <li class="dropdown">
+                                <button class="btn-cart" id="currency-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 14px; font-weight: bold;">
+                                    {{ session('currency', config('currency.default', 'EGP')) }} <i class="las la-angle-down"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="currency-dropdown">
+                                    <form id="currency-form" action="{{ route('currency.switch') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="currency" id="currency-input">
+                                        @foreach(config('currency.currencies') as $code => $currency)
+                                            <a class="dropdown-item {{ session('currency') == $code ? 'active' : '' }}" 
+                                               href="#" onclick="document.getElementById('currency-input').value='{{ $code }}'; document.getElementById('currency-form').submit(); return false;">
+                                                <strong>{{ $code }}</strong> - {{ $currency['symbol'] }}
+                                            </a>
+                                        @endforeach
+                                    </form>
+                                </div>
+                            </li>
+
                             {{-- Language Switcher --}}
                             <li class="dropdown">
                                 <button class="btn-cart" id="lang-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -2,63 +2,74 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Session;
 
 class CurrencyService
 {
-    protected string $provider = 'exchangerate.host';
-    protected int $ttlSeconds = 3600; // 1 hour cache
+    protected $currencies;
 
-    public function getRate(string $from, string $to): float
+    public function __construct()
     {
-        $from = strtoupper($from);
-        $to = strtoupper($to);
-
-        if ($from === $to) return 1.0;
-
-        return Cache::remember("fx:$from:$to", $this->ttlSeconds, function() use ($from, $to) {
-            $resp = Http::get("https://api.exchangerate.host/convert", [
-                'from' => $from,
-                'to' => $to,
-                'amount' => 1
-            ]);
-
-            if ($resp->successful() && isset($resp['info']['rate'])) {
-                return (float) $resp['info']['rate'];
-            }
-
-            // fallback: try rates endpoint
-            $r = Http::get("https://api.exchangerate.host/latest", ['base' => $from, 'symbols' => $to]);
-            if ($r->successful() && isset($r['rates'][$to])) {
-                return (float) $r['rates'][$to];
-            }
-
-            // As last resort, return 1.0 (no conversion) to avoid crashing
-            return 1.0;
-        });
+        $this->currencies = config('currency.currencies', []);
     }
 
-    public function convert(float $amount, string $from, string $to): float
+    public function getCurrentCurrency()
     {
-        $rate = $this->getRate($from, $to);
-        return round($amount * $rate, 2);
+        if (Session::has('currency') && array_key_exists(Session::get('currency'), $this->currencies)) {
+            return Session::get('currency');
+        }
+
+        if (auth()->check() && auth()->user()->country_code) {
+             // Basic mapping from Country Code to Currency
+             // This can be expanded.
+             $map = [
+                 'EG' => 'EGP',
+                 'US' => 'USD',
+                 'SA' => 'SAR',
+                 'AE' => 'AED',
+                 'KW' => 'KWD',
+             ];
+             $userCountry = strtoupper(auth()->user()->country_code);
+             if (isset($map[$userCountry])) {
+                 return $map[$userCountry];
+             }
+        }
+
+        // Default or Fallback
+        return config('currency.default', 'EGP');
     }
 
-    public function currencyForCountry(?string $countryCode): string
+    public function convert($amount, $toCurrency = null)
     {
-        // Minimal mapping for common countries. Extend as needed or use a library
-        $map = [
-            'EG' => 'EGP',
-            'US' => 'USD',
-            'GB' => 'GBP',
-            'AE' => 'AED',
-            'SA' => 'SAR',
-            'IN' => 'INR',
-        ];
+        $toCurrency = $toCurrency ?? $this->getCurrentCurrency();
+        $config = $this->currencies[$toCurrency] ?? null;
 
-        if (!$countryCode) return config('app.currency', 'EGP');
-        $code = strtoupper($countryCode);
-        return $map[$code] ?? config('app.currency', 'EGP');
+        if (!$config) {
+            return $amount; // Fallback
+        }
+
+        // Base currency is EGP (Rate 1)
+        // logic: Amount in EGP * Rate 
+        // Example: 100 EGP * 0.02 (USD Rate) = 2 USD
+        return $amount * $config['rate'];
+    }
+
+    public function format($amount, $currency = null)
+    {
+        $currency = $currency ?? $this->getCurrentCurrency();
+        $config = $this->currencies[$currency] ?? null;
+
+        if (!$config) {
+            return number_format($amount, 2) . ' EGP';
+        }
+
+        $converted = $this->convert($amount, $currency);
+        
+        // Format: "$ 100.00" or "100.00 SAR"
+        if ($currency === 'USD') {
+             return $config['symbol'] . number_format($converted, 2);
+        }
+
+        return number_format($converted, 2) . ' ' . $config['symbol'];
     }
 }

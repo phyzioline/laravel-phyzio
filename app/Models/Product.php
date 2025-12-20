@@ -89,4 +89,13 @@ class Product extends Model
         return $this->sku;
     }
 
+    /**
+     * Get the product price formatted in the user's currency.
+     */
+    public function getFormattedPriceAttribute()
+    {
+        $price = (float) $this->product_price;
+        $service = new \App\Services\CurrencyService();
+        return $service->format($price);
+    }
 }

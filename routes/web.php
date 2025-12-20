@@ -59,7 +59,16 @@ Route::group(
      Route::get('/contact-us', [FeedbackController::class, 'index'])->name('feedback.index');
      Route::post('/contact-us', [FeedbackController::class, 'store'])->name('feedback.store');
 
-           Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name('tearms_condition.index');
+     // Currency Switcher
+     Route::post('/currency/switch', function (\Illuminate\Http\Request $request) {
+         $currency = $request->input('currency');
+         if (array_key_exists($currency, config('currency.currencies'))) {
+             session(['currency' => $currency]);
+         }
+         return redirect()->back();
+     })->name('currency.switch');
+
+     Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name('tearms_condition.index');
         
         Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
      
