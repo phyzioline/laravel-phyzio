@@ -23,6 +23,7 @@ class PaymentController extends Controller implements HasMiddleware
     public function index(Request $request)
     {
         $user = auth()->user();
+        $view = $request->get('view', 'statement'); // Default to statement view
 
         // Check if user is Admin to show ALL payments
         if ($user->hasRole('admin')) {
@@ -43,11 +44,27 @@ class PaymentController extends Controller implements HasMiddleware
                 $query->where('vendor_id', $request->vendor_id);
             }
 
+            // Enhanced Filters
+            if ($request->filled('search_order')) {
+                $query->whereHas('order', function($q) use ($request) {
+                    $q->where('id', 'like', '%' . $request->search_order . '%')
+                      ->orWhere('reference_number', 'like', '%' . $request->search_order . '%');
+                });
+            }
+
             if ($request->filled('status')) {
                 $query->where('status', $request->status);
             }
+            
+            if ($request->filled('date_from')) {
+                $query->whereDate('created_at', '>=', $request->date_from);
+            }
+            
+            if ($request->filled('date_to')) {
+                $query->whereDate('created_at', '<=', $request->date_to);
+            }
 
-            $payments = $query->paginate(15);
+            $payments = $query->paginate(20);
             $vendors = \App\Models\User::role('vendor')->get(); // Get vendors for filter
         } else {
              // Vendor sees ONLY their stats
@@ -70,20 +87,46 @@ class PaymentController extends Controller implements HasMiddleware
                 ->with(['order', 'orderItem.product'])
                 ->orderBy('created_at', 'desc');
             
+            // Enhanced Filters for Vendor
+            if ($request->filled('search_order')) {
+                $payments->whereHas('order', function($q) use ($request) {
+                    $q->where('id', 'like', '%' . $request->search_order . '%')
+                      ->orWhere('reference_number', 'like', '%' . $request->search_order . '%');
+                });
+            }
+            
             if ($request->filled('status')) {
                 $payments->where('status', $request->status);
             }
+
+            if ($request->filled('date_from')) {
+                $payments->whereDate('created_at', '>=', $request->date_from);
+            }
+            
+            if ($request->filled('date_to')) {
+                $payments->whereDate('created_at', '<=', $request->date_to);
+            }
+            
+            if ($request->filled('date_type') && $request->date_type == 'past') {
+                // Example logic for "Past number of days" - simplifying to last 30 days if selected
+                 $payments->whereDate('created_at', '>=', now()->subDays(30));
+            }
                 
-            $payments = $payments->paginate(15);
+            $payments = $payments->paginate(20);
             $vendors = []; // Not needed for vendor view
         }
 
-        return view('dashboard.pages.payments.index', compact(
-            'totalEarnings',
-            'pendingPayments',
-            'lastPayout',
-            'payments',
-            'vendors'
+        $currentView = $view;
+
+        if ($view === 'transaction') {
+            return view('dashboard.pages.finance.transaction', compact(
+                'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
+            ));
+        }
+
+        // Default to statement view (using the layout + statement content)
+        return view('dashboard.pages.finance.statement', compact(
+            'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
         ));
     }
 

@@ -60,8 +60,11 @@ class Product extends Model
         parent::boot();
 
         static::creating(function ($product) {
-            $latestId     = Product::max('id') + 1;
-            $product->sku = 'HO' . str_pad($latestId, 3, '0', STR_PAD_LEFT);
+            $latestId = Product::max('id') + 1;
+            // SKU Format: V{VendorID}-P{NextID}-{RandomSuffix}
+            // Example: V5-P123-A7B
+            $vendorId = $product->user_id ?? auth()->id() ?? 1; // Fallback to 1 if no user
+            $product->sku = 'V' . $vendorId . '-P' . $latestId . '-' . strtoupper(\Illuminate\Support\Str::random(3));
         });
     }
 

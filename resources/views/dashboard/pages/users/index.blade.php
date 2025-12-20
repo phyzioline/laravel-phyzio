@@ -66,6 +66,12 @@
                                                 <a href="{{ route('dashboard.users.edit', $user) }}"
                                                     class="btn btn-info"><i class="fas fa-edit"></i></a>
                                             @endcan
+                                            @if($user->type === 'vendor' || $user->hasRole('vendor'))
+                                                <a href="{{ route('dashboard.payments.index', ['vendor_id' => $user->id]) }}" 
+                                                   class="btn btn-success" title="View Financials">
+                                                    <i class="fas fa-file-invoice-dollar"></i>
+                                                </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
