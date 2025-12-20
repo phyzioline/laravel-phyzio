@@ -1,19 +1,30 @@
  <header class="top-header">
     <nav class="navbar navbar-expand align-items-center gap-4">
       <div class="btn-toggle" id="toggle-button">
-        <a href="javascript:;"><i class="material-icons-outlined">menu</i></a>
+        <a href="javascript:;" style="color: #0F1111;"><i class="material-icons-outlined">menu</i></a>
       </div>
-      <div class="card-body search-content">
+      <div class="flex-grow-1 search-content">
+          <div class="input-group" style="max-width: 600px;">
+              <input type="text" class="form-control" placeholder="Search..." style="border-radius: 4px 0 0 4px !important;">
+              <button class="btn btn-warning" type="button" style="background: #febd69; border: none; color: #000; border-radius: 0 4px 4px 0 !important;">
+                  <i class="material-icons-outlined" style="font-size: 20px; vertical-align: middle;">search</i>
+              </button>
+          </div>
       </div>
       <ul class="navbar-nav gap-1 nav-right-links align-items-center">
-
+        {{-- Translation Button --}}
+        <li class="nav-item">
+            <a href="{{ LaravelLocalization::getLocalizedURL(LaravelLocalization::getCurrentLocale() == 'en' ? 'ar' : 'en') }}" 
+               class="nav-link d-flex align-items-center text-dark px-2" 
+               style="font-size: 13px; font-weight: 700;">
+                <i class="fa fa-globe me-1"></i> {{ LaravelLocalization::getCurrentLocale() == 'en' ? 'AR' : 'EN' }}
+            </a>
+        </li>
 
         <li class="nav-item dropdown">
-
-
             <div class="notify-list">
-              <a class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="javascript:;">
-                <i class="material-icons-outlined">notifications</i>
+                <a class="dropdown-toggle dropdown-toggle-nocaret" data-bs-toggle="dropdown" href="javascript:;" style="color: #0F1111;">
+                    <i class="material-icons-outlined">notifications</i>
                 @if(auth()->user()->unreadNotifications->count() > 0)
                     <span class="badge bg-danger rounded-pill notify-count" style="position: absolute; top: -5px; right: -5px; padding: 2px 6px; font-size: 10px;">{{ auth()->user()->unreadNotifications->count() }}</span>
                 @endif
