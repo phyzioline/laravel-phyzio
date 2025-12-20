@@ -2,6 +2,44 @@
 
 This script imports products from TSV files and associates images from a backup folder.
 
+## Deployment to Server
+
+After pushing changes to git, deploy to the server with these steps:
+
+1. **SSH into the server:**
+   ```bash
+   ssh phyziolinegit@147.93.85.27
+   ```
+
+2. **Navigate to the project directory:**
+   ```bash
+   cd /home/phyziolinegit/htdocs/phyzioline.com
+   ```
+
+3. **Pull the latest changes:**
+   ```bash
+   git pull origin main
+   ```
+
+4. **Run migrations (if any):**
+   ```bash
+   php artisan migrate --force
+   ```
+
+5. **Clear all caches:**
+   ```bash
+   php artisan config:clear && php artisan cache:clear && php artisan view:clear
+   ```
+
+6. **Rebuild route cache (optional but recommended):**
+   ```bash
+   php artisan route:cache
+   ```
+
+---
+
+## Product Import Feature
+
 ## Files Created
 
 1. **import_products.php** - Standalone PHP script (recommended)
