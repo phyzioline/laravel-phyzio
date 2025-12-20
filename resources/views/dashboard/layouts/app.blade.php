@@ -55,14 +55,16 @@
    <style>
      /* EXTREME SPECIFICITY - Override any theme CSS */
      html[data-bs-theme] body .top-header,
+     html[data-bs-theme] body .top-header .navbar,
+     html[data-bs-theme] body .sidebar-header,
      html body .top-header,
+     html body .sidebar-header,
      .top-header,
-     .top-header .navbar {
+     .sidebar-header {
        background-color: #ffffff !important;
        background: #ffffff !important;
        border-bottom: 1px solid #e0e0e0 !important;
-       left: 260px !important;
-       height: 50px !important;
+       transition: none !important;
      }
 
      /* Fix Hamburger Toggle Layout */
@@ -76,36 +78,31 @@
      }
      
      .btn-toggle i {
-       color: #017A82 !important; /* Brand Teal */
+       color: #0d9488 !important; /* Brand Teal */
        font-size: 24px !important;
      }
 
      /* GLOBAL DENSITY - "The Amazon Look" */
-     html, body {
-       font-size: 13px !important;
-       /* zoom: 0.95;  Slightly reduce overall scale to show more data */
+     html {
+       zoom: 0.9 !important; /* Nuclear Scale Fix - Achieve high density instantly */
+       -moz-transform: scale(0.9);
+       -moz-transform-origin: 0 0;
      }
 
      body {
        font-family: "Amazon Ember", Arial, sans-serif !important;
        color: #0F1111 !important;
        background-color: #f3f3f3 !important;
+       font-size: 13px !important;
        line-height: 1.3 !important;
      }
-
-     /* Global Title Scaling */
-     h1, .h1 { font-size: 20px !important; font-weight: 700 !important; }
-     h2, .h2 { font-size: 18px !important; font-weight: 700 !important; }
-     h3, .h3 { font-size: 16px !important; font-weight: 700 !important; }
-     h4, .h4 { font-size: 15px !important; font-weight: 700 !important; }
-     h5, .h5 { font-size: 14px !important; font-weight: 700 !important; }
-     h6, .h6 { font-size: 13px !important; font-weight: 700 !important; }
 
      /* Tighten up everything */
      .card {
        margin-bottom: 8px !important;
        border: 1px solid #ddd !important;
        border-radius: 2px !important;
+       box-shadow: none !important;
      }
      
      .card-body {
@@ -123,6 +120,11 @@
        padding: 2px 8px !important;
      }
 
+     /* Global Title Scaling */
+     h1, .h1 { font-size: 18px !important; font-weight: 700 !important; }
+     h2, .h2 { font-size: 16px !important; font-weight: 700 !important; }
+     h3, .h3 { font-size: 14px !important; font-weight: 700 !important; }
+
      /* Sidebar - Keep brand colors but make compact */
      .sidebar-wrapper {
        width: 260px !important;
@@ -133,13 +135,8 @@
        font-size: 13px !important;
      }
 
-     /* Header Search Bar Alignment */
-     .search-content {
-       margin: 0 15px !important;
-     }
-     
-     .top-header .nav-link i {
-       color: #017A82 !important;
+     .top-header .nav-link i, .top-header .nav-link span, .top-header .user-name {
+       color: #0d9488 !important;
      }
 
      /* Responsive fixes */

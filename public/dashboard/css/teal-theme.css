@@ -13,13 +13,18 @@
 /* Sidebar Header - White Background with Dark Logo */
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header {
     background-color: #ffffff !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-    padding: 20px 15px;
+    background: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    height: 60px;
+    display: flex;
+    align-items: center;
 }
 
 /* Logo Text - Dark on White Header */
-[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name {
-    color: #0f766e !important;
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name,
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header h5 {
+    color: #0d9488 !important;
     font-weight: bold;
 }
 
@@ -33,22 +38,21 @@
    TOP HEADER STYLING
    ============================================ */
 
-/* Top Header - Match Website Teal Color */
 /* Top Header - White Background (User Request) */
-[data-bs-theme=blue-theme] body .top-header {
-    background-color: #ffffff !important;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-}
-
+[data-bs-theme=blue-theme] body .top-header,
 [data-bs-theme=blue-theme] body .top-header .navbar {
     background-color: #ffffff !important;
+    background: #ffffff !important;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Header Icons and Text - Teal/Dark for White Background */
 [data-bs-theme=blue-theme] .top-header .navbar .nav-right-links .material-icons-outlined,
-[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle i,
+[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle a i,
 [data-bs-theme=blue-theme] .top-header .navbar button,
-[data-bs-theme=blue-theme] .top-header .navbar a {
+[data-bs-theme=blue-theme] .top-header .navbar a,
+[data-bs-theme=blue-theme] .top-header .navbar .nav-link,
+[data-bs-theme=blue-theme] .top-header .navbar .btn-toggle a {
     color: #0d9488 !important;
     /* Teal color for icons */
 }
@@ -67,6 +71,7 @@
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a {
     color: #ffffff !important;
     font-weight: 500;
+    font-size: 13px !important;
     transition: all 0.3s ease;
 }
 
@@ -76,6 +81,7 @@
 
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a .menu-title {
     color: #ffffff !important;
+    font-size: 13px !important;
 }
 
 /* Hover State - Light Background */
@@ -91,6 +97,7 @@
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a.mm-active {
     background-color: rgba(255, 255, 255, 0.2) !important;
     color: #ffffff !important;
+    font-size: 13px !important;
     border-left: 4px solid #ffffff;
     font-weight: 600;
 }
@@ -99,11 +106,13 @@
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a {
     color: rgba(255, 255, 255, 0.9) !important;
     padding-left: 50px;
+    font-size: 13px !important;
 }
 
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a:hover {
     color: #ffffff !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
+    font-size: 13px !important;
 }
 
 /* ============================================
