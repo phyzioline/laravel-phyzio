@@ -26,14 +26,17 @@
         color: #0F1111;
         background-color: #ffffff; 
         min-height: 100vh;
-        margin-left: 0px; /* Adjust if sidebar pushes it */
+        width: 100%; /* Fluid Width */
+        max-width: 100%;
+        margin: 0;
+        font-size: 13px; /* Base size */
     }
     
     /* New: Force white header for this section only */
     header.finance-top-bar {
         background: white;
         border-bottom: 1px solid #ddd;
-        padding: 10px 20px;
+        padding: 8px 15px; /* Tighter padding */
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -41,14 +44,13 @@
     
     .finance-body {
         background-color: #F2F4F8; /* Light gray for content area */
-        min-height: calc(100vh - 120px);
-        padding: 20px;
+        min-height: calc(100vh - 100px);
+        padding: 15px 20px; /* Reduced specific padding */
     }
 
     .finance-header {
         background-color: #fff;
-        padding: 15px 20px;
-        /* border-bottom: 1px solid #D5D9D9; removed to merge with tabs */
+        padding: 10px 20px; /* Tighter */
     }
 
     .finance-tabs {
@@ -59,13 +61,13 @@
 
     .finance-tab-link {
         display: inline-block;
-        padding: 12px 18px;
+        padding: 8px 14px; /* Smaller tabs */
         color: #565959;
         font-weight: 500; /* Regular weight unselected */
         text-decoration: none;
         border-bottom: 3px solid transparent;
-        font-size: 14px;
-        margin-right: 5px;
+        font-size: 13px; /* 13px Tabs */
+        margin-right: 2px;
     }
 
     .finance-tab-link:hover {
@@ -84,14 +86,14 @@
     /* Filters Section */
     .finance-filters {
         background-color: #fff; 
-        padding: 15px;
+        padding: 12px; /* Tighter */
         border: 1px solid #D5D9D9; 
         border-radius: 4px; 
         margin-bottom: 15px;
     }
     
     .finance-form-label {
-        font-size: 13px;
+        font-size: 12px; /* Smaller label */
         font-weight: 700;
         color: #0F1111;
         margin-bottom: 4px;
@@ -102,9 +104,9 @@
         border: 1px solid #888C8C;
         border-radius: 3px; 
         box-shadow: 0 1px 2px rgba(15,17,17,0.15) inset;
-        padding: 4px 10px;
+        padding: 3px 7px;
         font-size: 13px;
-        height: 31px; 
+        height: 29px; /* Compact height */
         line-height: normal;
         background: #fff;
         color: #0F1111;
@@ -123,7 +125,7 @@
         color: #fff;
         border-radius: 3px;
         padding: 0 15px;
-        height: 31px;
+        height: 29px;
         font-size: 13px;
         font-weight: 400;
         cursor: pointer;
@@ -165,8 +167,8 @@
     .amazon-alert {
         border: 1px solid;
         border-radius: 4px;
-        padding: 14px 18px;
-        margin-bottom: 14px;
+        padding: 10px 14px; /* Compact */
+        margin-bottom: 12px;
         font-size: 13px;
         display: flex;
         align-items: flex-start;
@@ -194,8 +196,8 @@
     
     .alert-close {
         position: absolute;
-        top: 10px;
-        right: 15px;
+        top: 8px;
+        right: 10px;
         cursor: pointer;
         font-size: 16px;
         color: #565959;
@@ -220,19 +222,20 @@
         background-color: #F0F2F2; /* Light gray header */
         border-bottom: 1px solid #D5D9D9;
         text-align: left;
-        padding: 10px 10px;
+        padding: 6px 8px; /* Tighter padding */
         font-weight: 700;
         color: #0F1111;
         white-space: nowrap;
-        font-size: 12px;
-        text-transform: uppercase;
+        font-size: 12px; /* 12px Header */
+        text-transform: none;
     }
 
     .finance-table td {
         border-bottom: 1px solid #F0F2F2; /* Very light separator */
-        padding: 12px 10px;
+        padding: 6px 8px; /* Tighter padding */
         color: #0F1111;
         vertical-align: top;
+        font-size: 12px; /* 12px Content */
     }
     
     .finance-table tr:last-child td {
