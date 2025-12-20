@@ -51,112 +51,103 @@
   </script>
 
    
+   @stack('styles')
    <style>
-     /* NUCLEAR SPECIFICITY - Kill Teal Header once and for all */
+     /* EXTREME SPECIFICITY - Override any theme CSS */
+     html[data-bs-theme] body .top-header,
      html body .top-header,
-     html body [data-bs-theme=blue-theme] .top-header,
-     html body .top-header .navbar,
-     html body [data-bs-theme=blue-theme] .top-header .navbar {
+     .top-header,
+     .top-header .navbar {
        background-color: #ffffff !important;
        background: #ffffff !important;
-       border-bottom: 1px solid #D5D9D9 !important;
+       border-bottom: 1px solid #e0e0e0 !important;
        left: 260px !important;
+       height: 50px !important;
      }
 
-     /* Fix Hamburger Toggle (3 Lines) Misalignment */
+     /* Fix Hamburger Toggle Layout */
      .btn-toggle {
        width: 45px !important;
        height: 45px !important;
        display: flex !important;
        align-items: center !important;
        justify-content: center !important;
-       margin-right: 10px !important;
+       z-index: 9999 !important;
      }
      
-     .btn-toggle a {
-       display: flex !important;
-       align-items: center !important;
-       justify-content: center !important;
+     .btn-toggle i {
+       color: #017A82 !important; /* Brand Teal */
+       font-size: 24px !important;
      }
 
-     /* Global Amazon High-Density Redesign with Phyzioline Brand Colors */
-     :root {
-       --amazon-font-size: 13px;
-       --amazon-table-font-size: 12px;
-       --brand-color: #017A82; /* Phyzioline Teal */
-       --brand-hover: #00A6B4;
+     /* GLOBAL DENSITY - "The Amazon Look" */
+     html, body {
+       font-size: 13px !important;
+       /* zoom: 0.95;  Slightly reduce overall scale to show more data */
      }
 
      body {
        font-family: "Amazon Ember", Arial, sans-serif !important;
-       font-size: var(--amazon-font-size) !important;
        color: #0F1111 !important;
-       background-color: #F2F4F8 !important;
+       background-color: #f3f3f3 !important;
+       line-height: 1.3 !important;
      }
 
-     /* Ensure Icons and Text are visible on white background */
-     .top-header .material-icons-outlined, 
-     .top-header .nav-link,
-     .top-header .btn-toggle a i,
-     .top-header .user-name {
-       color: var(--brand-color) !important;
-     }
+     /* Global Title Scaling */
+     h1, .h1 { font-size: 20px !important; font-weight: 700 !important; }
+     h2, .h2 { font-size: 18px !important; font-weight: 700 !important; }
+     h3, .h3 { font-size: 16px !important; font-weight: 700 !important; }
+     h4, .h4 { font-size: 15px !important; font-weight: 700 !important; }
+     h5, .h5 { font-size: 14px !important; font-weight: 700 !important; }
+     h6, .h6 { font-size: 13px !important; font-weight: 700 !important; }
 
-     /* Page Layout */
-     .page-wrapper {
-       margin-left: 260px !important;
-       padding-top: 60px !important;
-       transition: all 0.3s;
-     }
-
-     /* Tight Spacing Global Controls */
+     /* Tighten up everything */
      .card {
-       border-radius: 4px !important;
-       border: 1px solid #D5D9D9 !important;
-       margin-bottom: 10px !important;
-       box-shadow: none !important;
+       margin-bottom: 8px !important;
+       border: 1px solid #ddd !important;
+       border-radius: 2px !important;
      }
      
      .card-body {
-       padding: 8px 12px !important; /* Tighter */
+       padding: 8px 12px !important;
      }
 
-     /* Tables - Amazon High Density */
-     .table {
-       font-size: var(--amazon-table-font-size) !important;
-       width: 100% !important;
-     }
-     
-     .table th {
-       background-color: #F0F2F2 !important;
-       padding: 5px 8px !important;
-       font-weight: 700 !important;
-       color: #0F1111 !important;
-       border-bottom: 1px solid #D5D9D9 !important;
-     }
-     
-     .table td {
-       padding: 5px 8px !important;
-       border-bottom: 1px solid #F0F2F2 !important;
+     .table th, .table td {
+       padding: 4px 8px !important;
+       font-size: 12px !important;
      }
 
-     /* Sidebar Branding - DON'T HIDE */
+     .form-control, .form-select, .btn {
+       font-size: 13px !important;
+       height: 30px !important;
+       padding: 2px 8px !important;
+     }
+
+     /* Sidebar - Keep brand colors but make compact */
      .sidebar-wrapper {
        width: 260px !important;
-       background: var(--brand-color) !important;
+       background: #017A82 !important;
+     }
+     
+     .sidebar-nav .menu-title {
+       font-size: 13px !important;
      }
 
-     /* Responsive fluid adjustments */
+     /* Header Search Bar Alignment */
+     .search-content {
+       margin: 0 15px !important;
+     }
+     
+     .top-header .nav-link i {
+       color: #017A82 !important;
+     }
+
+     /* Responsive fixes */
      @media screen and (max-width: 991px) {
-       html body .top-header { left: 0 !important; }
-       html body .page-wrapper { margin-left: 0 !important; }
+       html[data-bs-theme] body .top-header { left: 0 !important; }
+       .page-wrapper { margin-left: 0 !important; }
      }
-
-     /* Custom UI Scrollbar */
-     ::-webkit-scrollbar { width: 7px; height: 7px; }
-     ::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; }
    </style>
-   @stack('styles')
 </head>
 
 <body>

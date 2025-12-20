@@ -3,35 +3,13 @@
 
 @push('styles')
 <style>
-    /* Aggressive Overrides to hide default Dashboard Header and Sidebar */
-    .top-header, .page-footer, .sidebar-wrapper {
-        display: none !important;
-    }
-    
-    /* Force fluid width and remove sidebar margin */
-    .page-wrapper {
-        margin-top: 0 !important;
-        margin-left: 0 !important;
-        background: #F2F4F8 !important;
-        width: 100% !important;
-        min-height: 100vh;
-    }
-    
-    /* Adjust sidebar-wrapper to not occupy space if needed by parent layout */
-    .sidebar-wrapper {
-        width: 0 !important;
-    }
-
-    /* Amazon-style Finance Dashboard Overrides */
+    /* Local Finance Page Adjustments */
     .finance-wrapper {
-        font-family: "Amazon Ember", Arial, sans-serif;
-        color: #0F1111;
         background-color: #ffffff; 
         min-height: 100vh;
         width: 100% !important; 
         max-width: 100% !important;
         margin: 0;
-        font-size: 13px; /* Base size */
     }
     
     /* New: Force white header for this section only */
@@ -278,7 +256,7 @@
     {{-- Amazon Header Structure --}}
     <header class="finance-top-bar">
         <div>
-            <h2 style="font-size: 24px; font-weight: 700; color: #000; margin: 0;">Payments Dashboard</h2>
+            <h2 style="font-size: 18px; font-weight: 700; color: #000; margin: 0;">Payments Dashboard</h2>
             <div class="test-links mt-1">
                  <a href="#" style="font-size: 13px; color: #007185; text-decoration: none;">Learn More</a> 
                  <span class="mx-1 text-muted">|</span>
