@@ -214,9 +214,8 @@ Route::group([
                 }
             })->name('dashboard');
         });
-        
-    }); // End of locale route group
-} // End of foreach loop
+
+});
 
 
 
