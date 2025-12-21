@@ -28,7 +28,7 @@ use App\Http\Controllers\Web\FeedController;
 Route::group(
 [
 	'prefix' => LaravelLocalization::setLocale(),
-	'middleware' => [ 'localizationRedirect', 'localeViewPath' ]
+	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
 ], function(){
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
