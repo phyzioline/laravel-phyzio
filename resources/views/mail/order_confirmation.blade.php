@@ -31,6 +31,12 @@
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #eee;">
                         {{ $item->product->product_name_en ?? 'Product' }}
+                        @if($item->engineer_selected)
+                        <br><small style="color: #02767F;">
+                            <i class="fa fa-user-md"></i> Medical Engineer Installation 
+                            (+{{ number_format($item->engineer_price, 2) }} EGP)
+                        </small>
+                        @endif
                     </td>
                     <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;">
                         {{ $item->quantity }}

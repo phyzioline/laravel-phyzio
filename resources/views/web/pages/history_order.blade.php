@@ -287,6 +287,15 @@ body {
           <div class="order-details">
             <div class="detail-row"><span class="detail-label">تاريخ الطلب:</span><span class="detail-value">{{ $order->created_at }}</span></div>
             <div class="detail-row"><span class="detail-label">الكمية:</span><span class="detail-value">{{ $item->quantity }} قطعة</span></div>
+            @if($item->engineer_selected)
+            <div class="detail-row">
+                <span class="detail-label">{{ __('Medical Engineer') }}:</span>
+                <span class="detail-value badge bg-info">
+                    <i class="fa fa-user-md me-1"></i>
+                    {{ __('Included') }} (+{{ number_format($item->engineer_price, 2) }} {{ config('currency.default_symbol', 'EGP') }})
+                </span>
+            </div>
+            @endif
             <div class="detail-row"><span class="detail-label">طريقة الدفع:</span><span class="detail-value">{{ $order->payment_method }}</span></div>
             <div class="detail-row"><span class="detail-label">العنوان:</span><span class="detail-value">{{ $order->address }}</span></div>
           </div>

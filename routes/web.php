@@ -23,25 +23,19 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Web\FeedController;
 
 // Root route - redirect based on locale
-// Root route - redirect to default locale
 Route::get('/', function () {
-    $defaultLocale = config('app.locale', 'en');
-    return redirect('/' . $defaultLocale);
-});
+    return redirect(LaravelLocalization::getLocalizedURL(null, null, [], false));
+})->middleware(['localeSessionRedirect']);
 
-// Dynamic Localization Route Group for both en and ar
-// Register routes for each supported locale explicitly
-$supportedLocales = ['en', 'ar'];
-foreach ($supportedLocales as $locale) {
-    Route::group([
-        'prefix' => $locale,
-        'middleware' => ['localizationRedirect', 'localeViewPath']
-    ], function() use ($locale) {
-        // Set locale for this route group
-        app()->setLocale($locale);
-        
-        // Home route - use same name for both locales
-        Route::get('/', [HomeController::class, 'index'])->name('home');
+// Dynamic Localization Route Group
+// NOTE: This prevents 'php artisan route:cache' from working!
+Route::group(
+[
+	'prefix' => LaravelLocalization::setLocale(),
+	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+], function(){
+    // Home route
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');
@@ -213,8 +207,7 @@ foreach ($supportedLocales as $locale) {
             })->name('dashboard');
         });
 
-    }); // End of locale route group
-} // End of foreach loop
+});
 
 
 

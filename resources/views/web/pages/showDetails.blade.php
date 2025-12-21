@@ -92,6 +92,32 @@
     </div>
 </div>
 
+                        {{-- Medical Engineer Service Option --}}
+                        @if($product->has_engineer_option)
+                        <div class="medical-engineer-option mb-30" style="padding: 20px; background: #f8f9fa; border-radius: 8px; border: 2px solid {{ $product->engineer_required ? '#dc3545' : '#02767F' }};">
+                            <div class="form-check" style="margin-bottom: 10px;">
+                                <input class="form-check-input" type="checkbox" name="engineer_selected" id="engineer_selected" 
+                                       value="1" {{ $product->engineer_required ? 'checked disabled' : '' }} 
+                                       data-price="{{ $product->engineer_price }}">
+                                <label class="form-check-label" for="engineer_selected" style="font-weight: 600; cursor: pointer;">
+                                    <i class="fa fa-user-md me-2" style="color: #02767F;"></i>
+                                    {{ __('Medical Engineer Installation') }}
+                                    @if($product->engineer_required)
+                                        <span class="badge bg-danger ms-2">{{ __('Required for this product') }}</span>
+                                    @endif
+                                </label>
+                            </div>
+                            <p style="font-size: 13px; color: #666; margin: 8px 0 0 25px;">
+                                {{ __('Professional installation and setup service') }}
+                            </p>
+                            <div style="margin-top: 10px; margin-left: 25px;">
+                                <strong style="color: #02767F; font-size: 16px;">
+                                    +{{ number_format($product->engineer_price, 2) }} {{ config('currency.default_symbol', 'EGP') }}
+                                </strong>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="physio-btns-group ul-li mb-30">
     <ul class="clearfix">
         <li>
@@ -99,6 +125,7 @@
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="quantity" id="cartQuantity" value="1">
+                <input type="hidden" name="engineer_selected" id="engineer_selected_hidden" value="0">
                 <button type="submit" class="physio-action-btn physio-add-to-cart-btn">Add to Cart</button>
             </form>
         </li>
@@ -107,6 +134,7 @@
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="quantity" id="orderNowQuantity" value="1">
+                <input type="hidden" name="engineer_selected" id="engineer_selected_order" value="0">
                 <button type="submit" class="physio-action-btn physio-order-now-btn">Order Now</button>
             </form>
         </li>
@@ -128,6 +156,28 @@
     const quantityInput = document.getElementById('mainQuantity');
     const cartQuantity = document.getElementById('cartQuantity');
     const orderNowQuantity = document.getElementById('orderNowQuantity');
+    
+    // Medical Engineer Service Handler
+    @if($product->has_engineer_option)
+    const engineerCheckbox = document.getElementById('engineer_selected');
+    const engineerHiddenCart = document.getElementById('engineer_selected_hidden');
+    const engineerHiddenOrder = document.getElementById('engineer_selected_order');
+    
+    if (engineerCheckbox) {
+        // Set initial value if required
+        @if($product->engineer_required)
+        engineerCheckbox.checked = true;
+        engineerHiddenCart.value = '1';
+        engineerHiddenOrder.value = '1';
+        @endif
+        
+        engineerCheckbox.addEventListener('change', function() {
+            const value = this.checked ? '1' : '0';
+            engineerHiddenCart.value = value;
+            engineerHiddenOrder.value = value;
+        });
+    }
+    @endif
 
     function updateQuantityValues() {
         const value = quantityInput.value && parseInt(quantityInput.value) > 0 ? quantityInput.value : 1;

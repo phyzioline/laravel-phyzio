@@ -36,13 +36,40 @@ $total =  Cart::join('products', 'products.id', '=', 'carts.product_id')
         $request->validate([
             'product_id' => ['required' , 'int' , 'exists:products,id'],
             'quantity' => ['nullable' , 'int' , 'min:1'],
+            'engineer_selected' => ['nullable', 'boolean'],
         ]);
         $product = Product::findOrFail($request->product_id);
+        
+        // Check if engineer is required
+        if ($product->has_engineer_option && $product->engineer_required && !$request->engineer_selected) {
+            return back()->withErrors(['engineer_selected' => __('Engineer service is required for this product.')]);
+        }
+        
         $cart->add($product, $request->quantity);
         $cart_product = Cart::where('product_id', $request->product_id)->first();
+        
+        // Calculate price with engineer service if selected
+        $basePrice = $product->product_price;
+        $engineerPrice = 0;
+        $engineerSelected = $request->engineer_selected && $product->has_engineer_option;
+        
+        if ($engineerSelected) {
+            $engineerPrice = $product->engineer_price ?? 0;
+        }
+        
+        $unitPrice = $basePrice + $engineerPrice;
+        $totalPrice = $unitPrice * $request->quantity;
+        
+        // Store engineer option in JSON options field
+        $options = [
+            'engineer_selected' => $engineerSelected,
+            'engineer_price' => $engineerPrice,
+        ];
+        
         $cart_product->update([
-            'price' => $product->product_price,
-            'total' => $product->product_price * $request->quantity,
+            'price' => $unitPrice,
+            'total' => $totalPrice,
+            'options' => $options,
         ]);
 
         return to_route('carts.index');

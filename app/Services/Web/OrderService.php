@@ -50,12 +50,19 @@ class OrderService
         ]);
 
         foreach ($cartItems as $item) {
+            // Get engineer info from cart options
+            $options = is_string($item->options) ? json_decode($item->options, true) : ($item->options ?? []);
+            $engineerSelected = $options['engineer_selected'] ?? false;
+            $engineerPrice = $options['engineer_price'] ?? 0;
+            
             $order->items()->updateOrCreate(
                 ['order_id' => $order->id, 'product_id' => $item->product_id],
                 [
                     'quantity' => $item->quantity,
                     'price'    => $item->price,
                     'total'    => $item->price * $item->quantity,
+                    'engineer_selected' => $engineerSelected,
+                    'engineer_price' => $engineerPrice,
                 ]
             );
             if ($item->product) {
@@ -209,12 +216,19 @@ class OrderService
         ]);
 
         foreach ($cartItems as $item) {
+            // Get engineer info from cart options
+            $options = is_string($item->options) ? json_decode($item->options, true) : ($item->options ?? []);
+            $engineerSelected = $options['engineer_selected'] ?? false;
+            $engineerPrice = $options['engineer_price'] ?? 0;
+            
             $order->items()->updateOrCreate(
                 ['order_id' => $order->id, 'product_id' => $item->product_id],
                 [
                     'quantity' => $item->quantity,
                     'price'    => $item->price,
                     'total'    => $item->price * $item->quantity,
+                    'engineer_selected' => $engineerSelected,
+                    'engineer_price' => $engineerPrice,
                 ]
             );
         }

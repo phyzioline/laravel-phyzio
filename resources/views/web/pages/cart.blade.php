@@ -65,14 +65,41 @@
                                                             {{ $item->product->{'product_name_' . app()->getLocale()} }}
                                                         </h6>
                                                         <small class="text-muted">Available: {{ $item->product->amount }} units</small>
+                                                        @php
+                                                            $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+                                                            $engineerSelected = $options['engineer_selected'] ?? false;
+                                                            $engineerPrice = $options['engineer_price'] ?? 0;
+                                                        @endphp
+                                                        @if($engineerSelected)
+                                                        <div class="mt-2">
+                                                            <span class="badge bg-info">
+                                                                <i class="fa fa-user-md me-1"></i>
+                                                                {{ __('Medical Engineer Installation') }} 
+                                                                (+{{ number_format($engineerPrice, 2) }} {{ config('currency.default_symbol', 'EGP') }})
+                                                            </span>
+                                                        </div>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
                                             
                                             <td class="text-center">
-                                                <span class="item-price fw-bold text-success">
-                                                    {{ number_format($item->product->product_price, 2) }} EGP
-                                                </span>
+                                                @php
+                                                    $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+                                                    $engineerSelected = $options['engineer_selected'] ?? false;
+                                                    $engineerPrice = $options['engineer_price'] ?? 0;
+                                                    $unitPrice = $item->product->product_price + $engineerPrice;
+                                                @endphp
+                                                <div>
+                                                    <span class="item-price fw-bold text-success">
+                                                        {{ number_format($unitPrice, 2) }} EGP
+                                                    </span>
+                                                    @if($engineerSelected)
+                                                    <div class="small text-muted">
+                                                        <small>({{ number_format($item->product->product_price, 2) }} + {{ number_format($engineerPrice, 2) }})</small>
+                                                    </div>
+                                                    @endif
+                                                </div>
                                             </td>
                                             
                                             <td class="text-center">
@@ -89,8 +116,14 @@
                                             </td>
                                             
                                             <td class="text-center">
+                                                @php
+                                                    $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
+                                                    $engineerPrice = $options['engineer_price'] ?? 0;
+                                                    $unitPrice = $item->product->product_price + $engineerPrice;
+                                                    $subtotal = $unitPrice * $item->quantity;
+                                                @endphp
                                                 <strong class="item-subtotal text-primary fs-5">
-                                                    {{ number_format($item->product->product_price * $item->quantity, 2) }} EGP
+                                                    {{ number_format($subtotal, 2) }} EGP
                                                 </strong>
                                             </td>
                                         </tr>
