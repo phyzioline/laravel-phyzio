@@ -14,12 +14,12 @@
           </form>
       </div>
       <ul class="navbar-nav gap-1 nav-right-links align-items-center flex-shrink-0">
-        {{-- Translation Button --}}
+        {{-- Translation Button - Session-based for Dashboard --}}
         <li class="nav-item">
-            <a href="{{ LaravelLocalization::getLocalizedURL(LaravelLocalization::getCurrentLocale() == 'en' ? 'ar' : 'en') }}" 
+            <a href="{{ route('dashboard.locale.switch', ['locale' => app()->getLocale() == 'en' ? 'ar' : 'en']) }}" 
                class="nav-link d-flex align-items-center text-dark px-2" 
                style="font-size: 13px; font-weight: 700;">
-                <i class="fa fa-globe me-1"></i> {{ LaravelLocalization::getCurrentLocale() == 'en' ? 'AR' : 'EN' }}
+                <i class="fa fa-globe me-1"></i> {{ app()->getLocale() == 'en' ? 'AR' : 'EN' }}
             </a>
         </li>
 

@@ -206,6 +206,32 @@
        html body .top-header { left: 0 !important; }
        .page-wrapper { margin-left: 0 !important; }
      }
+     
+     /* CRITICAL: Page Wrapper Layout Fix */
+     .page-wrapper {
+       margin-left: 260px !important; /* Sidebar width */
+       margin-top: 70px !important; /* Header height */
+       transition: all 0.3s ease;
+       padding: 20px;
+       min-height: calc(100vh - 70px);
+     }
+     
+     /* When sidebar is toggled/collapsed */
+     body.toggled .page-wrapper {
+       margin-left: 0 !important;
+     }
+     
+     /* Main wrapper alternative */
+     .main-wrapper {
+       margin-left: 260px !important;
+       margin-top: 70px !important;
+       transition: all 0.3s ease;
+       padding: 20px;
+     }
+     
+     body.toggled .main-wrapper {
+       margin-left: 0 !important;
+     }
    </style>
 </head>
 

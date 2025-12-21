@@ -21,7 +21,16 @@ use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 Route::get('/dashboard/login', [AuthController::class, 'login'])->name('dashboard.login');
 Route::post('/dashboard/login', [AuthController::class, 'loginAction'])->name('loginAction');
 
-Route::group(['middleware' => ['auth', 'notification', 'admin'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+// Locale switcher for dashboard (session-based, no URL change)
+Route::get('/dashboard/locale/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('dashboard.locale.switch');
+
+Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middleware\SetDashboardLocale::class], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
             Route::get('/home', [HomeController::class, 'index'])->name('home');
             Route::resource('roles', RoleController::class);
             Route::resource('users', UserController::class);
