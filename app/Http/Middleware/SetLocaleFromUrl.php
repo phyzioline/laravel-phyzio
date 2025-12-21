@@ -23,9 +23,12 @@ class SetLocaleFromUrl
             app()->setLocale($locale);
             session(['locale' => $locale]);
         } else {
-            // Default locale
-            $locale = session('locale', config('app.locale', 'en'));
-            app()->setLocale($locale);
+            // For non-localized routes (like /dashboard/*), use session or default
+            // Don't set locale for dashboard routes
+            if (!str_starts_with($path, 'dashboard')) {
+                $locale = session('locale', config('app.locale', 'en'));
+                app()->setLocale($locale);
+            }
         }
         
         return $next($request);

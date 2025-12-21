@@ -37,12 +37,8 @@ $supportedLocales = ['en', 'ar'];
 foreach ($supportedLocales as $locale) {
     Route::group([
         'prefix' => $locale,
-        'middleware' => ['localizationRedirect', 'localeViewPath']
+        'middleware' => ['localeViewPath'] // Removed localizationRedirect to avoid conflicts
     ], function() use ($locale) {
-        // Set locale for this route group
-        app()->setLocale($locale);
-        session(['locale' => $locale]);
-        
         // Home route - same name for both, Laravel will match the correct one
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -219,8 +215,9 @@ foreach ($supportedLocales as $locale) {
                 }
             })->name('dashboard');
         });
-
-});
+        
+    }); // End of locale route group
+} // End of foreach loop
 
 
 
