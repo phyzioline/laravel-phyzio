@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.app')
 @section('content')
-    <main class="main-wrapper">
+    <main class="page-wrapper">
         <div class="main-content">
             <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
                 <div class="breadcrumb-title pe-3">PHYZIOLINE | Dashboard</div>
@@ -178,7 +178,9 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Payment Methods Distribution</h5>
-                                <canvas id="paymentMethodsChart" height="300"></canvas>
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="paymentMethodsChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -188,7 +190,9 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">User Distribution</h5>
-                                <canvas id="userTypesChart" height="300"></canvas>
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="userTypesChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -198,7 +202,9 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Ecosystem Overview</h5>
-                                <canvas id="ecosystemChart" height="120"></canvas>
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="ecosystemChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -620,7 +626,9 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-line text-primary"></i> Monthly Earnings</h5>
-                                <canvas id="vendorMonthlySalesChart" height="80"></canvas>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="vendorMonthlySalesChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -630,7 +638,9 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-pie text-success"></i> Payment Methods</h5>
-                                <canvas id="vendorPaymentMethodsChart" height="200"></canvas>
+                                <div style="position: relative; height: 250px;">
+                                    <canvas id="vendorPaymentMethodsChart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -742,7 +752,7 @@
                         },
                         options: {
                             responsive: true,
-                            maintainAspectRatio: true,
+                            maintainAspectRatio: false,
                             plugins: {
                                 legend: {
                                     display: false
