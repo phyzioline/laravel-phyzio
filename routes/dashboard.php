@@ -16,17 +16,12 @@ use App\Http\Controllers\Dashboard\ShippingPolicyController;
 use App\Http\Controllers\Dashboard\PrivacyPolicyController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-Route::group(
-    [
-        'prefix' => LaravelLocalization::setLocale(),
-        'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
-    ],
-    function () {
+// Dashboard routes WITHOUT locale prefix (dashboards don't need URL-based localization)
+// Language is changed via session/interface only
+Route::get('/dashboard/login', [AuthController::class, 'login'])->name('dashboard.login');
+Route::post('/dashboard/login', [AuthController::class, 'loginAction'])->name('loginAction');
 
-        Route::get('/dashboard/login', [AuthController::class, 'login'])->name('dashboard.login');
-        Route::post('/dashboard/login', [AuthController::class, 'loginAction'])->name('loginAction');
-
-        Route::group(['middleware' => ['auth', 'notification', 'admin'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+Route::group(['middleware' => ['auth', 'notification', 'admin'], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
             Route::get('/home', [HomeController::class, 'index'])->name('home');
             Route::resource('roles', RoleController::class);
             Route::resource('users', UserController::class);
@@ -100,6 +95,3 @@ Route::group(
             // logout
             Route::get('logout', [AuthController::class, 'logout'])->name('logout');
         });
-    }
-);
-
