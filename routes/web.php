@@ -64,8 +64,6 @@ foreach ($supportedLocales as $locale) {
     Route::get('/forget_password', [PasswordController::class, 'index'])->name('view_forget_password');
     Route::post('/forget_password', [PasswordController::class, 'store'])->name('forget_password');
     
-    Route::get('/shop',[ShowController::class, 'show'])->name('show');
-    
     Route::get('/products/{id}', [ShowController::class, 'product'])->name('product.show');
         Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name('shipping_policy.index');
      Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name('privacy_policy.index');
@@ -87,21 +85,6 @@ foreach ($supportedLocales as $locale) {
         Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
      
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name('web.shop.category');
-
-        // Ecosystem Routes
-        Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name('web.home_visits.index');
-        Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name('web.home_visits.show');
-        Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name('web.home_visits.book');
-        Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name('web.home_visits.store');
-        Route::get('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'payment'])->name('web.home_visits.payment');
-        Route::post('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'processPayment'])->name('web.home_visits.process_payment');
-        Route::get('/home_visits/success/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'success'])->name('web.home_visits.success');
-        
-        Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
-        
-        Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
-        Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
-        Route::post('/courses/{id}/purchase', [App\Http\Controllers\Web\CourseController::class, 'purchase'])->name('web.courses.purchase');
         
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
@@ -223,7 +206,20 @@ foreach ($supportedLocales as $locale) {
     }); // End of locale route group
 } // End of foreach loop
 
-
+// Routes that work WITHOUT locale prefix (use session/default locale)
+// These routes were working before and should continue to work
+Route::get('/shop', [ShowController::class, 'show'])->name('show');
+Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name('web.home_visits.index');
+Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name('web.home_visits.show');
+Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name('web.home_visits.book');
+Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name('web.home_visits.store');
+Route::get('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'payment'])->name('web.home_visits.payment');
+Route::post('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'processPayment'])->name('web.home_visits.process_payment');
+Route::get('/home_visits/success/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'success'])->name('web.home_visits.success');
+Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
+Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
+Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');
+Route::post('/courses/{id}/purchase', [App\Http\Controllers\Web\CourseController::class, 'purchase'])->name('web.courses.purchase');
 
 // Google Merchant feeds (separate feeds per language)
 Route::get('/google-merchant-{lang}.xml', [FeedController::class, 'google'])
