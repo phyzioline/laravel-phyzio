@@ -31,20 +31,15 @@ Route::get('/', function () {
     return redirect('/' . $locale);
 })->middleware(['localeSessionRedirect']);
 
-// Register routes explicitly for each locale (en and ar)
-// This ensures both /en and /ar work correctly
-$supportedLocales = ['en', 'ar'];
-foreach ($supportedLocales as $locale) {
-    Route::group([
-        'prefix' => $locale,
-        'middleware' => ['localeViewPath'] // Removed localizationRedirect to avoid conflicts
-    ], function() use ($locale) {
-        // Set locale BEFORE registering routes
-        app()->setLocale($locale);
-        session(['locale' => $locale]);
-        
-        // Home route - Laravel will match based on URL prefix
-        Route::get('/', [HomeController::class, 'index'])->name('home');
+// Register routes with locale prefix
+// SetLocaleFromUrl middleware (registered globally) will set the locale from URL
+// LaravelLocalization::setLocale() will return the correct prefix based on current locale
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localeViewPath']
+], function() {
+    // Home route
+    Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');

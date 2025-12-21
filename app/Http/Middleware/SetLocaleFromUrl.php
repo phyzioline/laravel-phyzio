@@ -22,12 +22,15 @@ class SetLocaleFromUrl
             $locale = $segments[0];
             app()->setLocale($locale);
             session(['locale' => $locale]);
+            // Set the locale in LaravelLocalization package so setLocale() returns correct prefix
+            \Mcamara\LaravelLocalization\Facades\LaravelLocalization::setLocale($locale);
         } else {
             // For non-localized routes (like /dashboard/*), use session or default
             // Don't set locale for dashboard routes
             if (!str_starts_with($path, 'dashboard')) {
                 $locale = session('locale', config('app.locale', 'en'));
                 app()->setLocale($locale);
+                \Mcamara\LaravelLocalization\Facades\LaravelLocalization::setLocale($locale);
             }
         }
         
