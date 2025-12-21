@@ -22,13 +22,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\Web\FeedController;
 
+// Root route - redirect based on locale
+Route::get('/', function () {
+    return redirect(LaravelLocalization::getLocalizedURL(null, null, [], false));
+})->middleware(['localeSessionRedirect']);
 
 // Dynamic Localization Route Group
 // NOTE: This prevents 'php artisan route:cache' from working!
 Route::group(
 [
 	'prefix' => LaravelLocalization::setLocale(),
-	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+	'middleware' => [ 'localizationRedirect', 'localeViewPath' ]
 ], function(){
     // Explicit home route - must be accessible with and without trailing slash
     Route::get('/', [HomeController::class, 'index'])->name('home');

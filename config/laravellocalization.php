@@ -327,7 +327,7 @@ return [
     // If `useAcceptLanguageHeader` is true, then the first time
     // the locale will be determined from browser and redirect to that language.
     // After that, `hideDefaultLocaleInURL` behaves as usual.
-    // CHANGED TO FALSE: We want /ar to work explicitly
+    // Set to FALSE: Both /en and /ar work explicitly (no hiding default locale)
     'hideDefaultLocaleInURL' => false,
 
     // If you want to display the locales in particular order in the language selector you should write the order here.
