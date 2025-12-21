@@ -1,6 +1,6 @@
  <header class="top-header">
     <nav class="navbar navbar-expand align-items-center gap-1">
-      <div class="btn-toggle" id="toggle-button">
+      <div class="btn-toggle">
         <i class="material-icons-outlined" style="color: #0d9488 !important; font-size: 26px; cursor: pointer;">menu</i>
       </div>
       <div class="flex-grow-1 search-content d-flex align-items-center px-2" style="max-width: 500px;">

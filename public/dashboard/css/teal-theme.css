@@ -10,11 +10,15 @@
     color: #ffffff !important;
 }
 
-/* Sidebar Header - White Background with Dark Logo */
+/* Sidebar Header - FORCE White Background with Original Logo */
 html body .sidebar-wrapper .sidebar-header,
-[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header {
+html[data-bs-theme] body .sidebar-wrapper .sidebar-header,
+html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header,
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header,
+.sidebar-wrapper .sidebar-header {
     background-color: #ffffff !important;
     background: #ffffff !important;
+    background-image: none !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
     padding: 10px 15px !important;
     height: 60px !important;
@@ -28,14 +32,20 @@ html body .sidebar-wrapper .sidebar-header,
 /* Logo Text - Dark on White Header */
 html body .sidebar-wrapper .sidebar-header .logo-name,
 html body .sidebar-wrapper .sidebar-header h5,
+html[data-bs-theme] body .sidebar-wrapper .sidebar-header .logo-name,
+html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name,
 [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header .logo-name {
     color: #0d9488 !important;
     font-weight: bold !important;
     opacity: 1 !important;
 }
 
-/* Logo Image - Show Original Colors (No Filter) */
-[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img {
+/* Logo Image - Show Original Colors (No Filter) - FORCE OVERRIDE */
+html body .sidebar-wrapper .sidebar-header img,
+html[data-bs-theme] body .sidebar-wrapper .sidebar-header img,
+html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
+[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
+.sidebar-wrapper .sidebar-header img {
     filter: none !important;
     opacity: 1 !important;
 }

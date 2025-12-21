@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Edit User'))
+@section('title', auth()->id() === $user->id ? __('Edit Profile') : __('Edit User'))
 
 @section('content')
     <main class="main-wrapper">
@@ -12,7 +12,7 @@
                         @method('PUT')
                         <div class="card border-0">
                             <div class="card-header bg-primary text-white rounded-top">
-                                <h5 class="mb-0">{{ __('Edit User') }}</h5>
+                                <h5 class="mb-0">{{ auth()->id() === $user->id ? __('Edit Profile') : __('Edit User') }}</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
@@ -176,6 +176,8 @@
                                     </div>
 
                                     <div class="col-12"><hr></div>
+                                    
+                                    @if(auth()->user()->can('users-update') && auth()->id() !== $user->id)
                                     <div class="col-md-6">
                                         <label for="status" class="form-label">{{ __('status') }}</label>
                                         <select class="form-select" name="status" id="status">
@@ -189,6 +191,10 @@
                                             <small class="text-danger">{{ $message }}</small>
                                         @enderror
                                     </div>
+                                    @else
+                                    <!-- Hidden field to maintain current status when user edits own profile -->
+                                    <input type="hidden" name="status" value="{{ $user->status }}">
+                                    @endif
 
 
 
@@ -217,6 +223,7 @@
 
 
 
+                                    @if(auth()->user()->can('users-update') && auth()->id() !== $user->id)
                                     <div class="col-md-6">
                                         <label for="role_id" class="form-label">{{ __('Role') }}</label>
                                         <select class="form-select" name="role_id" id="role_id">
@@ -232,6 +239,10 @@
                                             <div class="text-danger small mt-1">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                    @else
+                                    <!-- Maintain current role when user edits own profile -->
+                                    <input type="hidden" name="role_id" value="{{ $user->roles->first()->id ?? '' }}">
+                                    @endif
                                 </div>
                             </div>
                             <div class="card-footer text-end bg-light rounded-bottom">

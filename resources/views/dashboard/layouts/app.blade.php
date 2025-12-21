@@ -54,11 +54,17 @@
    
    @stack('styles')
    <style>
+     /* CRITICAL: Force White Header & Sidebar Header - Override ALL Themes */
      html body .top-header,
      html body .top-header .navbar,
      html body .sidebar-wrapper .sidebar-header,
      html[data-bs-theme] body .top-header,
+     html[data-bs-theme] body .top-header .navbar,
      html[data-bs-theme] body .sidebar-header,
+     html[data-bs-theme=blue-theme] body .top-header,
+     html[data-bs-theme=blue-theme] body .top-header .navbar,
+     html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header,
+     [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header,
      header, .top-header, .sidebar-header, .navbar {
        background-color: #ffffff !important;
        background: #ffffff !important;
@@ -69,8 +75,11 @@
      }
 
      /* Ensure Logo is visible on white Sidebar Header */
-     .sidebar-header img, .sidebar-wrapper .sidebar-header img {
-       filter: brightness(0) saturate(100%) invert(35%) sepia(85%) saturate(468%) hue-rotate(130deg) brightness(92%) contrast(101%) !important;
+     .sidebar-header img, 
+     .sidebar-wrapper .sidebar-header img,
+     html[data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-header img,
+     [data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img {
+       filter: none !important;
        opacity: 1 !important;
      }
 
@@ -81,8 +90,10 @@
        display: flex !important;
        align-items: center !important;
        justify-content: center !important;
-       z-index: 1050 !important; /* Ensure it's above everything */
+       z-index: 1050 !important;
        cursor: pointer !important;
+       position: relative !important;
+       pointer-events: auto !important;
      }
      
      .btn-toggle a {
@@ -95,6 +106,7 @@
        height: 45px !important;
        background: transparent !important;
        border-radius: 50% !important;
+       pointer-events: none !important;
      }
 
      .btn-toggle i, .btn-toggle a i {

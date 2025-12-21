@@ -3,29 +3,62 @@
 
 @push('styles')
 <style>
-    /* Local Finance Page Adjustments */
-    .finance-wrapper {
-        background-color: #ffffff; 
-        min-height: 100vh;
-        width: 100% !important; 
-        max-width: 100% !important;
-        margin: 0;
+    /* CRITICAL FIX: Finance Dashboard Must Respect Header & Sidebar */
+    
+    /* Ensure page-wrapper container is positioned correctly */
+    .page-wrapper {
+        margin-left: 260px; /* Sidebar width */
+        margin-top: 60px; /* Header height */
+        transition: all 0.3s;
+        width: calc(100% - 260px);
+        box-sizing: border-box;
     }
     
-    /* New: Force white header for this section only */
+    /* When sidebar is toggled (collapsed) */
+    body.toggled .page-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 991px) {
+        .page-wrapper {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+    }
+    
+    /* Local Finance Page Adjustments - FIXED TO RESPECT HEADER & SIDEBAR */
+    .finance-wrapper {
+        background-color: #ffffff; 
+        min-height: calc(100vh - 60px);
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+    
+    /* Finance header inside page-wrapper respects global layout */
     header.finance-top-bar {
         background: white;
         border-bottom: 1px solid #ddd;
-        padding: 8px 15px; /* Tighter padding */
+        padding: 8px 15px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
     }
     
     .finance-body {
-        background-color: #F2F4F8; /* Light gray for content area */
-        min-height: calc(100vh - 100px);
-        padding: 15px 20px; /* Reduced specific padding */
+        background-color: #F2F4F8;
+        min-height: calc(100vh - 160px);
+        padding: 15px 20px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .finance-header {
@@ -252,6 +285,7 @@
 @endpush
 
 @section('content')
+<main class="page-wrapper">
 <div class="finance-wrapper">
     {{-- Amazon Header Structure --}}
     <header class="finance-top-bar">
@@ -298,4 +332,5 @@
         @yield('finance-content')
     </div>
 </div>
+</main>
 @endsection

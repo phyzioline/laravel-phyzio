@@ -19,7 +19,7 @@ class UserController extends Controller implements HasMiddleware
         return [
             new Middleware('can:users-index', only: ['index']),
             new Middleware('can:users-create', only: ['create', 'store']),
-            new Middleware('can:users-update', only: ['edit', 'update']),
+            // Removed middleware from edit/update - handled manually in methods to allow self-editing
             new Middleware('can:users-delete', only: ['destroy']),
         ];
     }
@@ -50,12 +50,21 @@ class UserController extends Controller implements HasMiddleware
 
     public function edit(User $user)
     {
+        // Allow users to edit their own profile OR require users-update permission
+        if (auth()->id() !== $user->id && !auth()->user()->can('users-update')) {
+            abort(403, 'THIS ACTION IS UNAUTHORIZED.');
+        }
+
         $roles = $this->userService->create();
         return view('dashboard.pages.users.edit',compact('user','roles'));
     }
 
     public function update($id,UpdateUserRequest $updateUserRequest)
     {
+        // Allow users to update their own profile OR require users-update permission
+        if (auth()->id() != $id && !auth()->user()->can('users-update')) {
+            abort(403, 'THIS ACTION IS UNAUTHORIZED.');
+        }
 
         $data = $updateUserRequest->validated();
         $this->userService->update($id,$data);

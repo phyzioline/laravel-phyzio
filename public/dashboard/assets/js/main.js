@@ -14,14 +14,23 @@ $(function () {
 
 
 
-  /* toggle button */
+  /* toggle button - Enhanced for reliability */
 
-  $(".btn-toggle").click(function () {
+  $(".btn-toggle").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
     $("body").hasClass("toggled") ? ($("body").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover")) : ($("body").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
       $("body").addClass("sidebar-hovered")
     }, function () {
       $("body").removeClass("sidebar-hovered")
     }))
+  })
+
+  // Backup toggle handler for icon clicks
+  $(".btn-toggle i").click(function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).closest(".btn-toggle").trigger("click");
   })
 
 
