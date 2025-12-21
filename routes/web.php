@@ -39,7 +39,11 @@ foreach ($supportedLocales as $locale) {
         'prefix' => $locale,
         'middleware' => ['localeViewPath'] // Removed localizationRedirect to avoid conflicts
     ], function() use ($locale) {
-        // Home route - same name for both, Laravel will match the correct one
+        // Set locale BEFORE registering routes
+        app()->setLocale($locale);
+        session(['locale' => $locale]);
+        
+        // Home route - Laravel will match based on URL prefix
         Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
