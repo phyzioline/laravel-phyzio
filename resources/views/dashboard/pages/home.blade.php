@@ -1,4 +1,34 @@
 @extends('dashboard.layouts.app')
+
+@push('styles')
+<style>
+    /* Chart Container Constraints */
+    .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    
+    .chart-container canvas {
+        max-width: 100% !important;
+        max-height: 100% !important;
+    }
+    
+    /* Ensure cards don't overflow */
+    .card-body {
+        overflow: hidden;
+    }
+    
+    /* Fix for responsive chart sizing */
+    @media (max-width: 768px) {
+        .chart-container {
+            height: 250px !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
     <main class="page-wrapper">
         <div class="main-content">
@@ -174,11 +204,11 @@
                 {{-- Charts Section --}}
                 <div class="row g-4 mt-4">
                     {{-- Payment Methods Chart --}}
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Payment Methods Distribution</h5>
-                                <div style="position: relative; height: 300px;">
+                                <div class="chart-container" style="height: 300px; max-height: 300px;">
                                     <canvas id="paymentMethodsChart"></canvas>
                                 </div>
                             </div>
@@ -186,11 +216,11 @@
                     </div>
 
                     {{-- User Types Chart --}}
-                    <div class="col-lg-6">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">User Distribution</h5>
-                                <div style="position: relative; height: 300px;">
+                                <div class="chart-container" style="height: 300px; max-height: 300px;">
                                     <canvas id="userTypesChart"></canvas>
                                 </div>
                             </div>
@@ -198,11 +228,11 @@
                     </div>
 
                     {{-- Ecosystem Overview Chart --}}
-                    <div class="col-lg-12">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Ecosystem Overview</h5>
-                                <div style="position: relative; height: 300px;">
+                                <div class="chart-container" style="height: 350px; max-height: 350px;">
                                     <canvas id="ecosystemChart"></canvas>
                                 </div>
                             </div>
@@ -626,7 +656,7 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-line text-primary"></i> Monthly Earnings</h5>
-                                <div style="position: relative; height: 250px;">
+                                <div class="chart-container" style="height: 250px; max-height: 250px;">
                                     <canvas id="vendorMonthlySalesChart"></canvas>
                                 </div>
                             </div>
@@ -638,7 +668,7 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-pie text-success"></i> Payment Methods</h5>
-                                <div style="position: relative; height: 250px;">
+                                <div class="chart-container" style="height: 250px; max-height: 250px;">
                                     <canvas id="vendorPaymentMethodsChart"></canvas>
                                 </div>
                             </div>
