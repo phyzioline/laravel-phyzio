@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class SetLocaleFromUrl
+{
+    /**
+     * Handle an incoming request.
+     * Sets locale from URL segment (en/ar) before routes are matched
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $path = $request->path();
+        $segments = explode('/', $path);
+        
+        // Check if first segment is a valid locale
+        if (!empty($segments[0]) && in_array($segments[0], ['en', 'ar'])) {
+            $locale = $segments[0];
+            app()->setLocale($locale);
+            session(['locale' => $locale]);
+        } else {
+            // Default locale
+            $locale = session('locale', config('app.locale', 'en'));
+            app()->setLocale($locale);
+        }
+        
+        return $next($request);
+    }
+}
+

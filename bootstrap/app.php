@@ -37,6 +37,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Auto-detect currency on web requests
         $middleware->web(append: [
             \App\Http\Middleware\SetCurrencyMiddleware::class,
+            \App\Http\Middleware\SetLocaleFromUrl::class, // Set locale from URL before routes
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
