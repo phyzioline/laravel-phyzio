@@ -40,8 +40,8 @@ foreach ($supportedLocales as $locale) {
         // Set locale for this route group
         app()->setLocale($locale);
         
-        // Home route
-        Route::get('/', [HomeController::class, 'index'])->name('home.' . $locale);
+        // Home route - use same name for both locales
+        Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');

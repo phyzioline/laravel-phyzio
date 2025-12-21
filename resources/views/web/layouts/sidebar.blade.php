@@ -5,7 +5,7 @@
         </span>
 
         <div class="brand-logo text-center clearfix">
-            <a href="{{ route('home') }}" class="brand-link">
+            <a href="{{ '/' . app()->getLocale() }}" class="brand-link">
                 <img src="{{ asset('web/assets/images/Frame 131.svg') }}" alt="logo_not_found" />
             </a>
             @if (Auth::check() && Auth::user()->hasRole('vendor'))
@@ -160,7 +160,7 @@
                     @endif
                 @endif
 
-                <li class="menu-item-box {{ Route::is('home') ? 'active' : '' }}"><a href="{{ route('home') }}">{{ __('Home') }}</a></li>
+                <li class="menu-item-box {{ request()->is(app()->getLocale()) || request()->is(app()->getLocale() . '/*') ? 'active' : '' }}"><a href="{{ '/' . app()->getLocale() }}">{{ __('Home') }}</a></li>
                 <li class="menu-item-box {{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.home_visits.*') ? 'active' : '' }}"><a href="{{ route('web.home_visits.index') }}">{{ __('Home Visits') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
@@ -181,7 +181,7 @@
                         <a href="{{ route('view_login') }}"><i class="las la-sign-in-alt"></i> {{ __('Log In') }}</a>
                     </li>
                 @endif
-                <li class="menu-item-box"><a href="{{ route('home') }}#about">{{ __('About Us') }}</a></li>
+                <li class="menu-item-box"><a href="{{ '/' . app()->getLocale() }}#about">{{ __('About Us') }}</a></li>
             </ul>
         </div>
 

@@ -381,7 +381,7 @@
                     </div>
                     <div class="breadcrumb-nav ul-li-center clearfix">
                         <ul class="clearfix">
-                            <li style="font-size: 18px;color: #fff; "><a href="{{ route('home') }}">Home |</a></li>
+                            <li style="font-size: 18px;color: #fff; "><a href="{{ '/' . app()->getLocale() }}">Home |</a></li>
                             <li style="font-size: 18px;" class="active mx-2"><a href="{{ route('show') }}">Shop |</a></li>
                             <li style="font-size: 18px; color: #fff; " class="active">Wishlist</li>
                         </ul>

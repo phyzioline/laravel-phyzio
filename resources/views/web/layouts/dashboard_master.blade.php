@@ -386,7 +386,7 @@
 
             <!-- Common Footer Links -->
             <li>
-                <a href="{{ route('home') }}">
+                <a href="{{ '/' . app()->getLocale() }}">
                     <span class="las la-arrow-left"></span>
                     <span>{{ __('Back to Website') }}</span>
                 </a>

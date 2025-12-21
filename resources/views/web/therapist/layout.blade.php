@@ -21,7 +21,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="text-center mb-4">
-            <a href="{{ route('home') }}">
+            <a href="{{ '/' . app()->getLocale() }}">
                 <img src="{{ asset('web/assets/images/logo.png') }}" alt="Phyzioline" style="max-width: 80%;">
             </a>
         </div>

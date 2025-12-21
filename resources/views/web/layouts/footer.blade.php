@@ -5,7 +5,7 @@
       <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
         <div class="footer-widget">
           <div class="brand-logo mb-4">
-            <a href="{{ route('home') }}" class="brand-link">
+            <a href="{{ '/' . app()->getLocale() }}" class="brand-link">
               <!-- Using white logo or filtering the existing one if needed. Assuming white text logo is preferred on dark bg -->
                @php
                     $setting = \App\Models\Setting::first();

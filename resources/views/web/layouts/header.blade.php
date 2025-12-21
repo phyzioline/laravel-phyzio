@@ -486,7 +486,7 @@ body.has-hero .shop-hero-banner {
         <!-- LOGIN BUTTON REMOVED (Duplicate) -->
         
         <!-- LOGO -->
-        <a href="{{ route('home') }}" class="brand-link" style="margin-left: auto;">
+        <a href="{{ '/' . app()->getLocale() }}" class="brand-link" style="margin-left: auto;">
             <img src="{{ asset('web/assets/images/main_logo_white.png') }}"
                  style="max-height: 45px; object-fit: contain;">
         </a>
@@ -514,7 +514,7 @@ body.has-hero .shop-hero-banner {
                                       <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Order History') }}</a>
                                   </li>
                               @endif
-                            <li><a href="{{ route('home') }}#about" class="text-decoration-none">{{ __('About Us') }}</a></li>
+                            <li><a href="{{ '/' . app()->getLocale() }}#about" class="text-decoration-none">{{ __('About Us') }}</a></li>
                         </ul>
                     </nav>
                 </div>
