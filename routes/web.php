@@ -30,6 +30,7 @@ Route::group(
 	'prefix' => LaravelLocalization::setLocale(),
 	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
 ], function(){
+    // Explicit home route - must be accessible with and without trailing slash
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
