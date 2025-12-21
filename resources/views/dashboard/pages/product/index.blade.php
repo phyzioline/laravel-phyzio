@@ -197,6 +197,15 @@
 
     <script>
         $(document).ready(function() {
+            // Check if SweetAlert2 is loaded
+            if (typeof Swal === 'undefined') {
+                console.error('SweetAlert2 is not loaded!');
+                alert('Error: SweetAlert2 library is missing. Please refresh the page.');
+                return;
+            }
+            
+            console.log('jQuery and SweetAlert2 loaded successfully');
+            
             // Initialize DataTable
             var table = $('#example2').DataTable({
                 responsive: true,
@@ -267,9 +276,13 @@
                 }
             });
 
-            // Delete button functionality
-            $('#example2').on('click', '.delete-country-btn', function() {
+            // Delete button functionality - Enhanced with better event handling
+            $(document).on('click', '.delete-country-btn', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
                 let id = $(this).data('id');
+                console.log('Delete button clicked for product ID:', id);
 
                 Swal.fire({
                     title: '{{ __('Are you sure?') }}',
@@ -282,8 +295,11 @@
                     confirmButtonText: '{{ __('Yes, delete it!') }}'
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        console.log('Deletion confirmed, submitting form...');
+                        
+                        // Create and submit form
                         let form = $('<form>', {
-                            'action': '{{ url('/dashboard/products') }}/' + id,
+                            'action': '{{ route("dashboard.products.index") }}/' + id,
                             'method': 'POST',
                             'style': 'display:none'
                         });

@@ -220,13 +220,15 @@
 
 
 
+  <!--jQuery - MUST BE LOADED FIRST-->
+  <script src="{{ asset('dashboard/assets/js/jquery.min.js')}}"></script>
+  
   <!--bootstrap js-->
    <script src="{{ asset('dashboard/assets/js/bootstrap.bundle.min.js')}}"></script>
 
-  @stack('scripts')
+  <!--SweetAlert2 - Load before page scripts-->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!--plugins-->
-  <script src="{{ asset('dashboard/assets/js/jquery.min.js')}}"></script>
   <!--plugins-->
   <script src="{{ asset('dashboard/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js')}}"></script>
   <script src="{{ asset('dashboard/assets/plugins/metismenu/metisMenu.min.js')}}"></script>
@@ -241,7 +243,9 @@
 
   <script src="{{ asset('dashboard/assets/js/data-widgets.js')}}"></script>
   <script src="{{ asset('dashboard/assets/js/main.js')}}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!--Page-specific scripts - Load AFTER all libraries-->
+  @stack('scripts')
 @if (\Session::has('message'))
         <script type="text/javascript">
             $(function() {
