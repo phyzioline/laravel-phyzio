@@ -1,47 +1,227 @@
-/* RTL Overrides for Phyzioline New Modules */
+/* RTL Override Styles for Arabic */
+
+/* General RTL Fixes */
 html[dir="rtl"] {
-    /* Feed Cards */
-    .feed-card .icon-box {
-        margin-left: 1rem;
-        margin-right: 0 !important;
-    }
-    
-    .feed-card .ml-auto {
-        margin-left: 0 !important;
-        margin-right: auto !important;
-    }
-    
-    .feed-card .mr-2, .feed-card .mr-3 {
-        margin-right: 0 !important;
-        margin-left: 0.5rem;
-    }
-    
-    /* Dashboard Sidebar Icons */
-    .sidebar-menu li a i {
-        margin-right: 0;
-        margin-left: 10px;
-    }
-    
-    /* Button Icons */
-    .btn .la-arrow-right {
-        margin-left: 0;
-        margin-right: 0.5rem;
-        transform: rotate(180deg);
-    }
-    
-    /* Form Inputs */
-    .form-control {
-        text-align: right;
-    }
-    
-    /* Tables */
-    .table th, .table td {
-        text-align: right;
-    }
-    
-    /* Badges and Pills */
-    .badge, .rounded-pill {
-        margin-left: 0.5rem;
-        margin-right: 0;
-    }
+    text-align: right;
+}
+
+html[dir="rtl"] body {
+    direction: rtl;
+    text-align: right;
+}
+
+/* Bootstrap RTL Fixes */
+html[dir="rtl"] .float-left {
+    float: right !important;
+}
+
+html[dir="rtl"] .float-right {
+    float: left !important;
+}
+
+html[dir="rtl"] .text-left {
+    text-align: right !important;
+}
+
+html[dir="rtl"] .text-right {
+    text-align: left !important;
+}
+
+html[dir="rtl"] .mr-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+}
+
+html[dir="rtl"] .ml-auto {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+}
+
+/* Margins and Padding RTL */
+html[dir="rtl"] .me-1 { margin-right: 0 !important; margin-left: 0.25rem !important; }
+html[dir="rtl"] .me-2 { margin-right: 0 !important; margin-left: 0.5rem !important; }
+html[dir="rtl"] .me-3 { margin-right: 0 !important; margin-left: 1rem !important; }
+html[dir="rtl"] .ms-1 { margin-left: 0 !important; margin-right: 0.25rem !important; }
+html[dir="rtl"] .ms-2 { margin-left: 0 !important; margin-right: 0.5rem !important; }
+html[dir="rtl"] .ms-3 { margin-left: 0 !important; margin-right: 1rem !important; }
+
+html[dir="rtl"] .pe-1 { padding-right: 0 !important; padding-left: 0.25rem !important; }
+html[dir="rtl"] .pe-2 { padding-right: 0 !important; padding-left: 0.5rem !important; }
+html[dir="rtl"] .pe-3 { padding-right: 0 !important; padding-left: 1rem !important; }
+html[dir="rtl"] .ps-1 { padding-left: 0 !important; padding-right: 0.25rem !important; }
+html[dir="rtl"] .ps-2 { padding-left: 0 !important; padding-right: 0.5rem !important; }
+html[dir="rtl"] .ps-3 { padding-left: 0 !important; padding-right: 1rem !important; }
+
+/* Navigation RTL */
+html[dir="rtl"] .navbar-nav {
+    flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .dropdown-menu {
+    right: auto;
+    left: 0;
+    text-align: right;
+}
+
+html[dir="rtl"] .dropdown-menu-end {
+    right: auto !important;
+    left: 0 !important;
+}
+
+/* Forms RTL */
+html[dir="rtl"] .form-control,
+html[dir="rtl"] .form-select,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea {
+    text-align: right;
+    direction: rtl;
+}
+
+html[dir="rtl"] .input-group > :not(:first-child) {
+    margin-right: -1px;
+    margin-left: 0;
+}
+
+/* Buttons RTL */
+html[dir="rtl"] .btn i {
+    margin-right: 0;
+    margin-left: 0.5rem;
+}
+
+/* Breadcrumb RTL */
+html[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before {
+    float: right;
+    padding-right: 0;
+    padding-left: 0.5rem;
+    content: "/";
+}
+
+/* Icons RTL */
+html[dir="rtl"] i.fa,
+html[dir="rtl"] i.las,
+html[dir="rtl"] i.material-icons-outlined {
+    margin-left: 8px;
+    margin-right: 0;
+}
+
+/* Sidebar RTL */
+html[dir="rtl"] .sidebar-wrapper {
+    left: auto;
+    right: 0;
+}
+
+html[dir="rtl"] .page-wrapper,
+html[dir="rtl"] .main-wrapper {
+    margin-left: 0;
+    margin-right: 260px;
+}
+
+html[dir="rtl"] .top-header .navbar {
+    left: auto;
+    right: 260px;
+}
+
+html[dir="rtl"] body.toggled .sidebar-wrapper {
+    right: -260px;
+}
+
+html[dir="rtl"] body.toggled .page-wrapper,
+html[dir="rtl"] body.toggled .main-wrapper {
+    margin-right: 0;
+}
+
+html[dir="rtl"] body.toggled .top-header .navbar {
+    right: 0;
+}
+
+/* Table RTL */
+html[dir="rtl"] table {
+    text-align: right;
+}
+
+html[dir="rtl"] .table th,
+html[dir="rtl"] .table td {
+    text-align: right;
+}
+
+/* Notification Badge RTL */
+html[dir="rtl"] .badge {
+    right: auto;
+    left: -5px;
+}
+
+/* Modal RTL */
+html[dir="rtl"] .modal-header .btn-close {
+    margin: -0.5rem auto -0.5rem -0.5rem;
+}
+
+/* Alert RTL */
+html[dir="rtl"] .alert-dismissible .btn-close {
+    left: 0;
+    right: auto;
+}
+
+/* Pagination RTL */
+html[dir="rtl"] .pagination {
+    flex-direction: row-reverse;
+}
+
+/* Cards RTL */
+html[dir="rtl"] .card-header,
+html[dir="rtl"] .card-body,
+html[dir="rtl"] .card-footer {
+    text-align: right;
+}
+
+/* List Group RTL */
+html[dir="rtl"] .list-group {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+html[dir="rtl"] .list-group-item {
+    text-align: right;
+}
+
+/* Progress Bar RTL */
+html[dir="rtl"] .progress-bar {
+    right: 0;
+    left: auto;
+}
+
+/* Checkbox and Radio RTL */
+html[dir="rtl"] .form-check {
+    padding-right: 1.25em;
+    padding-left: 0;
+}
+
+html[dir="rtl"] .form-check-input {
+    float: right;
+    margin-right: -1.25em;
+    margin-left: 0;
+}
+
+/* Toast RTL */
+html[dir="rtl"] .toast {
+    text-align: right;
+}
+
+/* Offcanvas RTL */
+html[dir="rtl"] .offcanvas-end {
+    right: auto;
+    left: 0;
+    transform: translateX(-100%);
+}
+
+/* DataTables RTL */
+html[dir="rtl"] .dataTables_wrapper .dataTables_filter {
+    float: left;
+}
+
+html[dir="rtl"] .dataTables_wrapper .dataTables_paginate {
+    float: left;
+}
+
+html[dir="rtl"] .dataTables_wrapper .dataTables_info {
+    float: right;
 }

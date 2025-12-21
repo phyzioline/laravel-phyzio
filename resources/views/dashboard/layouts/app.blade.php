@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" data-bs-theme="blue-theme">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}" data-bs-theme="blue-theme">
 
 <head>
   <meta charset="utf-8">
@@ -34,6 +34,12 @@
   <link href="{{ asset('dashboard/sass/responsive.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('dashboard/css/dash.css')}}">
   <link rel="stylesheet" href="{{ asset('dashboard/css/teal-theme.css')}}">
+  
+  <!-- RTL Support for Arabic -->
+  @if(app()->getLocale() == 'ar')
+  <link rel="stylesheet" href="{{ asset('dashboard/css/rtl.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/rtl-overrides.css')}}">
+  @endif
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
    <!-- swiper -->
