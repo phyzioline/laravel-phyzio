@@ -24,7 +24,8 @@ use App\Http\Controllers\Web\FeedController;
 
 // Root route - redirect based on locale
 Route::get('/', function () {
-    return redirect(LaravelLocalization::getLocalizedURL(null, null, [], false));
+    $locale = session('locale', config('app.locale', 'en'));
+    return redirect('/' . $locale);
 })->middleware(['localeSessionRedirect']);
 
 // Dynamic Localization Route Group
@@ -34,7 +35,7 @@ Route::group(
 	'prefix' => LaravelLocalization::setLocale(),
 	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
 ], function(){
-    // Home route
+    // Home route - must match /en or /ar
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
