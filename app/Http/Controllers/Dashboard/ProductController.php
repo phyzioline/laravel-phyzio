@@ -203,23 +203,42 @@ class ProductController extends Controller implements HasMiddleware
         $importedCount = 0;
 
         if ($extension === 'csv' || $extension === 'txt') {
+            // Open file with UTF-8 encoding support
             $handle = fopen($file->getRealPath(), "r");
-            $header = fgetcsv($handle); // Skip header row
+            
+            // Detect delimiter (semicolon or comma)
+            $firstLine = fgets($handle);
+            rewind($handle);
+            $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
+            
+            $header = fgetcsv($handle, 0, $delimiter); // Skip header row
 
-            while (($row = fgetcsv($handle)) !== FALSE) {
+            while (($row = fgetcsv($handle, 0, $delimiter)) !== FALSE) {
+                // Skip empty rows
+                if(empty(array_filter($row))) continue;
+                
                 // Skip if name is empty
                 if(empty($row[3])) continue;
+                
+                // Clean and convert encoding for Arabic text
+                $productNameAr = !empty($row[4]) ? mb_convert_encoding(trim($row[4]), 'UTF-8', 'UTF-8') : ($row[3] ?? '');
+                $shortDescAr = !empty($row[10]) ? mb_convert_encoding(trim($row[10]), 'UTF-8', 'UTF-8') : '';
+                $longDescAr = !empty($row[11]) ? mb_convert_encoding(trim($row[11]), 'UTF-8', 'UTF-8') : '';
+                
+                // Clean price (remove "EGP" and spaces)
+                $price = floatval(preg_replace('/[^0-9.]/', '', $row[5] ?? 0));
 
                 $product = \App\Models\Product::create([
                     'user_id' => $userId,
-                    'product_name_en' => $row[3],
-                    'product_name_ar' => $row[4] ?? $row[3],
-                    'product_price' => floatval($row[5] ?? 0),
-                    'amount' => intval($row[6] ?? 0),
-                    'sku' => $row[7] ?? uniqid(),
-                    'status' => 'active',
-                    'short_description_en' => $row[9] ?? 'Imported Product',
-                    'short_description_ar' => $row[10] ?? 'منتج مستورد',
+                    'product_name_en' => trim($row[3] ?? ''),
+                    'product_name_ar' => $productNameAr,
+                    'product_price' => $price,
+                    'amount' => intval($row[6] ?? 1),
+                    'sku' => trim($row[7] ?? uniqid()),
+                    'status' => strtolower(trim($row[8] ?? 'active')) === 'active' ? 'active' : 'inactive',
+                    'short_description_en' => trim($row[9] ?? 'Imported Product'),
+                    'short_description_ar' => $shortDescAr,
+                    'long_description_ar' => $longDescAr,
                     // Fallback to first category
                     'category_id' => \App\Models\Category::first()->id ?? 1, 
                     'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
