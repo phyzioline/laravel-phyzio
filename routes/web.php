@@ -55,9 +55,9 @@ Route::group(
     Route::get('/forget_password', [PasswordController::class, 'index'])->name('view_forget_password');
     Route::post('/forget_password', [PasswordController::class, 'store'])->name('forget_password');
     
-    Route::get('shop',[ShowController::class, 'show'])->name('show');
+    Route::get('/shop',[ShowController::class, 'show'])->name('show');
     
-    Route::get('products/{id}', [ShowController::class, 'product'])->name('product.show');
+    Route::get('/products/{id}', [ShowController::class, 'product'])->name('product.show');
         Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name('shipping_policy.index');
      Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name('privacy_policy.index');
      
@@ -190,19 +190,23 @@ Route::group(
             // logout
             Route::get('logout', [LoginController::class, 'logout'])->name('logout');
             
-             // Generic Dashboard Redirect
+             // Generic Dashboard Redirect - Redirects to non-localized dashboard routes
             Route::get('/dashboard', function () {
                 $user = Auth::user();
+                // Remove locale prefix and redirect to actual dashboard
+                $locale = app()->getLocale();
+                $dashboardUrl = str_replace('/' . $locale . '/dashboard', '/dashboard', request()->url());
+                
                 if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
-                    return redirect()->route('dashboard.home');
-                } elseif ($user->type === 'therapist') { // Using type column based on previous context
+                    return redirect('/dashboard/home');
+                } elseif ($user->type === 'therapist') {
                     return redirect()->route('therapist.dashboard');
-                } elseif ($user->hasRole('instructor')) { // Assuming role or type, checking previous code
+                } elseif ($user->hasRole('instructor')) {
                     return redirect()->route('instructor.dashboard');
                 } elseif ($user->hasRole('clinic')) {
                     return redirect()->route('clinic.dashboard');
                 } else {
-                    return redirect()->route('history_order.index'); // User dashboard
+                    return redirect()->route('history_order.index');
                 }
             })->name('dashboard');
         });
