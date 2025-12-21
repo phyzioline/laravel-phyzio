@@ -14,24 +14,39 @@ $(function () {
 
 
 
-  /* toggle button - Enhanced for reliability */
+  /* toggle button - Enhanced for reliability and direct DOM manipulation */
 
-  $(".btn-toggle").click(function (e) {
+  $(".btn-toggle").on("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
-    $("body").hasClass("toggled") ? ($("body").removeClass("toggled"), $(".sidebar-wrapper").unbind("hover")) : ($("body").addClass("toggled"), $(".sidebar-wrapper").hover(function () {
-      $("body").addClass("sidebar-hovered")
-    }, function () {
-      $("body").removeClass("sidebar-hovered")
-    }))
-  })
+    
+    if ($("body").hasClass("toggled")) {
+      $("body").removeClass("toggled");
+      $(".sidebar-wrapper").unbind("hover");
+    } else {
+      $("body").addClass("toggled");
+      $(".sidebar-wrapper").hover(
+        function () {
+          $("body").addClass("sidebar-hovered");
+        }, 
+        function () {
+          $("body").removeClass("sidebar-hovered");
+        }
+      );
+    }
+  });
 
   // Backup toggle handler for icon clicks
-  $(".btn-toggle i").click(function (e) {
+  $(".btn-toggle i").on("click", function (e) {
     e.preventDefault();
     e.stopPropagation();
     $(this).closest(".btn-toggle").trigger("click");
-  })
+  });
+  
+  // Additional direct click handler on the toggle container
+  $(document).on("click", ".btn-toggle", function(e) {
+    console.log("Toggle clicked!");
+  });
 
 
 

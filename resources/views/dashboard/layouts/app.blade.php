@@ -83,17 +83,28 @@
        opacity: 1 !important;
      }
 
-     /* Fix Hamburger Toggle Layout & Clicking Area */
+     /* Fix Hamburger Toggle Layout & Clicking Area - CRITICAL FIX */
      .btn-toggle {
        width: 45px !important;
        height: 45px !important;
+       min-width: 45px !important;
+       max-width: 45px !important;
        display: flex !important;
        align-items: center !important;
        justify-content: center !important;
-       z-index: 1050 !important;
+       z-index: 9999 !important; /* Higher than everything */
        cursor: pointer !important;
        position: relative !important;
        pointer-events: auto !important;
+       flex-shrink: 0 !important; /* Don't allow shrinking */
+       margin-right: 15px !important;
+       background: transparent !important;
+       border-radius: 50% !important;
+       transition: background 0.3s !important;
+     }
+     
+     .btn-toggle:hover {
+       background: rgba(13, 148, 136, 0.1) !important;
      }
      
      .btn-toggle a {
@@ -115,10 +126,22 @@
        pointer-events: none !important;
      }
 
-     /* Search Area Safety - Don't Block Toggle */
+     /* Navbar - Ensure proper layout */
+     .top-header .navbar {
+       display: flex !important;
+       align-items: center !important;
+       gap: 0 !important;
+       padding: 0 1.5rem !important;
+     }
+
+     /* Search Area - Don't Expand Over Toggle */
      .search-content {
-       max-width: 600px !important;
+       max-width: 500px !important;
        pointer-events: auto !important;
+       flex-grow: 1 !important;
+       flex-shrink: 1 !important;
+       margin-left: 0 !important;
+       padding-left: 0 !important;
      }
 
      /* GLOBAL DENSITY - "The Amazon Look" */
