@@ -117,7 +117,7 @@ class ProductController extends Controller implements HasMiddleware
                 "Expires"             => "0"
             ];
 
-            $columns = ['ID', 'Category', 'SubCategory', 'Name (EN)', 'Name (AR)', 'Price', 'Amount', 'SKU', 'Status'];
+            $columns = ['ID', 'Category', 'SubCategory', 'Name (EN)', 'Name (AR)', 'Price', 'Amount', 'SKU', 'Status', 'Description (EN)', 'Description (AR)', 'Image Link'];
 
             $callback = function() use($products, $columns) {
                 $file = fopen('php://output', 'w');
@@ -137,6 +137,9 @@ class ProductController extends Controller implements HasMiddleware
                         $product->amount,
                         $product->sku,
                         $product->status,
+                        $product->short_description_en,
+                        $product->short_description_ar,
+                        $product->image_url,
                     ];
                     fputcsv($file, $row);
                 }
@@ -160,6 +163,9 @@ class ProductController extends Controller implements HasMiddleware
                 $item->addChild('amount', $product->amount);
                 $item->addChild('sku', htmlspecialchars($product->sku));
                 $item->addChild('status', $product->status);
+                $item->addChild('description_en', htmlspecialchars($product->short_description_en ?? ''));
+                $item->addChild('description_ar', htmlspecialchars($product->short_description_ar ?? ''));
+                $item->addChild('image_link', htmlspecialchars($product->image_url ?? ''));
             }
 
             return response($xml->asXML(), 200, [
@@ -204,7 +210,7 @@ class ProductController extends Controller implements HasMiddleware
                 // Skip if name is empty
                 if(empty($row[3])) continue;
 
-                \App\Models\Product::create([
+                $product = \App\Models\Product::create([
                     'user_id' => $userId,
                     'product_name_en' => $row[3],
                     'product_name_ar' => $row[4] ?? $row[3],
@@ -212,32 +218,44 @@ class ProductController extends Controller implements HasMiddleware
                     'amount' => intval($row[6] ?? 0),
                     'sku' => $row[7] ?? uniqid(),
                     'status' => 'active',
-                    'product_desc_en' => 'Imported Product',
-                    'product_desc_ar' => 'منتج مستورد',
+                    'short_description_en' => $row[9] ?? 'Imported Product',
+                    'short_description_ar' => $row[10] ?? 'منتج مستورد',
                     // Fallback to first category
                     'category_id' => \App\Models\Category::first()->id ?? 1, 
                     'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
                 ]);
+
+                // Handle Image Import
+                if (!empty($row[11])) {
+                    $this->importProductImage($product, $row[11]);
+                }
+
                 $importedCount++;
             }
             fclose($handle);
         } elseif ($extension === 'xml') {
             // ... (XML logic remains, update user_id)
             $xml = simplexml_load_file($file->getRealPath());
-            foreach ($xml->product as $product) {
-                \App\Models\Product::create([
+            foreach ($xml->product as $productData) {
+                $product = \App\Models\Product::create([
                     'user_id' => $userId,
-                    'product_name_en' => (string)$product->name_en,
-                    'product_name_ar' => (string)$product->name_ar,
-                    'product_price' => floatval($product->price),
-                    'amount' => intval($product->amount),
-                    'sku' => (string)$product->sku,
+                    'product_name_en' => (string)$productData->name_en,
+                    'product_name_ar' => (string)$productData->name_ar,
+                    'product_price' => floatval($productData->price),
+                    'amount' => intval($productData->amount),
+                    'sku' => (string)$productData->sku,
                     'status' => 'active',
-                    'product_desc_en' => 'Imported Product',
-                    'product_desc_ar' => 'منتج مستورد',
+                    'short_description_en' => (string)$productData->description_en ?: 'Imported Product',
+                    'short_description_ar' => (string)$productData->description_ar ?: 'منتج مستورد',
                     'category_id' => \App\Models\Category::first()->id ?? 1,
                     'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
                 ]);
+
+                // Handle Image Import
+                if (!empty($productData->image_link)) {
+                    $this->importProductImage($product, (string)$productData->image_link);
+                }
+
                 $importedCount++;
             }
         } else {
@@ -245,5 +263,41 @@ class ProductController extends Controller implements HasMiddleware
         }
 
         return redirect()->back()->with('success', "Imported $importedCount products successfully for user ID: $userId.");
+    }
+
+    /**
+     * Helper to download and save product image from URL.
+     */
+    private function importProductImage($product, $imageUrl)
+    {
+        try {
+            $contents = file_get_contents($imageUrl);
+            if ($contents) {
+                $info = pathinfo($imageUrl);
+                $extension = strtolower($info['extension'] ?? 'jpg');
+                if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    $extension = 'jpg'; // Fallback
+                }
+                
+                $fileName = 'import_' . time() . '_' . uniqid() . '.' . $extension;
+                $directory = public_path('uploads/products');
+                
+                if (!file_exists($directory)) {
+                    mkdir($directory, 0755, true);
+                }
+                
+                $path = $directory . '/' . $fileName;
+                file_put_contents($path, $contents);
+                
+                // Create image record
+                \App\Models\ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => 'uploads/products/' . $fileName
+                ]);
+            }
+        } catch (\Exception $e) {
+            // Log error or ignore if image fails
+            \Log::error('Failed to import image for product ' . $product->id . ': ' . $e->getMessage());
+        }
     }
 }
