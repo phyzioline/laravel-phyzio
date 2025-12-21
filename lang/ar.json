@@ -265,5 +265,22 @@
     "Edit Profile": "تعديل الملف الشخصي",
     "Edit User": "تعديل المستخدم",
     "Role": "الدور",
-    "status": "الحالة"
+    "status": "الحالة",
+    "Medical Engineer Service Option": "خيار خدمة المهندس الطبي",
+    "Offer Medical Engineer Service": "تقديم خدمة المهندس الطبي",
+    "Enable this to allow customers to request a medical engineer for installation/setup": "فعّل هذا الخيار للسماح للعملاء بطلب مهندس طبي للتركيب والإعداد",
+    "Engineer Service Price": "سعر خدمة المهندس",
+    "Extra charge for medical engineer service": "رسوم إضافية لخدمة المهندس الطبي",
+    "Service Type": "نوع الخدمة",
+    "Optional": "اختياري",
+    "Customer can choose": "يمكن للعميل الاختيار",
+    "Mandatory": "إلزامي",
+    "Cannot buy without engineer": "لا يمكن الشراء بدون مهندس",
+    "Choose if engineer service is optional or required": "اختر إذا كانت خدمة المهندس اختيارية أو إلزامية",
+    "Note:": "ملاحظة:",
+    "If mandatory, customers MUST select engineer service to purchase this product.": "إذا كانت إلزامية، يجب على العملاء اختيار خدمة المهندس لشراء هذا المنتج.",
+    "Medical Engineer Installation": "تركيب المهندس الطبي",
+    "Professional installation and setup service": "خدمة تركيب وإعداد احترافية",
+    "Required for this product": "مطلوب لهذا المنتج",
+    "Add Medical Engineer": "إضافة مهندس طبي"
 }

@@ -156,6 +156,66 @@
                             </div>
                         </div>
 
+                        {{-- Medical Engineer Service Option --}}
+                        <div class="card border-primary mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">
+                                    <i class="fa fa-user-md me-2"></i>{{ __('Medical Engineer Service Option') }}
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="has_engineer_option" id="has_engineer_option" value="1" {{ old('has_engineer_option') ? 'checked' : '' }}>
+                                            <label class="form-check-label fw-semibold" for="has_engineer_option">
+                                                {{ __('Offer Medical Engineer Service') }}
+                                            </label>
+                                            <small class="d-block text-muted">{{ __('Enable this to allow customers to request a medical engineer for installation/setup') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="engineer_options" style="display: {{ old('has_engineer_option') ? 'block' : 'none' }};">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">{{ __('Engineer Service Price') }}</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">{{ config('currency.default_symbol', 'EGP') }}</span>
+                                                <input type="number" step="0.01" class="form-control" name="engineer_price" id="engineer_price" value="{{ old('engineer_price') }}" placeholder="0.00">
+                                            </div>
+                                            <small class="text-muted">{{ __('Extra charge for medical engineer service') }}</small>
+                                            @error('engineer_price')
+                                                <small class="text-danger d-block">{{ $message }}</small>
+                                            @enderror
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">{{ __('Service Type') }}</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="engineer_required" id="engineer_optional" value="0" {{ old('engineer_required', 0) == 0 ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="engineer_optional">
+                                                    <strong>{{ __('Optional') }}</strong> - {{ __('Customer can choose') }}
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="engineer_required" id="engineer_mandatory" value="1" {{ old('engineer_required') == 1 ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="engineer_mandatory">
+                                                    <strong class="text-danger">{{ __('Mandatory') }}</strong> - {{ __('Cannot buy without engineer') }}
+                                                </label>
+                                            </div>
+                                            <small class="text-muted">{{ __('Choose if engineer service is optional or required') }}</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-info">
+                                        <i class="fa fa-info-circle me-2"></i>
+                                        <strong>{{ __('Note:') }}</strong> {{ __('If mandatory, customers MUST select engineer service to purchase this product.') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-primary">{{ __('Add') }}</button>
                         </div>
@@ -165,3 +225,22 @@
         </div>
     </main>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Toggle engineer options visibility
+    $('#has_engineer_option').change(function() {
+        if ($(this).is(':checked')) {
+            $('#engineer_options').slideDown();
+            $('#engineer_price').attr('required', true);
+        } else {
+            $('#engineer_options').slideUp();
+            $('#engineer_price').attr('required', false);
+            $('#engineer_price').val('');
+            $('#engineer_optional').prop('checked', true);
+        }
+    });
+});
+</script>
+@endpush

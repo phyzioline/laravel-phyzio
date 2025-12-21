@@ -240,5 +240,22 @@
     "Edit Profile": "Edit Profile",
     "Edit User": "Edit User",
     "Role": "Role",
-    "status": "Status"
+    "status": "Status",
+    "Medical Engineer Service Option": "Medical Engineer Service Option",
+    "Offer Medical Engineer Service": "Offer Medical Engineer Service",
+    "Enable this to allow customers to request a medical engineer for installation/setup": "Enable this to allow customers to request a medical engineer for installation/setup",
+    "Engineer Service Price": "Engineer Service Price",
+    "Extra charge for medical engineer service": "Extra charge for medical engineer service",
+    "Service Type": "Service Type",
+    "Optional": "Optional",
+    "Customer can choose": "Customer can choose",
+    "Mandatory": "Mandatory",
+    "Cannot buy without engineer": "Cannot buy without engineer",
+    "Choose if engineer service is optional or required": "Choose if engineer service is optional or required",
+    "Note:": "Note:",
+    "If mandatory, customers MUST select engineer service to purchase this product.": "If mandatory, customers MUST select engineer service to purchase this product.",
+    "Medical Engineer Installation": "Medical Engineer Installation",
+    "Professional installation and setup service": "Professional installation and setup service",
+    "Required for this product": "Required for this product",
+    "Add Medical Engineer": "Add Medical Engineer"
 }

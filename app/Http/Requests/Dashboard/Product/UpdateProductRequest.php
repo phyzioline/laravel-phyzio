@@ -37,6 +37,10 @@ class UpdateProductRequest extends FormRequest
             'tags'                 => 'nullable|array|min:1',
             'tags.*'               => 'nullable|exists:tags,id',
             'status'               => 'nullable|in:active,inactive',
+            // Medical Engineer Service
+            'has_engineer_option'  => 'nullable|boolean',
+            'engineer_price'       => 'nullable|required_if:has_engineer_option,1|numeric|min:0',
+            'engineer_required'    => 'nullable|boolean',
         ];
     }
 }
