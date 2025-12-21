@@ -91,7 +91,8 @@ class ProductService
     {
         $product = $this->model->findOrFail($id);
 
-        $product->update($data);
+        // Exclude 'tags' and 'images' from direct update - they're handled separately
+        $product->update(\Illuminate\Support\Arr::except($data, ['images', 'tags']));
 
         if (! empty($data['images']) && is_array($data['images'])) {
             $product->productImages()->delete();
@@ -108,8 +109,14 @@ class ProductService
             $product->productImages()->createMany($imagesData);
         }
 
-        if (! empty($data['tags']) && is_array($data['tags'])) {
-            $product->tags()->sync($data['tags']);
+        // Handle tags separately using the relationship
+        if (isset($data['tags'])) {
+            if (! empty($data['tags']) && is_array($data['tags'])) {
+                $product->tags()->sync($data['tags']);
+            } else {
+                // If tags array is empty, remove all tags
+                $product->tags()->sync([]);
+            }
         }
 
         return $product;
