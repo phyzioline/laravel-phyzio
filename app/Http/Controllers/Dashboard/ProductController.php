@@ -178,7 +178,53 @@ class ProductController extends Controller implements HasMiddleware
     }
 
     /**
-     * Import products from CSV or XML.
+     * Sanitize text to remove invalid UTF-8 characters that cause database errors.
+     */
+    private function sanitizeText($text)
+    {
+        if (empty($text)) {
+            return '';
+        }
+        
+        // Convert to UTF-8, handling various source encodings
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            $text = mb_convert_encoding($text, 'UTF-8', 'auto');
+        }
+        
+        // Remove invalid UTF-8 sequences
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        
+        // Remove control characters except newlines, tabs, and carriage returns
+        $text = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $text);
+        
+        // Remove problematic 4-byte UTF-8 characters (emojis and special symbols) that cause MySQL errors
+        // But preserve Arabic and standard Unicode characters (U+0000 to U+FFFF)
+        $text = preg_replace('/[\x{10000}-\x{10FFFF}]/u', '', $text);
+        
+        // Remove specific problematic Windows-1252 control characters (0x80-0x9F) that cause issues
+        // These are often misinterpreted as UTF-8
+        $text = preg_replace('/[\x{80}-\x{9F}]/u', '', $text);
+        
+        // Clean HTML entities but keep valid ones
+        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        
+        // Remove any remaining invalid byte sequences
+        // Only keep valid UTF-8 characters
+        $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        
+        // Final validation - ensure it's valid UTF-8 for database
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            // If still invalid, use a more aggressive approach
+            $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+            // Remove any remaining non-printable characters
+            $text = preg_replace('/[^\x20-\x7E\x{A0}-\x{FFFF}]/u', '', $text);
+        }
+        
+        return trim($text);
+    }
+
+    /**
+     * Import products from CSV, XML, or Excel.
      */
     public function import(\Illuminate\Http\Request $request)
     {
@@ -199,89 +245,231 @@ class ProductController extends Controller implements HasMiddleware
         }
 
         $file = $request->file('file');
-        $extension = $file->getClientOriginalExtension();
+        $extension = strtolower($file->getClientOriginalExtension());
         $importedCount = 0;
+        $errors = [];
 
-        if ($extension === 'csv' || $extension === 'txt') {
-            // Open file with UTF-8 encoding support
-            $handle = fopen($file->getRealPath(), "r");
-            
-            // Detect delimiter (semicolon or comma)
-            $firstLine = fgets($handle);
-            rewind($handle);
-            $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
-            
-            $header = fgetcsv($handle, 0, $delimiter); // Skip header row
-
-            while (($row = fgetcsv($handle, 0, $delimiter)) !== FALSE) {
-                // Skip empty rows
-                if(empty(array_filter($row))) continue;
+        try {
+            if ($extension === 'csv' || $extension === 'txt') {
+                // Open file with UTF-8 encoding support
+                // Try to detect encoding and convert to UTF-8
+                $fileContent = file_get_contents($file->getRealPath());
                 
-                // Skip if name is empty
-                if(empty($row[3])) continue;
-                
-                // Clean and convert encoding for Arabic text
-                $productNameAr = !empty($row[4]) ? mb_convert_encoding(trim($row[4]), 'UTF-8', 'UTF-8') : ($row[3] ?? '');
-                $shortDescAr = !empty($row[10]) ? mb_convert_encoding(trim($row[10]), 'UTF-8', 'UTF-8') : '';
-                $longDescAr = !empty($row[11]) ? mb_convert_encoding(trim($row[11]), 'UTF-8', 'UTF-8') : '';
-                
-                // Clean price (remove "EGP" and spaces)
-                $price = floatval(preg_replace('/[^0-9.]/', '', $row[5] ?? 0));
-
-                $product = \App\Models\Product::create([
-                    'user_id' => $userId,
-                    'product_name_en' => trim($row[3] ?? ''),
-                    'product_name_ar' => $productNameAr,
-                    'product_price' => $price,
-                    'amount' => intval($row[6] ?? 1),
-                    'sku' => trim($row[7] ?? uniqid()),
-                    'status' => strtolower(trim($row[8] ?? 'active')) === 'active' ? 'active' : 'inactive',
-                    'short_description_en' => trim($row[9] ?? 'Imported Product'),
-                    'short_description_ar' => $shortDescAr,
-                    'long_description_ar' => $longDescAr,
-                    // Fallback to first category
-                    'category_id' => \App\Models\Category::first()->id ?? 1, 
-                    'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
-                ]);
-
-                // Handle Image Import
-                if (!empty($row[11])) {
-                    $this->importProductImage($product, $row[11]);
+                // Detect encoding
+                $encoding = mb_detect_encoding($fileContent, ['UTF-8', 'Windows-1256', 'ISO-8859-1', 'Windows-1252'], true);
+                if ($encoding && $encoding !== 'UTF-8') {
+                    $fileContent = mb_convert_encoding($fileContent, 'UTF-8', $encoding);
+                    // Write converted content to temp file
+                    $tempFile = tempnam(sys_get_temp_dir(), 'csv_import_');
+                    file_put_contents($tempFile, $fileContent);
+                    $handle = fopen($tempFile, "r");
+                } else {
+                    $handle = fopen($file->getRealPath(), "r");
                 }
+                
+                // Detect delimiter (semicolon or comma)
+                $firstLine = fgets($handle);
+                rewind($handle);
+                $delimiter = strpos($firstLine, ';') !== false ? ';' : ',';
+                
+                $header = fgetcsv($handle, 0, $delimiter); // Skip header row
 
-                $importedCount++;
-            }
-            fclose($handle);
-        } elseif ($extension === 'xml') {
-            // ... (XML logic remains, update user_id)
-            $xml = simplexml_load_file($file->getRealPath());
-            foreach ($xml->product as $productData) {
-                $product = \App\Models\Product::create([
-                    'user_id' => $userId,
-                    'product_name_en' => (string)$productData->name_en,
-                    'product_name_ar' => (string)$productData->name_ar,
-                    'product_price' => floatval($productData->price),
-                    'amount' => intval($productData->amount),
-                    'sku' => (string)$productData->sku,
-                    'status' => 'active',
-                    'short_description_en' => (string)$productData->description_en ?: 'Imported Product',
-                    'short_description_ar' => (string)$productData->description_ar ?: 'منتج مستورد',
-                    'category_id' => \App\Models\Category::first()->id ?? 1,
-                    'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
-                ]);
+                while (($row = fgetcsv($handle, 0, $delimiter)) !== FALSE) {
+                    try {
+                        // Skip empty rows
+                        if(empty(array_filter($row))) continue;
+                        
+                        // Skip if name is empty
+                        if(empty($row[3])) continue;
+                        
+                        // Clean and sanitize text fields
+                        // CSV Structure: ID;Category;SubCategory;Name (EN);Name (AR);Price;Amount;SKU;Status;Description (EN);Description (AR);Image Link
+                        $productNameEn = $this->sanitizeText($row[3] ?? '');
+                        $productNameAr = !empty($row[4]) ? $this->sanitizeText($row[4]) : $productNameEn;
+                        $shortDescEn = $this->sanitizeText($row[9] ?? 'Imported Product');
+                        $shortDescAr = !empty($row[10]) ? $this->sanitizeText($row[10]) : '';
+                        // Note: CSV doesn't have long_description, so we'll leave it empty or use short description
+                        $longDescAr = '';
+                        $imageLink = !empty($row[11]) ? trim($row[11]) : '';
+                        
+                        // Clean price (remove "EGP" and spaces)
+                        $price = floatval(preg_replace('/[^0-9.]/', '', $row[5] ?? 0));
+                        
+                        // Try to find category and subcategory by name if provided
+                        $categoryId = 1;
+                        $subCategoryId = 1;
+                        if (!empty($row[1])) {
+                            $category = \App\Models\Category::where('name_en', 'like', '%' . trim($row[1]) . '%')
+                                ->orWhere('name_ar', 'like', '%' . trim($row[1]) . '%')
+                                ->first();
+                            if ($category) {
+                                $categoryId = $category->id;
+                            }
+                        }
+                        if (!empty($row[2])) {
+                            $subCategory = \App\Models\SubCategory::where('name_en', 'like', '%' . trim($row[2]) . '%')
+                                ->orWhere('name_ar', 'like', '%' . trim($row[2]) . '%')
+                                ->first();
+                            if ($subCategory) {
+                                $subCategoryId = $subCategory->id;
+                            }
+                        }
 
-                // Handle Image Import
-                if (!empty($productData->image_link)) {
-                    $this->importProductImage($product, (string)$productData->image_link);
+                        $product = \App\Models\Product::create([
+                            'user_id' => $userId,
+                            'product_name_en' => $productNameEn,
+                            'product_name_ar' => $productNameAr,
+                            'product_price' => $price,
+                            'amount' => intval($row[6] ?? 1),
+                            'sku' => trim($row[7] ?? uniqid()),
+                            'status' => strtolower(trim($row[8] ?? 'active')) === 'active' ? 'active' : 'inactive',
+                            'short_description_en' => $shortDescEn,
+                            'short_description_ar' => $shortDescAr,
+                            'long_description_ar' => $longDescAr,
+                            'category_id' => $categoryId, 
+                            'sub_category_id' => $subCategoryId,
+                        ]);
+
+                        // Handle Image Import
+                        if (!empty($imageLink)) {
+                            $this->importProductImage($product, $imageLink);
+                        }
+
+                        $importedCount++;
+                    } catch (\Exception $e) {
+                        $errors[] = 'Row error: ' . $e->getMessage();
+                        \Log::error('Product import row error: ' . $e->getMessage() . ' | Row data: ' . json_encode($row));
+                        continue;
+                    }
                 }
+                fclose($handle);
+                
+                // Clean up temp file if created
+                if (isset($tempFile) && file_exists($tempFile)) {
+                    unlink($tempFile);
+                }
+            } elseif ($extension === 'xlsx' || $extension === 'xls') {
+                // Excel file support using PhpSpreadsheet
+                $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReaderForFile($file->getRealPath());
+                $reader->setReadDataOnly(true);
+                $spreadsheet = $reader->load($file->getRealPath());
+                $worksheet = $spreadsheet->getActiveSheet();
+                $rows = $worksheet->toArray();
+                
+                // Skip header row
+                array_shift($rows);
+                
+                foreach ($rows as $row) {
+                    try {
+                        // Skip empty rows
+                        if(empty(array_filter($row))) continue;
+                        
+                        // Skip if name is empty
+                        if(empty($row[3])) continue;
+                        
+                        // Clean and sanitize text fields
+                        // Excel Structure: ID;Category;SubCategory;Name (EN);Name (AR);Price;Amount;SKU;Status;Description (EN);Description (AR);Image Link
+                        $productNameEn = $this->sanitizeText($row[3] ?? '');
+                        $productNameAr = !empty($row[4]) ? $this->sanitizeText($row[4]) : $productNameEn;
+                        $shortDescEn = $this->sanitizeText($row[9] ?? 'Imported Product');
+                        $shortDescAr = !empty($row[10]) ? $this->sanitizeText($row[10]) : '';
+                        // Note: Excel doesn't have long_description, so we'll leave it empty
+                        $longDescAr = '';
+                        $imageLink = !empty($row[11]) ? trim($row[11]) : '';
+                        
+                        // Clean price (remove "EGP" and spaces)
+                        $price = floatval(preg_replace('/[^0-9.]/', '', $row[5] ?? 0));
+                        
+                        // Try to find category and subcategory by name if provided
+                        $categoryId = 1;
+                        $subCategoryId = 1;
+                        if (!empty($row[1])) {
+                            $category = \App\Models\Category::where('name_en', 'like', '%' . trim($row[1]) . '%')
+                                ->orWhere('name_ar', 'like', '%' . trim($row[1]) . '%')
+                                ->first();
+                            if ($category) {
+                                $categoryId = $category->id;
+                            }
+                        }
+                        if (!empty($row[2])) {
+                            $subCategory = \App\Models\SubCategory::where('name_en', 'like', '%' . trim($row[2]) . '%')
+                                ->orWhere('name_ar', 'like', '%' . trim($row[2]) . '%')
+                                ->first();
+                            if ($subCategory) {
+                                $subCategoryId = $subCategory->id;
+                            }
+                        }
 
-                $importedCount++;
+                        $product = \App\Models\Product::create([
+                            'user_id' => $userId,
+                            'product_name_en' => $productNameEn,
+                            'product_name_ar' => $productNameAr,
+                            'product_price' => $price,
+                            'amount' => intval($row[6] ?? 1),
+                            'sku' => trim($row[7] ?? uniqid()),
+                            'status' => strtolower(trim($row[8] ?? 'active')) === 'active' ? 'active' : 'inactive',
+                            'short_description_en' => $shortDescEn,
+                            'short_description_ar' => $shortDescAr,
+                            'long_description_ar' => $longDescAr,
+                            'category_id' => $categoryId, 
+                            'sub_category_id' => $subCategoryId,
+                        ]);
+
+                        // Handle Image Import
+                        if (!empty($imageLink)) {
+                            $this->importProductImage($product, $imageLink);
+                        }
+
+                        $importedCount++;
+                    } catch (\Exception $e) {
+                        $errors[] = 'Row error: ' . $e->getMessage();
+                        \Log::error('Product import row error: ' . $e->getMessage() . ' | Row data: ' . json_encode($row));
+                        continue;
+                    }
+                }
+            } elseif ($extension === 'xml') {
+                $xml = simplexml_load_file($file->getRealPath());
+                foreach ($xml->product as $productData) {
+                    try {
+                        $product = \App\Models\Product::create([
+                            'user_id' => $userId,
+                            'product_name_en' => $this->sanitizeText((string)$productData->name_en),
+                            'product_name_ar' => $this->sanitizeText((string)$productData->name_ar),
+                            'product_price' => floatval($productData->price),
+                            'amount' => intval($productData->amount),
+                            'sku' => (string)$productData->sku,
+                            'status' => 'active',
+                            'short_description_en' => $this->sanitizeText((string)$productData->description_en ?: 'Imported Product'),
+                            'short_description_ar' => $this->sanitizeText((string)$productData->description_ar ?: 'منتج مستورد'),
+                            'category_id' => \App\Models\Category::first()->id ?? 1,
+                            'sub_category_id' => \App\Models\SubCategory::first()->id ?? 1,
+                        ]);
+
+                        // Handle Image Import
+                        if (!empty($productData->image_link)) {
+                            $this->importProductImage($product, (string)$productData->image_link);
+                        }
+
+                        $importedCount++;
+                    } catch (\Exception $e) {
+                        $errors[] = 'Row error: ' . $e->getMessage();
+                        \Log::error('Product import row error: ' . $e->getMessage());
+                        continue;
+                    }
+                }
+            } else {
+                return redirect()->back()->with('error', 'Unsupported file format. Please use CSV, XML, or Excel files.');
             }
-        } else {
-             return redirect()->back()->with('error', 'For Excel (.xlsx) files, please convert to CSV first as server libraries are missing.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage());
         }
 
-        return redirect()->back()->with('success', "Imported $importedCount products successfully for user ID: $userId.");
+        $message = "Imported $importedCount products successfully for user ID: $userId.";
+        if (!empty($errors)) {
+            $message .= ' Some rows had errors. Check logs for details.';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 
     /**

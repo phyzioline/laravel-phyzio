@@ -169,10 +169,10 @@
                         </div>
                         @endrole
                         <div class="mb-3">
-                            <label for="file" class="form-label">{{ __('Choose File (CSV, XML)') }}</label>
-                            <input class="form-control" type="file" id="file" name="file" required accept=".csv,.xml,.txt,.xlsx">
+                            <label for="file" class="form-label">{{ __('Choose File (CSV, XML, Excel)') }}</label>
+                            <input class="form-control" type="file" id="file" name="file" required accept=".csv,.xml,.txt,.xlsx,.xls">
                             <div class="form-text">
-                                {{ __('Supported formats: CSV, XML. For Excel, convert to CSV first.') }}
+                                {{ __('Supported formats: CSV, XML, Excel (.xlsx, .xls)') }}
                                 <br>
                                 <a href="{{ route('dashboard.products.export', 'csv') }}" class="text-primary">{{ __('Download CSV Template') }}</a>
                             </div>
