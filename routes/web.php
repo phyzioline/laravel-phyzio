@@ -107,15 +107,7 @@ foreach ($supportedLocales as $locale) {
         Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('web.profile.update');
 
         // Vendor Dashboard Routes (Amazon-style multi-vendor)
-        Route:: prefix('vendor')->name('vendor.')->middleware(function ($request, $next) {
-            if (auth()->user()->type !== 'vendor') {
-                abort(403, 'Access denied. Vendor account required.');
-            }
-            if (auth()->user()->status !== 'active') {
-                return redirect()->route('home')->with('error', 'Your vendor account is inactive.');
-            }
-            return $next($request);
-        })->group(function () {
+        Route::prefix('vendor')->name('vendor.')->middleware(App\Http\Middleware\VendorMiddleware::class)->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Vendor\VendorDashboardController::class, 'index'])->name('dashboard');
             Route::get('/orders', [App\Http\Controllers\Vendor\VendorOrderController::class, 'index'])->name('orders.index');
             Route::get('/orders/{id}', [App\Http\Controllers\Vendor\VendorOrderController::class, 'show'])->name('orders.show');
