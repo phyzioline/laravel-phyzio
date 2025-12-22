@@ -255,15 +255,34 @@ class ProductController extends Controller implements HasMiddleware
                 // Try to detect encoding and convert to UTF-8
                 $fileContent = file_get_contents($file->getRealPath());
                 
-                // Detect encoding
-                $encoding = mb_detect_encoding($fileContent, ['UTF-8', 'Windows-1256', 'ISO-8859-1', 'Windows-1252'], true);
+                // Get list of supported encodings and filter to only valid ones
+                $supportedEncodings = mb_list_encodings();
+                $encodingsToTry = array_intersect(['UTF-8', 'Windows-1256', 'ISO-8859-1', 'Windows-1252', 'ISO-8859-15'], $supportedEncodings);
+                
+                // Always include UTF-8 as first option
+                if (!in_array('UTF-8', $encodingsToTry)) {
+                    array_unshift($encodingsToTry, 'UTF-8');
+                }
+                
+                // Detect encoding (only use available encodings)
+                $encoding = mb_detect_encoding($fileContent, $encodingsToTry, true);
+                
+                // If detection fails or returns false, try UTF-8 conversion directly
                 if ($encoding && $encoding !== 'UTF-8') {
-                    $fileContent = mb_convert_encoding($fileContent, 'UTF-8', $encoding);
-                    // Write converted content to temp file
-                    $tempFile = tempnam(sys_get_temp_dir(), 'csv_import_');
-                    file_put_contents($tempFile, $fileContent);
-                    $handle = fopen($tempFile, "r");
+                    try {
+                        $fileContent = mb_convert_encoding($fileContent, 'UTF-8', $encoding);
+                        // Write converted content to temp file
+                        $tempFile = tempnam(sys_get_temp_dir(), 'csv_import_');
+                        file_put_contents($tempFile, $fileContent);
+                        $handle = fopen($tempFile, "r");
+                    } catch (\Exception $e) {
+                        // If conversion fails, use original file
+                        \Log::warning('Encoding conversion failed: ' . $e->getMessage());
+                        $handle = fopen($file->getRealPath(), "r");
+                    }
                 } else {
+                    // If already UTF-8 or detection failed, use original file
+                    // The sanitizeText function will handle any remaining encoding issues
                     $handle = fopen($file->getRealPath(), "r");
                 }
                 
