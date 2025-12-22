@@ -98,7 +98,16 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-4">No shipments found.</td>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="d-flex flex-column align-items-center">
+                                            <i class="bi bi-box-seam fs-1 text-muted mb-3"></i>
+                                            <h5 class="text-muted">No shipments found</h5>
+                                            <p class="text-muted mb-3">You haven't shipped any orders yet.</p>
+                                            <a href="{{ route('dashboard.orders.index') }}" class="btn btn-primary">
+                                                <i class="bi bi-cart-check me-2"></i> Go to Orders to Ship
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>

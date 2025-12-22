@@ -55,13 +55,16 @@
                             </h4>
                             <div class="rating-star ul-li mb-30 clearfix">
                                 <ul class="float-left mr-2">
-                                    <li class="active"><i class="las la-star"></i></li>
-                                    <li class="active"><i class="las la-star"></i></li>
-                                    <li class="active"><i class="las la-star"></i></li>
-                                    <li class="active"><i class="las la-star"></i></li>
-                                    <li><i class="las la-star"></i></li>
+                                    @php $avgRating = $product->average_rating; @endphp
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= round($avgRating))
+                                        <li class="active"><i class="las la-star"></i></li>
+                                        @else
+                                        <li><i class="las la-star"></i></li>
+                                        @endif
+                                    @endfor
                                 </ul>
-                                <span class="review-text">(12 Reviews)</span>
+                                <span class="review-text">({{ $product->review_count }} Reviews)</span>
                             </div>
                             <span class="physio-item-price mb-30 price-animated">{{ $product->product_price }} EGP</span>
                             
@@ -260,6 +263,9 @@
                             <li>
                                 <a class="active physio-tab-link text-white" style="padding : 10px 20px;" data-toggle="tab" href="#description-tab">Description</a>
                             </li>
+                            <li>
+                                <a class="physio-tab-link text-white" style="padding : 10px 20px;" data-toggle="tab" href="#reviews-tab">Reviews ({{ $product->review_count }})</a>
+                            </li>
                         </ul>
                     </div>
 
@@ -270,6 +276,87 @@
                                     <div class="physio-description-content">
                                         {{ $product->{'long_description_' . app()->getLocale()} }}
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {{-- Reviews Tab --}}
+                        <div id="reviews-tab" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <h4 class="mb-4">Customer Reviews</h4>
+                                    
+                                    @forelse($product->productReviews as $review)
+                                    <div class="card mb-3 border-0 shadow-sm">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <h6 class="mb-0">{{ $review->user->name }}</h6>
+                                                <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            <div class="mb-2 text-warning">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    @if($i <= $review->rating)
+                                                    <i class="las la-star"></i>
+                                                    @else
+                                                    <i class="lar la-star"></i>
+                                                    @endif
+                                                @endfor
+                                            </div>
+                                            <p class="mb-0 text-secondary">{{ $review->comment }}</p>
+                                        </div>
+                                    </div>
+                                    @empty
+                                    <div class="alert alert-info">No reviews yet. Be the first to review this product!</div>
+                                    @endforelse
+                                    
+                                    <hr class="my-5">
+                                    
+                                    <h4 class="mb-3">Write a Review</h4>
+                                    @auth
+                                        <form action="{{ route('web.products.reviews.store', $product->id) }}" method="POST">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label class="form-label">Rating</label>
+                                                <div class="rating-input">
+                                                    <div class="rate">
+                                                        <input type="radio" id="star5" name="rating" value="5" />
+                                                        <label for="star5" title="5 stars">5 stars</label>
+                                                        <input type="radio" id="star4" name="rating" value="4" />
+                                                        <label for="star4" title="4 stars">4 stars</label>
+                                                        <input type="radio" id="star3" name="rating" value="3" />
+                                                        <label for="star3" title="3 stars">3 stars</label>
+                                                        <input type="radio" id="star2" name="rating" value="2" />
+                                                        <label for="star2" title="2 stars">2 stars</label>
+                                                        <input type="radio" id="star1" name="rating" value="1" />
+                                                        <label for="star1" title="1 star">1 star</label>
+                                                    </div>
+                                                </div>
+                                                <style>
+                                                    .rate { float: left; height: 46px; padding: 0 10px; }
+                                                    .rate:not(:checked) > input { position:absolute; top:-9999px; }
+                                                    .rate:not(:checked) > label { float:right; width:1em; overflow:hidden; white-space:nowrap; cursor:pointer; font-size:30px; color:#ccc; }
+                                                    .rate:not(:checked) > label:before { content: '★ '; }
+                                                    .rate > input:checked ~ label { color: #ffc700; }
+                                                    .rate:not(:checked) > label:hover,
+                                                    .rate:not(:checked) > label:hover ~ label { color: #deb217; }
+                                                    .rate > input:checked + label:hover,
+                                                    .rate > input:checked + label:hover ~ label,
+                                                    .rate > input:checked ~ label:hover,
+                                                    .rate > input:checked ~ label:hover ~ label,
+                                                    .rate > label:hover ~ input:checked ~ label { color: #c59b08; }
+                                                </style>
+                                            </div>
+                                            <div class="mb-3 clearfix col-12">
+                                                <label class="form-label">Review</label>
+                                                <textarea name="comment" class="form-control" rows="4" placeholder="Share your experience..."></textarea>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mt-3">Submit Review</button>
+                                        </form>
+                                    @else
+                                        <div class="alert alert-warning">
+                                            Please <a href="{{ route('view_login') }}">login</a> to leave a review.
+                                        </div>
+                                    @endauth
                                 </div>
                             </div>
                         </div>

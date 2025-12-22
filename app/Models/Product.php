@@ -41,6 +41,17 @@ class Product extends Model
         return $this->belongsToMany(Tag::class, 'product_tags', 'product_id', 'tag_id');
     }
 
+    public function reviews()
+    {
+        return $this->hasManyAs(Review::class, 'product_id');
+    }
+
+    // Fix: hasManyAs is not correct, it's just hasMany
+    public function productReviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function getStatusAttribute($value)
     {
         return $value === 'active' ? 'Active' : 'Inactive';
@@ -97,5 +108,15 @@ class Product extends Model
         $price = (float) $this->product_price;
         $service = new \App\Services\CurrencyService();
         return $service->format($price);
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->productReviews()->avg('rating') ?: 0;
+    }
+
+    public function getReviewCountAttribute()
+    {
+        return $this->productReviews()->count();
     }
 }

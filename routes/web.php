@@ -102,6 +102,8 @@ foreach ($supportedLocales as $locale) {
             'carts' => CartController::class ,
         ]);
 
+        Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name('web.products.reviews.store');
+
         // Generic Profile Routes (Vendor, Buyer, Patient)
         Route::get('/profile', [App\Http\Controllers\Web\ProfileController::class, 'index'])->name('web.profile.index');
         Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('web.profile.update');

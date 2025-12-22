@@ -18,6 +18,9 @@
             <div class="ms-auto">
                 <div class="btn-group">
                     <a href="{{ route('dashboard.orders.print-label', $order->id) }}" target="_blank" class="btn btn-primary"><i class="bi bi-printer"></i> Print Packing Slip</a>
+                    @if(auth()->user()->type === 'vendor' && $order->status !== 'completed')
+                        <a href="{{ route('dashboard.orders.ship.create', $order->id) }}" class="btn btn-success ms-2"><i class="bi bi-truck"></i> Ship Items</a>
+                    @endif
                 </div>
             </div>
         </div>
