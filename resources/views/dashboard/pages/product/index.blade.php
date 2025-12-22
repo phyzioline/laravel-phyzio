@@ -666,14 +666,14 @@
                 let id = $(this).data('id');
                 
                 Swal.fire({
-                    title: '{{ __('Are you sure?") }}',
-                    text: "{{ __('Do you want to delete this item") }}",
+                    title: '{{ __('Are you sure?') }}',
+                    text: "{{ __('Do you want to delete this item') }}",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#DC143C',
                     cancelButtonColor: '#696969',
-                    cancelButtonText: "{{ __('Cancel") }}",
-                    confirmButtonText: '{{ __('Yes, delete it!") }}'
+                    cancelButtonText: "{{ __('Cancel') }}",
+                    confirmButtonText: '{{ __('Yes, delete it!') }}'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         let form = $('<form>', {
