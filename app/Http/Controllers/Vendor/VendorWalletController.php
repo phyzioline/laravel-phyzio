@@ -54,7 +54,7 @@ class VendorWalletController extends Controller
             );
 
             return redirect()
-                ->route('vendor.wallet')
+                ->route('dashboard.vendor.wallet')
                 ->with('success', 'Payout request submitted successfully. Awaiting admin approval.');
         } catch (\Exception $e) {
             return redirect()

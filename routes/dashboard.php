@@ -73,6 +73,10 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::post('orders/{order}/ship', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'store'])->name('orders.ship.store');
             Route::post('shipments/{shipment}/track', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'updateTracking'])->name('shipments.track');
 
+            // Vendor Wallet (Dedicated)
+            Route::get('wallet', [\App\Http\Controllers\Vendor\VendorWalletController::class, 'index'])->name('vendor.wallet');
+            Route::post('wallet/payout', [\App\Http\Controllers\Vendor\VendorWalletController::class, 'requestPayout'])->name('vendor.wallet.payout');
+
             // Pricing Management
             Route::prefix('pricing')->as('pricing.')->group(function () {
                 Route::get('/manage', [\App\Http\Controllers\Dashboard\PricingController::class, 'manage'])->name('manage');
