@@ -123,8 +123,9 @@
               </li>
               @endif
 
+
               <!-- Multi-Vendor Management (Admin Only) -->
-              @can('orders-index')
+              @if(auth()->user()->type !== 'vendor')
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-truck"></i></div>
@@ -136,7 +137,7 @@
                       <li><a href="{{ route('dashboard.shipments.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Shipments") }}</a></li>
                   </ul>
               </li>
-              @endcan
+              @endif
 
               <!-- Business Reports & Analytics -->
               @can('reports-index')
