@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::resource('tags', TagController::class);
             Route::get('products/export/{format?}', [ProductController::class, 'export'])->name('products.export');
             Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
+            Route::post('products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
             Route::resource('products', ProductController::class);
             Route::resource('orders', OrderController::class);
             Route::get('orders/{id}/print-label', [OrderController::class, 'printLabel'])->name('orders.print-label');

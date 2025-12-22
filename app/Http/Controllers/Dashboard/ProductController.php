@@ -36,7 +36,9 @@ class ProductController extends Controller implements HasMiddleware
     public function index()
     {
         $data = $this->productService->index();
-        return view('dashboard.pages.product.index',compact('data'));
+        $categories = Category::where('status', 'active')->get();
+        $subCategories = SubCategory::where('status', 'active')->get();
+        return view('dashboard.pages.product.index', compact('data', 'categories', 'subCategories'));
     }
 
     /**
@@ -97,6 +99,98 @@ class ProductController extends Controller implements HasMiddleware
         $this->productService->destroy($id);
         return redirect()->route('dashboard.products.index')->with('success','Deleted product');
 
+    }
+
+    /**
+     * Bulk actions for products
+     */
+    public function bulkAction(\Illuminate\Http\Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete,activate,deactivate,export',
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'exists:products,id'
+        ]);
+
+        $productIds = $request->product_ids;
+        $userId = auth()->id();
+        
+        // Ensure user can only act on their own products (unless admin)
+        if (!auth()->user()->hasRole('admin')) {
+            $products = \App\Models\Product::whereIn('id', $productIds)
+                ->where('user_id', $userId)
+                ->pluck('id')
+                ->toArray();
+            $productIds = $products;
+        }
+
+        if (empty($productIds)) {
+            return redirect()->back()->with('error', 'No products selected or unauthorized action.');
+        }
+
+        $count = 0;
+        switch ($request->action) {
+            case 'delete':
+                foreach ($productIds as $id) {
+                    $this->productService->destroy($id);
+                    $count++;
+                }
+                return redirect()->back()->with('success', "Deleted $count product(s) successfully.");
+                
+            case 'activate':
+                \App\Models\Product::whereIn('id', $productIds)->update(['status' => 'active']);
+                $count = count($productIds);
+                return redirect()->back()->with('success', "Activated $count product(s) successfully.");
+                
+            case 'deactivate':
+                \App\Models\Product::whereIn('id', $productIds)->update(['status' => 'inactive']);
+                $count = count($productIds);
+                return redirect()->back()->with('success', "Deactivated $count product(s) successfully.");
+                
+            case 'export':
+                // Export selected products
+                $products = \App\Models\Product::whereIn('id', $productIds)->get();
+                $fileName = 'products-selected-' . date('Y-m-d') . '.csv';
+                
+                $headers = [
+                    "Content-type" => "text/csv",
+                    "Content-Disposition" => "attachment; filename=$fileName",
+                    "Pragma" => "no-cache",
+                    "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+                    "Expires" => "0"
+                ];
+
+                $columns = ['ID', 'Category', 'SubCategory', 'Name (EN)', 'Name (AR)', 'Price', 'Amount', 'SKU', 'Status', 'Description (EN)', 'Description (AR)', 'Image Link'];
+
+                $callback = function() use($products, $columns) {
+                    $file = fopen('php://output', 'w');
+                    fputs($file, "\xEF\xBB\xBF");
+                    fputcsv($file, $columns);
+
+                    foreach ($products as $product) {
+                        $row = [
+                            $product->id,
+                            $product->category?->name_en ?? '',
+                            $product->sub_category?->name_en ?? '',
+                            $product->product_name_en,
+                            $product->product_name_ar,
+                            $product->product_price,
+                            $product->amount,
+                            $product->sku,
+                            $product->status,
+                            $product->short_description_en,
+                            $product->short_description_ar,
+                            $product->image_url,
+                        ];
+                        fputcsv($file, $row);
+                    }
+                    fclose($file);
+                };
+
+                return response()->stream($callback, 200, $headers);
+        }
+
+        return redirect()->back()->with('error', 'Invalid action.');
     }
 
     /**
