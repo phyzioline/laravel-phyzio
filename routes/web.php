@@ -106,6 +106,26 @@ foreach ($supportedLocales as $locale) {
         Route::get('/profile', [App\Http\Controllers\Web\ProfileController::class, 'index'])->name('web.profile.index');
         Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('web.profile.update');
 
+        // Vendor Dashboard Routes (Amazon-style multi-vendor)
+        Route:: prefix('vendor')->name('vendor.')->middleware(function ($request, $next) {
+            if (auth()->user()->type !== 'vendor') {
+                abort(403, 'Access denied. Vendor account required.');
+            }
+            if (auth()->user()->status !== 'active') {
+                return redirect()->route('home')->with('error', 'Your vendor account is inactive.');
+            }
+            return $next($request);
+        })->group(function () {
+            Route::get('/dashboard', [App\Http\Controllers\Vendor\VendorDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/orders', [App\Http\Controllers\Vendor\VendorOrderController::class, 'index'])->name('orders.index');
+            Route::get('/orders/{id}', [App\Http\Controllers\Vendor\VendorOrderController::class, 'show'])->name('orders.show');
+            Route::get('/shipments', [App\Http\Controllers\Vendor\VendorShippingController::class, 'index'])->name('shipments.index');
+            Route::get('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'show'])->name('shipments.show');
+            Route::post('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'update'])->name('shipments.update');
+            Route::get('/wallet', [App\Http\Controllers\Vendor\VendorWalletController::class, 'index'])->name('wallet');
+            Route::post('/wallet/payout', [App\Http\Controllers\Vendor\VendorWalletController::class, 'requestPayout'])->name('wallet.payout');
+        });
+
         // Instructor Routes
         Route::prefix('instructor')->name('instructor.')->group(function () {
             Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
