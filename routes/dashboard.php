@@ -31,6 +31,11 @@ Route::get('/dashboard/locale/{locale}', function ($locale) {
 })->name('dashboard.locale.switch');
 
 Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middleware\SetDashboardLocale::class], 'prefix' => 'dashboard', 'as' => 'dashboard.'], function () {
+            // Notifications
+            Route::get('/notifications', [App\Http\Controllers\Dashboard\NotificationController::class, 'index'])->name('notifications.index');
+            Route::get('/notifications/{id}/read', [App\Http\Controllers\Dashboard\NotificationController::class, 'read'])->name('notifications.read');
+            Route::post('/notifications/read-all', [App\Http\Controllers\Dashboard\NotificationController::class, 'readAll'])->name('notifications.readAll');
+
             Route::get('/home', [HomeController::class, 'index'])->name('home');
             Route::resource('roles', RoleController::class);
             Route::resource('users', UserController::class);

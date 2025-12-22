@@ -34,11 +34,11 @@
               <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow" style="width: 320px; max-height: 400px; overflow-y: auto;">
                 <div class="notify-header d-flex align-items-center justify-content-between border-bottom px-3 py-2">
                    <h6 class="mb-0">Notifications</h6>
-                   <!-- <a href="javascript:;" class="text-secondary small">Mark all as read</a> -->
+                   <a href="{{ route('dashboard.notifications.index') }}" class="text-primary small">View All</a>
                 </div>
                 <div class="notify-body">
                    @forelse(auth()->user()->unreadNotifications as $notification)
-                       <a class="dropdown-item border-bottom py-2" href="{{ isset($notification->data['order_id']) ? route('dashboard.orders.show', $notification->data['order_id']) : 'javascript:;' }}">
+                       <a class="dropdown-item border-bottom py-2" href="{{ route('dashboard.notifications.read', $notification->id) }}">
                            <div class="d-flex align-items-center gap-2">
                                <div class="notify-icon bg-light-primary text-primary rounded-circle p-1">
                                    <i class="material-icons-outlined">shopping_bag</i>
