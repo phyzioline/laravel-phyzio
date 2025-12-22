@@ -80,6 +80,45 @@
             width: 18px;
             height: 18px;
         }
+        
+        /* Table container and scaling */
+        .table-responsive {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        #example2 {
+            width: 100% !important;
+            table-layout: auto;
+        }
+        
+        /* Ensure card uses full width */
+        .card {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box;
+        }
+        
+        /* Responsive table adjustments */
+        @media screen and (max-width: 1200px) {
+            .table-responsive {
+                font-size: 11px;
+            }
+            #example2 th,
+            #example2 td {
+                padding: 4px 6px !important;
+                white-space: nowrap;
+            }
+        }
+        
+        /* Ensure proper width calculation accounting for sidebar */
+        @media screen and (min-width: 992px) {
+            .main-wrapper {
+                width: calc(100vw - 260px - 40px) !important;
+            }
+        }
     </style>
 @endpush
 
@@ -331,6 +370,8 @@
             // Initialize DataTable
             var table = $('#example2').DataTable({
                 responsive: true,
+                autoWidth: false,
+                scrollX: false,
                 order: [[1, 'asc']], // Sort by ID column (skip checkbox column)
                 pageLength: 25,
                 paging: true,

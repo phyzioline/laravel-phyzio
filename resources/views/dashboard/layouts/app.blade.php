@@ -151,11 +151,7 @@
      }
 
      /* GLOBAL DENSITY - "The Amazon Look" */
-     html {
-       zoom: 0.9 !important; /* Scale to show more data */
-       -moz-transform: scale(0.9);
-       -moz-transform-origin: 0 0;
-     }
+     /* Removed zoom to fix table scaling issues */
 
      body {
        font-family: "Amazon Ember", Arial, sans-serif !important;
@@ -214,11 +210,16 @@
        transition: all 0.3s ease;
        padding: 20px;
        min-height: calc(100vh - 70px);
+       width: calc(100vw - 260px - 40px) !important; /* Full width minus sidebar and padding */
+       max-width: calc(100vw - 260px - 40px) !important;
+       box-sizing: border-box;
      }
      
      /* When sidebar is toggled/collapsed */
      body.toggled .page-wrapper {
        margin-left: 0 !important;
+       width: calc(100vw - 40px) !important;
+       max-width: calc(100vw - 40px) !important;
      }
      
      /* Main wrapper alternative */
@@ -227,10 +228,22 @@
        margin-top: 70px !important;
        transition: all 0.3s ease;
        padding: 20px;
+       width: calc(100vw - 260px - 40px) !important; /* Full width minus sidebar and padding */
+       max-width: calc(100vw - 260px - 40px) !important;
+       box-sizing: border-box;
      }
      
      body.toggled .main-wrapper {
        margin-left: 0 !important;
+       width: calc(100vw - 40px) !important;
+       max-width: calc(100vw - 40px) !important;
+     }
+     
+     /* Ensure main-content uses full available width */
+     .main-content {
+       width: 100% !important;
+       max-width: 100% !important;
+       box-sizing: border-box;
      }
    </style>
 </head>
