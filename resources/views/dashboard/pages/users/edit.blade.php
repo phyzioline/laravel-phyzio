@@ -182,9 +182,9 @@
                                         <label for="status" class="form-label">{{ __('status') }}</label>
                                         <select class="form-select" name="status" id="status">
                                             <option value="" selected>{{ __('Choose status...') }}</option>
-                                            <option value="inactive" @selected($user->status == 'inactive')>{{ __('UnActive') }}
+                                            <option value="inactive" @selected(($user->status ?? '') === 'inactive')>{{ __('UnActive') }}
                                             </option>
-                                            <option value="active" @selected($user->status == 'active')>{{ __('Active') }}
+                                            <option value="active" @selected(($user->status ?? '') === 'active')>{{ __('Active') }}
                                             </option>
                                         </select>
                                         @error('status')

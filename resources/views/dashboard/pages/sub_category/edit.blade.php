@@ -14,7 +14,7 @@
                                         <select class="form-select" name="category_id">
                                             <option disabled>{{ __('Choose category...') }}</option>
                                             @foreach ($categories as $category)
-                                                <option value="{{ $category->id }}" @selected($sub_category->category_id == $category->id)>
+                                                <option value="{{ $category->id }}" @selected(($sub_category->category_id ?? 0) === $category->id)>
                                                     {{ $category->{'name_' . app()->getLocale()} }}</option>
                                             @endforeach
 
@@ -38,9 +38,9 @@
                                         <label for="status" class="form-label">{{ __('status') }}</label>
                                         <select class="form-select" name="status" id="status">
                                             <option value="" selected>{{ __('Choose status...') }}</option>
-                                            <option value="inactive" @selected($sub_category->status == 'inactive')>{{ __('UnActive') }}
+                                            <option value="inactive" @selected(($sub_category->status ?? '') === 'inactive')>{{ __('UnActive') }}
                                             </option>
-                                            <option value="active" @selected($sub_category->status == 'active')>{{ __('Active') }}
+                                            <option value="active" @selected(($sub_category->status ?? '') === 'active')>{{ __('Active') }}
                                             </option>
                                         </select>
                                         @error('status')

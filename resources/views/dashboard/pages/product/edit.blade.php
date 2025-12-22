@@ -110,8 +110,8 @@
                         <div class="col-md-6">
                             <label class="form-label">{{ __('Status') }}</label>
                             <select class="form-select" name="status" id="status">
-                                <option value="inactive" @selected(old('status', $product->status) == 'inactive')>{{ __('UnActive') }}</option>
-                                <option value="active" @selected(old('status', $product->status) == 'active')>{{ __('Active') }}</option>
+                                <option value="inactive" @selected((old('status', $product->status ?? '') === 'inactive'))>{{ __('UnActive') }}</option>
+                                <option value="active" @selected((old('status', $product->status ?? '') === 'active'))>{{ __('Active') }}</option>
                             </select>
                             @error('status')
                                 <small class="text-danger">{{ __('Status') }}</small>
