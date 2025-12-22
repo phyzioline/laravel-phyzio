@@ -180,7 +180,7 @@ class PayoutService
     /**
      * Process bulk payout approvals (admin).
      */
-    public function bulkApprovePay outs($payoutIds, $adminId)
+    public function bulkApprovePayouts($payoutIds, $adminId)
     {
         $approved = [];
         $failed = [];

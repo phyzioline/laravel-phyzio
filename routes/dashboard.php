@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::prefix('pricing')->as('pricing.')->group(function () {
                 Route::get('/manage', [\App\Http\Controllers\Dashboard\PricingController::class, 'manage'])->name('manage');
                 Route::get('/rules', [\App\Http\Controllers\Dashboard\PricingController::class, 'rules'])->name('rules');
-                Route::post('/update-price', [\App\Http\Controllers\Dashboard\PricingController::class, 'update Price'])->name('update-price');
+                Route::post('/update-price', [\App\Http\Controllers\Dashboard\Pricing Controller::class, 'updatePrice'])->name('update-price');
             });
 
             // Multi-Vendor Shipping Management (Admin Oversight)
