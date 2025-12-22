@@ -37,6 +37,16 @@ class Order extends Model
         return $this->hasMany(VendorPayment::class);
     }
 
+    public function shipments()
+    {
+        return $this->hasMany(Shipment::class);
+    }
+
+    public function returns()
+    {
+        return $this->hasManyThrough(ReturnModel::class, ItemsOrder::class, 'order_id', 'order_item_id');
+    }
+
     /**
      * Generate unique order number.
      */

@@ -11,6 +11,7 @@ class ItemsOrder extends Model
         'order_id',
         'product_id',
         'vendor_id',
+        'shipment_id',
         'quantity',
         'price',
         'total',
@@ -38,6 +39,16 @@ class ItemsOrder extends Model
     public function vendorPayment()
     {
         return $this->hasOne(VendorPayment::class, 'order_item_id', 'id');
+    }
+
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class);
+    }
+
+    public function return()
+    {
+        return $this->hasOne(ReturnModel::class, 'order_item_id');
     }
 
     /**
