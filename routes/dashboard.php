@@ -71,7 +71,25 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::prefix('pricing')->as('pricing.')->group(function () {
                 Route::get('/manage', [\App\Http\Controllers\Dashboard\PricingController::class, 'manage'])->name('manage');
                 Route::get('/rules', [\App\Http\Controllers\Dashboard\PricingController::class, 'rules'])->name('rules');
-                Route::post('/update-price', [\App\Http\Controllers\Dashboard\PricingController::class, 'updatePrice'])->name('update-price');
+                Route::post('/update-price', [\App\Http\Controllers\Dashboard\PricingController::class, 'update Price'])->name('update-price');
+            });
+
+            // Multi-Vendor Shipping Management (Admin Oversight)
+            Route::prefix('shipments')->as('shipments.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Dashboard\ShipmentController::class, 'index'])->name('index');
+                Route::get('/{id}', [\App\Http\Controllers\Dashboard\ShipmentController::class, 'show'])->name('show');
+                Route::post('/{id}/update-status', [\App\Http\Controllers\Dashboard\ShipmentController::class, 'updateStatus'])->name('update-status');
+                Route::get('/overdue/list', [\App\Http\Controllers\Dashboard\ShipmentController::class, 'overdue'])->name('overdue');
+            });
+
+            // Vendor Payout Management (Admin Approvals)
+            Route::prefix('payouts')->as('payouts.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Dashboard\PayoutController::class, 'index'])->name('index');
+                Route::get('/{id}', [\App\Http\Controllers\Dashboard\PayoutController::class, 'show'])->name('show');
+                Route::post('/{id}/approve', [\App\Http\Controllers\Dashboard\PayoutController::class, 'approve'])->name('approve');
+                Route::post('/{id}/mark-paid', [\App\Http\Controllers\Dashboard\PayoutController::class, 'markAsPaid'])->name('mark-paid');
+                Route::post('/{id}/cancel', [\App\Http\Controllers\Dashboard\PayoutController::class, 'cancel'])->name('cancel');
+                Route::post('/bulk-approve', [\App\Http\Controllers\Dashboard\PayoutController::class, 'bulkApprove'])->name('bulk-approve');
             });
 
             // Business Reports & Analytics

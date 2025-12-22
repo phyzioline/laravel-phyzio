@@ -123,6 +123,21 @@
               </li>
               @endif
 
+              <!-- Multi-Vendor Management (Admin Only) -->
+              @can('orders-index')
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-truck"></i></div>
+                      <div class="menu-title">{{ __("Multi-Vendor") }}</div>
+                  </a>
+                  <ul>
+                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Shipments") }}</a></li>
+                      <li><a href="{{ route('dashboard.payouts.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Vendor Payouts") }}</a></li>
+                      <li><a href="{{ route('dashboard.shipments.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Shipments") }}</a></li>
+                  </ul>
+              </li>
+              @endcan
+
               <!-- Business Reports & Analytics -->
               @can('reports-index')
               <li>
