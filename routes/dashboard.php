@@ -67,6 +67,12 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
                 Route::post('/update-stock', [\App\Http\Controllers\Dashboard\InventoryController::class, 'updateStock'])->name('update-stock');
             });
 
+            // Vendor Shipping Management
+            Route::get('shipments', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'index'])->name('shipments.index');
+            Route::get('orders/{order}/ship', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'create'])->name('orders.ship.create');
+            Route::post('orders/{order}/ship', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'store'])->name('orders.ship.store');
+            Route::post('shipments/{shipment}/track', [\App\Http\Controllers\Dashboard\VendorShipmentController::class, 'updateTracking'])->name('shipments.track');
+
             // Pricing Management
             Route::prefix('pricing')->as('pricing.')->group(function () {
                 Route::get('/manage', [\App\Http\Controllers\Dashboard\PricingController::class, 'manage'])->name('manage');

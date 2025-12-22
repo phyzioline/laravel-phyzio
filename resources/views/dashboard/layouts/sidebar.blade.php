@@ -115,10 +115,10 @@
                       <div class="menu-title">{{ __("Vendor Hub") }}</div>
                   </a>
                   <ul>
-                      <li><a href="{{ route('vendor.dashboard') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Dashboard") }}</a></li>
-                      <li><a href="{{ route('vendor.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
-                      <li><a href="{{ route('vendor.orders.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("My Orders") }}</a></li>
-                      <li><a href="{{ route('vendor.wallet') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-wallet me-1"></i>{{ __("Wallet & Payouts") }}</a></li>
+                      <li><a href="{{ route('dashboard.home') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Dashboard") }}</a></li>
+                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
+                      <li><a href="{{ route('dashboard.orders.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("My Orders") }}</a></li>
+                      <li><a href="{{ route('dashboard.payments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-wallet me-1"></i>{{ __("Wallet & Payouts") }}</a></li>
                   </ul>
               </li>
               @endif
