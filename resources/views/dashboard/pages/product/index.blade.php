@@ -42,55 +42,10 @@
             padding-top: 15px;
         }
         
-        /* Amazon-style filters sidebar */
-        .filters-sidebar {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .filter-section {
-            border-bottom: 1px solid #e7e7e7;
-            padding: 15px 0;
-        }
-        .filter-section:last-child {
-            border-bottom: none;
-        }
-        .filter-section h6 {
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #111;
-        }
-        .filter-checkbox {
-            margin: 8px 0;
-            display: flex;
-            align-items: center;
-        }
-        .filter-checkbox input[type="checkbox"] {
-            margin-right: 8px;
-            cursor: pointer;
-        }
-        .filter-checkbox label {
-            cursor: pointer;
-            font-size: 14px;
-            color: #565959;
-            margin: 0;
-        }
-        .filter-checkbox label:hover {
-            color: #111;
-        }
-        .price-range-inputs {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .price-range-inputs input {
-            flex: 1;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        /* Filter dropdowns styling */
+        .form-select-sm {
+            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
         }
         
         /* Bulk actions toolbar */
@@ -135,29 +90,75 @@
             <div class="row mb-5">
                 <div class="col-12">
                     <div class="card">
-                        <div class="add d-flex justify-content-end p-2 gap-2">
-                             <!-- Export Dropdown -->
-                             <div class="btn-group">
-                                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-file-export"></i> {{ __('Export') }}
+                        <div class="add d-flex justify-content-between align-items-center p-2 gap-2 flex-wrap">
+                            <!-- Filter Dropdowns -->
+                            <div class="d-flex gap-2 flex-wrap">
+                                <!-- Status Filter -->
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="filterStatus" style="min-width: 150px;">
+                                        <option value="">{{ __('All Status') }}</option>
+                                        <option value="active">{{ __('Active') }}</option>
+                                        <option value="inactive">{{ __('Inactive') }}</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Stock Filter -->
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="filterStock" style="min-width: 150px;">
+                                        <option value="">{{ __('All Stock') }}</option>
+                                        <option value="in">{{ __('In Stock') }} (>10)</option>
+                                        <option value="low">{{ __('Low Stock') }} (1-10)</option>
+                                        <option value="out">{{ __('Out of Stock') }}</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Category Filter -->
+                                <div class="btn-group">
+                                    <select class="form-select form-select-sm" id="filterCategory" style="min-width: 180px;">
+                                        <option value="">{{ __('All Categories') }}</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->{'name_' . app()->getLocale()} }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <!-- Price Range -->
+                                <div class="btn-group d-flex gap-1">
+                                    <input type="number" id="price-min" placeholder="{{ __('Min') }}" class="form-control form-control-sm" style="width: 80px;">
+                                    <input type="number" id="price-max" placeholder="{{ __('Max') }}" class="form-control form-control-sm" style="width: 80px;">
+                                </div>
+                                
+                                <!-- Clear Filters -->
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="clearFilters">
+                                    <i class="fas fa-times"></i> {{ __('Clear') }}
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'csv') }}">CSV</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xlsx') }}">Excel</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xml') }}">XML</a></li>
-                                </ul>
                             </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2">
+                                <!-- Export Dropdown -->
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> {{ __('Export') }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'csv') }}">CSV</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xlsx') }}">Excel</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xml') }}">XML</a></li>
+                                    </ul>
+                                </div>
 
-                            <!-- Import Button -->
-                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
-                                <i class="fas fa-file-import"></i> {{ __('Import') }}
-                            </button>
+                                <!-- Import Button -->
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-file-import"></i> {{ __('Import') }}
+                                </button>
 
-                            @can('products-create')
-                                <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
-                                    <i class="fas fa-add"></i> {{ __('Add Product') }}
-                                </a>
-                            @endcan
+                                @can('products-create')
+                                    <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
+                                        <i class="fas fa-add"></i> {{ __('Add Product') }}
+                                    </a>
+                                @endcan
+                            </div>
                         </div>
                         
                         <!-- Bulk Actions Toolbar -->
@@ -180,73 +181,7 @@
                         </div>
                         
                         <div class="card-body">
-                            <div class="row">
-                                <!-- Filters Sidebar -->
-                                <div class="col-md-3 mb-4">
-                                    <div class="filters-sidebar">
-                                        <h5 class="mb-3">{{ __('Filters') }}</h5>
-                                        
-                                        <!-- Status Filter -->
-                                        <div class="filter-section">
-                                            <h6>{{ __('Listing Status') }}</h6>
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-status-active" class="filter-check" data-filter="status" value="active">
-                                                <label for="filter-status-active">{{ __('Active') }}</label>
-                                            </div>
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-status-inactive" class="filter-check" data-filter="status" value="inactive">
-                                                <label for="filter-status-inactive">{{ __('Inactive') }}</label>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Stock Status Filter -->
-                                        <div class="filter-section">
-                                            <h6>{{ __('Stock Status') }}</h6>
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-stock-in" class="filter-check" data-filter="stock" value="in">
-                                                <label for="filter-stock-in">{{ __('In Stock') }} (>10)</label>
-                                            </div>
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-stock-low" class="filter-check" data-filter="stock" value="low">
-                                                <label for="filter-stock-low">{{ __('Low Stock') }} (1-10)</label>
-                                            </div>
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-stock-out" class="filter-check" data-filter="stock" value="out">
-                                                <label for="filter-stock-out">{{ __('Out of Stock') }}</label>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Category Filter -->
-                                        <div class="filter-section">
-                                            <h6>{{ __('Category') }}</h6>
-                                            @foreach($categories as $category)
-                                            <div class="filter-checkbox">
-                                                <input type="checkbox" id="filter-category-{{ $category->id }}" class="filter-check" data-filter="category" value="{{ $category->id }}">
-                                                <label for="filter-category-{{ $category->id }}">{{ $category->{'name_' . app()->getLocale()} }}</label>
-                                            </div>
-                                            @endforeach
-                                        </div>
-                                        
-                                        <!-- Price Range Filter -->
-                                        <div class="filter-section">
-                                            <h6>{{ __('Price Range') }}</h6>
-                                            <div class="price-range-inputs">
-                                                <input type="number" id="price-min" placeholder="{{ __('Min') }}" class="form-control form-control-sm">
-                                                <input type="number" id="price-max" placeholder="{{ __('Max') }}" class="form-control form-control-sm">
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-primary mt-2 w-100" id="applyPriceFilter">{{ __('Apply') }}</button>
-                                        </div>
-                                        
-                                        <!-- Clear Filters -->
-                                        <div class="filter-section">
-                                            <button type="button" class="btn btn-sm btn-outline-secondary w-100" id="clearFilters">{{ __('Clear All Filters') }}</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Products Table -->
-                                <div class="col-md-9">
-                                    <div class="table-responsive text-center">
+                            <div class="table-responsive text-center">
                                         <table id="example2" class="table table-striped table-bordered">
                                             <thead>
                                                 <tr>
@@ -325,8 +260,6 @@
                                             </tfoot>
                                         </table>
                                     </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -569,27 +502,18 @@
             $('#bulkDelete').on('click', function() { performBulkAction('delete'); });
             $('#bulkExport').on('click', function() { performBulkAction('export'); });
             
-            // Amazon-style Filters
+            // Dropdown Filters
             function applyFilters() {
                 var visibleRows = table.rows({ search: 'applied' }).nodes();
                 
                 // Status filter
-                var statusFilters = [];
-                $('.filter-check[data-filter="status"]:checked').each(function() {
-                    statusFilters.push($(this).val());
-                });
+                var statusFilter = $('#filterStatus').val();
                 
                 // Stock filter
-                var stockFilters = [];
-                $('.filter-check[data-filter="stock"]:checked').each(function() {
-                    stockFilters.push($(this).val());
-                });
+                var stockFilter = $('#filterStock').val();
                 
                 // Category filter
-                var categoryFilters = [];
-                $('.filter-check[data-filter="category"]:checked').each(function() {
-                    categoryFilters.push($(this).val());
-                });
+                var categoryFilter = $('#filterCategory').val();
                 
                 // Price filter
                 var priceMin = parseFloat($('#price-min').val()) || 0;
@@ -602,27 +526,25 @@
                         var $row = $(row);
                         
                         // Status filter
-                        if (statusFilters.length > 0) {
+                        if (statusFilter && statusFilter !== '') {
                             var rowStatus = $row.data('status');
-                            if (!statusFilters.includes(rowStatus)) return false;
+                            if (rowStatus !== statusFilter) return false;
                         }
                         
                         // Stock filter
-                        if (stockFilters.length > 0) {
+                        if (stockFilter && stockFilter !== '') {
                             var stock = parseInt($row.data('stock')) || 0;
                             var stockMatch = false;
-                            stockFilters.forEach(function(filter) {
-                                if (filter === 'in' && stock > 10) stockMatch = true;
-                                if (filter === 'low' && stock > 0 && stock <= 10) stockMatch = true;
-                                if (filter === 'out' && stock === 0) stockMatch = true;
-                            });
+                            if (stockFilter === 'in' && stock > 10) stockMatch = true;
+                            if (stockFilter === 'low' && stock > 0 && stock <= 10) stockMatch = true;
+                            if (stockFilter === 'out' && stock === 0) stockMatch = true;
                             if (!stockMatch) return false;
                         }
                         
                         // Category filter
-                        if (categoryFilters.length > 0) {
-                            var categoryId = $row.data('category');
-                            if (!categoryFilters.includes(String(categoryId))) return false;
+                        if (categoryFilter && categoryFilter !== '') {
+                            var categoryId = String($row.data('category'));
+                            if (categoryId !== categoryFilter) return false;
                         }
                         
                         // Price filter
@@ -641,18 +563,21 @@
                 $.fn.dataTable.ext.search.pop();
             }
             
-            $('.filter-check').on('change', function() {
+            // Filter change events
+            $('#filterStatus, #filterStock, #filterCategory').on('change', function() {
                 clearCustomFilters();
                 applyFilters();
             });
             
-            $('#applyPriceFilter').on('click', function() {
+            // Price filter - apply on input change
+            $('#price-min, #price-max').on('input', function() {
                 clearCustomFilters();
                 applyFilters();
             });
             
+            // Clear all filters
             $('#clearFilters').on('click', function() {
-                $('.filter-check').prop('checked', false);
+                $('#filterStatus, #filterStock, #filterCategory').val('');
                 $('#price-min, #price-max').val('');
                 clearCustomFilters();
                 table.search('').draw();
