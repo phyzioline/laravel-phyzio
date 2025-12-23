@@ -37,7 +37,7 @@
                         </div>
                         <button type="submit" class="btn">Send Reset Link</button>
                       </form>
-                      <p class="text-center"><a href="{{ route('view_login') }}" class="link">Back to Login</a></p>
+                      <p class="text-center"><a href="{{ route('view_login.' . app()->getLocale()) }}" class="link">Back to Login</a></p>
                     </div>
                   </div>
                 </div>

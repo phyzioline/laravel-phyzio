@@ -32,7 +32,7 @@
                               </button>
                           </div>
                       @endif
-                      <form method="post" action="{{ route('login') }}">
+                      <form method="post" action="{{ route('login.' . app()->getLocale()) }}">
                         @csrf
                         <div class="form-group">
                           <input type="email" name="email" class="form-style" placeholder="Your Email" autocomplete="off" value="{{ old('email') }}">
@@ -54,7 +54,7 @@
                     <a class="btn btn-info" href="{{ route('auth.social.redirect','google') }}">Login with google</a>
 
                         <a href="{{ route('view_forget_password') }}" class="link">Forgot your password?</a><br>
-                        <a href="{{ route('view_register') }}" class="link">Don't have an account? Sign Up</a>
+                        <a href="{{ route('view_register.' . app()->getLocale()) }}" class="link">Don't have an account? Sign Up</a>
                       </p>
                     </div>
                   </div>

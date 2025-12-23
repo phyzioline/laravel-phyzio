@@ -37,7 +37,7 @@
                             <div class="card-front">
                                 <div class="center-wrap">
                                     <h4 class="heading">Sign Up</h4>
-                                    <form method="post" action="{{ route('register') }}" enctype="multipart/form-data">
+                                    <form method="post" action="{{ route('register.' . app()->getLocale()) }}" enctype="multipart/form-data">
                                         @csrf
 
                                         <!-- User Type -->
@@ -196,7 +196,7 @@
                                     <a class="btn btn-info" href="{{ route('auth.social.redirect','google') }}">Login with Google</a>
 
                                     <p class="text-center">
-                                        <a href="{{ route('view_login') }}" class="link">Already have an account? Log In</a>
+                                        <a href="{{ route('view_login.' . app()->getLocale()) }}" class="link">Already have an account? Log In</a>
                                     </p>
                                 </div>
                             </div>

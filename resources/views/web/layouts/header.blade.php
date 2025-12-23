@@ -647,7 +647,7 @@ body.has-hero .shop-hero-banner {
                                         {{ Auth::user()->name }} <i class="las la-angle-down"></i>
                                     </button>
                                 @else
-                                    <a style="color: #fff;" href="{{ route('view_login') }}">
+                                    <a style="color: #fff;" href="{{ route('view_login.' . app()->getLocale()) }}">
                                         <button class="btn-cart btn-login px-4 py-1">{{ __('Log In') }}</button>
                                     </a>
                                 @endif

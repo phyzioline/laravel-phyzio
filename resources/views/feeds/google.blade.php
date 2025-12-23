@@ -8,7 +8,7 @@
     <g:description><![CDATA[{{ strip_tags($lang === 'ar' ? ($product->short_description_ar ?: $product->long_description_ar) : ($product->short_description_en ?: $product->long_description_en)) }}]]></g:description>
     @php
         // Localized product URL
-        $productUrl = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($lang, route('product.show', $product->id));
+        $productUrl = \Mcamara\LaravelLocalization\Facades\LaravelLocalization::getLocalizedURL($lang, route('product.show.' . $lang, $product->id));
         
         // Image Logic: Ensure absolute URL and fallback
         $imgRaw = $product->image_url;

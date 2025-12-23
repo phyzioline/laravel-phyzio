@@ -50,7 +50,7 @@
                   <div class="card-front">
                     <div class="center-wrap">
                       <h4 class="heading">Enter OTP</h4>
-                       <form id="otp-form" method="POST" action="{{ route('verify') }}">
+                       <form id="otp-form" method="POST" action="{{ route('verify.' . app()->getLocale()) }}">
                         @csrf
                         <input type="hidden" name="email" value="{{ session('email') }}">
                         <input type="hidden" name="otp" id="otp">

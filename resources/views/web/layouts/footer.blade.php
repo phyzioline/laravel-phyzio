@@ -57,7 +57,7 @@
                  <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">My Account</a></li>
                  <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Order History</a></li>
                 @else
-                 <li class="mb-2"><a href="{{ route('view_login') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Login / Register</a></li>
+                 <li class="mb-2"><a href="{{ route('view_login.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Login / Register</a></li>
                 @endif
                  <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shop</a></li>
             </ul>

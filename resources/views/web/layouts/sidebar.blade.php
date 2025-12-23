@@ -178,7 +178,7 @@
                     </li>
                 @else
                     <li class="menu-item-box">
-                        <a href="{{ route('view_login') }}"><i class="las la-sign-in-alt"></i> {{ __('Log In') }}</a>
+                        <a href="{{ route('view_login.' . app()->getLocale()) }}"><i class="las la-sign-in-alt"></i> {{ __('Log In') }}</a>
                     </li>
                 @endif
                 <li class="menu-item-box"><a href="{{ '/' . app()->getLocale() }}#about">{{ __('About Us') }}</a></li>

@@ -182,7 +182,7 @@
                                                     <div class="swiper-wrapper">
                                                         @foreach ($product->productImages as $img)
                                                             <div class="swiper-slide">
-                                                                <a href="{{ route('product.show', $product->id) }}"
+                                                                <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}"
                                                                     class="image-wrap">
                                                                     <img src="{{ asset($img->image) }}"
                                                                         alt="image_not_found" class="physio-product-img" />
@@ -339,7 +339,7 @@
 
                                             <div class="item-content physio-content-wrapper">
                                                 <h3 class="item-title physio-product-title">
-                                                    <a href="{{ route('product.show', $product->id) }}">
+                                                    <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}">
                                                         {{ $product->{'product_name_' . app()->getLocale()} }}
                                                     </a>
                                                 </h3>

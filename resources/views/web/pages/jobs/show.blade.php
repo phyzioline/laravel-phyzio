@@ -64,7 +64,7 @@
                         @endif
                     @else
                         <p class="text-muted">Please login to apply for this position.</p>
-                        <a href="{{ route('view_login') }}" class="btn btn-primary btn-block">Login to Apply</a>
+                        <a href="{{ route('view_login.' . app()->getLocale()) }}" class="btn btn-primary btn-block">Login to Apply</a>
                     @endauth
 
                     <hr>

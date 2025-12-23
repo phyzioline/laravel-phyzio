@@ -553,7 +553,7 @@ header,
                         <div class="noon-product-card">
                             <!-- Product Image -->
                             <div class="noon-product-image-wrapper">
-                                <a href="{{ route('product.show', $product->id) }}">
+                                <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}">
                                     <img src="{{ asset($product->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
                                          alt="{{ $product->{'product_name_' . app()->getLocale()} }}" 
                                          class="noon-product-image" />

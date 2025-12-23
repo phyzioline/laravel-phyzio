@@ -223,7 +223,7 @@
                                     <td>
                                         <div class="compare-product-title">
                                             @if($item->product)
-                                                <a href="{{ route('product.show', $item->product->id) }}">
+                                                <a href="{{ route('product.show.' . app()->getLocale(), $item->product->id) }}">
                                                     {{ $item->product->{'product_name_' . app()->getLocale()} }}
                                                 </a>
                                             @else
@@ -287,7 +287,7 @@
                                                         <i class="las la-shopping-basket"></i> Add to Cart
                                                     </button>
                                                 </form>
-                                                <a href="{{ route('product.show', $item->product->id) }}" class="compare-btn" style="background: #04b8c4; color: white;">
+                                                <a href="{{ route('product.show.' . app()->getLocale(), $item->product->id) }}" class="compare-btn" style="background: #04b8c4; color: white;">
                                                     View Details
                                                 </a>
                                             @endif
