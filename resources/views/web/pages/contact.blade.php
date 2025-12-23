@@ -92,7 +92,7 @@
                 <div class="col-lg-7">
                     <div class="contact-form-wrapper">
                         <h3 class="mb-4 fw-bold">Send us a Message</h3>
-                        <form id="contactForm" action="{{ route('feedback.store') }}" method="POST">
+                        <form id="contactForm" action="{{ route('feedback.store.' . app()->getLocale()) }}" method="POST">
                             @csrf
                             <div class="row g-3">
                                 <div class="col-md-6">

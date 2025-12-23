@@ -39,11 +39,11 @@
            <ul class="list-unstyled">
              <!--<li class="mb-2"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none;">Help Center</a></li>-->
              <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Track Order</a></li>
-             <li class="mb-2"><a href="{{ route('feedback.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Contact Support</a></li>
-             <li class="mb-2"><a href="{{ route('shipping_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shipping Policy</a></li>
-              <li class="mb-2"><a href="{{ route('privacy_policy.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Privacy Policy</a></li>
-              <li class="mb-2"><a href="{{ route('tearms_condition.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Terms & Conditions</a></li>
-               <li class="mb-2"><a href="{{ route('tearms_condition.index') }}#returns" style="color: rgba(255,255,255,0.8); text-decoration: none;">Returns & Refunds</a></li>
+             <li class="mb-2"><a href="{{ route('feedback.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Contact Support</a></li>
+             <li class="mb-2"><a href="{{ route('shipping_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shipping Policy</a></li>
+              <li class="mb-2"><a href="{{ route('privacy_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Privacy Policy</a></li>
+              <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Terms & Conditions</a></li>
+               <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}#returns" style="color: rgba(255,255,255,0.8); text-decoration: none;">Returns & Refunds</a></li>
           </ul>
         </div>
       </div>
