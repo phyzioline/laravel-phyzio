@@ -8,6 +8,10 @@ class Order extends Model
 {
     protected $fillable = [
         'user_id',
+        'email',
+        'guest_token',
+        'is_guest_order',
+        'address_id',
         'total',
         'status', 
         'name',
@@ -20,6 +24,10 @@ class Order extends Model
         'order_number',
         'commission_total',
         'shipping_total',
+    ];
+
+    protected $casts = [
+        'is_guest_order' => 'boolean',
     ];
 
     public function user()
@@ -45,6 +53,14 @@ class Order extends Model
     public function returns()
     {
         return $this->hasManyThrough(ReturnModel::class, ItemsOrder::class, 'order_id', 'order_item_id');
+    }
+
+    /**
+     * Get the shipping address.
+     */
+    public function shippingAddress()
+    {
+        return $this->belongsTo(UserAddress::class, 'address_id');
     }
 
     /**

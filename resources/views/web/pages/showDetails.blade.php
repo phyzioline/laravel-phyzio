@@ -53,20 +53,61 @@
                             <span class="post-type mb-15 category-badge">{{ $product->category->{'name_' . app()->getLocale()} }}</span>
                             <h4 class="item-title second-color mb-15 product-title-animated" style="font-size : 27px">.{{ $product->{'product_name_' . app()->getLocale()} }}
                             </h4>
-                            <div class="rating-star ul-li mb-30 clearfix">
-                                <ul class="float-left mr-2">
-                                    @php $avgRating = $product->average_rating; @endphp
-                                    @for($i = 1; $i <= 5; $i++)
-                                        @if($i <= round($avgRating))
-                                        <li class="active"><i class="las la-star"></i></li>
-                                        @else
-                                        <li><i class="las la-star"></i></li>
-                                        @endif
-                                    @endfor
-                                </ul>
-                                <span class="review-text">({{ $product->review_count }} Reviews)</span>
+                            {{-- Review Count (Emphasized) - Amazon Style --}}
+                            <div class="rating-star ul-li mb-20 clearfix">
+                                <div class="d-flex align-items-center gap-2">
+                                    <ul class="float-left mr-2 mb-0" style="font-size: 14px;">
+                                        @php $avgRating = $product->average_rating; @endphp
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($avgRating))
+                                            <li class="active"><i class="las la-star"></i></li>
+                                            @else
+                                            <li><i class="las la-star"></i></li>
+                                            @endif
+                                        @endfor
+                                    </ul>
+                                    <span class="review-text fw-bold" style="font-size: 16px; color: #02767F;">{{ $product->review_count }} Reviews</span>
+                                </div>
                             </div>
-                            <span class="physio-item-price mb-30 price-animated">{{ $product->product_price }} EGP</span>
+                            
+                            {{-- Price + FREE Delivery + Returns Policy - Amazon Style --}}
+                            <div class="price-delivery-returns mb-30">
+                                <div class="d-flex align-items-baseline gap-3 mb-2">
+                                    <span class="physio-item-price price-animated" style="font-size: 28px; font-weight: 700; color: #B12704;">{{ number_format($product->product_price, 2) }} EGP</span>
+                                </div>
+                                
+                                {{-- FREE Delivery Message --}}
+                                <div class="delivery-info mb-2">
+                                    <span class="badge bg-success" style="font-size: 13px; padding: 6px 12px;">
+                                        <i class="las la-shipping-fast me-1"></i>FREE Delivery by Phyzioline
+                                    </span>
+                                </div>
+                                
+                                {{-- Returns Policy Near Price - Amazon Style --}}
+                                <div class="returns-policy mb-2">
+                                    <span style="font-size: 14px; color: #007185;">
+                                        <i class="las la-undo me-1"></i>
+                                        <strong>30-day return</strong>, no questions asked
+                                    </span>
+                                </div>
+                                
+                                {{-- Stock Urgency - Amazon Style --}}
+                                @if($product->getStockUrgencyMessage())
+                                <div class="stock-urgency mb-2">
+                                    <span class="badge bg-danger" style="font-size: 13px; padding: 6px 12px;">
+                                        <i class="las la-exclamation-triangle me-1"></i>{{ $product->getStockUrgencyMessage() }}
+                                    </span>
+                                </div>
+                                @endif
+                            </div>
+                            
+                            {{-- Fulfilled by Phyzioline Badge - Amazon Style --}}
+                            <div class="fulfillment-badge mb-20" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; background: #E8F5E9; border-radius: 8px; border: 1px solid #4CAF50;">
+                                <i class="las la-check-circle" style="color: #4CAF50; font-size: 18px;"></i>
+                                <span style="font-size: 14px; color: #2E7D32; font-weight: 600;">
+                                    Fulfilled by Phyzioline
+                                </span>
+                            </div>
                             
                             {{-- Vendor Information --}}
                             <div class="vendor-info-badge mb-20" style="display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; background: #f8f9fa; border-radius: 20px; border: 1px solid #e0e0e0;">

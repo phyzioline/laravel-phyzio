@@ -26,19 +26,32 @@ class CartModelRepository implements CartRepository
 
     public function get()
     {
-        return Cart::where('user_id', auth()->user()->id)->get();
+        if (Auth::check()) {
+            return Cart::where('user_id', auth()->user()->id)->get();
+        }
+        // Guest cart by cookie
+        return Cart::where('cookie_id', $this->getCookieId())
+                   ->whereNull('user_id')
+                   ->get();
     }
 
     public function add(Product $product, $quantity = 1)
     {
+        $cookieId = $this->getCookieId();
+        $userId = Auth::check() ? Auth::id() : null;
+        
         $item = Cart::where('product_id', $product->id)
-                    ->where('user_id', auth()->user()->id)
+                    ->when($userId, function($q) use ($userId) {
+                        $q->where('user_id', $userId);
+                    }, function($q) use ($cookieId) {
+                        $q->where('cookie_id', $cookieId)->whereNull('user_id');
+                    })
                     ->first();
 
         if (!$item) {
             return Cart::create([
-                'user_id'    => Auth::check() ? Auth::id() : null,
-                'cookie_id'  => $this->getCookieId(),
+                'user_id'    => $userId,
+                'cookie_id'  => $cookieId,
                 'product_id' => $product->id,
                 'quantity'   => $quantity,
             ]);
@@ -58,41 +71,64 @@ class CartModelRepository implements CartRepository
     
     public function delete($id)
     {
+        $userId = Auth::check() ? auth()->id() : null;
+        $cookieId = $this->getCookieId();
+        
         $cart = Cart::where('id', $id)
-            ->where('user_id', auth()->user()->id)
+            ->when($userId, function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }, function($q) use ($cookieId) {
+                $q->where('cookie_id', $cookieId)->whereNull('user_id');
+            })
             ->first();
 
         if (! $cart) {
             return back()->with('error', 'العنصر غير موجود أو ليس لك');
         }
 
-        $order = Order::where('user_id', $cart->user_id)->first();
-
-        if ($order) {
-            ItemsOrder::where('order_id', $order->id)
-                ->where('product_id', $cart->product_id)
-                ->delete();
+        if ($cart->user_id) {
+            $order = Order::where('user_id', $cart->user_id)->first();
+            if ($order) {
+                ItemsOrder::where('order_id', $order->id)
+                    ->where('product_id', $cart->product_id)
+                    ->delete();
+            }
         }
 
         $cart->delete();
-            Session::flash('message', ['type' => 'success', 'text' => __('تم حذف المنتج من السلة والطلب')]);
+        Session::flash('message', ['type' => 'success', 'text' => __('تم حذف المنتج من السلة والطلب')]);
 
         return back()->with('success', 'تم حذف المنتج من السلة والطلب');
     }
 
     public function flush()
     {
-        Cart::where('user_id', auth()->user()->id)->delete();
+        $userId = Auth::check() ? auth()->id() : null;
+        $cookieId = $this->getCookieId();
+        
+        if ($userId) {
+            Cart::where('user_id', $userId)->delete();
+        } else {
+            Cart::where('cookie_id', $cookieId)->whereNull('user_id')->delete();
+        }
     }
 
 
 
     public function total()
     {
-        $total =  Cart::join('products', 'products.id', '=', 'carts.product_id')
-        ->where('carts.user_id', auth()->user()->id)
-        ->selectRaw('SUM(products.product_price * carts.quantity) as total')
-        ->value('total');
-        return view('web.pages.cart' , compact('total'));
+        $userId = Auth::check() ? auth()->id() : null;
+        $cookieId = $this->getCookieId();
+        
+        $total = Cart::join('products', 'products.id', '=', 'carts.product_id')
+            ->when($userId, function($q) use ($userId) {
+                $q->where('carts.user_id', $userId);
+            }, function($q) use ($cookieId) {
+                $q->where('carts.cookie_id', $cookieId)->whereNull('carts.user_id');
+            })
+            ->selectRaw('SUM(products.product_price * carts.quantity) as total')
+            ->value('total') ?? 0;
+            
+        return view('web.pages.cart', compact('total'));
     }
 }

@@ -89,6 +89,10 @@ foreach ($supportedLocales as $locale) {
         Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
      
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name('web.shop.category');
+          
+          // Product tracking for metrics
+          Route::post('/products/{id}/track-click', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackClick'])->name('web.products.track-click');
+          Route::post('/products/{id}/track-add-to-cart', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackAddToCart'])->name('web.products.track-add-to-cart');
         
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
@@ -100,11 +104,13 @@ foreach ($supportedLocales as $locale) {
         Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name('web.datahub.licensing');
 
 
-        // Authenticated routes
-    Route::group(['middleware' => ['auth']], function () {
+        // Cart routes - available to guests and authenticated users
         Route::resources([
             'carts' => CartController::class ,
         ]);
+        
+        // Authenticated routes
+    Route::group(['middleware' => ['auth']], function () {
 
         Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name('web.products.reviews.store');
 

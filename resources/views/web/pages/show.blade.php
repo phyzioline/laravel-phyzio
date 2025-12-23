@@ -553,14 +553,18 @@ header,
                         <div class="noon-product-card">
                             <!-- Product Image -->
                             <div class="noon-product-image-wrapper">
-                                <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}">
+                                <a href="{{ route('product.show.' . (app()->getLocale() ?: 'en'), $product->id) }}">
                                     <img src="{{ asset($product->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
                                          alt="{{ $product->{'product_name_' . app()->getLocale()} }}" 
                                          class="noon-product-image" />
                                 </a>
                                 
-                                <!-- Best Seller Badge -->
-                                <div class="noon-product-badge">Best Seller</div>
+                                {{-- Dynamic Badges - Amazon Style --}}
+                                @if($product->primaryBadge)
+                                <div class="noon-product-badge" style="background: {{ $product->primaryBadge->badge_type === 'best_seller' ? '#FF6F00' : ($product->primaryBadge->badge_type === 'top_clinic_choice' ? '#02767F' : '#4CAF50') }};">
+                                    {{ $product->primaryBadge->label }}
+                                </div>
+                                @endif
                                 
                                 <!-- Action Buttons -->
                                 <div class="noon-product-actions">
@@ -581,18 +585,25 @@ header,
                             
                             <!-- Product Info -->
                             <div class="noon-product-info">
-                                <a href="{{ route('product.show', $product->id) }}" class="noon-product-title">
+                                <a href="{{ route('product.show.' . (app()->getLocale() ?: 'en'), $product->id) }}" class="noon-product-title">
                                     {{ $product->{'product_name_' . app()->getLocale()} }}
                                 </a>
                                 
                                 <div class="noon-product-price">{{ number_format($product->product_price, 2) }} EGP</div>
                                 
-                                <div class="noon-product-rating">
-                                    <i class="las la-star active"></i>
-                                    <i class="las la-star active"></i>
-                                    <i class="las la-star active"></i>
-                                    <i class="las la-star active"></i>
-                                    <i class="las la-star inactive"></i>
+                                {{-- Rating with Review Count (Emphasized) - Amazon Style --}}
+                                <div class="noon-product-rating d-flex align-items-center gap-2">
+                                    <div style="font-size: 12px;">
+                                        @php $avgRating = $product->average_rating; @endphp
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= round($avgRating))
+                                            <i class="las la-star active" style="color: #FFA500;"></i>
+                                            @else
+                                            <i class="las la-star inactive" style="color: #ddd;"></i>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <span style="font-size: 14px; font-weight: 600; color: #02767F;">{{ $product->review_count }}</span>
                                 </div>
                                 
                                 <div class="noon-product-footer">

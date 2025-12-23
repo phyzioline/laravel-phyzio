@@ -15,6 +15,22 @@ class OrderController extends Controller
 
     public function store(OrderRequest $orderRequest)
     {
+        // Track purchases for metrics
+        $cartItems = \App\Models\Cart::when(auth()->check(), function($q) {
+            $q->where('user_id', auth()->id());
+        }, function($q) {
+            $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+            $q->where('cookie_id', $cookieId)->whereNull('user_id');
+        })->get();
+        
+        foreach ($cartItems as $item) {
+            $metric = \App\Models\ProductMetric::firstOrCreate(
+                ['product_id' => $item->product_id],
+                ['views' => 0, 'clicks' => 0, 'add_to_cart_count' => 0, 'purchases' => 0]
+            );
+            $metric->recordPurchase($item->price * $item->quantity);
+        }
+        
         $method   = $orderRequest->payment_method == 'cash' ? 'cashOrder' : 'store';
         $response = $this->orderService->$method($orderRequest->validated());
 

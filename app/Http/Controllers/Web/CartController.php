@@ -16,15 +16,22 @@ class CartController extends Controller
      */
     public function index(CartRepository $cart)
     {
-        $items=Cart::get();
-        // return $items;
         $items = $cart->get();
-// return $items;
-$total =  Cart::join('products', 'products.id', '=', 'carts.product_id')
-        ->where('carts.user_id', auth()->user()->id)
-        ->selectRaw('SUM(products.product_price * carts.quantity) as total')
-        ->value('total');
-        return view('web.pages.cart', compact('items' ,'total'));
+        
+        // Calculate total for authenticated or guest
+        $userId = auth()->check() ? auth()->id() : null;
+        $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+        
+        $total = Cart::join('products', 'products.id', '=', 'carts.product_id')
+            ->when($userId, function($q) use ($userId) {
+                $q->where('carts.user_id', $userId);
+            }, function($q) use ($cookieId) {
+                $q->where('carts.cookie_id', $cookieId)->whereNull('carts.user_id');
+            })
+            ->selectRaw('SUM(products.product_price * carts.quantity) as total')
+            ->value('total') ?? 0;
+            
+        return view('web.pages.cart', compact('items', 'total'));
     }
 
 
@@ -46,6 +53,14 @@ $total =  Cart::join('products', 'products.id', '=', 'carts.product_id')
         }
         
         $cart->add($product, $request->quantity);
+        
+        // Track add to cart for metrics
+        $metric = \App\Models\ProductMetric::firstOrCreate(
+            ['product_id' => $product->id],
+            ['views' => 0, 'clicks' => 0, 'add_to_cart_count' => 0, 'purchases' => 0]
+        );
+        $metric->incrementAddToCart();
+        
         $cart_product = Cart::where('product_id', $request->product_id)->first();
         
         // Calculate price with engineer service if selected

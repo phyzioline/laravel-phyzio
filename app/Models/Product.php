@@ -119,4 +119,53 @@ class Product extends Model
     {
         return $this->productReviews()->count();
     }
+
+    /**
+     * Get product metrics.
+     */
+    public function metrics()
+    {
+        return $this->hasOne(ProductMetric::class);
+    }
+
+    /**
+     * Get product badges.
+     */
+    public function badges()
+    {
+        return $this->hasMany(ProductBadge::class)->active()->orderBy('priority', 'desc');
+    }
+
+    /**
+     * Get primary badge (highest priority).
+     */
+    public function getPrimaryBadgeAttribute()
+    {
+        return $this->badges()->first();
+    }
+
+    /**
+     * Check if product has low stock.
+     */
+    public function isLowStock($threshold = 10)
+    {
+        return $this->amount <= $threshold && $this->amount > 0;
+    }
+
+    /**
+     * Get stock urgency message.
+     */
+    public function getStockUrgencyMessage()
+    {
+        if ($this->amount <= 0) {
+            return null;
+        }
+        if ($this->amount <= 3) {
+            return "Only {$this->amount} left in stock";
+        }
+        if ($this->amount <= 10) {
+            return "Only {$this->amount} left in stock";
+        }
+        return null;
+    }
 }

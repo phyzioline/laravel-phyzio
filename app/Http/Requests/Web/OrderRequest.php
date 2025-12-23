@@ -20,11 +20,18 @@ class OrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
            'payment_method' => 'required|in:card,wallet,cash',
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
         ];
+        
+        // Email required for guest checkout
+        if (!auth()->check()) {
+            $rules['email'] = 'required|email|max:255';
+        }
+        
+        return $rules;
     }
 }

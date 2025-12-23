@@ -32,12 +32,48 @@ class OrderService
 
     public function cashOrder($data)
     {
+        // Support both authenticated and guest checkout
         $user = auth()->user();
+        $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+        
+        if ($user) {
+            $cartItems = Cart::where('user_id', $user->id)->get();
+        } else {
+            // Guest checkout
+            $guestService = app(\App\Services\GuestCheckoutService::class);
+            $order = $guestService->createGuestOrder($data, Cart::where('cookie_id', $cookieId)->whereNull('user_id')->get());
+            
+            // Calculate vendor payments
+            $this->calculateVendorPayments($order);
+            
+            Session::flash('message', ['type' => 'success', 'text' => __('تم إنشاء الطلب بنجاح')]);
+            return redirect()->route('carts.index')->with('success', 'تم إنشاء الطلب بنجاح')->with('guest_order', $order);
+        }
 
         $cartItems = Cart::where('user_id', $user->id)->get();
 
+        // Save address if requested (One-Click Reorder)
+        $addressId = null;
+        if ($user && isset($data['save_address']) && $data['save_address']) {
+            $address = \App\Models\UserAddress::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'address' => $data['address'],
+                ],
+                [
+                    'name' => $data['name'],
+                    'phone' => $data['phone'],
+                    'city' => $data['city'] ?? null,
+                    'governorate' => $data['governorate'] ?? null,
+                    'is_default' => !\App\Models\UserAddress::where('user_id', $user->id)->where('is_default', true)->exists(),
+                ]
+            );
+            $addressId = $address->id;
+        }
+        
         $order = Order::create([
             'user_id'        => $user->id,
+            'address_id'     => $addressId,
             'order_number'   => 'ORD-' . date('Y') . '-' . strtoupper(uniqid()),
             'total'          => $cartItems->sum('total'),
             'name'           => $data['name'],
@@ -123,11 +159,32 @@ class OrderService
 
     public function store($data)
     {
-
+        // Support both authenticated and guest checkout
         $user = auth()->user();
-
-        if (! $user) {
-            return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
+        $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+        
+        if (!$user) {
+            // Guest checkout for card payment
+            $guestService = app(\App\Services\GuestCheckoutService::class);
+            $cartItems = Cart::where('cookie_id', $cookieId)->whereNull('user_id')->get();
+            
+            if ($cartItems->isEmpty()) {
+                return response()->json(['success' => false, 'message' => 'Cart is empty'], 400);
+            }
+            
+            // Create guest order first
+            $order = $guestService->createGuestOrder($data, $cartItems);
+            $this->calculateVendorPayments($order);
+            
+            // Continue with payment processing using guest email
+            $userEmail = $data['email'];
+            $userName = $data['name'];
+            $userPhone = $data['phone'];
+        } else {
+            $cartItems = Cart::where('user_id', $user->id)->get();
+            $userEmail = $user->email;
+            $userName = $user->name;
+            $userPhone = $user->phone;
         }
 
         $authResponse = Http::post("https://accept.paymob.com/api/auth/tokens", [
@@ -140,8 +197,6 @@ class OrderService
                 'message' => __('فشل في المصادقة مع Paymob'),
             ], 404);
         }
-
-        $cartItems = Cart::where('user_id', $user->id)->get();
 
         $authToken = $authResponse->json()['token'];
 
@@ -171,31 +226,57 @@ class OrderService
 
         $paymobOrderId = $orderResponse->json()['id'];
 
-        $order = Order::updateOrCreate(
-            ['user_id' => auth()->user()->id, 'payment_id' => $paymobOrderId], // composite check to avoid dups if retrying
-            [
-                'order_number'   => 'ORD-' . date('Y') . '-' . strtoupper(uniqid()),
-                'total'          => $cartItems->sum('total'),
-                'name'           => $data['name'],
-                'address'        => $data['address'],
-                'payment_method' => 'card',
-                // 'payment_id'     => $paymobOrderId, // already in conditions
-                'phone'          => $data['phone'],
-                'payment_status' => 'pending',
-            ]);
+        // Create or update order
+        if (!$user && isset($order)) {
+            // Guest order already created, just update payment_id
+            $order->update(['payment_id' => $paymobOrderId]);
+        } else {
+            // Authenticated user order
+            $addressId = null;
+            if ($user && isset($data['save_address']) && $data['save_address']) {
+                $address = \App\Models\UserAddress::updateOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'address' => $data['address'],
+                    ],
+                    [
+                        'name' => $data['name'],
+                        'phone' => $data['phone'],
+                        'city' => $data['city'] ?? null,
+                        'governorate' => $data['governorate'] ?? null,
+                        'is_default' => !\App\Models\UserAddress::where('user_id', $user->id)->where('is_default', true)->exists(),
+                    ]
+                );
+                $addressId = $address->id;
+            }
+            
+            $order = Order::updateOrCreate(
+                ['user_id' => $user->id, 'payment_id' => $paymobOrderId],
+                [
+                    'address_id' => $addressId,
+                    'order_number' => 'ORD-' . date('Y') . '-' . strtoupper(uniqid()),
+                    'total' => $cartItems->sum('total'),
+                    'name' => $data['name'],
+                    'address' => $data['address'],
+                    'payment_method' => 'card',
+                    'phone' => $data['phone'],
+                    'payment_status' => 'pending',
+                ]
+            );
+        }
 
         $billing = [
             "apartment"       => "123",
-            "first_name"      => $user->name,
+            "first_name"      => $userName,
             "last_name"       => "غير محدد",
-            "street"          => 'لا يوجد عنوان',
+            "street"          => $data['address'] ?? 'لا يوجد عنوان',
             "building"        => "456",
-            "phone_number"    => $user->phone,
-            "city"            => 'غير محدد',
+            "phone_number"    => $userPhone,
+            "city"            => $data['city'] ?? 'غير محدد',
             "country"         => "EG",
-            "email"           => $user->email,
+            "email"           => $userEmail,
             "floor"           => "1",
-            "state"           => 'غير محدد',
+            "state"           => $data['governorate'] ?? 'غير محدد',
             "postal_code"     => "12345",
             "shipping_method" => "PKG",
         ];
@@ -241,8 +322,9 @@ class OrderService
 
         // 1. Send Confirmation to Customer
         try {
-            if ($user->email) {
-                \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\OrderConfirmationMail($order));
+            $customerEmail = $user ? $user->email : ($order->email ?? null);
+            if ($customerEmail) {
+                \Illuminate\Support\Facades\Mail::to($customerEmail)->send(new \App\Mail\OrderConfirmationMail($order));
             }
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send customer confirmation email: ' . $e->getMessage());
@@ -270,6 +352,13 @@ class OrderService
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Failed to send vendor notification email: ' . $e->getMessage());
+        }
+        
+        // Clear cart
+        if ($user) {
+            Cart::where('user_id', $user->id)->delete();
+        } else {
+            Cart::where('cookie_id', $cookieId)->whereNull('user_id')->delete();
         }
 
         if (! $paymentKeyResponse->successful()) {

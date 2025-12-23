@@ -184,6 +184,51 @@
                             <form action="{{ route('order.store') }}" method="POST" class="needs-validation" novalidate>
                                 @csrf
                                 
+                                {{-- Guest Checkout Email --}}
+                                @guest
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label for="email" class="form-label fw-bold">
+                                            <i class="las la-envelope me-1"></i>Email Address <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="email" id="email" name="email" class="form-control" 
+                                               placeholder="your.email@example.com" required>
+                                        <small class="text-muted">We'll use this to send order updates and help you create an account later.</small>
+                                        <div class="invalid-feedback">Please enter a valid email address.</div>
+                                    </div>
+                                </div>
+                                @endguest
+                                
+                                {{-- Saved Addresses (One-Click Reorder) - Amazon Style --}}
+                                @auth
+                                @php
+                                    $savedAddresses = \App\Models\UserAddress::where('user_id', auth()->id())->get();
+                                @endphp
+                                @if($savedAddresses->count() > 0)
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="form-label fw-bold">
+                                            <i class="las la-bookmark me-1"></i>Saved Addresses
+                                        </label>
+                                        <select id="saved_address_select" class="form-select">
+                                            <option value="">Select a saved address</option>
+                                            @foreach($savedAddresses as $addr)
+                                            <option value="{{ $addr->id }}" 
+                                                    data-name="{{ $addr->name }}"
+                                                    data-phone="{{ $addr->phone }}"
+                                                    data-address="{{ $addr->address }}"
+                                                    data-city="{{ $addr->city }}"
+                                                    data-governorate="{{ $addr->governorate }}">
+                                                {{ $addr->name }} - {{ $addr->address }} {{ $addr->is_default ? '(Default)' : '' }}
+                                            </option>
+                                            @endforeach
+                                        </select>
+                                        <small class="text-muted">Select a saved address to auto-fill the form</small>
+                                    </div>
+                                </div>
+                                @endif
+                                @endauth
+                                
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="payment_method" class="form-label fw-bold">
@@ -202,6 +247,7 @@
                                             <i class="las la-user me-1"></i>Full Name
                                         </label>
                                         <input type="text" id="Name" name="name" class="form-control" 
+                                               value="{{ auth()->check() ? auth()->user()->name : '' }}"
                                                placeholder="Enter your full name" required>
                                         <div class="invalid-feedback">Please enter your name.</div>
                                     </div>
@@ -213,6 +259,7 @@
                                             <i class="las la-phone me-1"></i>Phone Number
                                         </label>
                                         <input type="tel" id="phone" name="phone" class="form-control" 
+                                               value="{{ auth()->check() ? auth()->user()->phone : '' }}"
                                                placeholder="Enter phone number" required>
                                         <div class="invalid-feedback">Please enter a valid phone number.</div>
                                     </div>
@@ -226,6 +273,36 @@
                                         <div class="invalid-feedback">Please enter your address.</div>
                                     </div>
                                 </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="city" class="form-label fw-bold">
+                                            <i class="las la-city me-1"></i>City
+                                        </label>
+                                        <input type="text" id="city" name="city" class="form-control" 
+                                               placeholder="Enter city">
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="governorate" class="form-label fw-bold">
+                                            <i class="las la-map me-1"></i>Governorate
+                                        </label>
+                                        <input type="text" id="governorate" name="governorate" class="form-control" 
+                                               placeholder="Enter governorate">
+                                    </div>
+                                </div>
+                                
+                                {{-- Save Address Checkbox (One-Click Reorder) - Amazon Style --}}
+                                @auth
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="save_address" id="save_address" value="1" checked>
+                                        <label class="form-check-label" for="save_address">
+                                            <i class="las la-bookmark me-1"></i>Save this address for faster checkout next time
+                                        </label>
+                                    </div>
+                                </div>
+                                @endauth
 
                                 <div class="text-center mt-4">
                                     <button type="submit" class="btn btn-primary btn-lg px-5" 
@@ -243,6 +320,18 @@
 
         <script>
             $(document).ready(function() {
+                // Auto-fill form from saved address (One-Click Reorder) - Amazon Style
+                $('#saved_address_select').on('change', function() {
+                    const option = $(this).find('option:selected');
+                    if (option.val()) {
+                        $('#Name').val(option.data('name'));
+                        $('#phone').val(option.data('phone'));
+                        $('#address').val(option.data('address'));
+                        $('#city').val(option.data('city') || '');
+                        $('#governorate').val(option.data('governorate') || '');
+                    }
+                });
+                
                 // Form validation
                 const forms = document.querySelectorAll('.needs-validation');
                 Array.from(forms).forEach(form => {
