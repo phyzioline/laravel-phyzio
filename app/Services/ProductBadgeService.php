@@ -81,7 +81,7 @@ class ProductBadgeService
     {
         $topProducts = ProductMetric::where('conversion_rate', '>', 5) // >5% conversion
             ->whereHas('product', function($q) {
-                $q->where('review_count', '>', 10); // At least 10 reviews
+                $q->has('productReviews', '>', 10); // At least 10 reviews (using relationship)
             })
             ->orderBy('conversion_rate', 'desc')
             ->limit(15)
@@ -109,8 +109,9 @@ class ProductBadgeService
         $recommended = Product::whereHas('productReviews', function($q) {
                 $q->where('rating', '>=', 4); // 4+ stars
             })
-            ->where('review_count', '>=', 5)
-            ->orderBy('average_rating', 'desc')
+            ->has('productReviews', '>=', 5) // At least 5 reviews
+            ->withAvg('productReviews', 'rating')
+            ->orderBy('product_reviews_avg_rating', 'desc')
             ->limit(20)
             ->pluck('id');
         
