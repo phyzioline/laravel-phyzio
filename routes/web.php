@@ -47,11 +47,11 @@ foreach ($supportedLocales as $locale) {
         // Use locale-specific route name to avoid conflicts
         Route::get('/', [HomeController::class, 'index'])->name("home.{$locale}");
 
-    Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
-    Route::post('/register', [RegisterController::class, 'store'])->name('register');
+    Route::get('/register', [RegisterController::class, 'index'])->name("view_register.{$locale}");
+    Route::post('/register', [RegisterController::class, 'store'])->name("register.{$locale}");
 
-    Route::get('/otp', [RegisterController::class, 'otp'])->name('view_otp');
-    Route::post('/verify', [RegisterController::class, 'verify'])->name('verify');
+    Route::get('/otp', [RegisterController::class, 'otp'])->name("view_otp.{$locale}");
+    Route::post('/verify', [RegisterController::class, 'verify'])->name("verify.{$locale}");
 
         // Payment gateway webhooks (generic)
         Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
@@ -59,8 +59,8 @@ foreach ($supportedLocales as $locale) {
     Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name('company.register');
     Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name('company.register.store');
 
-    Route::get('/login', [LoginController::class, 'index'])->name('view_login');
-    Route::post('/login', [LoginController::class, 'store'])->name('login');
+    Route::get('/login', [LoginController::class, 'index'])->name("view_login.{$locale}");
+    Route::post('/login', [LoginController::class, 'store'])->name("login.{$locale}");
 
     Route::get('/forget_password', [PasswordController::class, 'index'])->name('view_forget_password');
     Route::post('/forget_password', [PasswordController::class, 'store'])->name('forget_password');

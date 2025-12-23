@@ -36,7 +36,7 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::get('/notifications/{id}/read', [App\Http\Controllers\Dashboard\NotificationController::class, 'read'])->name('notifications.read');
             Route::post('/notifications/read-all', [App\Http\Controllers\Dashboard\NotificationController::class, 'readAll'])->name('notifications.readAll');
 
-            Route::get('/home', [HomeController::class, 'index'])->name('dashboard.home');
+            Route::get('/home', [HomeController::class, 'index'])->name('home');
             Route::resource('roles', RoleController::class);
             Route::resource('users', UserController::class);
             Route::resource('categories', CategoryController::class);
