@@ -29,7 +29,7 @@
                   <div class="card-front">
                     <div class="center-wrap">
                       <h4 class="heading">Reset Your Password</h4>
-                      <form action="{{ route('forget_password') }}" method="post">
+                      <form action="{{ route('forget_password.' . (app()->getLocale() ?: 'en')) }}" method="post">
                         @csrf
                         <div class="form-group">
                           <input type="email" name="email" class="form-style" placeholder="Your Email" autocomplete="off">
