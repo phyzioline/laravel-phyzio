@@ -118,16 +118,84 @@ class PaymentController extends Controller implements HasMiddleware
 
         $currentView = $view;
 
-        if ($view === 'transaction') {
-            return view('dashboard.pages.finance.transaction', compact(
-                'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
-            ));
+        // Route to appropriate view based on tab
+        switch ($view) {
+            case 'transaction':
+                return view('dashboard.pages.finance.transaction', compact(
+                    'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
+                ));
+            
+            case 'all-statements':
+                return $this->allStatements($request, $totalEarnings, $pendingPayments, $lastPayout, $payments, $vendors);
+            
+            case 'disbursements':
+                return $this->disbursements($request, $user);
+            
+            case 'advertising':
+                return $this->advertisingInvoiceHistory($request, $user);
+            
+            case 'reports':
+                return $this->reportsRepository($request, $user);
+            
+            case 'statement':
+            default:
+                return view('dashboard.pages.finance.statement', compact(
+                    'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
+                ));
         }
+    }
 
-        // Default to statement view (using the layout + statement content)
-        return view('dashboard.pages.finance.statement', compact(
+    /**
+     * All Statements view
+     */
+    private function allStatements($request, $totalEarnings, $pendingPayments, $lastPayout, $payments, $vendors)
+    {
+        $currentView = 'all-statements';
+        return view('dashboard.pages.finance.all-statements', compact(
             'totalEarnings', 'pendingPayments', 'lastPayout', 'payments', 'vendors', 'currentView'
         ));
+    }
+
+    /**
+     * Disbursements view (Payouts)
+     */
+    private function disbursements($request, $user)
+    {
+        $payoutService = app(\App\Services\PayoutService::class);
+        
+        if ($user->hasRole('admin')) {
+            $payouts = $payoutService->getAllPayouts(
+                $request->get('status'),
+                $request->get('vendor_id')
+            );
+            $vendors = \App\Models\User::where('type', 'vendor')->get();
+        } else {
+            $payouts = $payoutService->getVendorPayouts($user->id, $request->get('status'));
+            $vendors = [];
+        }
+        
+        $currentView = 'disbursements';
+        $stats = $payoutService->getPayoutStatistics();
+        return view('dashboard.pages.finance.disbursements', compact('payouts', 'vendors', 'currentView', 'stats'));
+    }
+
+    /**
+     * Advertising Invoice History
+     */
+    private function advertisingInvoiceHistory($request, $user)
+    {
+        // Placeholder for advertising invoices - can be expanded later
+        $currentView = 'advertising';
+        return view('dashboard.pages.finance.advertising', compact('currentView'));
+    }
+
+    /**
+     * Reports Repository
+     */
+    private function reportsRepository($request, $user)
+    {
+        $currentView = 'reports';
+        return view('dashboard.pages.finance.reports', compact('currentView'));
     }
 
     /**

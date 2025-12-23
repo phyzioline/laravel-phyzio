@@ -321,10 +321,22 @@
            class="finance-tab-link {{ $currentView === 'transaction' ? 'active' : '' }}">
            Transaction View
         </a>
-        <a href="#" class="finance-tab-link">All Statements</a>
-        <a href="#" class="finance-tab-link">Disbursements</a>
-        <a href="#" class="finance-tab-link">Advertising Invoice History</a>
-        <a href="#" class="finance-tab-link">Reports Repository</a>
+        <a href="{{ route('dashboard.payments.index', ['view' => 'all-statements']) }}" 
+           class="finance-tab-link {{ $currentView === 'all-statements' ? 'active' : '' }}">
+           All Statements
+        </a>
+        <a href="{{ route('dashboard.payments.index', ['view' => 'disbursements']) }}" 
+           class="finance-tab-link {{ $currentView === 'disbursements' ? 'active' : '' }}">
+           Disbursements
+        </a>
+        <a href="{{ route('dashboard.payments.index', ['view' => 'advertising']) }}" 
+           class="finance-tab-link {{ $currentView === 'advertising' ? 'active' : '' }}">
+           Advertising Invoice History
+        </a>
+        <a href="{{ route('dashboard.payments.index', ['view' => 'reports']) }}" 
+           class="finance-tab-link {{ $currentView === 'reports' ? 'active' : '' }}">
+           Reports Repository
+        </a>
         <span class="badge bg-primary rounded-pill ms-1" style="font-size: 9px; vertical-align: super;">New</span>
     </div>
 

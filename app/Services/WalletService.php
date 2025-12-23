@@ -13,9 +13,14 @@ use Illuminate\Support\Facades\Log;
 class WalletService
 {
     /**
-     * Default hold period in days (Amazon uses 14 days).
+     * Get hold period in days (default 7, configurable via settings).
      */
-    const HOLD_PERIOD_DAYS = 14;
+    public static function getHoldPeriodDays()
+    {
+        // Check if setting exists in database
+        $setting = \App\Models\PayoutSetting::getSettings();
+        return (int) $setting->hold_period_days;
+    }
 
     /**
      * Get or create vendor wallet.
@@ -64,7 +69,7 @@ class WalletService
                 $vendorPayment = VendorPayment::where('order_item_id', $orderItemId)->first();
                 if ($vendorPayment) {
                     $vendorPayment->update([
-                        'hold_until' => Carbon::now()->addDays(self::HOLD_PERIOD_DAYS),
+                        'hold_until' => Carbon::now()->addDays(self::getHoldPeriodDays()),
                         'settled' => false,
                     ]);
                 }

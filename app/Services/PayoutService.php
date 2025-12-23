@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Payout;
+use App\Models\PayoutSetting;
 use App\Models\VendorWallet;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,9 +15,13 @@ class PayoutService
     protected $walletService;
 
     /**
-     * Minimum payout amount (in currency).
+     * Get minimum payout amount from settings.
      */
-    const MINIMUM_PAYOUT = 100;
+    protected function getMinimumPayout()
+    {
+        $settings = PayoutSetting::getSettings();
+        return (float) $settings->minimum_payout;
+    }
 
     public function __construct(WalletService $walletService)
     {
@@ -31,8 +36,9 @@ class PayoutService
         return DB::transaction(function () use ($vendorId, $amount, $payoutMethod, $notes) {
             
             // Validate minimum amount
-            if ($amount < self::MINIMUM_PAYOUT) {
-                throw new \Exception("Minimum payout amount is " . self::MINIMUM_PAYOUT);
+            $minimumPayout = $this->getMinimumPayout();
+            if ($amount < $minimumPayout) {
+                throw new \Exception("Minimum payout amount is " . $minimumPayout);
             }
 
             $wallet = $this->walletService->getVendorWallet($vendorId);
@@ -218,6 +224,87 @@ class PayoutService
             'paid_this_month' => Payout::where('status', 'paid')
                 ->whereMonth('paid_at', Carbon::now()->month)
                 ->sum('amount'),
+        ];
+    }
+
+    /**
+     * Create automatic payouts for all eligible vendors.
+     * This is called by the console command to auto-generate payout requests.
+     */
+    public function createAutoPayouts()
+    {
+        $settings = PayoutSetting::getSettings();
+        
+        // Check if auto-payout is enabled
+        if (!$settings->auto_payout_enabled) {
+            Log::info("Auto-payout is disabled in settings");
+            return [
+                'created' => 0,
+                'skipped' => 0,
+                'errors' => [],
+            ];
+        }
+
+        $minimumPayout = (float) $settings->minimum_payout;
+        $created = 0;
+        $skipped = 0;
+        $errors = [];
+
+        // Get all vendors
+        $vendors = User::where('type', 'vendor')->get();
+
+        foreach ($vendors as $vendor) {
+            try {
+                $wallet = $this->walletService->getVendorWallet($vendor->id);
+
+                // Check if vendor has sufficient available balance
+                if ($wallet->available_balance < $minimumPayout) {
+                    $skipped++;
+                    continue;
+                }
+
+                // Check if vendor already has a pending payout
+                $existingPayout = Payout::where('vendor_id', $vendor->id)
+                    ->whereIn('status', ['pending', 'processing'])
+                    ->first();
+
+                if ($existingPayout) {
+                    $skipped++;
+                    Log::info("Vendor {$vendor->id} already has a pending/processing payout");
+                    continue;
+                }
+
+                // Create auto payout for full available balance
+                $payoutAmount = $wallet->available_balance;
+
+                // Deduct from available balance
+                if (!$wallet->deductAvailable($payoutAmount)) {
+                    $errors[] = "Failed to deduct from wallet for vendor {$vendor->id}";
+                    continue;
+                }
+
+                // Create payout request
+                $payout = Payout::create([
+                    'vendor_id' => $vendor->id,
+                    'amount' => $payoutAmount,
+                    'status' => 'pending',
+                    'payout_method' => 'auto_weekly',
+                    'notes' => 'Auto-generated payout request',
+                ]);
+
+                $created++;
+                Log::info("Auto-payout created for vendor {$vendor->id}: Amount {$payoutAmount}");
+
+            } catch (\Exception $e) {
+                $errors[] = "Vendor {$vendor->id}: " . $e->getMessage();
+                Log::error("Auto-payout failed for vendor {$vendor->id}: " . $e->getMessage());
+            }
+        }
+
+        return [
+            'created' => $created,
+            'skipped' => $skipped,
+            'errors' => $errors,
         ];
     }
 }

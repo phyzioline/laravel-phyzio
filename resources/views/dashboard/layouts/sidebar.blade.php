@@ -101,12 +101,15 @@
                       <div class="parent-icon"><i class="bi bi-wallet2"></i></div>
                       <div class="menu-title">{{ __("Financials") }}</div>
                   </a>
-                  <ul>
+                  <ul style="font-size: 0.9em;">
                       @can('financials-index')
                       <li><a href="{{ route('dashboard.payments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Earnings & Payouts") }}</a></li>
                       @endcan
                       @if(auth()->user()->type === 'vendor')
                       <li><a href="{{ route('dashboard.vendor.wallet') }}"><i class="bi bi-arrow-right-short"></i>{{ __("My Wallet") }}</a></li>
+                      @endif
+                      @if(auth()->user()->hasRole('admin'))
+                      <li><a href="{{ route('dashboard.payouts.settings') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Payout Settings") }}</a></li>
                       @endif
                   </ul>
               </li>
@@ -119,7 +122,7 @@
                       <div class="parent-icon"><i class="bi bi-shop"></i></div>
                       <div class="menu-title">{{ __("Vendor Hub") }}</div>
                   </a>
-                  <ul>
+                  <ul style="font-size: 0.9em;">
                       <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
                   </ul>
               </li>
@@ -133,10 +136,11 @@
                       <div class="parent-icon"><i class="bi bi-truck"></i></div>
                       <div class="menu-title">{{ __("Multi-Vendor") }}</div>
                   </a>
-                  <ul>
+                  <ul style="font-size: 0.9em;">
                       <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Shipments") }}</a></li>
                       <li><a href="{{ route('dashboard.payouts.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Vendor Payouts") }}</a></li>
                       <li><a href="{{ route('dashboard.shipments.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Shipments") }}</a></li>
+                      <li><a href="{{ route('dashboard.payouts.settings') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Payout Settings") }}</a></li>
                   </ul>
               </li>
               @endif

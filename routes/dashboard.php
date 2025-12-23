@@ -105,6 +105,11 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
                 Route::post('/{id}/mark-paid', [\App\Http\Controllers\Dashboard\PayoutController::class, 'markAsPaid'])->name('mark-paid');
                 Route::post('/{id}/cancel', [\App\Http\Controllers\Dashboard\PayoutController::class, 'cancel'])->name('cancel');
                 Route::post('/bulk-approve', [\App\Http\Controllers\Dashboard\PayoutController::class, 'bulkApprove'])->name('bulk-approve');
+                
+                // Payout Settings (Admin Only)
+                Route::get('/settings', [\App\Http\Controllers\Dashboard\PayoutSettingController::class, 'index'])->name('settings');
+                Route::post('/settings', [\App\Http\Controllers\Dashboard\PayoutSettingController::class, 'update'])->name('settings.update');
+                Route::post('/settings/trigger', [\App\Http\Controllers\Dashboard\PayoutSettingController::class, 'triggerAutoPayout'])->name('settings.trigger');
             });
 
             // Business Reports & Analytics
