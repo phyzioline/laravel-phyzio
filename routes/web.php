@@ -55,22 +55,25 @@ foreach ($supportedLocales as $locale) {
 
         // Payment gateway webhooks (generic)
         Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
+        
+        // Shipping provider webhooks (Bosta, Aramex, DHL, etc.)
+        Route::post('/webhooks/shipping/{provider}', [\App\Http\Controllers\Web\ShippingWebhookController::class, 'handle'])->name('webhooks.shipping');
     // Company Registration
-    Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name('company.register');
-    Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name('company.register.store');
+    Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name("company.register.{$locale}");
+    Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name("company.register.store.{$locale}");
 
     Route::get('/login', [LoginController::class, 'index'])->name("view_login.{$locale}");
     Route::post('/login', [LoginController::class, 'store'])->name("login.{$locale}");
 
-    Route::get('/forget_password', [PasswordController::class, 'index'])->name('view_forget_password');
-    Route::post('/forget_password', [PasswordController::class, 'store'])->name('forget_password');
+    Route::get('/forget_password', [PasswordController::class, 'index'])->name("view_forget_password.{$locale}");
+    Route::post('/forget_password', [PasswordController::class, 'store'])->name("forget_password.{$locale}");
     
-    Route::get('/products/{id}', [ShowController::class, 'product'])->name('product.show');
-        Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name('shipping_policy.index');
-     Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name('privacy_policy.index');
+    Route::get('/products/{id}', [ShowController::class, 'product'])->name("product.show.{$locale}");
+        Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name("shipping_policy.index.{$locale}");
+     Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name("privacy_policy.index.{$locale}");
      
-     Route::get('/contact-us', [FeedbackController::class, 'index'])->name('feedback.index');
-     Route::post('/contact-us', [FeedbackController::class, 'store'])->name('feedback.store');
+     Route::get('/contact-us', [FeedbackController::class, 'index'])->name("feedback.index.{$locale}");
+     Route::post('/contact-us', [FeedbackController::class, 'store'])->name("feedback.store.{$locale}");
 
      // Currency Switcher
      Route::post('/currency/switch', function (\Illuminate\Http\Request $request) {
@@ -81,7 +84,7 @@ foreach ($supportedLocales as $locale) {
          return redirect()->back();
      })->name('currency.switch');
 
-     Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name('tearms_condition.index');
+     Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name("tearms_condition.index.{$locale}");
         
         Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
      

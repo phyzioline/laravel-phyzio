@@ -97,6 +97,19 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
                 Route::get('/overdue/list', [\App\Http\Controllers\Dashboard\ShipmentController::class, 'overdue'])->name('overdue');
             });
 
+            // Shipping Management System (Bosta-like)
+            Route::prefix('shipping-management')->as('shipping-management.')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'index'])->name('index');
+                Route::get('/{id}', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'show'])->name('show');
+                Route::post('/create', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'create'])->name('create');
+                Route::post('/bulk-create', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'bulkCreate'])->name('bulk-create');
+                Route::post('/{id}/create-with-provider', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'createWithProvider'])->name('create-with-provider');
+                Route::post('/{id}/update-status', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'updateStatus'])->name('update-status');
+                Route::get('/{id}/download-label', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'downloadLabel'])->name('download-label');
+                Route::get('/{id}/print-label', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'printLabel'])->name('print-label');
+                Route::get('/estimate-cost', [\App\Http\Controllers\Dashboard\ShippingManagementController::class, 'estimateCost'])->name('estimate-cost');
+            });
+
             // Vendor Payout Management (Admin Approvals)
             Route::prefix('payouts')->as('payouts.')->group(function () {
                 Route::get('/', [\App\Http\Controllers\Dashboard\PayoutController::class, 'index'])->name('index');

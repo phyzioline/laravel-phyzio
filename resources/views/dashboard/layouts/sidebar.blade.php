@@ -138,6 +138,7 @@
                   </a>
                   <ul style="font-size: 0.9em;">
                       <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Shipments") }}</a></li>
+                      <li><a href="{{ route('dashboard.shipping-management.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Shipping Management") }}</a></li>
                       <li><a href="{{ route('dashboard.payouts.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Vendor Payouts") }}</a></li>
                       <li><a href="{{ route('dashboard.shipments.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Shipments") }}</a></li>
                       <li><a href="{{ route('dashboard.payouts.settings') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Payout Settings") }}</a></li>
