@@ -53,7 +53,7 @@
                       <p class="text-center">
                     <a class="btn btn-info" href="{{ route('auth.social.redirect','google') }}">Login with google</a>
 
-                        <a href="{{ route('view_forget_password') }}" class="link">Forgot your password?</a><br>
+                        <a href="{{ route('view_forget_password.' . (app()->getLocale() ?: 'en')) }}" class="link">Forgot your password?</a><br>
                         <a href="{{ route('view_register.' . app()->getLocale()) }}" class="link">Don't have an account? Sign Up</a>
                       </p>
                     </div>
