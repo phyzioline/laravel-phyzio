@@ -18,6 +18,6 @@ class PasswordController extends Controller
     public function store(ForgetPasswordRequest $request)
     {
        $this->passwordService->forgetPassword($request->validated());
-        return redirect()->route('home')->with('success', __('Registration successful!'));
+        return redirect()->route('home.' . app()->getLocale())->with('success', __('Registration successful!'));
     }
 }

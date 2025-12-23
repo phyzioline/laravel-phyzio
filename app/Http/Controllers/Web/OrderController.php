@@ -44,7 +44,7 @@ class OrderController extends Controller
                 abort(404, 'Order not found');
             }
 
-            $url     = route('home');
+            $url     = route('home.' . app()->getLocale());
             $success = filter_var($data['success'], FILTER_VALIDATE_BOOLEAN);
 
             if ($success) {
@@ -76,7 +76,7 @@ class OrderController extends Controller
                 $order->update([
                     'payment_status' => 'faild',
                 ]);
-                $url = route('home');
+                $url = route('home.' . app()->getLocale());
             }
 
             return view('payment', compact('order', 'url'));

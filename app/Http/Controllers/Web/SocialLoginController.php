@@ -29,7 +29,7 @@ class SocialLoginController extends Controller
 
             if ($provider_user) {
                 Auth::login($provider_user);
-                return redirect()->route('home');
+                return redirect()->route('home.' . app()->getLocale());
             }
 
             // 2. Check if email already exists (Manual Registration)
@@ -46,7 +46,7 @@ class SocialLoginController extends Controller
                 ]);
 
                 Auth::login($existing_user);
-                return redirect()->route('home');
+                return redirect()->route('home.' . app()->getLocale());
             }
 
             // 3. Create NEW User (if email doesn't exist)

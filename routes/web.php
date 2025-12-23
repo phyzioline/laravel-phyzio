@@ -44,7 +44,8 @@ foreach ($supportedLocales as $locale) {
         session(['locale' => $locale]);
         
         // Home route - Laravel will match based on URL prefix
-        Route::get('/', [HomeController::class, 'index'])->name('home');
+        // Use locale-specific route name to avoid conflicts
+        Route::get('/', [HomeController::class, 'index'])->name("home.{$locale}");
 
     Route::get('/register', [RegisterController::class, 'index'])->name('view_register');
     Route::post('/register', [RegisterController::class, 'store'])->name('register');
