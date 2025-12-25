@@ -20,6 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Configure Authenticate middleware to use locale-aware login route
+        $middleware->redirectGuestsTo(function () {
+            $locale = app()->getLocale() ?: 'en';
+            return route('view_login.' . $locale);
+        });
+        
         $middleware->alias([
             'not_admin'             => NotAdmin::class,
             'notification'          => CheckNotification::class,
