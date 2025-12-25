@@ -34,50 +34,95 @@ class Product extends Model
                 return $text;
             }
             
-            // Check if it looks like double-encoded text (common pattern with garbled Arabic)
-            // Pattern: Contains characters like æ, Ï, Ç, á, etc. which are typical of double-encoding
-            if (preg_match('/[æÏÇáãäå]/u', $text) && !preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
-                // Try to fix double-encoding by treating it as ISO-8859-1 or Windows-1252
-                // and then converting to UTF-8
-                foreach (['ISO-8859-1', 'Windows-1252'] as $encoding) {
-                    if (in_array($encoding, $supportedEncodings)) {
-                        // First decode as if it was encoded in this charset
-                        $decoded = @mb_convert_encoding($text, 'UTF-8', $encoding);
-                        if ($decoded && mb_check_encoding($decoded, 'UTF-8')) {
-                            // Check if the decoded version looks like it could be Arabic
-                            // Try converting from Windows-1256 if available
-                            if (in_array('Windows-1256', $supportedEncodings)) {
-                                $fixed = @mb_convert_encoding($decoded, 'UTF-8', 'Windows-1256');
-                                if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
-                                    return $fixed;
-                                }
-                            }
-                            // If that didn't work, try ISO-8859-6
-                            if (in_array('ISO-8859-6', $supportedEncodings)) {
-                                $fixed = @mb_convert_encoding($decoded, 'UTF-8', 'ISO-8859-6');
-                                if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
-                                    return $fixed;
+            // Detect garbled text patterns (common in double/triple encoding)
+            // Patterns: å, Ç, Ê, Ï, æ, á, ã, ä, Ó, Ñ, etc.
+            $garbledPattern = '/[åÇÊÏæáãäÓÑÎÔØ]/u';
+            $hasGarbledChars = preg_match($garbledPattern, $text);
+            
+            if ($hasGarbledChars && !preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
+                // Try multiple encoding fix strategies
+                $fixStrategies = [
+                    // Strategy 1: Treat as ISO-8859-1 -> Windows-1256 -> UTF-8
+                    function($t) use ($supportedEncodings) {
+                        if (in_array('ISO-8859-1', $supportedEncodings) && in_array('Windows-1256', $supportedEncodings)) {
+                            $step1 = @mb_convert_encoding($t, 'Windows-1256', 'ISO-8859-1');
+                            if ($step1) {
+                                $step2 = @mb_convert_encoding($step1, 'UTF-8', 'Windows-1256');
+                                if ($step2 && preg_match('/[\x{0600}-\x{06FF}]/u', $step2)) {
+                                    return $step2;
                                 }
                             }
                         }
-                    }
-                }
+                        return null;
+                    },
+                    // Strategy 2: Treat as Windows-1252 -> Windows-1256 -> UTF-8
+                    function($t) use ($supportedEncodings) {
+                        if (in_array('Windows-1252', $supportedEncodings) && in_array('Windows-1256', $supportedEncodings)) {
+                            $step1 = @mb_convert_encoding($t, 'Windows-1256', 'Windows-1252');
+                            if ($step1) {
+                                $step2 = @mb_convert_encoding($step1, 'UTF-8', 'Windows-1256');
+                                if ($step2 && preg_match('/[\x{0600}-\x{06FF}]/u', $step2)) {
+                                    return $step2;
+                                }
+                            }
+                        }
+                        return null;
+                    },
+                    // Strategy 3: Direct Windows-1256 conversion (if text was misread)
+                    function($t) use ($supportedEncodings) {
+                        if (in_array('Windows-1256', $supportedEncodings)) {
+                            // Try encoding to Windows-1256 then back to UTF-8
+                            $encoded = @mb_convert_encoding($t, 'Windows-1256', 'UTF-8');
+                            if ($encoded) {
+                                $decoded = @mb_convert_encoding($encoded, 'UTF-8', 'Windows-1256');
+                                if ($decoded && preg_match('/[\x{0600}-\x{06FF}]/u', $decoded)) {
+                                    return $decoded;
+                                }
+                            }
+                        }
+                        return null;
+                    },
+                    // Strategy 4: ISO-8859-1 -> ISO-8859-6 -> UTF-8
+                    function($t) use ($supportedEncodings) {
+                        if (in_array('ISO-8859-1', $supportedEncodings) && in_array('ISO-8859-6', $supportedEncodings)) {
+                            $step1 = @mb_convert_encoding($t, 'ISO-8859-6', 'ISO-8859-1');
+                            if ($step1) {
+                                $step2 = @mb_convert_encoding($step1, 'UTF-8', 'ISO-8859-6');
+                                if ($step2 && preg_match('/[\x{0600}-\x{06FF}]/u', $step2)) {
+                                    return $step2;
+                                }
+                            }
+                        }
+                        return null;
+                    },
+                    // Strategy 5: Try iconv as fallback
+                    function($t) {
+                        if (function_exists('iconv')) {
+                            // Try iconv with error handling
+                            $result = @iconv('ISO-8859-1', 'UTF-8//IGNORE', $t);
+                            if ($result && preg_match('/[\x{0600}-\x{06FF}]/u', $result)) {
+                                return $result;
+                            }
+                            // Try Windows-1256
+                            $result = @iconv('Windows-1256', 'UTF-8//IGNORE', $t);
+                            if ($result && preg_match('/[\x{0600}-\x{06FF}]/u', $result)) {
+                                return $result;
+                            }
+                        }
+                        return null;
+                    },
+                ];
                 
-                // Alternative: Try direct conversion assuming it's Windows-1256 misread as UTF-8
-                if (in_array('Windows-1256', $supportedEncodings)) {
-                    // Treat the garbled text as if it needs to be re-encoded
-                    $windows1256 = @mb_convert_encoding($text, 'Windows-1256', 'UTF-8');
-                    if ($windows1256) {
-                        $fixed = @mb_convert_encoding($windows1256, 'UTF-8', 'Windows-1256');
-                        if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
-                            return $fixed;
-                        }
+                // Try each strategy
+                foreach ($fixStrategies as $strategy) {
+                    $fixed = $strategy($text);
+                    if ($fixed && mb_check_encoding($fixed, 'UTF-8') && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
+                        return $fixed;
                     }
                 }
             }
             
             // Try to detect if it's Windows-1256 (Arabic Windows encoding) misread as UTF-8
-            // Only try if the encoding is supported
             if (in_array('Windows-1256', $supportedEncodings)) {
                 $windows1256 = @mb_convert_encoding($text, 'UTF-8', 'Windows-1256');
                 if ($windows1256 && preg_match('/[\x{0600}-\x{06FF}]/u', $windows1256)) {
@@ -89,11 +134,9 @@ class Product extends Model
         }
 
         // Try to convert from various encodings (common Arabic encodings first)
-        // Only use encodings that are actually supported
         $encodingsToTry = ['Windows-1256', 'ISO-8859-6', 'CP1256', 'UTF-8', 'ISO-8859-1', 'Windows-1252'];
         $encodings = array_intersect($encodingsToTry, $supportedEncodings);
         
-        // Always add UTF-8 if not already present
         if (!in_array('UTF-8', $encodings)) {
             array_unshift($encodings, 'UTF-8');
         }
@@ -101,7 +144,6 @@ class Product extends Model
         foreach ($encodings as $encoding) {
             $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
             if ($converted && mb_check_encoding($converted, 'UTF-8')) {
-                // Verify it contains valid characters
                 if (strlen($converted) > 0) {
                     return $converted;
                 }
@@ -110,7 +152,6 @@ class Product extends Model
 
         // Last resort: clean and force UTF-8
         $cleaned = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
-        // Remove any remaining invalid characters
         $cleaned = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $cleaned);
         return $cleaned;
     }
@@ -324,3 +365,4 @@ class Product extends Model
         return null;
     }
 }
+
