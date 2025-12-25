@@ -739,7 +739,7 @@
                                             @foreach($recent_orders as $order)
                                             <tr>
                                                 <td><strong>{{ $order->order_number ?? 'N/A' }}</strong></td>
-                                                <td>{{ $order->user->name }}</td>
+                                                <td>{{ $order->user ? $order->user->name : ($order->name ?? 'Guest Customer') }}</td>
                                                 <td>{{ $order->items->count() }} item(s)</td>
                                                 <td>${{ number_format($order->total, 2) }}</td>
                                                 <td>

@@ -220,13 +220,24 @@ class OrderService
 
         $authToken = $authResponse->json()['token'];
 
+        // Calculate total and ensure minimum amount (Paymob requires at least 10 cents = 0.10 EGP)
+        $totalAmount = $cartItems->sum('total');
+        $amountCents = max(10, (int)($totalAmount * 100)); // Minimum 10 cents (0.10 EGP)
+        
+        if ($totalAmount < 0.10) {
+            return response()->json([
+                'status'  => false,
+                'message' => __('Minimum order amount is 0.10 EGP'),
+            ], 400);
+        }
+
         $orderResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $authToken,
             'Content-Type'  => 'application/json',
         ])->post("https://accept.paymob.com/api/ecommerce/orders", [
             'auth_token'      => $authToken,
             'delivery_needed' => false,
-            'amount_cents'    => $cartItems->sum('total') * 100,
+            'amount_cents'    => $amountCents,
             'currency'        => 'EGP',
             'items'           => [],
         ]);
@@ -303,12 +314,13 @@ class OrderService
 
         $integrationId = request()->input('payment_method') == 'card' ? $this->cardId : $this->walletId;
 
+        // Use the same amount_cents calculated above
         $paymentKeyResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $authToken,
             'Content-Type'  => 'application/json',
         ])->post("https://accept.paymob.com/api/acceptance/payment_keys", [
             'auth_token'     => $authToken,
-            'amount_cents'   => $cartItems->sum('total') * 100,
+            'amount_cents'   => $amountCents,
             'expiration'     => 3600,
             'order_id'       => $paymobOrderId,
             'billing_data'   => $billing,
@@ -411,8 +423,8 @@ class OrderService
         $iframeId = request()->input('payment_method') == 'card' ? env('PAYMOB_IFRAME_ID') : env('PAYMOB_WALLET_IFRAME_ID');
         return [
             'payment_id'   => $paymobOrderId,
-            'price'        => $cartItems->sum('total'),
-            'redirect_url' => "https://accept.paymob.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentKey}&amount={$cartItems->sum('total')}",
+            'price'        => $totalAmount,
+            'redirect_url' => "https://accept.paymob.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentKey}&amount={$totalAmount}",
         ];
     }
 
