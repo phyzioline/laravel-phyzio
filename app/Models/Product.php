@@ -22,13 +22,12 @@ class Product extends Model
             $text = (string) $text;
         }
 
+        // Get list of supported encodings
+        $supportedEncodings = mb_list_encodings();
+        
         // Check if text is already valid UTF-8
         if (mb_check_encoding($text, 'UTF-8')) {
-            // Check if it's double-encoded (common issue with Arabic text)
-            // Try decoding once to see if it becomes valid Arabic
-            $decoded = @mb_convert_encoding($text, 'UTF-8', 'UTF-8');
-            
-            // Check if it looks like double-encoded Arabic (contains common Arabic character patterns)
+            // Check if it looks like valid Arabic (contains Arabic character patterns)
             // Arabic Unicode range: U+0600 to U+06FF
             if (preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
                 // Already has Arabic characters, likely correct
@@ -36,16 +35,27 @@ class Product extends Model
             }
             
             // Try to detect if it's Windows-1256 (Arabic Windows encoding) misread as UTF-8
-            $windows1256 = @mb_convert_encoding($text, 'UTF-8', 'Windows-1256');
-            if ($windows1256 && preg_match('/[\x{0600}-\x{06FF}]/u', $windows1256)) {
-                return $windows1256;
+            // Only try if the encoding is supported
+            if (in_array('Windows-1256', $supportedEncodings)) {
+                $windows1256 = @mb_convert_encoding($text, 'UTF-8', 'Windows-1256');
+                if ($windows1256 && preg_match('/[\x{0600}-\x{06FF}]/u', $windows1256)) {
+                    return $windows1256;
+                }
             }
             
             return $text;
         }
 
         // Try to convert from various encodings (common Arabic encodings first)
-        $encodings = ['Windows-1256', 'ISO-8859-6', 'CP1256', 'UTF-8', 'ISO-8859-1', 'Windows-1252'];
+        // Only use encodings that are actually supported
+        $encodingsToTry = ['Windows-1256', 'ISO-8859-6', 'CP1256', 'UTF-8', 'ISO-8859-1', 'Windows-1252'];
+        $encodings = array_intersect($encodingsToTry, $supportedEncodings);
+        
+        // Always add UTF-8 if not already present
+        if (!in_array('UTF-8', $encodings)) {
+            array_unshift($encodings, 'UTF-8');
+        }
+        
         foreach ($encodings as $encoding) {
             $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
             if ($converted && mb_check_encoding($converted, 'UTF-8')) {
