@@ -110,7 +110,7 @@ foreach ($supportedLocales as $locale) {
         ]);
         
         // Authenticated routes
-    Route::group(['middleware' => ['auth']], function () {
+    Route::group(['middleware' => ['auth']], function () use ($locale) {
 
         Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name('web.products.reviews.store');
 
