@@ -31,6 +31,6 @@ class RegisterCompanyController extends Controller
 
         $this->registerService->register($data);
 
-        return redirect()->route('view_login')->with('success', __('Registration successful! Your account is pending approval.'));
+        return redirect()->route('view_login.' . app()->getLocale())->with('success', __('Registration successful! Your account is pending approval.'));
     }
 }
