@@ -15,12 +15,12 @@ class ShowService
             }])
             ->get();
         
-        $query = Product::where('amount', '>', '0')
-            ->where('status', 'active')
+        $query = Product::where('products.amount', '>', '0')
+            ->where('products.status', 'active')
             ->with(['badges', 'metrics']);
 
         if ($request && $request->has('category') && $request->category != null) {
-            $query->where('category_id', $request->category);
+            $query->where('products.category_id', $request->category);
         }
 
         // Conversion-based ranking (Amazon style)
@@ -50,9 +50,9 @@ class ShowService
         $this->trackProductView($id);
         
         // Related products with conversion-based ranking
-        $products = Product::where('sub_category_id', $product->sub_category_id)
-            ->where('id', '!=', $id)
-            ->where('status', 'active')
+        $products = Product::where('products.sub_category_id', $product->sub_category_id)
+            ->where('products.id', '!=', $id)
+            ->where('products.status', 'active')
             ->with(['badges', 'metrics'])
             ->leftJoin('product_metrics', 'products.id', '=', 'product_metrics.product_id')
             ->select('products.*')
