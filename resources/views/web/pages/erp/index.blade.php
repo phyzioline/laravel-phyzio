@@ -1,10 +1,24 @@
 @extends('web.layouts.app')
 
-@section('title', 'Clinic ERP System | PhyzioLine')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('erp');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Manage your medical clinic efficiently with Phyzioline ERP. Scheduling, patient records, billing, and more in one platform.') }}">
-    <meta name="keywords" content="Clinic Management System, Medical Software, إدارة عيادات, برنامج طبي, Clinic ERP, نظام إدارة طبي, Phyzioline ERP">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="website">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::erpSchema())
+</script>
 @endpush
 
 @section('content')

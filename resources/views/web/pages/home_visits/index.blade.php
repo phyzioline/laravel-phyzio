@@ -1,10 +1,24 @@
 @extends('web.layouts.app')
 
-@section('title', __('Home Physical Therapy Visits'))
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('home_visits');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Book a professional physical therapist for home visits. Expert care at your doorstep from certified specialists.') }}">
-    <meta name="keywords" content="Home Physical Therapy, Doctor Visit, زيارات منزلية, دكتور علاج طبيعي, Home Rehabilitation, تأهيل منزلي, Phyzioline Home Visits">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="service">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::homeVisitsSchema())
+</script>
 @endpush
 
 @section('content')

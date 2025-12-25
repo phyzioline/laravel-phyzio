@@ -69,6 +69,10 @@ foreach ($supportedLocales as $locale) {
      
      Route::get('/contact-us', [FeedbackController::class, 'index'])->name("feedback.index.{$locale}");
      Route::post('/contact-us', [FeedbackController::class, 'store'])->name("feedback.store.{$locale}");
+     
+     Route::get('/about-us', function() {
+         return view('web.pages.about');
+     })->name("about.index.{$locale}");
 
      Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name("tearms_condition.index.{$locale}");
         

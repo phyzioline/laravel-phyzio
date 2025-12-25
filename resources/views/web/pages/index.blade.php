@@ -1,8 +1,22 @@
 @extends('web.layouts.app')
 
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('about');
+@endphp
+
+@section('title', $isArabic ? 'فيزيولاين - جميع احتياجات أخصائي العلاج الطبيعي من PT إلى PT' : 'Phyzioline - All Physical Therapist Needs From PT to PT')
+
 @push('meta')
-    <meta name="description" content="{{ __('Phyzioline is the leading medical platform for physical therapy products, home visits, clinic management, and education.') }}">
-    <meta name="keywords" content="Phyzioline, Who we are, Medical Platform, من نحن, فيزيولاين, Physical Therapy, علاج طبيعي, Medical Equipment, Clinic ERP">
+    <meta name="description" content="{{ $isArabic 
+        ? 'فيزيولاين: جميع احتياجات أخصائي العلاج الطبيعي هي مهمتنا من PT إلى PT. حلول برمجية شاملة، منتجات طبية، زيارات منزلية، إدارة عيادات، دورات، وظائف، ومعلومات.'
+        : 'Phyzioline: All Physical Therapist Needs is Our Mission From PT to PT. Comprehensive software solutions, medical products, home visits, clinic management, courses, jobs, and data hub.' }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $isArabic ? 'فيزيولاين - جميع احتياجات أخصائي العلاج الطبيعي' : 'Phyzioline - All Physical Therapist Needs From PT to PT' }}">
+    <meta property="og:description" content="{{ $isArabic 
+        ? 'حلول برمجية شاملة للعلاج الطبيعي. جميع احتياجات أخصائي العلاج الطبيعي هي مهمتنا.'
+        : 'Comprehensive physical therapy software solutions. All Physical Therapist Needs is Our Mission From PT to PT.' }}">
+    <meta property="og:type" content="website">
 @endpush
 
 @push('css')
@@ -1568,15 +1582,25 @@
                         <div class="mission-icon">
                             <i class="fas fa-rocket"></i>
                         </div>
-                        <h3 style="color: #36415A; display: inline;" class="mx-2">Mission</h3>
+                        <h3 style="color: #36415A; display: inline;" class="mx-2">{{ __('Mission') }}</h3>
                         <p class="text-about">
-                            *Phyzioline* is to revolutionize the physical therapy landscape by
-                            providing cutting-edge digital solutions that empower clinics,
-                            therapists, and patients. We strive to enhance care delivery
-                            through seamless case management, data-driven insights,
-                            comprehensive educational resources, and innovative service
-                            offerings that promote wellness and rehabilitation.
+                            <strong>{{ __('All Physical Therapist Needs is Our Mission From PT to PT') }}</strong>
                         </p>
+                        <p class="text-about">
+                            {{ __('Phyzioline is dedicated to revolutionizing the physical therapy landscape by providing cutting-edge digital solutions that empower clinics, therapists, and patients. We strive to enhance care delivery through seamless case management, data-driven insights, comprehensive educational resources, and innovative service offerings that promote wellness and rehabilitation.') }}
+                        </p>
+                        <p class="text-about">
+                            {{ __('Our comprehensive platform includes:') }}
+                        </p>
+                        <ul class="text-about" style="list-style: disc; margin-left: 20px;">
+                            <li>{{ __('Shop: Professional physical therapy products and medical equipment') }}</li>
+                            <li>{{ __('Home Visits: Expert therapists available for home-based care') }}</li>
+                            <li>{{ __('Clinic ERP: Complete clinic management system with EMR, scheduling, and billing') }}</li>
+                            <li>{{ __('Courses: Specialized training and continuing education for PT professionals') }}</li>
+                            <li>{{ __('Jobs: Career opportunities and job matching in physical therapy') }}</li>
+                            <li>{{ __('Feed: Latest news, articles, and community updates') }}</li>
+                            <li>{{ __('Data Hub: Global PT statistics, licensing requirements, and professional insights') }}</li>
+                        </ul>
                     </div>
                     <div class="vision">
                         <div class="vision-icon">

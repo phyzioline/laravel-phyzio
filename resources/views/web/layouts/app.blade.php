@@ -9,10 +9,17 @@
   @php
       $gSetting = \App\Models\Setting::first();
       $currentLocale = app()->getLocale();
-      $metaTitle = $gSetting->{'website_title_' . $currentLocale} ?? 'Phyzioline - Physical Therapy Products & Medical Equipment';
-      $metaDesc = \Illuminate\Support\Str::limit($gSetting->{'description_' . $currentLocale} ?? 'Phyzioline is your premier destination for physical therapy products, medical equipment, and educational courses in the Middle East.', 160);
-      $metaKeywords = 'Physical Therapy, العلاج الطبيعي, Medical Equipment, معدات طبية, Phyzioline, فيزيولاين, Rehabilitation, إعادة التأهيل, ' . ($gSetting->keywords ?? '');
-      $metaImage = asset('web/assets/images/logo.png'); // Default image
+      $isArabic = $currentLocale === 'ar';
+      $metaTitle = $gSetting->{'website_title_' . $currentLocale} ?? ($isArabic 
+          ? 'فيزيولاين - جميع احتياجات أخصائي العلاج الطبيعي من PT إلى PT'
+          : 'Phyzioline - All Physical Therapist Needs From PT to PT');
+      $metaDesc = \Illuminate\Support\Str::limit($gSetting->{'description_' . $currentLocale} ?? ($isArabic
+          ? 'فيزيولاين: جميع احتياجات أخصائي العلاج الطبيعي هي مهمتنا من PT إلى PT. حلول برمجية شاملة، منتجات، زيارات منزلية، إدارة عيادات، دورات، وظائف، ومعلومات.'
+          : 'Phyzioline: All Physical Therapist Needs is Our Mission From PT to PT. Comprehensive software solutions, products, home visits, clinic management, courses, jobs, and data.'), 160);
+      $metaKeywords = ($isArabic 
+          ? 'فيزيولاين, علاج طبيعي, حلول برمجية, منتجات طبية, إدارة عيادات, دورات, وظائف, زيارات منزلية, بنك المعلومات'
+          : 'Phyzioline, Physical Therapy, PT Software Solutions, Medical Products, Clinic ERP, Courses, Jobs, Home Visits, Data Hub') . ', ' . ($gSetting->keywords ?? '');
+      $metaImage = asset('web/assets/images/logo.png');
       $currentUrl = url()->current();
   @endphp
 
@@ -20,6 +27,9 @@
   <meta name="description" content="@yield('description', $metaDesc)">
   <meta name="keywords" content="@yield('keywords', $metaKeywords)">
   <meta name="author" content="Phyzioline">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <link rel="canonical" href="{{ $currentUrl }}">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -44,20 +54,15 @@
 
   <!-- Organization Schema -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Phyzioline",
-    "url": "{{ url('/') }}",
-    "logo": "{{ asset('web/assets/images/logo.png') }}",
-    "sameAs": [
-      "{{ $gSetting->facebook ?? 'https://facebook.com ' }}",
-      "{{ $gSetting->twitter ?? '#' }}",
-      "{{ $gSetting->instagram ?? '#' }}",
-      "{{ $gSetting->linkedin ?? '#' }}"
-    ]
-  }
+  @json(\App\Services\SEO\SEOService::organizationSchema())
   </script>
+
+  <!-- Website Schema -->
+  <script type="application/ld+json">
+  @json(\App\Services\SEO\SEOService::websiteSchema())
+  </script>
+
+  @stack('structured-data')
 
   @stack('meta')
   <link rel="icon" type="image/png" href="{{ asset('web/assets/images/logo.png') }}" />

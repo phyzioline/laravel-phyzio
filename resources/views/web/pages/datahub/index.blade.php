@@ -1,10 +1,24 @@
 @extends('web.layouts.app')
 
-@section('title', __('PhyzioLine Data Hub'))
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('datahub');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Explore global physical therapy data, statistics, and licensing requirements. Your central resource for PT insights.') }}">
-    <meta name="keywords" content="Global PT Data, Statistics, Licensing, بنك المعلومات, احصائيات علاج طبيعي, Physical Therapy Landscape, تراخيص مزاولة المهنة">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="website">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::dataHubSchema())
+</script>
 @endpush
 
 @section('content')

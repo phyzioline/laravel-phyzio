@@ -1,10 +1,24 @@
 @extends('web.layouts.app')
 
-@section('title', 'Career Opportunities')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('jobs');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Find the best physical therapy jobs and medical career opportunities. Connect with top clinics and hospitals.') }}">
-    <meta name="keywords" content="Medical Jobs, Physical Therapy Jobs, وظائف طبية, توظيف, Physiotherapist Jobs, وظائف علاج طبيعي, Healthcare Careers">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="website">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::jobsSchema())
+</script>
 @endpush
 
 @section('content')

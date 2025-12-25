@@ -1,17 +1,28 @@
 @extends('web.layouts.app')
 
-@section('title', 'Physical Therapy Products & Medical Equipment Shop | PhyzioLine')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('shop');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Shop high-quality physical therapy products, medical equipment, and rehabilitation supplies. Browse our extensive collection of professional physiotherapy tools and devices.') }}">
-    <meta name="keywords" content="Medical Store, Physical Therapy Equipment, متجر طبي, أجهزة علاج طبيعي, Medical Supplies, مستلزمات طبية, Phyzioline Shop, Rehabilitation Equipment, معدات تأهيل">
-    <meta property="og:title" content="Physical Therapy Products Shop | PhyzioLine">
-    <meta property="og:description" content="{{ __('Professional physical therapy equipment and medical supplies for therapists and clinics.') }}">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
     <meta property="og:type" content="website">
-@endpush
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Physical Therapy Products Shop">
-    <meta name="twitter:description" content="Professional physical therapy equipment and medical supplies.">
+    <meta name="twitter:title" content="{{ $pageMeta['title'] }}">
+    <meta name="twitter:description" content="{{ $pageMeta['description'] }}">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::shopSchema())
+</script>
+@endpush
 @section('content')
 <main>
     @push('css')

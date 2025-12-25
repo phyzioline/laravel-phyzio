@@ -1,10 +1,24 @@
 @extends('web.layouts.app')
 
-@section('title', 'Learning Platform | PhyzioLine')
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('courses');
+@endphp
+
+@section('title', $pageMeta['title'])
 
 @push('meta')
-    <meta name="description" content="{{ __('Advance your physiotherapy career with our specialized courses and workshops. Certifications, video lessons, and practical training.') }}">
-    <meta name="keywords" content="Medical Courses, CME, Physical Therapy Courses, دورات طبية, تعليم مستمر, Physiotherapy Education, تدريب علاج طبيعي">
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="website">
+@endpush
+
+@push('structured-data')
+<script type="application/ld+json">
+@json(\App\Services\SEO\SEOService::coursesSchema())
+</script>
 @endpush
 
 @section('content')

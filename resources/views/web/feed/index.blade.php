@@ -1,6 +1,19 @@
 @extends('web.layouts.app')
 
-@section('title', __('Phyzioline Feed'))
+@php
+    $isArabic = app()->getLocale() === 'ar';
+    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('feed');
+@endphp
+
+@section('title', $pageMeta['title'])
+
+@push('meta')
+    <meta name="description" content="{{ $pageMeta['description'] }}">
+    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
+    <meta property="og:title" content="{{ $pageMeta['title'] }}">
+    <meta property="og:description" content="{{ $pageMeta['description'] }}">
+    <meta property="og:type" content="website">
+@endpush
 
 @section('content')
 <div class="bg-light min-vh-100 py-4">
