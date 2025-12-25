@@ -21,15 +21,32 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
-    /* Fix selected text color - make it colored instead of white */
-    ::selection {
+    /* Fix selected text color - make it colored instead of white with high specificity */
+    body ::selection,
+    * ::selection,
+    html ::selection {
         color: #02767F !important;
-        background: rgba(4, 184, 196, 0.2) !important;
+        background: rgba(4, 184, 196, 0.25) !important;
     }
     
-    ::-moz-selection {
+    body ::-moz-selection,
+    * ::-moz-selection,
+    html ::-moz-selection {
         color: #02767F !important;
-        background: rgba(4, 184, 196, 0.2) !important;
+        background: rgba(4, 184, 196, 0.25) !important;
+    }
+    
+    /* Override home-v1 specific selection styles */
+    .home-v1 ::selection,
+    .home-v1 * ::selection {
+        color: #02767F !important;
+        background: rgba(4, 184, 196, 0.25) !important;
+    }
+    
+    .home-v1 ::-moz-selection,
+    .home-v1 * ::-moz-selection {
+        color: #02767F !important;
+        background: rgba(4, 184, 196, 0.25) !important;
     }
 </style>
 @endpush

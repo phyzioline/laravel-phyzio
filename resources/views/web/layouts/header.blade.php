@@ -464,7 +464,52 @@ body.has-hero .shop-hero-banner {
     margin-left: auto !important;
 }
 
+/* Track Your Order Button (Mobile) */
+.btn-track-order-mobile {
+    display: flex !important;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 20px;
+    color: #fff !important;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
 
+.btn-track-order-mobile:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+.btn-track-order-mobile i {
+    font-size: 16px;
+    margin-right: 5px;
+}
+
+.track-order-text-mobile {
+    display: none;
+}
+
+/* Show text on larger mobile screens */
+@media (min-width: 375px) {
+    .track-order-text-mobile {
+        display: inline !important;
+    }
+}
+
+/* Hide on desktop - only show in mobile header controls */
+@media (min-width: 992px) {
+    .btn-track-order-mobile {
+        display: none !important;
+    }
+}
 
 </style>
 
@@ -482,6 +527,17 @@ body.has-hero .shop-hero-banner {
         <button type="button" class="mobile-menu-btn">
             <i class="las la-bars"></i>
         </button>
+
+        <!-- TRACK YOUR ORDER BUTTON (Mobile) - Shows after order placement -->
+        @if(session('guest_order') || (Auth::check() && \App\Models\Order::where('user_id', auth()->id())->where('created_at', '>=', now()->subDays(7))->exists()))
+        <a href="{{ Auth::check() ? route('history_order.index') : '#' }}" 
+           class="btn-track-order-mobile" 
+           title="{{ __('Track Your Order') }}"
+           style="display: flex; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; margin-left: 10px; transition: all 0.3s ease;">
+            <i class="las la-shipping-fast" style="font-size: 16px; margin-right: 5px;"></i>
+            <span style="display: none;" class="track-order-text-mobile">{{ __('Track Order') }}</span>
+        </a>
+        @endif
 
         <!-- LOGIN BUTTON REMOVED (Duplicate) -->
         
