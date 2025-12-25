@@ -2,44 +2,65 @@
 
 ## Error
 ```
-The file "/tmp/phpCH9PBQ" does not exist
+The file "/tmp/phpKRhGnx" does not exist
 ViewException
+HTTP 500 Internal Server Error
 ```
 
 ## Cause
-This is a server-side permissions issue. Laravel cannot create temporary files for view compilation because:
-1. `/tmp` directory doesn't have write permissions
+This is a **server-side permissions issue**. Laravel cannot create temporary files for view compilation because:
+1. `/tmp` directory doesn't have write permissions for the web server user
 2. Laravel's view cache directory has permission issues
-3. PHP's temporary directory is not accessible
+3. PHP's temporary directory is not accessible to the web server
 
-## Solution - Run on Server
+## ⚠️ URGENT: Run This on Your Server NOW
 
-SSH into your server and run these commands:
+**SSH into your server and run these commands EXACTLY:**
 
 ```bash
-# 1. Navigate to project
+# 1. Connect to server
+ssh phyziolinegit@147.93.85.27
+
+# 2. Navigate to project
 cd /home/phyziolinegit/htdocs/phyzioline.com
 
-# 2. Clear all view caches
+# 3. Clear ALL caches (CRITICAL!)
 php artisan view:clear
 php artisan cache:clear
 php artisan config:clear
 php artisan route:clear
 
-# 3. Fix storage permissions
+# 4. Delete ALL compiled views
+rm -rf storage/framework/views/*
+
+# 5. Fix storage permissions
 chmod -R 775 storage
 chmod -R 775 bootstrap/cache
 
-# 4. Fix ownership (if needed)
-chown -R www-data:www-data storage bootstrap/cache
+# 6. Fix ownership (IMPORTANT!)
+chown -R phyziolinegit:phyziolinegit storage bootstrap/cache
 
-# 5. Clear compiled views manually (if needed)
-rm -rf storage/framework/views/*
+# 7. Create tmp directory in storage (alternative to /tmp)
+mkdir -p storage/framework/tmp
+chmod 775 storage/framework/tmp
 
-# 6. Rebuild caches
+# 8. Rebuild caches
 php artisan view:cache
 php artisan config:cache
 php artisan route:cache
+
+# 9. Exit
+exit
+```
+
+## Quick Fix Script
+
+I've created `fix_server_permissions.sh` - upload it to your server and run:
+
+```bash
+# On server:
+chmod +x fix_server_permissions.sh
+./fix_server_permissions.sh
 ```
 
 ## Alternative: Fix /tmp Permissions
