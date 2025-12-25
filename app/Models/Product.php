@@ -8,6 +8,89 @@ class Product extends Model
 {
     protected $guarded = [];
 
+    /**
+     * Fix encoding issues for product names and descriptions
+     */
+    protected function fixEncoding($text)
+    {
+        if (empty($text)) {
+            return $text;
+        }
+
+        // Check if text is already valid UTF-8
+        if (mb_check_encoding($text, 'UTF-8')) {
+            // Check if it's double-encoded (common issue)
+            if (mb_check_encoding(utf8_decode($text), 'UTF-8')) {
+                // Try to fix double encoding
+                $decoded = utf8_decode($text);
+                if (mb_check_encoding($decoded, 'UTF-8')) {
+                    return $decoded;
+                }
+            }
+            return $text;
+        }
+
+        // Try to convert from various encodings
+        $encodings = ['Windows-1256', 'ISO-8859-6', 'UTF-8', 'ISO-8859-1'];
+        foreach ($encodings as $encoding) {
+            $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
+            if ($converted && mb_check_encoding($converted, 'UTF-8')) {
+                return $converted;
+            }
+        }
+
+        // Last resort: force UTF-8
+        return mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+    }
+
+    /**
+     * Accessor for product_name_ar
+     */
+    public function getProductNameArAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
+    /**
+     * Accessor for product_name_en
+     */
+    public function getProductNameEnAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
+    /**
+     * Accessor for short_description_ar
+     */
+    public function getShortDescriptionArAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
+    /**
+     * Accessor for short_description_en
+     */
+    public function getShortDescriptionEnAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
+    /**
+     * Accessor for long_description_ar
+     */
+    public function getLongDescriptionArAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
+    /**
+     * Accessor for long_description_en
+     */
+    public function getLongDescriptionEnAttribute($value)
+    {
+        return $this->fixEncoding($value ?? '');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
