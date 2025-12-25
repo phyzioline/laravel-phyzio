@@ -114,6 +114,50 @@
      }
    } 
 
+   /* Global Selected Text Color Fix - Override all white selection styles */
+   *::selection,
+   *::-moz-selection,
+   body *::selection,
+   body *::-moz-selection,
+   html *::selection,
+   html *::-moz-selection,
+   .home-v1 *::selection,
+   .home-v1 *::-moz-selection,
+   .home-v1::selection,
+   .home-v1::-moz-selection,
+   section *::selection,
+   section *::-moz-selection,
+   div *::selection,
+   div *::-moz-selection,
+   p *::selection,
+   p *::-moz-selection,
+   h1 *::selection,
+   h1 *::-moz-selection,
+   h2 *::selection,
+   h2 *::-moz-selection,
+   h3 *::selection,
+   h3 *::-moz-selection,
+   h4 *::selection,
+   h4 *::-moz-selection,
+   h5 *::selection,
+   h5 *::-moz-selection,
+   h6 *::selection,
+   h6 *::-moz-selection,
+   span *::selection,
+   span *::-moz-selection,
+   a *::selection,
+   a *::-moz-selection {
+       color: #02767F !important;
+       background: rgba(4, 184, 196, 0.3) !important;
+   }
+   
+   /* Also target text directly (not just children) */
+   ::selection,
+   ::-moz-selection {
+       color: #02767F !important;
+       background: rgba(4, 184, 196, 0.3) !important;
+   }
+
 </style>
   <!-- custom - css include -->
   <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}?v={{ time() }}" />

@@ -468,39 +468,47 @@ body.has-hero .shop-hero-banner {
 .btn-track-order-mobile {
     display: flex !important;
     align-items: center;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: 20px;
+    justify-content: center;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 25px;
     color: #fff !important;
     text-decoration: none;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     margin-left: 10px;
     transition: all 0.3s ease;
     white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .btn-track-order-mobile:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    background: rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
     color: #fff !important;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-track-order-mobile:active {
+    transform: translateY(0);
 }
 
 .btn-track-order-mobile i {
-    font-size: 16px;
-    margin-right: 5px;
+    font-size: 18px;
+    margin-right: 6px;
 }
 
 .track-order-text-mobile {
-    display: none;
+    display: inline !important;
+    font-weight: 700;
 }
 
-/* Show text on larger mobile screens */
-@media (min-width: 375px) {
-    .track-order-text-mobile {
-        display: inline !important;
+/* Show icon and text on all mobile screens */
+@media (max-width: 991px) {
+    .btn-track-order-mobile {
+        display: flex !important;
     }
 }
 
@@ -529,13 +537,38 @@ body.has-hero .shop-hero-banner {
         </button>
 
         <!-- TRACK YOUR ORDER BUTTON (Mobile) - Shows after order placement -->
-        @if(session('guest_order') || (Auth::check() && \App\Models\Order::where('user_id', auth()->id())->where('created_at', '>=', now()->subDays(7))->exists()))
-        <a href="{{ Auth::check() ? route('history_order.index') : '#' }}" 
+        @php
+            $showTrackButton = false;
+            $trackUrl = '#';
+            
+            // Check if user just placed an order (success message in session)
+            if (session('success') || session('guest_order')) {
+                $showTrackButton = true;
+                if (Auth::check()) {
+                    $trackUrl = route('history_order.index');
+                } else {
+                    // For guests, link to order history with email parameter if available
+                    $guestOrder = session('guest_order');
+                    if ($guestOrder && isset($guestOrder->order_number)) {
+                        $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
+                    } else {
+                        $trackUrl = route('history_order.index');
+                    }
+                }
+            }
+            // Also show if user has recent orders (within last 30 days)
+            elseif (Auth::check() && \App\Models\Order::where('user_id', auth()->id())->where('created_at', '>=', now()->subDays(30))->exists()) {
+                $showTrackButton = true;
+                $trackUrl = route('history_order.index');
+            }
+        @endphp
+        
+        @if($showTrackButton)
+        <a href="{{ $trackUrl }}" 
            class="btn-track-order-mobile" 
-           title="{{ __('Track Your Order') }}"
-           style="display: flex; align-items: center; padding: 8px 12px; background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; color: #fff; text-decoration: none; font-size: 12px; font-weight: 600; margin-left: 10px; transition: all 0.3s ease;">
-            <i class="las la-shipping-fast" style="font-size: 16px; margin-right: 5px;"></i>
-            <span style="display: none;" class="track-order-text-mobile">{{ __('Track Order') }}</span>
+           title="{{ __('Track Your Order') }}">
+            <i class="las la-shipping-fast"></i>
+            <span class="track-order-text-mobile">{{ __('Track Order') }}</span>
         </a>
         @endif
 
