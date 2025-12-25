@@ -72,9 +72,9 @@ foreach ($supportedLocales as $locale) {
 
      Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name("tearms_condition.index.{$locale}");
         
-        Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
+        Route::get('/shop/search', [ShowController::class, 'search'])->name("web.shop.search.{$locale}");
      
-          Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name('web.shop.category');
+          Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name("web.shop.category.{$locale}");
           
           // Product tracking for metrics
           Route::post('/products/{id}/track-click', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackClick'])->name('web.products.track-click');

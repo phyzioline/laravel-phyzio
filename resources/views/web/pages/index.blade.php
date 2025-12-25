@@ -160,7 +160,7 @@
             <div class="container">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-10">
-                        <form action="{{ route('web.shop.search') }}" method="GET" class="search-bar-form">
+                        <form action="{{ route('web.shop.search.' . app()->getLocale()) }}" method="GET" class="search-bar-form">
                             <div class="search-bar-wrapper d-flex align-items-center">
                                 <input type="search" 
                                        name="search" 

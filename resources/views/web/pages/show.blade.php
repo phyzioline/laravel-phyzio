@@ -480,7 +480,7 @@ header,
     <!-- Search Bar -->
     <section class="shop-search-bar">
         <div class="container">
-            <form action="{{ route('web.shop.search') }}" method="GET" class="shop-search-form">
+            <form action="{{ route('web.shop.search.' . app()->getLocale()) }}" method="GET" class="shop-search-form">
                 <input type="search" 
                        name="search" 
                        value="{{ request('search') }}"
