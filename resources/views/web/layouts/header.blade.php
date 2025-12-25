@@ -754,7 +754,7 @@ body.has-hero .shop-hero-banner {
     <div class="main-search-collapse collapse" id="main-search-collapse">
         <div class="main-search-form card">
             <div class="container">
-                <form action="{{ route('web.shop.search') }}" method="GET">
+                <form action="{{ route('web.shop.search.' . app()->getLocale()) }}" method="GET">
                     <div class="form-item">
                         <input type="search" id="searchInput" value="{{ request('search') }}" name="search" placeholder="{{ __('Search your Product') }}" />
                         <button type="submit" class="submit-btn">

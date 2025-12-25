@@ -17,7 +17,7 @@
         </div>
 
         <div class="search-wrap">
-            <form action="{{ route('web.shop.search') }}" method="GET">
+            <form action="{{ route('web.shop.search.' . app()->getLocale()) }}" method="GET">
                 <div class="form-item mb-0">
                     <input type="search" id="searchInput" value="{{ old('search') }}" name="search"
                         placeholder="Search your Product" />
@@ -104,7 +104,7 @@
                                         </a>
                                         <ul class="collapse list-unstyled pl-3" id="category-{{ $category->id }}">
                                             @foreach ($category->subcategories as $subcategory)
-                                                <li><a href="{{ route('web.shop.category', ['id' => $subcategory->id]) }}" style="text-decoration: none; color: #666; font-size: 14px; padding: 8px 0; display: block; padding-left: 10px; border-left: 2px solid #eee;">{{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
+                                                <li><a href="{{ route('web.shop.category.' . app()->getLocale(), ['id' => $subcategory->id]) }}" style="text-decoration: none; color: #666; font-size: 14px; padding: 8px 0; display: block; padding-left: 10px; border-left: 2px solid #eee;">{{ $subcategory->{'name_' . app()->getLocale()} }}</a></li>
                                             @endforeach
                                         </ul>
                                     </li>
