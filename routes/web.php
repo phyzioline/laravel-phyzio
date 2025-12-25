@@ -210,8 +210,8 @@ foreach ($supportedLocales as $locale) {
                 } elseif ($user->hasRole('clinic')) {
                     return redirect()->route('clinic.dashboard');
                 } elseif ($user->type === 'company') {
-                    // Recruitment company dashboard - redirect to jobs management
-                    return redirect('/dashboard/jobs');
+                    // Recruitment company dashboard
+                    return redirect()->route('company.dashboard');
                 } else {
                     return redirect()->route('history_order.index');
                 }

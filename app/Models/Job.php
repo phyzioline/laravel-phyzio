@@ -60,6 +60,25 @@ class Job extends Model
     {
         return $query->where('is_active', true);
     }
+
+    /**
+     * Scope to filter jobs by company
+     */
+    public function scopeForCompany($query, $companyId)
+    {
+        return $query->where('clinic_id', $companyId)
+                    ->where('posted_by_type', 'company');
+    }
+
+    /**
+     * Scope to filter jobs by clinic
+     */
+    public function scopeForClinic($query, $clinicId)
+    {
+        return $query->where('clinic_id', $clinicId)
+                    ->where('posted_by_type', 'clinic');
+    }
+
     public function skills()
     {
         return $this->belongsToMany(Skill::class, 'job_skills')
