@@ -11,7 +11,10 @@ class HistoryOrderService
 
     public function index()
     {
-        $orders = $this->order->where('user_id', auth()->id())->with('items.product')->get();
+        $orders = $this->order->where('user_id', auth()->id())
+            ->with(['items.product.productImages'])
+            ->orderBy('created_at', 'desc')
+            ->get();
         return view('web.pages.history_order', compact('orders'));
     }
 

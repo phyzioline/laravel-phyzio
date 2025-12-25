@@ -279,13 +279,18 @@ body {
     @foreach ($orders as $order)
       @foreach ($order->items as $item)
       <div class="card">
-        <img src="https://picsum.photos/id/180/600/400" alt="صورة المنتج">
+        @php
+          $productImage = $item->product && $item->product->productImages && $item->product->productImages->first() 
+            ? asset($item->product->productImages->first()->image) 
+            : asset('web/assets/images/default-product.png');
+        @endphp
+        <img src="{{ $productImage }}" alt="{{ $item->product->{'product_name_' . app()->getLocale()} ?? 'Product' }}" style="object-fit: contain; background: #f9fafb;">
         <div class="card-content">
-          {{-- <div class="order-number">طلب رقم: #ORD-2024-001</div> --}}
-          <h3>{{ $item->product->{'product_name_' . app()->getLocale()} }}</h3>
+          <div class="order-number">طلب رقم: {{ $order->order_number }}</div>
+          <h3>{{ $item->product ? $item->product->{'product_name_' . app()->getLocale()} : 'Product Not Available' }}</h3>
 
           <div class="order-details">
-            <div class="detail-row"><span class="detail-label">تاريخ الطلب:</span><span class="detail-value">{{ $order->created_at }}</span></div>
+            <div class="detail-row"><span class="detail-label">تاريخ الطلب:</span><span class="detail-value">{{ $order->created_at->format('Y-m-d H:i') }}</span></div>
             <div class="detail-row"><span class="detail-label">الكمية:</span><span class="detail-value">{{ $item->quantity }} قطعة</span></div>
             @if($item->engineer_selected)
             <div class="detail-row">
@@ -296,11 +301,33 @@ body {
                 </span>
             </div>
             @endif
-            <div class="detail-row"><span class="detail-label">طريقة الدفع:</span><span class="detail-value">{{ $order->payment_method }}</span></div>
+            <div class="detail-row"><span class="detail-label">طريقة الدفع:</span><span class="detail-value">{{ $order->payment_method == 'cash' ? __('Cash on Delivery') : __('Credit Card') }}</span></div>
             <div class="detail-row"><span class="detail-label">العنوان:</span><span class="detail-value">{{ $order->address }}</span></div>
           </div>
 
-          <div class="price-highlight"><i class="fas fa-tag"></i> {{ $item->price }} ج.م</div>
+          <div class="price-breakdown" style="background: #f9fafb; border-radius: 10px; padding: 12px; margin: 12px 0;">
+            <div class="detail-row" style="margin-bottom: 8px;">
+              <span class="detail-label">{{ __('Subtotal') }}:</span>
+              <span class="detail-value">{{ number_format($item->price * $item->quantity, 2) }} {{ config('currency.default_symbol', 'EGP') }}</span>
+            </div>
+            @if($item->shipping_fee && $item->shipping_fee > 0)
+            <div class="detail-row" style="margin-bottom: 8px;">
+              <span class="detail-label">{{ __('Shipping Fee') }}:</span>
+              <span class="detail-value">{{ number_format($item->shipping_fee, 2) }} {{ config('currency.default_symbol', 'EGP') }}</span>
+            </div>
+            @endif
+            @php
+              $itemSubtotal = $item->price * $item->quantity;
+              $itemShipping = $item->shipping_fee ?? 0;
+              $itemTotal = $itemSubtotal + $itemShipping;
+            @endphp
+            <div class="detail-row" style="border-top: 2px solid #10b8c4; padding-top: 8px; margin-top: 8px;">
+              <span class="detail-label" style="font-weight: 700; font-size: 15px;">{{ __('Total') }}:</span>
+              <span class="detail-value" style="font-weight: 700; font-size: 15px; color: #10b8c4;">{{ number_format($itemTotal, 2) }} {{ config('currency.default_symbol', 'EGP') }}</span>
+            </div>
+          </div>
+
+          <div class="price-highlight"><i class="fas fa-tag"></i> {{ number_format($itemTotal, 2) }} {{ config('currency.default_symbol', 'EGP') }}</div>
 
           <div class="delivery-progress">
             <div class="progress-steps">
