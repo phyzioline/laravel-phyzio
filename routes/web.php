@@ -301,5 +301,14 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
 
+    // Company Dashboard Routes
+    Route::group(['prefix' => 'company', 'as' => 'company.', 'middleware' => ['auth']], function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Company\DashboardController::class, 'index'])->name('dashboard');
+        
+        Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Company\JobController::class, 'applicants'])->name('jobs.applicants');
+        Route::post('/jobs/{jobId}/applications/{applicationId}/status', [\App\Http\Controllers\Company\JobController::class, 'updateApplicationStatus'])->name('jobs.updateApplicationStatus');
+        Route::resource('jobs', \App\Http\Controllers\Company\JobController::class);
+    });
+
     require __DIR__ . '/dashboard.php';
     require __DIR__ . '/therapist.php';
