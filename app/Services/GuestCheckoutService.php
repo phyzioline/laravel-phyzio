@@ -44,6 +44,20 @@ class GuestCheckoutService
             
             // Create order items
             foreach ($cartItems as $item) {
+                // Validate stock availability before creating order item
+                if (!$item->product) {
+                    throw new \Exception("Product not found for cart item ID: {$item->id}");
+                }
+                
+                $availableStock = $item->product->amount ?? 0;
+                $requestedQuantity = $item->quantity;
+                
+                // Check if enough stock is available
+                if ($availableStock < $requestedQuantity) {
+                    $productName = $item->product->{'product_name_' . app()->getLocale()} ?? $item->product->product_name_en ?? 'Product';
+                    throw new \Exception("Insufficient stock for {$productName}. Available: {$availableStock}, Requested: {$requestedQuantity}");
+                }
+                
                 $options = is_string($item->options) ? json_decode($item->options, true) : ($item->options ?? []);
                 $engineerSelected = $options['engineer_selected'] ?? false;
                 $engineerPrice = $options['engineer_price'] ?? 0;
@@ -57,8 +71,10 @@ class GuestCheckoutService
                     'engineer_price' => $engineerPrice,
                 ]);
                 
-                if ($item->product) {
-                    $item->product->decrement('amount', $item->quantity);
+                // Safely decrement stock - ensure it doesn't go below zero
+                if ($item->product && $availableStock >= $requestedQuantity) {
+                    $newAmount = max(0, $availableStock - $requestedQuantity);
+                    $item->product->update(['amount' => $newAmount]);
                 }
             }
             

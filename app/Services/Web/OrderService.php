@@ -87,6 +87,21 @@ class OrderService
         ]);
 
         foreach ($cartItems as $item) {
+            // Validate stock availability before creating order item
+            if (!$item->product) {
+                \Illuminate\Support\Facades\Log::warning('Product not found for cart item', ['cart_item_id' => $item->id]);
+                continue;
+            }
+            
+            $availableStock = $item->product->amount ?? 0;
+            $requestedQuantity = $item->quantity;
+            
+            // Check if enough stock is available
+            if ($availableStock < $requestedQuantity) {
+                $productName = $item->product->{'product_name_' . app()->getLocale()} ?? $item->product->product_name_en ?? 'Product';
+                throw new \Exception("Insufficient stock for {$productName}. Available: {$availableStock}, Requested: {$requestedQuantity}");
+            }
+            
             // Get engineer info from cart options
             $options = is_string($item->options) ? json_decode($item->options, true) : ($item->options ?? []);
             $engineerSelected = $options['engineer_selected'] ?? false;
@@ -102,8 +117,11 @@ class OrderService
                     'engineer_price' => $engineerPrice,
                 ]
             );
-            if ($item->product) {
-                $item->product->decrement('amount', $item->quantity);
+            
+            // Safely decrement stock - ensure it doesn't go below zero
+            if ($availableStock >= $requestedQuantity) {
+                $newAmount = max(0, $availableStock - $requestedQuantity);
+                $item->product->update(['amount' => $newAmount]);
             }
         }
         

@@ -21,7 +21,29 @@ class OrderController extends Controller
         }, function($q) {
             $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
             $q->where('cookie_id', $cookieId)->whereNull('user_id');
-        })->get();
+        })->with('product')->get();
+        
+        // Validate stock availability before creating order
+        foreach ($cartItems as $item) {
+            if (!$item->product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => __('Product not found in cart. Please refresh and try again.')
+                ], 400);
+            }
+            
+            $availableStock = $item->product->amount ?? 0;
+            $requestedQuantity = $item->quantity;
+            
+            if ($availableStock < $requestedQuantity) {
+                $productName = $item->product->{'product_name_' . app()->getLocale()} ?? $item->product->product_name_en ?? 'Product';
+                $message = $availableStock == 0 
+                    ? __(':product is currently out of stock.', ['product' => $productName])
+                    : __('Only :count items available for :product.', ['count' => $availableStock, 'product' => $productName]);
+                
+                return back()->withErrors(['cart' => $message])->withInput();
+            }
+        }
         
         foreach ($cartItems as $item) {
             $metric = \App\Models\ProductMetric::firstOrCreate(
@@ -90,8 +112,15 @@ class OrderController extends Controller
                      }
                  }
                  foreach ($order->items as $item) {
-                    if ($item->product && $item->product->amount >= $item->quantity) {
-                        $item->product->decrement('amount', $item->quantity);
+                    if ($item->product) {
+                        $availableStock = $item->product->amount ?? 0;
+                        $requestedQuantity = $item->quantity;
+                        
+                        // Safely decrement stock - ensure it doesn't go below zero
+                        if ($availableStock >= $requestedQuantity) {
+                            $newAmount = max(0, $availableStock - $requestedQuantity);
+                            $item->product->update(['amount' => $newAmount]);
+                        }
                     }
                 }
 
