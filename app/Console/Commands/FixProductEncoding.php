@@ -26,15 +26,17 @@ class FixProductEncoding extends Command
             $updates = [];
             
             // Fix product_name_ar
-            $fixedAr = $this->fixTextEncoding($product->getRawOriginal('product_name_ar') ?? '');
-            if ($fixedAr !== $product->getRawOriginal('product_name_ar')) {
+            $originalAr = $product->getAttributes()['product_name_ar'] ?? '';
+            $fixedAr = $this->fixTextEncoding($originalAr);
+            if ($fixedAr !== $originalAr) {
                 $updates['product_name_ar'] = $fixedAr;
                 $updated = true;
             }
             
             // Fix product_name_en
-            $fixedEn = $this->fixTextEncoding($product->getRawOriginal('product_name_en') ?? '');
-            if ($fixedEn !== $product->getRawOriginal('product_name_en')) {
+            $originalEn = $product->getAttributes()['product_name_en'] ?? '';
+            $fixedEn = $this->fixTextEncoding($originalEn);
+            if ($fixedEn !== $originalEn) {
                 $updates['product_name_en'] = $fixedEn;
                 $updated = true;
             }
@@ -42,7 +44,7 @@ class FixProductEncoding extends Command
             // Fix descriptions
             $fields = ['short_description_ar', 'short_description_en', 'long_description_ar', 'long_description_en'];
             foreach ($fields as $field) {
-                $original = $product->getRawOriginal($field) ?? '';
+                $original = $product->getAttributes()[$field] ?? '';
                 $fixed = $this->fixTextEncoding($original);
                 if ($fixed !== $original) {
                     $updates[$field] = $fixed;
