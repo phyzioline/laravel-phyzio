@@ -53,11 +53,6 @@ foreach ($supportedLocales as $locale) {
     Route::get('/otp', [RegisterController::class, 'otp'])->name("view_otp.{$locale}");
     Route::post('/verify', [RegisterController::class, 'verify'])->name("verify.{$locale}");
 
-        // Payment gateway webhooks (generic)
-        Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
-        
-        // Shipping provider webhooks (Bosta, Aramex, DHL, etc.)
-        Route::post('/webhooks/shipping/{provider}', [\App\Http\Controllers\Web\ShippingWebhookController::class, 'handle'])->name('webhooks.shipping');
     // Company Registration
     Route::get('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'create'])->name("company.register.{$locale}");
     Route::post('/register/company', [App\Http\Controllers\Web\RegisterCompanyController::class, 'store'])->name("company.register.store.{$locale}");
@@ -231,6 +226,10 @@ foreach ($supportedLocales as $locale) {
         
     }); // End of locale route group
 } // End of foreach loop
+
+// Webhook routes (no locale prefix needed - called by external services)
+Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
+Route::post('/webhooks/shipping/{provider}', [\App\Http\Controllers\Web\ShippingWebhookController::class, 'handle'])->name('webhooks.shipping');
 
 // Routes that work WITHOUT locale prefix (use session/default locale)
 // These routes were working before and should continue to work
