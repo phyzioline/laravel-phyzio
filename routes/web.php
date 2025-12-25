@@ -70,15 +70,6 @@ foreach ($supportedLocales as $locale) {
      Route::get('/contact-us', [FeedbackController::class, 'index'])->name("feedback.index.{$locale}");
      Route::post('/contact-us', [FeedbackController::class, 'store'])->name("feedback.store.{$locale}");
 
-     // Currency Switcher
-     Route::post('/currency/switch', function (\Illuminate\Http\Request $request) {
-         $currency = $request->input('currency');
-         if (array_key_exists($currency, config('currency.currencies'))) {
-             session(['currency' => $currency]);
-         }
-         return redirect()->back();
-     })->name('currency.switch');
-
      Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name("tearms_condition.index.{$locale}");
         
         Route::get('/shop/search', [ShowController::class, 'search'])->name('web.shop.search');
@@ -230,6 +221,15 @@ foreach ($supportedLocales as $locale) {
 // Webhook routes (no locale prefix needed - called by external services)
 Route::post('/webhooks/payments/{provider}', [\App\Http\Controllers\Web\PaymentWebhookController::class, 'handle'])->name('webhooks.payments');
 Route::post('/webhooks/shipping/{provider}', [\App\Http\Controllers\Web\ShippingWebhookController::class, 'handle'])->name('webhooks.shipping');
+
+// Currency Switcher (no locale prefix needed - works globally)
+Route::post('/currency/switch', function (\Illuminate\Http\Request $request) {
+    $currency = $request->input('currency');
+    if (array_key_exists($currency, config('currency.currencies'))) {
+        session(['currency' => $currency]);
+    }
+    return redirect()->back();
+})->name('currency.switch');
 
 // Routes that work WITHOUT locale prefix (use session/default locale)
 // These routes were working before and should continue to work

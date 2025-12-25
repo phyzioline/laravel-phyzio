@@ -135,12 +135,14 @@ class HomeController extends Controller
             
             // Recent orders
             $recentOrders = Order::with('user')->latest()->take(5)->get()->map(function($order) {
+                // Handle guest orders (user can be null)
+                $customerName = $order->user ? $order->user->name : ($order->name ?? 'Guest Customer');
                 return [
                     'type' => 'order',
                     'icon' => 'fa-receipt',
                     'color' => 'success',
                     'title' => 'New Order',
-                    'description' => $order->user->name . ' - $' . number_format($order->total, 2),
+                    'description' => $customerName . ' - $' . number_format($order->total, 2),
                     'time' => $order->created_at,
                     'link' => route('dashboard.orders.show', $order->id)
                 ];
