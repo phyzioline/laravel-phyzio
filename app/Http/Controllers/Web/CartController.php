@@ -155,8 +155,15 @@ return response()->json([
 
 public function getTotal()
 {
+    $userId = auth()->check() ? auth()->id() : null;
+    $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+    
     $total = Cart::join('products', 'products.id', '=', 'carts.product_id')
-        ->where('carts.user_id', auth()->id())
+        ->when($userId, function($q) use ($userId) {
+            $q->where('carts.user_id', $userId);
+        }, function($q) use ($cookieId) {
+            $q->where('carts.cookie_id', $cookieId)->whereNull('carts.user_id');
+        })
         ->selectRaw('SUM(products.product_price * carts.quantity) as total')
         ->value('total') ?? 0;
 

@@ -44,7 +44,7 @@ class ShowService
 
     public function product($id)
     {
-        $product = Product::with(['badges', 'metrics'])->where('id', $id)->firstOrFail();
+        $product = Product::with(['badges', 'metrics', 'productReviews.user'])->where('id', $id)->firstOrFail();
         
         // Track product view
         $this->trackProductView($id);
@@ -59,8 +59,16 @@ class ShowService
             ->orderByRaw('(product_metrics.conversion_rate * product_metrics.velocity) DESC')
             ->limit(8)
             ->get();
+        
+        // Frequently bought together
+        $frequentlyBoughtTogether = (new \App\Services\FrequentlyBoughtTogetherService())
+            ->getFrequentlyBoughtTogether($id, 4);
+        
+        // Delivery date prediction (default to Cairo)
+        $deliveryService = new \App\Services\DeliveryDateService();
+        $deliveryInfo = $deliveryService->getDeliveryMessage('Cairo', null, 'standard');
             
-        return view('web.pages.showDetails', compact('product', 'products'));
+        return view('web.pages.showDetails', compact('product', 'products', 'frequentlyBoughtTogether', 'deliveryInfo'));
     }
     public function ProductBySubCategory($id)
     {

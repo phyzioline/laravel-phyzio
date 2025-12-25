@@ -194,7 +194,7 @@ foreach ($supportedLocales as $locale) {
         Route::put('update_cart/{id}', [CartController::class, 'update_carts']);
         Route::get('total',[CartController::class, 'total'])->name('carts.total');
         Route::get('flush',[CartController::class, 'flush'])->name('carts.flush');
-        Route::post('store',[OrderController::class, 'store'])->name('order.store');
+        Route::post('store',[OrderController::class, 'store'])->name('order.store.' . $locale);
         Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
         Route::post('favorites', [FavoriteController::class, 'store'])->name('favorites.store');
         Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.delete');

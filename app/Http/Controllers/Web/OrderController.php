@@ -79,7 +79,16 @@ class OrderController extends Controller
                     'paid_at' => now(),
                 ]);
 
-                 Cart::where('user_id',$order->user_id)->delete();
+                 // Clear cart for authenticated or guest orders
+                 if ($order->user_id) {
+                     Cart::where('user_id', $order->user_id)->delete();
+                 } else {
+                     // For guest orders, clear by guest_token or email
+                     $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+                     if ($cookieId) {
+                         Cart::where('cookie_id', $cookieId)->whereNull('user_id')->delete();
+                     }
+                 }
                  foreach ($order->items as $item) {
                     if ($item->product && $item->product->amount >= $item->quantity) {
                         $item->product->decrement('amount', $item->quantity);

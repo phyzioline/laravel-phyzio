@@ -176,12 +176,41 @@
                     <!-- Checkout Form -->
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="total-cost-bar bg-white rounded shadow-sm p-4">
+                            {{-- Progress Indicator - Amazon Style --}}
+                            <div class="checkout-progress mb-4">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="step completed">
+                                        <div class="step-circle bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px; font-weight: bold;">1</div>
+                                        <div class="step-label mt-2 text-center">
+                                            <small class="text-muted">Cart</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #02767F;"></div>
+                                    <div class="step active">
+                                        <div class="step-circle bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px; font-weight: bold;">2</div>
+                                        <div class="step-label mt-2 text-center">
+                                            <small class="fw-bold text-primary">Checkout</small>
+                                        </div>
+                                    </div>
+                                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #e0e0e0;"></div>
+                                    <div class="step">
+                                        <div class="step-circle bg-light text-muted rounded-circle d-flex align-items-center justify-content-center" 
+                                             style="width: 40px; height: 40px; font-weight: bold;">3</div>
+                                        <div class="step-label mt-2 text-center">
+                                            <small class="text-muted">Confirmation</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <h4 class="title-text mb-4 text-white text-center fw-bold" 
                                 style="background-color: #02767F; padding: 15px; border-radius: 8px;">
                                 <i class="las la-credit-card me-2"></i>Complete Order
                             </h4>
                             
-                            <form action="{{ route('order.store') }}" method="POST" class="needs-validation" novalidate>
+                            <form action="{{ route('order.store.' . (app()->getLocale() ?: 'en')) }}" method="POST" class="needs-validation" novalidate>
                                 @csrf
                                 
                                 {{-- Guest Checkout Email --}}

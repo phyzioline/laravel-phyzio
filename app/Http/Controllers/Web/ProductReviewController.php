@@ -28,12 +28,21 @@ class ProductReviewController extends Controller
             return back()->with('error', 'You have already reviewed this product.');
         }
 
+        // Check if user has purchased this product (verified purchase)
+        $hasPurchased = \App\Models\ItemsOrder::whereHas('order', function($q) {
+                $q->where('user_id', Auth::id())
+                  ->where('payment_status', 'paid');
+            })
+            ->where('product_id', $product->id)
+            ->exists();
+        
         Review::create([
             'user_id' => Auth::id(),
             'product_id' => $product->id,
             'rating' => $request->rating,
             'comment' => $request->comment,
             'is_approved' => true,
+            'verified_purchase' => $hasPurchased,
         ]);
 
         return back()->with('success', 'Review submitted successfully.');

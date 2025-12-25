@@ -99,6 +99,16 @@
                                     </span>
                                 </div>
                                 @endif
+                                
+                                {{-- Delivery Date Prediction - Amazon Style --}}
+                                @if(isset($deliveryInfo))
+                                <div class="delivery-date mb-2">
+                                    <span style="font-size: 14px; color: #007185;">
+                                        <i class="las la-calendar-check me-1"></i>
+                                        <strong>{{ $deliveryInfo['message'] }}</strong>
+                                    </span>
+                                </div>
+                                @endif
                             </div>
                             
                             {{-- Fulfilled by Phyzioline Badge - Amazon Style --}}
@@ -331,7 +341,14 @@
                                     <div class="card mb-3 border-0 shadow-sm">
                                         <div class="card-body">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <h6 class="mb-0">{{ $review->user->name }}</h6>
+                                                <div>
+                                                    <h6 class="mb-0">{{ $review->user->name }}</h6>
+                                                    @if($review->isVerifiedPurchase())
+                                                    <span class="badge bg-success" style="font-size: 11px;">
+                                                        <i class="las la-check-circle me-1"></i>Verified Purchase
+                                                    </span>
+                                                    @endif
+                                                </div>
                                                 <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
                                             </div>
                                             <div class="mb-2 text-warning">
@@ -407,6 +424,60 @@
         </section>
         <!-- details-section - end
        ================================================== -->
+
+        <!-- Frequently Bought Together - Amazon Style -->
+        @if(isset($frequentlyBoughtTogether) && $frequentlyBoughtTogether->count() > 0)
+        <section id="frequently-bought-together" class="shop-section sec-ptb-50 clearfix" style="background-color: #f8f9fa;">
+            <div class="container">
+                <div class="physio-section-title mb-4 text-center">
+                    <h2 class="title-text mb-3">Frequently Bought Together</h2>
+                    <p class="mb-0 text-muted">Customers who bought this item also bought</p>
+                </div>
+                
+                <div class="row justify-content-center">
+                    @foreach ($frequentlyBoughtTogether as $relatedProduct)
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+                            <div class="card border-0 shadow-sm h-100">
+                                <div class="position-relative">
+                                    <a href="{{ route('product.show.' . (app()->getLocale() ?: 'en'), $relatedProduct->id) }}">
+                                        <img src="{{ asset($relatedProduct->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
+                                             class="card-img-top" 
+                                             alt="{{ $relatedProduct->{'product_name_' . app()->getLocale()} }}"
+                                             style="height: 200px; object-fit: cover;">
+                                    </a>
+                                    @if($relatedProduct->primaryBadge)
+                                    <span class="badge position-absolute top-0 start-0 m-2" 
+                                          style="background: {{ $relatedProduct->primaryBadge->badge_type === 'best_seller' ? '#FF6F00' : '#02767F' }};">
+                                        {{ $relatedProduct->primaryBadge->label }}
+                                    </span>
+                                    @endif
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <a href="{{ route('product.show.' . (app()->getLocale() ?: 'en'), $relatedProduct->id) }}" 
+                                           class="text-decoration-none text-dark">
+                                            {{ Str::limit($relatedProduct->{'product_name_' . app()->getLocale()}, 50) }}
+                                        </a>
+                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-primary">{{ number_format($relatedProduct->product_price, 2) }} EGP</span>
+                                        <form action="{{ route('carts.store') }}" method="POST" class="d-inline">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                <i class="las la-cart-plus"></i> Add
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
 
         <!-- shop-section - start
        ================================================== -->
