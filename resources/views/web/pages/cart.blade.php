@@ -169,11 +169,22 @@
                                 <i class="las la-calculator me-2"></i>Order Summary
                             </h4>
                             
-                            <div class="total-cost d-flex justify-content-between align-items-center p-3 bg-light rounded">
-                                <strong class="fs-5 text-dark">Total Amount:</strong>
-                                <span id="cart-total" class="fs-4 fw-bold text-primary">
-                                    {{ number_format($total, 2) }} EGP
-                                </span>
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-dark">Subtotal:</span>
+                                    <span class="fw-semibold">{{ number_format($subtotal, 2) }} {{ config('currency.default_symbol', 'EGP') }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-dark">Shipping Cost:</span>
+                                    <span class="fw-semibold">{{ number_format($shippingCost, 2) }} {{ config('currency.default_symbol', 'EGP') }}</span>
+                                </div>
+                                <hr class="my-2">
+                                <div class="total-cost d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                                    <strong class="fs-5 text-dark">Total Amount:</strong>
+                                    <span id="cart-total" class="fs-4 fw-bold text-primary">
+                                        {{ number_format($total, 2) }} {{ config('currency.default_symbol', 'EGP') }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>

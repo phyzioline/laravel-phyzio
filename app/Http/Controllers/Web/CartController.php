@@ -25,7 +25,7 @@ class CartController extends Controller
         $userId = auth()->check() ? auth()->id() : null;
         $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
         
-        $total = Cart::join('products', 'products.id', '=', 'carts.product_id')
+        $subtotal = Cart::join('products', 'products.id', '=', 'carts.product_id')
             ->when($userId, function($q) use ($userId) {
                 $q->where('carts.user_id', $userId);
             }, function($q) use ($cookieId) {
@@ -33,8 +33,15 @@ class CartController extends Controller
             })
             ->selectRaw('SUM(products.product_price * carts.quantity) as total')
             ->value('total') ?? 0;
+        
+        // Calculate shipping cost (base cost + per item cost)
+        $shippingBaseCost = config('shipping.base_cost', 30);
+        $shippingPerItem = 5; // Additional cost per item
+        $shippingCost = $shippingBaseCost + ($items->count() * $shippingPerItem);
+        
+        $total = $subtotal + $shippingCost;
             
-        return view('web.pages.cart', compact('items', 'total'));
+        return view('web.pages.cart', compact('items', 'subtotal', 'shippingCost', 'total'));
     }
 
 
