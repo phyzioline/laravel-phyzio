@@ -396,8 +396,18 @@ class OrderService
             if ($item->product && $item->product->user_id) {
                 $vendorId = $item->product->user_id;
                 
-                // Calculate financials
-                $productAmount = $item->price;
+                // Calculate financials - use item price or fallback to product price
+                $productAmount = $item->price ?? $item->product->product_price ?? 0;
+                if ($productAmount <= 0) {
+                    \Illuminate\Support\Facades\Log::warning('Vendor payment calculation: product_amount is 0 or null', [
+                        'order_id' => $order->id,
+                        'item_id' => $item->id,
+                        'product_id' => $item->product_id,
+                        'item_price' => $item->price,
+                        'product_price' => $item->product->product_price ?? null,
+                    ]);
+                    continue; // Skip this item if no valid price
+                }
                 $quantity = $item->quantity;
                 $subtotal = $productAmount * $quantity;
                 

@@ -47,12 +47,44 @@ class CartController extends Controller
         ]);
         $product = Product::findOrFail($request->product_id);
         
+        // Check stock availability
+        $requestedQuantity = $request->quantity ?? 1;
+        $availableStock = $product->amount ?? 0;
+        
+        if ($availableStock <= 0) {
+            return back()->withErrors(['product_id' => __('This product is currently out of stock.')])->withInput();
+        }
+        
+        // Check if requested quantity exceeds available stock
+        $existingCartItem = Cart::where('product_id', $product->id)
+            ->when(auth()->check(), function($q) {
+                $q->where('user_id', auth()->id());
+            }, function($q) {
+                $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+                $q->where('cookie_id', $cookieId)->whereNull('user_id');
+            })
+            ->first();
+        
+        $currentCartQuantity = $existingCartItem ? $existingCartItem->quantity : 0;
+        $totalRequestedQuantity = $currentCartQuantity + $requestedQuantity;
+        
+        if ($totalRequestedQuantity > $availableStock) {
+            $availableMessage = $availableStock == 1 
+                ? __('Only 1 item available.') 
+                : __('Only :count items available.', ['count' => $availableStock]);
+            return back()->withErrors(['quantity' => $availableMessage])->withInput();
+        }
+        
         // Check if engineer is required
         if ($product->has_engineer_option && $product->engineer_required && !$request->engineer_selected) {
             return back()->withErrors(['engineer_selected' => __('Engineer service is required for this product.')]);
         }
         
-        $cart->add($product, $request->quantity);
+        try {
+            $cart->add($product, $requestedQuantity);
+        } catch (\Exception $e) {
+            return back()->withErrors(['quantity' => $e->getMessage()])->withInput();
+        }
         
         // Track add to cart for metrics
         $metric = \App\Models\ProductMetric::firstOrCreate(
@@ -114,26 +146,57 @@ class CartController extends Controller
     public function update_carts(Request $request, CartRepository $cart)
     {
         $id=request('id');
-        // return $id;
-        // return $request;
         $request->validate([
-            // 'product_id' => ['required' , 'int' , 'exists:products,id'],
-            'quantity' => ['nullable' , 'int' , 'min:1'],
+            'quantity' => ['required' , 'int' , 'min:1'],
         ]);
-        $cart=Cart::where('id', $id)->first();
-        $product = Product::findOrFail($cart->product_id);
-         $quantity = $request->quantity;
-    $cart->quantity = $quantity;
-          $cart->total = $quantity * $cart->product->product_price;
-
-    $cart->save();
-// return $product;
-        $cart->update(['quantity' => $request->quantity]);
-return response()->json([
+        
+        $cartItem = Cart::where('id', $id)->first();
+        if (!$cartItem) {
+            return response()->json([
+                'message' => 'Cart item not found',
+                'status' => 404,
+            ], 404);
+        }
+        
+        $product = Product::findOrFail($cartItem->product_id);
+        $requestedQuantity = $request->quantity;
+        $availableStock = $product->amount ?? 0;
+        
+        // Check stock availability
+        if ($availableStock <= 0) {
+            return response()->json([
+                'message' => __('This product is currently out of stock.'),
+                'status' => 400,
+                'error' => 'out_of_stock'
+            ], 400);
+        }
+        
+        // Check if requested quantity exceeds available stock
+        if ($requestedQuantity > $availableStock) {
+            $availableMessage = $availableStock == 1 
+                ? __('Only 1 item available.') 
+                : __('Only :count items available.', ['count' => $availableStock]);
+            return response()->json([
+                'message' => $availableMessage,
+                'status' => 400,
+                'error' => 'insufficient_stock',
+                'available' => $availableStock
+            ], 400);
+        }
+        
+        // Update cart item
+        $options = is_string($cartItem->options) ? json_decode($cartItem->options, true) : ($cartItem->options ?? []);
+        $engineerPrice = $options['engineer_price'] ?? 0;
+        $unitPrice = $product->product_price + $engineerPrice;
+        
+        $cartItem->quantity = $requestedQuantity;
+        $cartItem->total = $unitPrice * $requestedQuantity;
+        $cartItem->save();
+        
+        return response()->json([
             'message' => 'Cart updated successfully',
             'status' => 200,
         ]);
-        // return to_route('carts.index');
     }
 
 

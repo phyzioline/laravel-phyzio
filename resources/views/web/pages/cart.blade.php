@@ -404,8 +404,9 @@
                 });
 
                 function updateQuantity(itemId, quantity) {
+                    var locale = '{{ app()->getLocale() ?: "en" }}';
                     $.ajax({
-                        url: '/update_cart/' + itemId,
+                        url: '/' + locale + '/update_cart/' + itemId,
                         method: 'PUT',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -417,8 +418,17 @@
                             // Show success message
                             showNotification('Quantity updated successfully!', 'success');
                         },
-                        error: function() {
-                            showNotification('Error updating quantity. Please try again.', 'error');
+                        error: function(xhr) {
+                            let errorMessage = 'Error updating quantity. Please try again.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                                // If insufficient stock, update the max value
+                                if (xhr.responseJSON.available) {
+                                    $('.input-number-1[data-id="' + itemId + '"]').attr('max', xhr.responseJSON.available);
+                                    $('.input-number-1[data-id="' + itemId + '"]').val(xhr.responseJSON.available);
+                                }
+                            }
+                            showNotification(errorMessage, 'error');
                         }
                     });
                 }
@@ -457,7 +467,7 @@
                 $('.input-number-1').off('change').on('change', function() {
                     var itemId = $(this).data('id');
                     var newQty = parseInt($(this).val());
-                    var maxQty = parseInt($(this).attr('max'));
+                    var maxQty = parseInt($(this).attr('max')) || 999;
                     
                     if (newQty < 1 || isNaN(newQty)) {
                         newQty = 1;
@@ -467,15 +477,19 @@
                     if (newQty > maxQty) {
                         newQty = maxQty;
                         $(this).val(maxQty);
-                        showNotification(`Maximum available quantity is ${maxQty}`, 'error');
+                        var message = maxQty == 1 
+                            ? 'Only 1 item available.' 
+                            : `Only ${maxQty} items available.`;
+                        showNotification(message, 'error');
                     }
 
+                    // Update quantity on server
                     updateQuantity(itemId, newQty);
 
+                    // Update subtotal display (will be corrected by server response if wrong)
                     var $row = $(this).closest('tr');
                     var price = parseFloat($row.data('price'));
                     var newSubtotal = price * newQty;
-
                     $row.find('strong.item-subtotal').text(newSubtotal.toFixed(2) + ' EGP');
                 });
 

@@ -37,6 +37,12 @@ class CartModelRepository implements CartRepository
 
     public function add(Product $product, $quantity = 1)
     {
+        // Check stock availability
+        $availableStock = $product->amount ?? 0;
+        if ($availableStock <= 0) {
+            throw new \Exception(__('This product is currently out of stock.'));
+        }
+        
         $cookieId = $this->getCookieId();
         $userId = Auth::check() ? Auth::id() : null;
         
@@ -47,6 +53,17 @@ class CartModelRepository implements CartRepository
                         $q->where('cookie_id', $cookieId)->whereNull('user_id');
                     })
                     ->first();
+
+        $currentQuantity = $item ? $item->quantity : 0;
+        $newQuantity = $currentQuantity + $quantity;
+        
+        // Check if total quantity exceeds available stock
+        if ($newQuantity > $availableStock) {
+            $availableMessage = $availableStock == 1 
+                ? __('Only 1 item available.') 
+                : __('Only :count items available.', ['count' => $availableStock]);
+            throw new \Exception($availableMessage);
+        }
 
         if (!$item) {
             return Cart::create([
