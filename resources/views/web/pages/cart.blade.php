@@ -404,9 +404,8 @@
                 });
 
                 function updateQuantity(itemId, quantity) {
-                    var locale = '{{ app()->getLocale() ?: "en" }}';
                     $.ajax({
-                        url: '/' + locale + '/update_cart/' + itemId,
+                        url: '{{ url("/") }}/{{ app()->getLocale() ?: "en" }}/update_cart/' + itemId,
                         method: 'PUT',
                         data: {
                             _token: '{{ csrf_token() }}',
