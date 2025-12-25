@@ -153,11 +153,13 @@
                         @endif
                     </li>
                     
-                    @if(auth()->user()->type == 'therapist' || auth()->user()->hasRole('clinic') || auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin') || auth()->user()->hasRole('instructor'))
-                        <li class="menu-item-box">
-                            <a href="{{ route('dashboard') }}">{{ __('Dashboard') }}</a>
-                        </li>
-                    @endif
+                    {{-- Dashboard button for all logged-in users --}}
+                    <li class="menu-item-box">
+                        <a href="{{ route('dashboard') }}" style="display: flex; align-items: center; color: #02767F; font-weight: 600;">
+                            <i class="las la-tachometer-alt" style="margin-right: 8px; font-size: 18px;"></i>
+                            {{ __('Dashboard') }}
+                        </a>
+                    </li>
                 @endif
 
                 <li class="menu-item-box {{ request()->is(app()->getLocale()) || request()->is(app()->getLocale() . '/*') ? 'active' : '' }}"><a href="{{ '/' . app()->getLocale() }}">{{ __('Home') }}</a></li>
