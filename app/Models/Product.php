@@ -34,6 +34,48 @@ class Product extends Model
                 return $text;
             }
             
+            // Check if it looks like double-encoded text (common pattern with garbled Arabic)
+            // Pattern: Contains characters like æ, Ï, Ç, á, etc. which are typical of double-encoding
+            if (preg_match('/[æÏÇáãäå]/u', $text) && !preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
+                // Try to fix double-encoding by treating it as ISO-8859-1 or Windows-1252
+                // and then converting to UTF-8
+                foreach (['ISO-8859-1', 'Windows-1252'] as $encoding) {
+                    if (in_array($encoding, $supportedEncodings)) {
+                        // First decode as if it was encoded in this charset
+                        $decoded = @mb_convert_encoding($text, 'UTF-8', $encoding);
+                        if ($decoded && mb_check_encoding($decoded, 'UTF-8')) {
+                            // Check if the decoded version looks like it could be Arabic
+                            // Try converting from Windows-1256 if available
+                            if (in_array('Windows-1256', $supportedEncodings)) {
+                                $fixed = @mb_convert_encoding($decoded, 'UTF-8', 'Windows-1256');
+                                if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
+                                    return $fixed;
+                                }
+                            }
+                            // If that didn't work, try ISO-8859-6
+                            if (in_array('ISO-8859-6', $supportedEncodings)) {
+                                $fixed = @mb_convert_encoding($decoded, 'UTF-8', 'ISO-8859-6');
+                                if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
+                                    return $fixed;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Alternative: Try direct conversion assuming it's Windows-1256 misread as UTF-8
+                if (in_array('Windows-1256', $supportedEncodings)) {
+                    // Treat the garbled text as if it needs to be re-encoded
+                    $windows1256 = @mb_convert_encoding($text, 'Windows-1256', 'UTF-8');
+                    if ($windows1256) {
+                        $fixed = @mb_convert_encoding($windows1256, 'UTF-8', 'Windows-1256');
+                        if ($fixed && preg_match('/[\x{0600}-\x{06FF}]/u', $fixed)) {
+                            return $fixed;
+                        }
+                    }
+                }
+            }
+            
             // Try to detect if it's Windows-1256 (Arabic Windows encoding) misread as UTF-8
             // Only try if the encoding is supported
             if (in_array('Windows-1256', $supportedEncodings)) {
