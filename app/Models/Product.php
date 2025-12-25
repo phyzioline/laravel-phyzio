@@ -17,30 +17,50 @@ class Product extends Model
             return $text;
         }
 
+        // If it's already a string, ensure it's properly encoded
+        if (!is_string($text)) {
+            $text = (string) $text;
+        }
+
         // Check if text is already valid UTF-8
         if (mb_check_encoding($text, 'UTF-8')) {
-            // Check if it's double-encoded (common issue)
-            if (mb_check_encoding(utf8_decode($text), 'UTF-8')) {
-                // Try to fix double encoding
-                $decoded = utf8_decode($text);
-                if (mb_check_encoding($decoded, 'UTF-8')) {
-                    return $decoded;
-                }
+            // Check if it's double-encoded (common issue with Arabic text)
+            // Try decoding once to see if it becomes valid Arabic
+            $decoded = @mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+            
+            // Check if it looks like double-encoded Arabic (contains common Arabic character patterns)
+            // Arabic Unicode range: U+0600 to U+06FF
+            if (preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
+                // Already has Arabic characters, likely correct
+                return $text;
             }
+            
+            // Try to detect if it's Windows-1256 (Arabic Windows encoding) misread as UTF-8
+            $windows1256 = @mb_convert_encoding($text, 'UTF-8', 'Windows-1256');
+            if ($windows1256 && preg_match('/[\x{0600}-\x{06FF}]/u', $windows1256)) {
+                return $windows1256;
+            }
+            
             return $text;
         }
 
-        // Try to convert from various encodings
-        $encodings = ['Windows-1256', 'ISO-8859-6', 'UTF-8', 'ISO-8859-1'];
+        // Try to convert from various encodings (common Arabic encodings first)
+        $encodings = ['Windows-1256', 'ISO-8859-6', 'CP1256', 'UTF-8', 'ISO-8859-1', 'Windows-1252'];
         foreach ($encodings as $encoding) {
             $converted = @mb_convert_encoding($text, 'UTF-8', $encoding);
             if ($converted && mb_check_encoding($converted, 'UTF-8')) {
-                return $converted;
+                // Verify it contains valid characters
+                if (strlen($converted) > 0) {
+                    return $converted;
+                }
             }
         }
 
-        // Last resort: force UTF-8
-        return mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        // Last resort: clean and force UTF-8
+        $cleaned = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+        // Remove any remaining invalid characters
+        $cleaned = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $cleaned);
+        return $cleaned;
     }
 
     /**
