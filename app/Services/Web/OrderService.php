@@ -47,7 +47,8 @@ class OrderService
             $this->calculateVendorPayments($order);
             
             Session::flash('message', ['type' => 'success', 'text' => __('تم إنشاء الطلب بنجاح')]);
-            return redirect()->route('carts.index')->with('success', 'تم إنشاء الطلب بنجاح')->with('guest_order', $order);
+            $locale = app()->getLocale() ?: 'en';
+            return redirect('/' . $locale . '/carts')->with('success', 'تم إنشاء الطلب بنجاح')->with('guest_order', $order);
         }
 
         $cartItems = Cart::where('user_id', $user->id)->get();
@@ -154,7 +155,8 @@ class OrderService
         }
         
         Session::flash('message', ['type' => 'success', 'text' => __('تم إنشاء الطلب بنجاح')]);
-        return redirect()->route('carts.index')->with('success', 'تم إنشاء الطلب بنجاح');
+        $locale = app()->getLocale() ?: 'en';
+        return redirect('/' . $locale . '/carts')->with('success', 'تم إنشاء الطلب بنجاح');
     }
 
     public function store($data)

@@ -20,6 +20,17 @@
         background: #02767F !important;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+    
+    /* Fix selected text color - make it colored instead of white */
+    ::selection {
+        color: #02767F !important;
+        background: rgba(4, 184, 196, 0.2) !important;
+    }
+    
+    ::-moz-selection {
+        color: #02767F !important;
+        background: rgba(4, 184, 196, 0.2) !important;
+    }
 </style>
 @endpush
 

@@ -261,14 +261,17 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="payment_method" class="form-label fw-bold">
-                                            <i class="las la-credit-card me-1"></i>Payment Method
+                                            <i class="las la-credit-card me-1"></i>Payment Method <span class="text-danger">*</span>
                                         </label>
-                                        <select name="payment_method" id="payment_method" class="form-select" required>
+                                        <select name="payment_method" id="payment_method" class="form-select payment-method-select" required style="font-size: 18px; padding: 15px; border: 2px solid #02767F; border-radius: 10px; background: linear-gradient(135deg, #ffffff 0%, #f0f9fa 100%); transition: all 0.3s ease;">
                                             <option value="" disabled selected>Select Payment Method</option>
                                             <option value="card">💳 Credit/Debit Card</option>
                                             <option value="cash">💰 Cash on Delivery</option>
                                         </select>
-                                        <div class="invalid-feedback">Please select a payment method.</div>
+                                        <div class="invalid-feedback" id="payment_method_error">Please select a payment method.</div>
+                                        <div class="text-danger small mt-1" id="payment_method_alert" style="display: none;">
+                                            <i class="las la-exclamation-circle me-1"></i>Please select a payment method to continue.
+                                        </div>
                                     </div>
                                     
                                     <div class="col-md-6 mb-3">
@@ -361,16 +364,43 @@
                     }
                 });
                 
-                // Form validation
+                // Form validation with payment method check
                 const forms = document.querySelectorAll('.needs-validation');
                 Array.from(forms).forEach(form => {
                     form.addEventListener('submit', event => {
+                        const paymentMethod = document.getElementById('payment_method');
+                        const paymentMethodAlert = document.getElementById('payment_method_alert');
+                        
+                        // Check payment method specifically
+                        if (!paymentMethod.value || paymentMethod.value === '') {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            paymentMethod.classList.add('is-invalid');
+                            paymentMethod.style.borderColor = '#dc3545';
+                            paymentMethodAlert.style.display = 'block';
+                            paymentMethod.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            return false;
+                        } else {
+                            paymentMethod.classList.remove('is-invalid');
+                            paymentMethod.style.borderColor = '#02767F';
+                            paymentMethodAlert.style.display = 'none';
+                        }
+                        
                         if (!form.checkValidity()) {
                             event.preventDefault();
                             event.stopPropagation();
                         }
                         form.classList.add('was-validated');
                     }, false);
+                });
+                
+                // Remove error styling when payment method is selected
+                document.getElementById('payment_method').addEventListener('change', function() {
+                    if (this.value) {
+                        this.classList.remove('is-invalid');
+                        this.style.borderColor = '#02767F';
+                        document.getElementById('payment_method_alert').style.display = 'none';
+                    }
                 });
 
                 function updateQuantity(itemId, quantity) {
@@ -510,6 +540,43 @@
                 border-radius: 8px;
                 border: none;
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            }
+            
+            /* Payment Method Dropdown Styling */
+            .payment-method-select {
+                font-size: 18px !important;
+                padding: 15px !important;
+                border: 2px solid #02767F !important;
+                border-radius: 10px !important;
+                background: linear-gradient(135deg, #ffffff 0%, #f0f9fa 100%) !important;
+                transition: all 0.3s ease !important;
+                cursor: pointer !important;
+                font-weight: 500 !important;
+            }
+            
+            .payment-method-select:hover {
+                border-color: #04b8c4 !important;
+                background: linear-gradient(135deg, #f0f9fa 0%, #e0f4f5 100%) !important;
+                box-shadow: 0 4px 12px rgba(2, 118, 127, 0.2) !important;
+                transform: translateY(-2px) !important;
+            }
+            
+            .payment-method-select:focus {
+                border-color: #04b8c4 !important;
+                background: linear-gradient(135deg, #ffffff 0%, #e0f4f5 100%) !important;
+                box-shadow: 0 0 0 0.3rem rgba(4, 184, 196, 0.3) !important;
+                outline: none !important;
+            }
+            
+            .payment-method-select option {
+                padding: 12px !important;
+                font-size: 16px !important;
+                background: #ffffff !important;
+            }
+            
+            .payment-method-select.is-invalid {
+                border-color: #dc3545 !important;
+                background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%) !important;
             }
                                                                                            .item-image img{
                                                                                            width : 100% !important;
