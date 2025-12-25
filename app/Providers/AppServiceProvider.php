@@ -19,6 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Set custom temp directory to avoid /tmp permission issues
+        $customTempDir = storage_path('framework/tmp');
+        if (!is_dir($customTempDir)) {
+            @mkdir($customTempDir, 0775, true);
+        }
+        
+        // Set PHP temp directory if not already set
+        if (ini_get('sys_temp_dir') === '' || ini_get('sys_temp_dir') === false) {
+            @ini_set('sys_temp_dir', $customTempDir);
+        }
     }
 }
