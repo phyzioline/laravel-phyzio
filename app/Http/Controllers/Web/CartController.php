@@ -18,6 +18,9 @@ class CartController extends Controller
     {
         $items = $cart->get();
         
+        // Load product images for all cart items
+        $items->load('product.productImages');
+        
         // Calculate total for authenticated or guest
         $userId = auth()->check() ? auth()->id() : null;
         $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');

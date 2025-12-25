@@ -55,8 +55,13 @@
                                                     </form>
                                                     
                                                     <div class="product-image me-3">
+                                                        @php
+                                                            $productImage = $item->product && $item->product->productImages && $item->product->productImages->first()
+                                                                ? asset($item->product->productImages->first()->image)
+                                                                : asset('web/assets/images/default-product.png');
+                                                        @endphp
                                                         <img style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;"
-                                                            src="{{ asset($item->product->productImages->first()->image) }}"
+                                                            src="{{ $productImage }}"
                                                             alt="Product Image" class="img-fluid">
                                                     </div>
                                                     
