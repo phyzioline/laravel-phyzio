@@ -9,12 +9,19 @@ trait HasImage
     /**
      * حفظ الصورة في المسار المحدد
      *
-     * @param UploadedFile $image
+     * @param mixed $image
      * @param string $folder
-     * @return string
+     * @return string|null
      */
-    public function saveImage(UploadedFile $image, $folder)
+    public function saveImage($image, $folder)
     {
+        // Add robustness check
+        if (!$image instanceof UploadedFile || !$image->isValid()) {
+            // Log issue but return null or default to prevent crash
+             \Illuminate\Support\Facades\Log::warning("Invalid file upload attempt for folder: {$folder}");
+            return null; 
+        }
+
         $destinationPath = public_path('storage/' . $folder);
         if (! file_exists($destinationPath)) {
             mkdir($destinationPath, 0777, true);
