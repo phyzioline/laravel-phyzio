@@ -215,7 +215,7 @@
                                     <div class="col-md-6">
                                         <label for="password" class="form-label">{{ __('Password') }}</label>
                                         <input type="password" name="password" id="password" class="form-control"
-                                            placeholder="{{ __('Enter the user password') }}">
+                                            placeholder="{{ __('Enter the user password') }}" autocomplete="new-password">
                                     </div>
                                     @error('password')
                                         <small class="text-danger">{{ $message }}</small>
