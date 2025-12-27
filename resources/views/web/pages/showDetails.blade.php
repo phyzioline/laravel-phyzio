@@ -32,7 +32,13 @@
 
                                 @foreach ($product->productImages as $img)
                                     <div class="item">
-                                        <img src="{{ asset($img->image) }}" alt="image_not_found" class="product-main-image">
+                                        <img src="{{ asset($img->image) }}" 
+                                             alt="{{ $product->{'product_name_' . app()->getLocale()} }}" 
+                                             class="product-main-image"
+                                             loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                                             width="600"
+                                             height="600"
+                                             style="aspect-ratio: 1/1; object-fit: contain;" />
                                     </div>
                                 @endforeach
                             </div>
@@ -40,7 +46,13 @@
                                 @foreach ($product->productImages as $img)
                                     <button class="item thumb-item">
                                         <span>
-                                            <img src="{{ asset($img->image) }}" alt="image_not_found" class="thumb-image">
+                                            <img src="{{ asset($img->image) }}" 
+                                                 alt="{{ $product->{'product_name_' . app()->getLocale()} }} - {{ __('Thumbnail') }}"
+                                                 class="thumb-image"
+                                                 loading="lazy"
+                                                 width="100"
+                                                 height="100"
+                                                 style="aspect-ratio: 1/1; object-fit: cover;" />
                                         </span>
                                     </button>
                                 @endforeach

@@ -10,7 +10,12 @@
                @php
                     $setting = \App\Models\Setting::first();
                 @endphp
-              <img src="{{ asset('web/assets/images/Frame 131.svg') }}" alt="Phyzioline" style="max-height: 50px; filter: brightness(0) invert(1);" /> 
+              <img src="{{ asset('web/assets/images/Frame 131.svg') }}" 
+                   alt="Phyzioline Logo"
+                   width="150"
+                   height="50"
+                   loading="lazy"
+                   style="max-height: 50px; filter: brightness(0) invert(1);" /> 
             </a>
           </div>
           <p class="mb-4" style="color: rgba(255,255,255,0.8);">

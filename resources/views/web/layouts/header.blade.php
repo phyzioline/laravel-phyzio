@@ -577,6 +577,10 @@ body.has-hero .shop-hero-banner {
         <!-- LOGO -->
         <a href="{{ '/' . app()->getLocale() }}" class="brand-link" style="margin-left: auto;">
             <img src="{{ asset('web/assets/images/main_logo_white.png') }}"
+                 alt="Phyzioline Logo"
+                 width="150"
+                 height="45"
+                 loading="eager"
                  style="max-height: 45px; object-fit: contain;">
         </a>
 
@@ -689,7 +693,12 @@ body.has-hero .shop-hero-banner {
                                                 @foreach (App\Models\Cart::where('user_id', Auth::id())->with('product.productImages')->get() as $cart)
                                                     <li>
                                                         <div class="item-image">
-                                                            <img src="{{ asset($cart->product->productImages->first()->image ?? 'default.png') }}" alt="image_not_found" />
+                                                            <img src="{{ asset($cart->product->productImages->first()->image ?? 'default.png') }}" 
+                                                                 alt="{{ $cart->product->{'product_name_' . app()->getLocale()} ?? 'Product' }}"
+                                                                 loading="lazy"
+                                                                 width="80"
+                                                                 height="80"
+                                                                 style="aspect-ratio: 1/1; object-fit: cover;" />
                                                         </div>
                                                         <div class="item-content">
                                                             <span class="item-title">{{ $cart->product->{'product_name_' . app()->getLocale()} }}</span>

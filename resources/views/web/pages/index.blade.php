@@ -243,7 +243,12 @@
                                                                 <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}"
                                                                     class="image-wrap">
                                                                     <img src="{{ asset($img->image) }}"
-                                                                        alt="image_not_found" class="physio-product-img" />
+                                                                        alt="{{ $product->{'product_name_' . app()->getLocale()} }}"
+                                                                        class="physio-product-img"
+                                                                        loading="lazy"
+                                                                        width="300"
+                                                                        height="300"
+                                                                        style="aspect-ratio: 1/1; object-fit: cover;" />
                                                                 </a>
                                                             </div>
                                                         @endforeach

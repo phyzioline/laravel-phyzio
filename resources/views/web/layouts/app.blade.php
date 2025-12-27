@@ -65,25 +65,60 @@
   @stack('structured-data')
 
   @stack('meta')
+  
+  <!-- Resource Hints for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://maps.googleapis.com">
+  
   <link rel="icon" type="image/png" href="{{ asset('web/assets/images/logo.png') }}" />
   <link rel="apple-touch-icon" href="{{ asset('web/assets/images/logo.png') }}" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- css include -->
+  <!-- Preload Critical CSS -->
+  <link rel="preload" href="{{ asset('web/assets/css/bootstrap.min.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/bootstrap.min.css')}}"></noscript>
+  
+  <!-- Defer Non-Critical CSS -->
+  <link rel="preload" href="{{ asset('web/assets/css/style.css')}}?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/style.css')}}?v=1.0"></noscript>
 
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/bootstrap.min.css')}}" />
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/line-awesome.min.css')}}" />
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/owl.carousel.min.css')}}" />
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/magnific-popup.css')}}" />
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/jquery-ui.css')}}" />
-  <!-- font -->
-  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+  <!-- css include - Loaded with defer -->
+  <link rel="preload" href="{{ asset('web/assets/css/line-awesome.min.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/line-awesome.min.css')}}"></noscript>
+  
+  <link rel="preload" href="{{ asset('web/assets/css/owl.carousel.min.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/owl.carousel.min.css')}}"></noscript>
+  
+  <link rel="preload" href="{{ asset('web/assets/css/magnific-popup.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/magnific-popup.css')}}"></noscript>
+  
+  <link rel="preload" href="{{ asset('web/assets/css/jquery-ui.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/jquery-ui.css')}}"></noscript>
+  
+  <!-- font - Optimized with font-display swap -->
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet"></noscript>
+  
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+  
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></noscript>
 
   <!-- swiper -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"></noscript>
+  
+  <!-- Load CSS asynchronously script -->
+  <script>
+    /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+    (function(w){"use strict";if(!w.loadCSS){w.loadCSS=function(){}}
+    var loadCSS=function(href,before,media){var doc=w.document;var ss=doc.createElement("link");var ref;if(before){ref=before}else{var refs=(doc.body||doc.getElementsByTagName("head")[0]).childNodes;ref=refs[refs.length-1]}var sheets=doc.styleSheets;ss.rel="stylesheet";ss.href=href;ss.media="only x";function ready(cb){if(doc.body){return cb()}setTimeout(function(){ready(cb)})}ready(function(){ref.parentNode.insertBefore(ss,before?ref:ref.nextSibling)});var onloadcssdefined=function(cb){var resolvedHref=ss.href;var i=sheets.length;while(i--){if(sheets[i].href===resolvedHref){return cb()}}setTimeout(function(){onloadcssdefined(cb)})};ss.onloadcssdefined=onloadcssdefined;onloadcssdefined(function(){if(ss.media!=="all"){ss.media=media||"all"}});return ss};
+    if(typeof exports!=="undefined"){exports.loadCSS=loadCSS}else{w.loadCSS=loadCSS}}(this));
+  </script>
 
 <style>
     .product-grid .btns-group > ul {
@@ -164,28 +199,25 @@
    }
 
 </style>
-  <!-- custom - css include -->
-  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}?v={{ time() }}" />
-  
   <!-- RTL Overrides for Arabic -->
   @if(app()->getLocale() == 'ar')
-  <link rel="stylesheet" type="text/css" href="{{ asset('css/rtl-overrides.css') }}" />
+  <link rel="preload" href="{{ asset('css/rtl-overrides.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ asset('css/rtl-overrides.css') }}"></noscript>
   @endif
 
-   <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
+   <link rel="preload" href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+   <noscript><link rel="stylesheet" href="{{ asset('layout/plugins/toastr/toastr.min.css') }}"></noscript>
 @stack('css')
 
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) - Load async to not block rendering -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ455L4DV3"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);} 
     gtag('js', new Date());
-
     gtag('config', 'G-QJ455L4DV3');
   </script>
 
-</head>
 </head>
 
 <body class="home-v1">
@@ -224,81 +256,93 @@
 
 
 @stack('scripts')
-  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
   
-  <script>
-    var swiper = new Swiper(".mySwiper", {
-      slidesPerView: 3,
-      spaceBetween: 20,
-      navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-      },
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
-      breakpoints: {
-        992: { slidesPerView: 4 },
-        768: { slidesPerView: 2 },
-        576: { slidesPerView: 1 },
-        425: { slidesPerView: 1 },
-        200: { slidesPerView: 1 },
+  <!-- jquery include - Load first but defer -->
+  <script src="{{ asset('web/assets/js/jquery-3.4.1.min.js')}}" defer></script>
+  
+  <!-- Load Swiper after jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js" defer></script>
+  
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof Swiper !== 'undefined') {
+        var swiper = new Swiper(".mySwiper", {
+          slidesPerView: 3,
+          spaceBetween: 20,
+          navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+          },
+          autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+          },
+          breakpoints: {
+            992: { slidesPerView: 4 },
+            768: { slidesPerView: 2 },
+            576: { slidesPerView: 1 },
+            425: { slidesPerView: 1 },
+            200: { slidesPerView: 1 },
+          }
+        });
+        var swiper2 = new Swiper('.swiper-container', {
+          slidesPerView: 1,
+          spaceBetween: 10,
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev'
+          },
+          autoplay: {
+            delay: 3000,
+            disableOnInteraction: false,
+          },
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true
+          }
+        });
       }
-
-    });
-    var swiper = new Swiper('.swiper-container', {
-      slidesPerView: 1, // Adjust number of images visible
-      spaceBetween: 10, // Adjust space between images
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev'
-      },
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true
-      }
+      
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        });
+      });
     });
   </script>
-  <script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    document.querySelector(this.getAttribute('href')).scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  });
-});
-    <script src="{{ asset('layout/plugins/toastr/toastr.min.js') }}"></script>
-
-  </script>
+  
+  <script src="{{ asset('layout/plugins/toastr/toastr.min.js') }}" defer></script>
    @if (\Session::has('message'))
-        <script type="text/javascript">
-            $(function() {
-                toastr["{{ \Session::get('message')['type'] }}"]('{!! \Session::get('message')['text'] !!}',
-                    "{{ ucfirst(\Session::get('message')['type']) }}!");
-                toastr.options = {
-                    "closeButton": false,
-                    "debug": false,
-                    "newestOnTop": false,
-                    "progressBar": false,
-                    "positionClass": "toast-top-right",
-                    "preventDuplicates": false,
-                    "onclick": null,
-                    "showDuration": "300",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "fadeIn",
-                    "hideMethod": "fadeOut"
+        <script type="text/javascript" defer>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof toastr !== 'undefined' && typeof $ !== 'undefined') {
+                    toastr["{{ \Session::get('message')['type'] }}"]('{!! \Session::get('message')['text'] !!}',
+                        "{{ ucfirst(\Session::get('message')['type']) }}!");
+                    toastr.options = {
+                        "closeButton": false,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
                 }
             });
         </script>
@@ -306,43 +350,44 @@
     @endif
 
     @if ($errors->any())
-        <script type="text/javascript">
-            $(function() {
-                toastr["error"]('{{ $errors->first() }}', "Error!");
+        <script type="text/javascript" defer>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof toastr !== 'undefined' && typeof $ !== 'undefined') {
+                    toastr["error"]('{{ $errors->first() }}', "Error!");
+                }
             });
         </script>
     @endif
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-  <!-- jquery include -->
-  <script src="{{ asset('web/assets/js/jquery-3.4.1.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/jquery-ui.js')}}"></script>
-  <script src="{{ asset('web/assets/js/popper.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/bootstrap.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/magnific-popup.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/owl.carousel.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/owl.carousel2.thumbs.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/isotope.pkgd.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/masonry.pkgd.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/imagesloaded.pkgd.min.js')}}"></script>
-  <script src="{{ asset('web/assets/js/countdown.js')}}"></script>
-<script async
-    src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&callback=initMap">
-</script>
-  <!-- google map - jquery include -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDk2HrmqE4sWSei0XdKGbOMOHN3Mm2Bf-M&ver=2.1.6"></script>
-  <script src="{{ asset('web/assets/js/gmaps.min.js')}}"></script>
+  <!-- jquery plugins - Load after jQuery with defer -->
+  <script src="{{ asset('web/assets/js/jquery-ui.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/popper.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/bootstrap.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/magnific-popup.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/owl.carousel.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/owl.carousel2.thumbs.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/isotope.pkgd.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/masonry.pkgd.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/imagesloaded.pkgd.min.js')}}" defer></script>
+  <script src="{{ asset('web/assets/js/countdown.js')}}" defer></script>
+  
+  <!-- google map - Load async -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDk2HrmqE4sWSei0XdKGbOMOHN3Mm2Bf-M&ver=2.1.6"></script>
+  <script src="{{ asset('web/assets/js/gmaps.min.js')}}" defer></script>
 
   <!-- mobile menu - jquery include -->
-  <script src="{{ asset('web/assets/js/mCustomScrollbar.js')}}"></script>
- <script>
-        $(document).ready(function() {
-            console.log('jQuery is working!');
-        });
-    </script>
+  <script src="{{ asset('web/assets/js/mCustomScrollbar.js')}}" defer></script>
+  
   <!-- custom - jquery include -->
-  <script src="{{ asset('web/assets/js/custom.js')}}"></script>
+  <script src="{{ asset('web/assets/js/custom.js')}}" defer></script>
+  
+  <script defer>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof $ !== 'undefined') {
+            console.log('jQuery is working!');
+        }
+    });
+  </script>
 
 
 

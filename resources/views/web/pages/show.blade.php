@@ -567,7 +567,11 @@ header,
                                 <a href="{{ route('product.show.' . (app()->getLocale() ?: 'en'), $product->id) }}">
                                     <img src="{{ asset($product->productImages->first()?->image ?? 'web/assets/images/default-product.png') }}" 
                                          alt="{{ $product->{'product_name_' . app()->getLocale()} }}" 
-                                         class="noon-product-image" />
+                                         class="noon-product-image"
+                                         loading="lazy"
+                                         width="300"
+                                         height="300"
+                                         style="aspect-ratio: 1/1; object-fit: cover;" />
                                 </a>
                                 
                                 {{-- Dynamic Badges - Amazon Style --}}

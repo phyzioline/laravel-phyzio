@@ -6,7 +6,11 @@
 
         <div class="brand-logo text-center clearfix">
             <a href="{{ '/' . app()->getLocale() }}" class="brand-link">
-                <img src="{{ asset('web/assets/images/Frame 131.svg') }}" alt="logo_not_found" />
+                <img src="{{ asset('web/assets/images/Frame 131.svg') }}" 
+                     alt="Phyzioline Logo"
+                     width="150"
+                     height="50"
+                     loading="eager" />
             </a>
             @if (Auth::check() && Auth::user()->hasRole('vendor'))
                 <a href="{{ route('dashboard.home') }}" class="btn btn">
@@ -51,7 +55,11 @@
                                         <li>
                                             <div class="item-image">
                                                 <img src="{{ asset($cart->product->productImages->first()->image ?? 'default.png') }}"
-                                                    alt="image_not_found" />
+                                                    alt="{{ $cart->product->{'product_name_' . app()->getLocale()} ?? 'Product' }}"
+                                                    loading="lazy"
+                                                    width="80"
+                                                    height="80"
+                                                    style="aspect-ratio: 1/1; object-fit: cover;" />
                                             </div>
                                             <div class="item-content">
                                                 <h4 class="item-title">
