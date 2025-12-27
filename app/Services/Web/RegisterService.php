@@ -39,6 +39,19 @@ class RegisterService
         $data['code']      = rand(1000, 9999);
         $data['expire_at'] = Carbon::now()->addMinutes(5);
 
+        // Set verification status and profile visibility based on user type
+        if ($data['type'] === 'buyer') {
+            // Buyers are auto-approved and visible
+            $data['verification_status'] = 'approved';
+            $data['profile_visibility'] = 'visible';
+            $data['status'] = 'active';
+        } else {
+            // Vendor, Company, Therapist need verification
+            $data['verification_status'] = 'pending';
+            $data['profile_visibility'] = 'hidden';
+            $data['status'] = 'inactive';
+        }
+
         Mail::to($data['email'])->send(new OTPEmail($data['code']));
 
         Session::put('email', $data['email']);
@@ -48,23 +61,15 @@ class RegisterService
         if ($data['type'] === 'vendor') {
             $user->assignRole('vendor');
         }
-        if ($data['type'] === 'buyer') {
-            $user->update([
-                'status' => 'active'
-            ]);
-        }
         if ($data['type'] === 'therapist') {
             $user->assignRole('therapist');
             \App\Models\TherapistProfile::create([
                 'user_id' => $user->id,
-                'license_document' => $data['license_document'] ?? null,
-                'id_document' => $data['id_document'] ?? null,
                 'status' => 'pending',
             ]);
         }
         if ($data['type'] === 'company') {
-            $user->assignRole('company'); // Assuming role 'company' exists or will be created
-            $user->update(['status' => 'inactive']); // Require approval
+            $user->assignRole('company');
         }
 
         return $user;
@@ -140,28 +145,20 @@ class RegisterService
 
     private function handleFileUploads(&$data)
     {
+        // Only handle profile image during registration
+        // Documents will be uploaded later in verification center
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'user');
         } else {
             $data['image'] = asset('default/default.png');
         }
-        if (isset($data['account_statement'])) {
-            $data['account_statement'] = $this->saveImage($data['account_statement'], 'user');
-        }
-        if (isset($data['commercial_register'])) {
-            $data['commercial_register'] = $this->saveImage($data['commercial_register'], 'user');
-        }
-        if (isset($data['tax_card'])) {
-            $data['tax_card'] = $this->saveImage($data['tax_card'], 'user');
-        }
-        if (isset($data['card_image'])) {
-            $data['card_image'] = $this->saveImage($data['card_image'], 'user');
-        }
-        if (isset($data['license_document'])) {
-            $data['license_document'] = $this->saveImage($data['license_document'], 'therapist');
-        }
-        if (isset($data['id_document'])) {
-            $data['id_document'] = $this->saveImage($data['id_document'], 'therapist');
-        }
+        
+        // Remove document fields from data (they're no longer in the form)
+        unset($data['account_statement']);
+        unset($data['commercial_register']);
+        unset($data['tax_card']);
+        unset($data['card_image']);
+        unset($data['license_document']);
+        unset($data['id_document']);
     }
 }

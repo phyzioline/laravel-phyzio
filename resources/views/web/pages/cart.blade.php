@@ -147,7 +147,13 @@
 
                 <!-- Action Buttons -->
                 <div class="cuponcode-form mb-4">
-                    <div class="row justify-content-end">
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-lg-4 col-md-6 col-sm-12 mb-3 mb-lg-0">
+                            <a href="{{ route('history_order.index') }}" class="btn btn-outline-primary" 
+                               style="border-color: #02767F; color: #02767F;">
+                                <i class="las la-shipping-fast me-2"></i>{{ __('Track Your Order') }}
+                            </a>
+                        </div>
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="d-flex justify-content-end">
                                 <a href="{{ route('carts.flush') }}" class="btn btn-outline-danger" 

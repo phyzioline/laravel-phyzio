@@ -538,29 +538,23 @@ body.has-hero .shop-hero-banner {
             <i class="las la-bars"></i>
         </button>
 
-        <!-- TRACK YOUR ORDER BUTTON (Mobile) - Always show for logged in users -->
-        @if(Auth::check())
-        <a href="{{ route('history_order.index') }}" 
+        <!-- TRACK YOUR ORDER BUTTON (Mobile) - Always visible for all users -->
+        @php
+            $trackUrl = route('history_order.index');
+            // If guest just placed an order, add order number and email to URL
+            if (!Auth::check() && (session('success') || session('guest_order'))) {
+                $guestOrder = session('guest_order');
+                if ($guestOrder && isset($guestOrder->order_number)) {
+                    $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
+                }
+            }
+        @endphp
+        <a href="{{ $trackUrl }}" 
            class="btn-track-order-mobile" 
            title="{{ __('Track Your Order') }}">
             <i class="las la-shipping-fast"></i>
             <span class="track-order-text-mobile">{{ __('Track Order') }}</span>
         </a>
-        @elseif(session('success') || session('guest_order'))
-            @php
-                $trackUrl = route('history_order.index');
-                $guestOrder = session('guest_order');
-                if ($guestOrder && isset($guestOrder->order_number)) {
-                    $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
-                }
-            @endphp
-            <a href="{{ $trackUrl }}" 
-               class="btn-track-order-mobile" 
-               title="{{ __('Track Your Order') }}">
-                <i class="las la-shipping-fast"></i>
-                <span class="track-order-text-mobile">{{ __('Track Order') }}</span>
-            </a>
-        @endif
 
         <!-- LOGIN BUTTON REMOVED (Duplicate) -->
         
@@ -592,6 +586,9 @@ body.has-hero .shop-hero-banner {
                             <li><a href="{{ route('web.jobs.index') }}" class="text-decoration-none">{{ __('Jobs') }}</a></li>
                             <li><a href="{{ route('feed.index') }}" class="text-decoration-none">{{ __('Feed') }}</a></li>
                             <li><a href="{{ route('web.datahub.index') }}" class="text-decoration-none">{{ __('Data Hub') }}</a></li>
+                            <li>
+                                <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Track Your Order') }}</a>
+                            </li>
                            	 @if (Auth::check())
                                   <li>
                                       <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Order History') }}</a>

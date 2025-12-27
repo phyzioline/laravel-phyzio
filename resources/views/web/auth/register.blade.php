@@ -31,7 +31,7 @@
                     <div
                         class="card-3d-wrap singup"
                         id="formWrapper"
-                        style="height: fit-content; min-height: {{ old('type') == 'vendor' ? '1200px' : '800px' }};"
+                        style="height: fit-content; min-height: 750px;"
                     >
                         <div class="card-3d-wrapper">
                             <div class="card-front">
@@ -118,76 +118,14 @@
                                             @enderror
                                         </div>
 
-                                        <!-- Vendor Only Fields -->
-                                        <div id="vendorOnlyFields" style="display:none;">
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">Profile Image</label>
-                                                <input type="file" name="image" class="form-style">
-                                                <i class="input-icon material-icons">image</i>
-                                                @error('image')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">Account Statement</label>
-                                                <input type="file" name="account_statement" class="form-style">
-                                                <i class="input-icon material-icons">description</i>
-                                                @error('account_statement')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                            
-                                             <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">ID Card Image</label>
-                                                <input type="file" name="card_image" class="form-style">
-                                                <i class="input-icon material-icons">credit_card</i>
-                                                @error('card_image')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Business Docs (Vendor + Company) -->
-                                        <div id="businessDocsFields" style="display:none;">
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">Commercial Register</label>
-                                                <input type="file" name="commercial_register" class="form-style">
-                                                <i class="input-icon material-icons">business</i>
-                                                @error('commercial_register')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">Tax Card</label>
-                                                <input type="file" name="tax_card" class="form-style">
-                                                <i class="input-icon material-icons">assignment</i>
-                                                @error('tax_card')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <!-- Therapist Fields Only -->
-                                        <div id="therapistFields" style="{{ old('type') == 'therapist' ? '' : 'display:none;' }}">
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">Professional License Document</label>
-                                                <input type="file" name="license_document" class="form-style">
-                                                <i class="input-icon material-icons">verified_user</i>
-                                                @error('license_document')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label style="margin-bottom: 10px; display: block">National ID Document</label>
-                                                <input type="file" name="id_document" class="form-style">
-                                                <i class="input-icon material-icons">badge</i>
-                                                @error('id_document')
-                                                    <span class="text-danger">{{ $message }}</span>
-                                                @enderror
-                                            </div>
+                                        <!-- Optional Profile Image (for all types) -->
+                                        <div class="form-group">
+                                            <label style="margin-bottom: 10px; display: block">Profile Image (Optional)</label>
+                                            <input type="file" name="image" class="form-style">
+                                            <i class="input-icon material-icons">image</i>
+                                            @error('image')
+                                                <span class="text-danger">{{ $message }}</span>
+                                            @enderror
                                         </div>
 
                                         <button type="submit" class="btn">Sign Up</button>
@@ -274,32 +212,8 @@
         }
 
         function handleUserTypeChange() {
-            const userType = document.getElementById('userType').value;
-            
-            const vendorOnlyFields = document.getElementById('vendorOnlyFields');
-            const businessDocsFields = document.getElementById('businessDocsFields');
-            const therapistFields = document.getElementById('therapistFields');
-            
-            const formWrapper = document.getElementById('formWrapper');
-
-            // Hide all first
-            vendorOnlyFields.style.display = 'none';
-            businessDocsFields.style.display = 'none';
-            therapistFields.style.display = 'none';
-            
-            formWrapper.style.minHeight = '850px'; 
-
-            if (userType === 'vendor') {
-                vendorOnlyFields.style.display = 'block';
-                businessDocsFields.style.display = 'block';
-                formWrapper.style.minHeight = '1450px';
-            } else if (userType === 'company') {
-                businessDocsFields.style.display = 'block';
-                formWrapper.style.minHeight = '1100px';
-            } else if (userType === 'therapist') {
-                therapistFields.style.display = 'block';
-                formWrapper.style.minHeight = '950px';
-            }
+            // Form height is now consistent regardless of user type
+            // Documents will be uploaded after registration
         }
     </script>
 </body>

@@ -9,7 +9,12 @@ class HomeVisitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\TherapistProfile::with('user')->where('status', 'approved');
+        $query = \App\Models\TherapistProfile::with('user')
+            ->where('status', 'approved')
+            ->whereHas('user', function($q) {
+                $q->where('verification_status', 'approved')
+                  ->where('profile_visibility', 'visible');
+            });
 
         // Filter by specialization
         if ($request->has('specialization') && $request->specialization != '') {
@@ -25,8 +30,12 @@ class HomeVisitController extends Controller
         
         $therapists = $query->paginate(12);
         
-        // Get unique specializations and areas for filters
+        // Get unique specializations and areas for filters (only verified therapists)
         $specializations = \App\Models\TherapistProfile::where('status', 'approved')
+            ->whereHas('user', function($q) {
+                $q->where('verification_status', 'approved')
+                  ->where('profile_visibility', 'visible');
+            })
             ->distinct()
             ->pluck('specialization');
             
@@ -40,7 +49,10 @@ class HomeVisitController extends Controller
     {
         $therapist = \App\Models\TherapistProfile::with(['user', 'homeVisits' => function($q) {
             $q->where('status', 'completed');
-        }])->findOrFail($id);
+        }])->whereHas('user', function($q) {
+            $q->where('verification_status', 'approved')
+              ->where('profile_visibility', 'visible');
+        })->findOrFail($id);
 
         return view('web.pages.home_visits.show', compact('therapist'));
     }

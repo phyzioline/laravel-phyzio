@@ -22,7 +22,18 @@ class HomeController extends Controller
         $categories = Category::where('status', 'active')->get();
         
         // Get products with order count for sorting by best selling
+        // Only show products from verified vendors or buyers
         $productsQuery = Product::where('status', 'active')
+            ->whereHas('user', function($q) {
+                $q->where(function($subQ) {
+                    $subQ->where('type', 'buyer')
+                         ->orWhere(function($typeQ) {
+                             $typeQ->whereIn('type', ['vendor', 'company'])
+                                   ->where('verification_status', 'approved')
+                                   ->where('profile_visibility', 'visible');
+                         });
+                });
+            })
             ->withCount(['orderItems' => function($query) {
                 $query->selectRaw('COALESCE(SUM(quantity), 0)');
             }])

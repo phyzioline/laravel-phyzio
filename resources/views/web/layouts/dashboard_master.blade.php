@@ -425,6 +425,28 @@
         </header>
 
         <main class="p-4">
+            @if(Auth::check() && !Auth::user()->isVerified() && in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
+                <!-- Red Sticky Bar - Account Not Verified -->
+                <div class="alert alert-danger mb-4 d-flex justify-content-between align-items-center" style="border-left: 5px solid #dc3545; background-color: #fff5f5;">
+                    <div>
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        <strong>{{ __('Your account is not active.') }}</strong>
+                        <span class="ml-2">{{ __('Upload required documents to activate your account and make it visible to users.') }}</span>
+                    </div>
+                    <a href="{{ route('verification.verification-center') }}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-upload mr-1"></i>{{ __('Upload Documents') }}
+                    </a>
+                </div>
+            @endif
+
+            @if(Auth::check() && Auth::user()->isVerified() && session('account_approved'))
+                <!-- Green Success Banner (shown once after approval) -->
+                <div class="alert alert-success mb-4" style="border-left: 5px solid #28a745; background-color: #f0fff4;">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <strong>{{ __('Your account is active and visible to users!') }}</strong>
+                </div>
+            @endif
+
             @yield('content')
         </main>
     </div>

@@ -17,7 +17,18 @@ class ShowService
         
         $query = Product::where('products.amount', '>', '0')
             ->where('products.status', 'active')
-            ->with(['badges', 'metrics']);
+            ->whereHas('user', function($q) {
+                // Only show products from verified vendors or buyers (buyers don't need verification)
+                $q->where(function($subQ) {
+                    $subQ->where('type', 'buyer')
+                         ->orWhere(function($typeQ) {
+                             $typeQ->whereIn('type', ['vendor', 'company'])
+                                   ->where('verification_status', 'approved')
+                                   ->where('profile_visibility', 'visible');
+                         });
+                });
+            })
+            ->with(['badges', 'metrics', 'user']);
 
         if ($request && $request->has('category') && $request->category != null) {
             $query->where('products.category_id', $request->category);

@@ -43,6 +43,15 @@
     </div>
 </div>
 
+<!-- Account Health Widget -->
+@if(in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
+    <div class="row mb-4">
+        <div class="col-lg-4">
+            @include('web.components.account-health')
+        </div>
+    </div>
+@endif
+
 <!-- Key Metrics Overview -->
 <div class="row">
     <!-- Active Patients -->

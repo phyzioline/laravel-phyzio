@@ -10,7 +10,13 @@ class JobController extends Controller
 {
     public function index()
     {
-        $query = Job::with('clinic', 'requirements')->active();
+        $query = Job::with('clinic', 'requirements')
+            ->active()
+            ->whereHas('clinic', function($q) {
+                // Only show jobs from verified companies
+                $q->where('verification_status', 'approved')
+                  ->where('profile_visibility', 'visible');
+            });
         
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
@@ -40,7 +46,13 @@ class JobController extends Controller
 
     public function show($id)
     {
-        $job = Job::with('clinic', 'requirements')->active()->findOrFail($id);
+        $job = Job::with('clinic', 'requirements')
+            ->active()
+            ->whereHas('clinic', function($q) {
+                $q->where('verification_status', 'approved')
+                  ->where('profile_visibility', 'visible');
+            })
+            ->findOrFail($id);
         $matchScore = 0;
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
@@ -53,7 +65,12 @@ class JobController extends Controller
 
     public function apply(Request $request, $id)
     {
-        $job = Job::active()->findOrFail($id);
+        $job = Job::active()
+            ->whereHas('clinic', function($q) {
+                $q->where('verification_status', 'approved')
+                  ->where('profile_visibility', 'visible');
+            })
+            ->findOrFail($id);
         
         if (!auth()->check() || auth()->user()->type !== 'therapist') {
             return redirect()->route('view_login')->with('error', 'You must be logged in as a therapist to apply.');

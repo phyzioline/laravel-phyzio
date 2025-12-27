@@ -65,7 +65,13 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('home.' . app()->getLocale())->with('success', __('Welcome! Your account has been verified.'));
+        // Redirect based on user type
+        if ($user->type === 'buyer') {
+            return redirect()->route('home.' . app()->getLocale())->with('success', __('Welcome! Your account has been verified.'));
+        } else {
+            // Vendor, Company, Therapist go to "Complete Your Account" page
+            return redirect()->route('verification.complete-account')->with('success', __('Welcome! Please complete your account verification.'));
+        }
     }
 
 }

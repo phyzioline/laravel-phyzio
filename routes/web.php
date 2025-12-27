@@ -105,6 +105,12 @@ foreach ($supportedLocales as $locale) {
         // Authenticated routes
     Route::group(['middleware' => ['auth']], function () use ($locale) {
 
+        // Verification Routes
+        Route::get('/verification/complete-account', [App\Http\Controllers\Web\VerificationController::class, 'completeAccount'])->name('verification.complete-account');
+        Route::get('/verification/center', [App\Http\Controllers\Web\VerificationController::class, 'verificationCenter'])->name('verification.verification-center');
+        Route::post('/verification/upload-document', [App\Http\Controllers\Web\VerificationController::class, 'uploadDocument'])->name('verification.upload-document');
+        Route::delete('/verification/documents/{documentId}', [App\Http\Controllers\Web\VerificationController::class, 'deleteDocument'])->name('verification.delete-document');
+
         Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name('web.products.reviews.store');
 
         // Generic Profile Routes (Vendor, Buyer, Patient)

@@ -39,6 +39,12 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::get('/home', [HomeController::class, 'index'])->name('home');
             Route::resource('roles', RoleController::class);
             Route::resource('users', UserController::class);
+            
+            // Verification Management
+            Route::get('/verifications', [\App\Http\Controllers\Dashboard\VerificationController::class, 'index'])->name('verifications.index');
+            Route::get('/verifications/{userId}', [\App\Http\Controllers\Dashboard\VerificationController::class, 'show'])->name('verifications.show');
+            Route::post('/verifications/documents/{documentId}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewDocument'])->name('verifications.review-document');
+            Route::post('/verifications/users/{userId}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewUser'])->name('verifications.review-user');
             Route::resource('categories', CategoryController::class);
             Route::resource('sub_categories', SubCategoryController::class);
             Route::resource('tags', TagController::class);
