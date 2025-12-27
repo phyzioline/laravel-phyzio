@@ -14,6 +14,7 @@
    ============================================ */
 
 /* Global Font Application - BUT EXCLUDE ICONS */
+/* Icons are handled by specific rules below - they override this */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     font-size: 14px;
@@ -193,7 +194,7 @@ select:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([cl
    Load this CSS file AFTER icon font CSS files
    ============================================ */
 
-/* Font Awesome Icons - MAXIMUM SPECIFICITY */
+/* Font Awesome Icons - MAXIMUM SPECIFICITY - OVERRIDE EVERYTHING */
 i.fa, i.fas, i.far, i.fal, i.fab,
 i[class*="fa fa-"], i[class*="fas fa-"], i[class*="far fa-"],
 i[class^="fa"], i[class*=" fa"],
@@ -203,7 +204,9 @@ i[class^="fa"], i[class*=" fa"],
 [class*=" fa"]:not([class*="false"]):not([class*="fade"]),
 span[class*="fa"], div[class*="fa"],
 .card i.fa, .card-body i.fa, .btn i.fa,
-.stat-card i.fa, .icon-box i.fa {
+.stat-card i.fa, .icon-box i.fa,
+body i.fa, body i.fas, body i[class^="fa"], body i[class*=" fa"],
+body .fa, body .fas, body [class^="fa"], body [class*=" fa"] {
     font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
     font-weight: 900 !important;
     font-style: normal !important;
@@ -214,14 +217,16 @@ span[class*="fa"], div[class*="fa"],
     speak: none !important;
 }
 
-/* Line Awesome Icons - MAXIMUM SPECIFICITY */
+/* Line Awesome Icons - MAXIMUM SPECIFICITY - OVERRIDE EVERYTHING */
 i.las, i.la, 
 i[class^="las"], i[class^="la-"], i[class*=" las"], i[class*=" la-"],
 .las, .la,
 [class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"],
 span[class^="las"], span[class^="la-"],
 .card i.las, .card-body i.las, .btn i.las,
-.stat-card i.las, .icon-box i.las {
+.stat-card i.las, .icon-box i.las,
+body i.las, body i.la, body i[class^="las"], body i[class^="la-"],
+body .las, body .la, body [class^="las"], body [class^="la-"] {
     font-family: "Line Awesome Free" !important;
     font-weight: 900 !important;
     font-style: normal !important;
@@ -230,11 +235,13 @@ span[class^="las"], span[class^="la-"],
     -moz-osx-font-smoothing: grayscale !important;
 }
 
-/* Material Icons - MAXIMUM SPECIFICITY */
+/* Material Icons - MAXIMUM SPECIFICITY - OVERRIDE EVERYTHING */
 i.material-icons, i.material-icons-outlined,
 i[class*="material-icons"],
 .material-icons, .material-icons-outlined,
-[class*="material-icons"] {
+[class*="material-icons"],
+body i.material-icons, body i.material-icons-outlined,
+body .material-icons, body .material-icons-outlined {
     font-family: "Material Icons", "Material Icons Outlined" !important;
     font-weight: normal !important;
     font-style: normal !important;
@@ -267,8 +274,5 @@ i.lni, i[class^="lni-"], i[class*=" lni-"],
     font-family: inherit !important;
 }
 
-/* CRITICAL: Ensure ALL i tags with icon classes use icon fonts */
-i[class*="fa"], i[class*="las"], i[class*="la-"], i[class*="bi"], 
-i[class*="lni"], i[class*="material"] {
-    font-family: inherit !important;
-}
+/* CRITICAL: Ensure ALL i tags with icon classes use icon fonts - REMOVED inherit override */
+/* The specific icon font rules above should handle this, not inherit */

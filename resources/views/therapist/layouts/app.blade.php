@@ -38,6 +38,37 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/line-awesome.min.css')}}">
   <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
 
+  <style>
+    /* Overlay - Only show on mobile when sidebar is toggled */
+    .overlay {
+      display: none !important;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background: #000;
+      opacity: 0.5;
+      z-index: 11;
+      cursor: pointer;
+      transition: all 0.23s ease-out;
+    }
+    
+    /* Only show overlay on mobile when toggled */
+    @media only screen and (max-width: 1199px) {
+      .toggled .overlay {
+        display: block !important;
+      }
+    }
+    
+    /* Hide overlay on desktop */
+    @media only screen and (min-width: 1200px) {
+      .overlay {
+        display: none !important;
+      }
+    }
+  </style>
+
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
    <!-- swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
@@ -56,6 +87,9 @@
   <!--start sidebar-->
     @include('therapist.layouts.sidebar')
   <!--end sidebar-->
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="overlay" style="display: none;"></div>
 
   <main class="main-wrapper">
     <div class="main-content">
@@ -87,6 +121,35 @@
   <script src="{{ asset('dashboard/assets/plugins/simplebar/js/simplebar.min.js')}}"></script>
   
   <script src="{{ asset('dashboard/assets/js/main.js')}}"></script>
+
+  <script>
+    // Handle overlay click to close sidebar on mobile
+    $(document).ready(function() {
+      $('.overlay').on('click', function() {
+        $('body').removeClass('toggled');
+        $(this).hide();
+      });
+      
+      // Show/hide overlay when sidebar is toggled (only on mobile)
+      $('.btn-toggle').on('click', function() {
+        if ($(window).width() <= 1199) {
+          if ($('body').hasClass('toggled')) {
+            $('.overlay').show();
+          } else {
+            $('.overlay').hide();
+          }
+        }
+      });
+      
+      // Hide overlay on window resize if desktop
+      $(window).on('resize', function() {
+        if ($(window).width() > 1199) {
+          $('.overlay').hide();
+          $('body').removeClass('toggled');
+        }
+      });
+    });
+  </script>
 
    @if (\Session::has('message'))
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
