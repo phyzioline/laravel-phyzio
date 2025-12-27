@@ -316,8 +316,20 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
     Route::group(['prefix' => 'company', 'as' => 'company.', 'middleware' => ['auth']], function () {
         Route::get('/dashboard', [\App\Http\Controllers\Company\DashboardController::class, 'index'])->name('dashboard');
         
+        // Job routes
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Company\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::post('/jobs/{jobId}/applications/{applicationId}/status', [\App\Http\Controllers\Company\JobController::class, 'updateApplicationStatus'])->name('jobs.updateApplicationStatus');
+        Route::post('/jobs/{jobId}/applications/bulk-update', [\App\Http\Controllers\Company\JobController::class, 'bulkUpdateApplications'])->name('jobs.bulkUpdateApplications');
+        Route::post('/jobs/{jobId}/applications/{applicationId}/schedule-interview', [\App\Http\Controllers\Company\JobController::class, 'scheduleInterview'])->name('jobs.scheduleInterview');
+        
+        // Job templates
+        Route::get('/jobs/templates', [\App\Http\Controllers\Company\JobController::class, 'templates'])->name('jobs.templates');
+        Route::post('/jobs/templates', [\App\Http\Controllers\Company\JobController::class, 'createTemplate'])->name('jobs.createTemplate');
+        Route::get('/jobs/templates/{templateId}/create-job', [\App\Http\Controllers\Company\JobController::class, 'createFromTemplate'])->name('jobs.createFromTemplate');
+        
+        // Analytics
+        Route::get('/jobs/analytics', [\App\Http\Controllers\Company\JobController::class, 'analytics'])->name('jobs.analytics');
+        
         Route::resource('jobs', \App\Http\Controllers\Company\JobController::class);
     });
 

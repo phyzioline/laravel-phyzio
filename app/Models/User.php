@@ -77,6 +77,14 @@ class User extends Authenticatable
         return $this->hasOne(\App\Models\TherapistProfile::class);
     }
 
+    /**
+     * Get the company profile associated with the user.
+     */
+    public function companyProfile()
+    {
+        return $this->hasOne(\App\Models\CompanyProfile::class);
+    }
+
     public function homeVisits()
     {
         return $this->hasMany(HomeVisit::class, 'patient_id');

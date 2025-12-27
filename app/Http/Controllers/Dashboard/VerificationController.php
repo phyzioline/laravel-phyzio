@@ -7,6 +7,9 @@ use App\Models\User;
 use App\Models\UserDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CompanyAccountApprovedEmail;
+use App\Mail\CompanyAccountRejectedEmail;
 
 class VerificationController extends Controller
 {
@@ -100,6 +103,16 @@ class VerificationController extends Controller
                 'reviewed_by' => auth()->id(),
                 'reviewed_at' => now(),
             ]);
+
+            // Send approval email for companies
+            if ($user->type === 'company') {
+                Mail::to($user->email)->send(new CompanyAccountApprovedEmail($user));
+            }
+        } else {
+            // Send rejection email for companies
+            if ($user->type === 'company') {
+                Mail::to($user->email)->send(new CompanyAccountRejectedEmail($user, $request->admin_note));
+            }
         }
 
         return redirect()->route('dashboard.verifications.index')
@@ -131,6 +144,11 @@ class VerificationController extends Controller
                 'profile_visibility' => 'visible',
                 'status' => 'active',
             ]);
+
+            // Send approval email for companies when auto-approved
+            if ($user->type === 'company') {
+                Mail::to($user->email)->send(new CompanyAccountApprovedEmail($user));
+            }
         } else {
             // Check if any documents are under review
             $hasUnderReview = $user->documents()->where('status', 'under_review')->exists();

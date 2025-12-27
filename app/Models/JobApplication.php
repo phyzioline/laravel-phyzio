@@ -26,4 +26,9 @@ class JobApplication extends Model
     {
         return $this->belongsTo(User::class, 'therapist_id');
     }
+
+    public function interviewSchedule()
+    {
+        return $this->hasOne(InterviewSchedule::class);
+    }
 }

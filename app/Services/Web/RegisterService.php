@@ -3,7 +3,9 @@ namespace App\Services\Web;
 
 use App\Exceptions\InsuranceNotFoundException;
 use App\Mail\OTPEmail;
+use App\Mail\CompanyWelcomeEmail;
 use App\Models\User;
+use App\Models\CompanyProfile;
 use App\Traits\HasImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -116,6 +118,16 @@ class RegisterService
                 \Spatie\Permission\Models\Role::create(['name' => 'company', 'guard_name' => 'web']);
             }
             $user->assignRole('company');
+
+            // Create company profile
+            CompanyProfile::create([
+                'user_id' => $user->id,
+                'company_name' => $user->name,
+                'status' => 'active',
+            ]);
+
+            // Send welcome email
+            Mail::to($user->email)->send(new CompanyWelcomeEmail($user));
         }
 
         // Clear registration data from session
