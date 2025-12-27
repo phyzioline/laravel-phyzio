@@ -1,6 +1,15 @@
 <?php
 
-Route::group(['middleware' => ['auth', 'therapist'], 'prefix' => 'therapist', 'as' => 'therapist.'], function () {
+// Locale switcher for therapist dashboard (session-based, no URL change)
+Route::get('/therapist/locale/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->middleware('auth')->name('therapist.locale.switch');
+
+Route::group(['middleware' => ['auth', 'therapist', \App\Http\Middleware\SetDashboardLocale::class], 'prefix' => 'therapist', 'as' => 'therapist.'], function () {
     // Therapist Onboarding Routes
     Route::group(['prefix' => 'onboarding', 'as' => 'onboarding.'], function () {
         Route::get('/step1', [\App\Http\Controllers\Therapist\TherapistOnboardingController::class, 'showStep1'])->name('step1');

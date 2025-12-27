@@ -32,6 +32,11 @@
   <link href="{{ asset('dashboard/sass/bordered-theme.css')}}" rel="stylesheet">
   <link href="{{ asset('dashboard/sass/responsive.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('dashboard/css/dash.css')}}">
+  
+  <!-- Therapist Theme & Typography -->
+  <link href="{{ asset('dashboard/css/teal-theme.css')}}" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/line-awesome.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">
    <!-- swiper -->

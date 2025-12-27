@@ -64,8 +64,7 @@
                     </li>
                     <li> <a href="{{ route('instructor.courses.index') }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
                     </li>
-                    <li> <a href="javascript:;"><i class="las la-users"></i>{{ __('Students') }}</a>
-                    </li>
+                    {{-- Students link removed - functionality not implemented --}}
                     <li> <a href="{{ route('therapist.earnings.index') }}"><i class="las la-coins"></i>{{ __('Earnings') }}</a>
                     </li>
                 </ul>
@@ -81,10 +80,8 @@
                 <ul>
                     <li> <a href="{{ route('clinic.dashboard') }}"><i class="las la-tachometer-alt"></i>{{ __('Overview') }}</a>
                     </li>
-                     <li> <a href="javascript:;"><i class="las la-user-md"></i>{{ __('Doctors') }}</a>
-                    </li>
-                    <li> <a href="javascript:;"><i class="las la-calendar"></i>{{ __('Appointments') }}</a>
-                    </li>
+                     {{-- Doctors link removed - functionality not implemented --}}
+                     {{-- Appointments link removed - functionality not implemented --}}
                 </ul>
             </li>
              

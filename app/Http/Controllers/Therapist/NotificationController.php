@@ -4,16 +4,37 @@ namespace App\Http\Controllers\Therapist;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
     public function index()
     {
-        // Mock notifications
-        $notifications = collect([
-            (object)['id' => 1, 'type' => 'home_visit', 'title' => 'New Home Visit Request', 'message' => 'John Doe requested a home visit for Dec 25th.', 'time' => '10 mins ago', 'unread' => true],
-            (object)['id' => 2, 'type' => 'system', 'title' => 'System Update', 'message' => 'Platform maintenance scheduled for tonight.', 'time' => '1 hour ago', 'unread' => false],
-        ]);
+        // Get real notifications from database
+        $notifications = Auth::user()->notifications()
+            ->orderBy('created_at', 'desc')
+            ->limit(50)
+            ->get()
+            ->map(function($notification) {
+                $data = $notification->data;
+                $type = $data['type'] ?? 'system';
+                
+                // Map notification types
+                $typeMap = [
+                    'home_visit' => 'home_visit',
+                    'appointment' => 'appointment',
+                    'system' => 'system'
+                ];
+                
+                return (object)[
+                    'id' => $notification->id,
+                    'type' => $typeMap[$type] ?? 'system',
+                    'title' => $data['title'] ?? $data['message'] ?? 'Notification',
+                    'message' => $data['message'] ?? $data['title'] ?? 'You have a new notification',
+                    'time' => $notification->created_at->diffForHumans(),
+                    'unread' => $notification->read_at === null
+                ];
+            });
 
         return view('web.therapist.notifications.index', compact('notifications'));
     }

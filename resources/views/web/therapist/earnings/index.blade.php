@@ -123,7 +123,7 @@
                     </div>
                 </div>
                   <div class="card-footer bg-white text-center">
-                    <a href="#" class="small font-weight-bold">View All Transactions</a>
+                    <a href="{{ route('therapist.earnings.index') }}#transactions" class="small font-weight-bold">{{ __('View All Transactions') }}</a>
                 </div>
               </div>
          </div>

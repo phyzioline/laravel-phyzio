@@ -6,6 +6,14 @@
       <div class="card-body search-content">
       </div>
       <ul class="navbar-nav gap-1 nav-right-links align-items-center">
+        {{-- Translation Button --}}
+        <li class="nav-item">
+            <a href="{{ route('therapist.locale.switch', ['locale' => app()->getLocale() == 'en' ? 'ar' : 'en']) }}" 
+               class="nav-link d-flex align-items-center text-dark px-2" 
+               style="font-size: 13px; font-weight: 700;">
+                <i class="fa fa-globe me-1"></i> {{ app()->getLocale() == 'en' ? 'AR' : 'EN' }}
+            </a>
+        </li>
 
         <li class="nav-item dropdown">
             <div class="notify-list">

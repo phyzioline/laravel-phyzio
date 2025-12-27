@@ -127,7 +127,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-top-0 text-right">
-                    <a href="{{ route('therapist.patients.show', 1) }}" class="btn btn-sm btn-outline-primary">{{ __('View Profile') }}</a>
+                    <a href="{{ route('therapist.patients.show', $patient->user_id ?? $patient->id) }}" class="btn btn-sm btn-outline-primary">{{ __('View Profile') }}</a>
                 </div>
                  <!-- Optional Footer Actions -->
                 <!-- <div class="card-footer bg-white border-top-0 d-flex justify-content-end"> ... </div> -->
