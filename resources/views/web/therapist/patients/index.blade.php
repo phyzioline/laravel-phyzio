@@ -94,7 +94,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                          <div class="d-flex align-items-center">
-                            <div class="avatar-circle bg-teal text-white rounded-circle mr-3 d-flex align-items-center justify-content-center font-weight-bold" style="width: 50px; height: 50px; background-color: #00897b; font-size: 20px;">
+                            <div class="avatar-circle bg-teal text-white rounded-circle mr-3 d-flex align-items-center justify-content-center font-weight-bold" style="width: 50px; height: 50px; background-color: #28a745; font-size: 20px;">
                                 {{ $patient->image_initial }}
                             </div>
                             <div>

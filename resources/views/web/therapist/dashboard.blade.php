@@ -28,7 +28,7 @@
         margin-right: 1.5rem;
         color: #fff;
     }
-    .icon-teal { background: #00897b; }
+    .icon-teal { background: #28a745; }
     .icon-green { background: #43a047; }
     .icon-blue { background: #1e88e5; }
     .icon-orange { background: #fb8c00; }
@@ -38,7 +38,7 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <h3 style="color: #00897b; font-weight: 700;">{{ __('Welcome back, Dr.') }} {{ Auth::user()->name }}</h3>
+        <h3 style="color: #28a745; font-weight: 700;">{{ __('Welcome back, Dr.') }} {{ Auth::user()->name }}</h3>
         <p class="text-muted">{{ __('Here\'s your Home Visits overview') }}</p>
     </div>
 </div>
@@ -136,7 +136,7 @@
             <div class="card-body px-4">
                 @forelse($recentActivities as $activity)
                 <div class="d-flex align-items-center mb-4">
-                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: {{ $activity->status == 'completed' ? '#43a047' : '#00897b' }} !important; flex-shrink: 0;">
+                    <div class="bg-primary text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; background-color: {{ $activity->status == 'completed' ? '#43a047' : '#28a745' }} !important; flex-shrink: 0;">
                         <i class="las {{ $activity->status == 'completed' ? 'la-check-circle' : 'la-calendar' }}"></i>
                     </div>
                     <div class="flex-grow-1">
@@ -190,7 +190,7 @@
                  <h5 class="card-title font-weight-bold mb-0">{{ __('Quick Actions') }}</h5>
             </div>
             <div class="card-body px-4">
-                <a href="{{ route('therapist.availability.edit') }}" class="btn btn-primary btn-block mb-2 shadow-sm" style="background-color: #00897b; border: none;">
+                <a href="{{ route('therapist.availability.edit') }}" class="btn btn-primary btn-block mb-2 shadow-sm" style="background-color: #28a745; border: none;">
                     <i class="las la-calendar-alt mr-2"></i> {{ __('Set Availability') }}
                 </a>
                 <a href="{{ route('dashboard.courses.create') }}" class="btn btn-outline-secondary btn-block mb-2">
@@ -217,7 +217,7 @@
             datasets: [{
                 label: 'Visits',
                 data: {!! json_encode($chartData) !!},
-                backgroundColor: '#00897b',
+                backgroundColor: '#28a745',
                 borderRadius: 5
             }]
         },

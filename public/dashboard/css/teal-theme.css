@@ -176,10 +176,10 @@ html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
     background-color: #f4f6f9;
 }
 
-/* Sidebar Background - Teal Gradient */
+/* Sidebar Background - Green Gradient (Matching Company Dashboard) */
 .dashboard-container .sidebar {
     width: 260px;
-    background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%) !important;
+    background: linear-gradient(180deg, #1e7e34 0%, #28a745 100%) !important;
     color: #ffffff !important;
     padding: 20px;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
@@ -192,9 +192,9 @@ html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Logo Image - Invert to White */
+/* Logo Image - Keep Original Colors (No Filter) */
 .dashboard-container .sidebar img {
-    filter: brightness(0) invert(1);
+    filter: none !important;
     opacity: 1;
     max-width: 70% !important;
     transition: all 0.3s ease;
@@ -262,8 +262,8 @@ html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-left: 5px solid #0d9488;
-    /* Teal Accent */
+    border-left: 5px solid #28a745;
+    /* Green Accent - Matching Company Dashboard */
 }
 
 /* Cards */

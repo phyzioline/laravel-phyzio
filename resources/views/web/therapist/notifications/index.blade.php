@@ -14,7 +14,7 @@
                     <div class="list-group list-group-flush">
                         @forelse($notifications as $notify)
                          <div class="list-group-item d-flex align-items-start py-3 {{ $notify->unread ? 'bg-light' : '' }}">
-                            <div class="icon-circle mr-3 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; background-color: {{ $notify->type == 'appointment' ? '#e0f2f1' : '#e3f2fd' }}; color: {{ $notify->type == 'appointment' ? '#00897b' : '#1e88e5' }};">
+                            <div class="icon-circle mr-3 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 40px; height: 40px; background-color: {{ $notify->type == 'appointment' ? '#d4edda' : '#e3f2fd' }}; color: {{ $notify->type == 'appointment' ? '#28a745' : '#1e88e5' }};">
                                 <i class="las {{ $notify->type == 'appointment' ? 'la-calendar-check' : 'la-info-circle' }}" style="font-size: 20px;"></i>
                             </div>
                             <div class="flex-grow-1">
