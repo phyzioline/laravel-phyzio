@@ -393,6 +393,19 @@
        max-width: 100% !important;
      }
      
+     /* RTL Main Wrapper Fix */
+     [dir="rtl"] .main-wrapper {
+       margin-left: 0 !important;
+       margin-right: 260px !important;
+       width: calc(100% - 260px) !important;
+       max-width: calc(100vw - 260px - 40px) !important;
+     }
+     
+     [dir="rtl"] body.toggled .main-wrapper {
+       margin-right: 0 !important;
+       margin-left: 0 !important;
+     }
+     
      /* Fix header alignment - Ensure it starts after sidebar */
      .top-header {
        left: 260px !important;
@@ -405,6 +418,18 @@
      body.toggled .top-header {
        left: 0 !important;
        width: 100% !important;
+     }
+     
+     /* RTL Header Fix */
+     [dir="rtl"] .top-header {
+       left: auto !important;
+       right: 260px !important;
+       width: calc(100% - 260px) !important;
+     }
+     
+     [dir="rtl"] body.toggled .top-header {
+       right: 0 !important;
+       left: auto !important;
      }
      
      /* Ensure no background color bleeding from sidebar */
