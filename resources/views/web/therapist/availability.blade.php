@@ -10,7 +10,7 @@
         </div>
         <div>
              <button class="btn btn-outline-secondary mr-2 shadow-sm"><i class="las la-file-export"></i> {{ __('Export Schedule') }}</button>
-             <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#availabilityModal"><i class="las la-plus"></i> {{ __('Set Availability') }}</button>
+             <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#availabilityModal"><i class="las la-plus"></i> {{ __('Set Availability') }}</button>
         </div>
     </div>
 
@@ -99,9 +99,9 @@
                                             <!-- Check schedules for this day -->
                                             @php
                                                 $date = now()->startOfMonth()->addDays($currentDay - 1);
-                                                $dayName = $date->format('l');
+                                                $dayName = strtolower($date->format('l')); // Convert to lowercase to match database
                                                 $daySchedules = $schedules->filter(function($s) use ($dayName, $date) {
-                                                    return $s->day_of_week == $dayName && 
+                                                    return strtolower($s->day_of_week) == $dayName && 
                                                            ($s->start_date <= $date && $s->end_date >= $date);
                                                 });
                                             @endphp
@@ -133,9 +133,7 @@
         <div class="modal-content border-0 rounded-lg">
             <div class="modal-header border-bottom-0">
                 <h5 class="modal-title font-weight-bold">{{ __('Set Availability') }}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('therapist.availability.update') }}" method="POST">
                 @csrf
@@ -158,10 +156,10 @@
                     <div class="form-group mb-4">
                         <label class="font-weight-bold small text-muted text-uppercase mb-2">Days of Week</label>
                         <div class="d-flex flex-wrap">
-                            @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as $day)
-                            <div class="custom-control custom-checkbox mr-4 mb-2">
-                                <input type="checkbox" class="custom-control-input" id="day-{{ $day }}" name="days[]" value="{{ $day }}">
-                                <label class="custom-control-label" for="day-{{ $day }}">{{ $day }}</label>
+                            @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
+                            <div class="form-check mr-4 mb-2">
+                                <input type="checkbox" class="form-check-input" id="day-{{ $day }}" name="days[]" value="{{ $day }}">
+                                <label class="form-check-label text-capitalize" for="day-{{ $day }}">{{ $day }}</label>
                             </div>
                             @endforeach
                         </div>
@@ -206,7 +204,7 @@
 
                 </div>
                 <div class="modal-footer border-top-0 bg-light">
-                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary px-4">Save Availability</button>
                 </div>
             </form>

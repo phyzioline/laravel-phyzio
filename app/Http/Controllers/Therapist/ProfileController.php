@@ -47,8 +47,10 @@ class ProfileController extends Controller
         // Update User Table
         $user->update($request->only(['name', 'phone']));
 
-        // Update Therapist Profile Table
-        $profile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+        // Ensure Therapist Profile exists (firstOrCreate to prevent null errors)
+        $profile = \App\Models\TherapistProfile::where('user_id', $user->id)->firstOrCreate([
+            'user_id' => $user->id
+        ]);
         
         $data = $request->only(['specialization', 'bio', 'home_visit_rate', 'available_areas', 'bank_name', 'bank_account_name', 'iban', 'swift_code']);
         
@@ -79,12 +81,18 @@ class ProfileController extends Controller
             $user->update(['image' => $imagePath]);
             
             // Also update therapist profile if it has an image field
-            if ($profile) {
-                $profile->update(['profile_image' => $imagePath]);
-            }
+            $profile->update(['profile_image' => $imagePath]);
         }
 
+        // Update profile data (preserve existing status if set)
         $profile->update($data);
+        
+        // Note: We don't change verification_status, profile_visibility, or status here
+        // These should be managed by admin verification process
+        // However, if profile was just created and user is already verified, ensure status is set
+        if (!$profile->status && $user->verification_status === 'approved' && $user->profile_visibility === 'visible') {
+            $profile->update(['status' => 'approved']);
+        }
 
         return redirect()->back()->with('success', 'Profile updated successfully.');
     }
