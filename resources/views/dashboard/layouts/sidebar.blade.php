@@ -234,9 +234,9 @@
 
           </ul>
 
-          <div id="footer-section" style="padding-top: 300px;" class="text-center">
-              <p class="mb-1 p-0">Copyright © 2024. All right reserved.</p>
-              <p>Developed by<a href="https://phyzioline.com/" target="_blank"> phyzioline</a></p>
+          <div id="footer-section" style="padding-top: 20px; padding-bottom: 20px; margin-top: auto; border-top: 1px solid #e0e0e0;" class="text-center">
+              <p class="mb-1 p-0" style="font-size: 11px; color: #6c757d;">Copyright © 2024. All right reserved.</p>
+              <p style="font-size: 11px; color: #6c757d;">Developed by <a href="https://phyzioline.com/" target="_blank" style="color: #017A82;">phyzioline</a></p>
           </div>
 
           <!--end navigation-->

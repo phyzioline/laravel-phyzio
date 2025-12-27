@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>PHYZIOLINE | Dashboard</title>
   <!--favicon-->
@@ -241,16 +241,18 @@
 
      /* Typography already defined above with Inter font */
 
-     /* Sidebar - Keep brand colors but make compact */
+     /* Sidebar - White background, no teal color */
      .sidebar-wrapper {
        width: 260px !important;
-       background: #017A82 !important;
+       background: #ffffff !important;
        position: fixed !important;
        left: 0 !important;
        top: 0 !important;
        height: 100vh !important;
        z-index: 1000 !important;
        overflow-y: auto !important;
+       border-right: 1px solid #e0e0e0 !important;
+       box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05) !important;
      }
      
      /* Body background - Clean white/gray, no sidebar color bleeding */
@@ -267,10 +269,43 @@
        color: #0d9488 !important;
      }
 
-     /* Responsive fixes */
+     /* Responsive fixes - Mobile & Tablet */
      @media screen and (max-width: 991px) {
-       html body .top-header { left: 0 !important; }
-       .page-wrapper { margin-left: 0 !important; }
+       html body .top-header { 
+         left: 0 !important; 
+         width: 100% !important;
+       }
+       .page-wrapper { 
+         margin-left: 0 !important; 
+         width: 100% !important;
+         max-width: 100% !important;
+         padding: 15px !important;
+       }
+       .sidebar-wrapper {
+         transform: translateX(-100%) !important;
+         transition: transform 0.3s ease !important;
+       }
+       .sidebar-wrapper.active {
+         transform: translateX(0) !important;
+       }
+       .main-wrapper {
+         margin-left: 0 !important;
+         width: 100% !important;
+         max-width: 100% !important;
+       }
+     }
+     
+     /* Prevent zoom on mobile */
+     @media screen and (max-width: 768px) {
+       html {
+         -webkit-text-size-adjust: 100% !important;
+         -moz-text-size-adjust: 100% !important;
+         -ms-text-size-adjust: 100% !important;
+         text-size-adjust: 100% !important;
+       }
+       body {
+         font-size: 14px !important;
+       }
      }
      
      /* CRITICAL: Page Wrapper Layout Fix - Perfect Alignment */
@@ -285,6 +320,18 @@
        max-width: calc(100% - 260px) !important;
        box-sizing: border-box;
        background-color: #f3f3f3 !important;
+       overflow-x: hidden !important;
+     }
+     
+     /* Prevent horizontal scroll and scaling issues */
+     html, body {
+       overflow-x: hidden !important;
+       max-width: 100vw !important;
+       position: relative !important;
+     }
+     
+     * {
+       box-sizing: border-box !important;
      }
      
      /* When sidebar is toggled/collapsed */
@@ -330,6 +377,65 @@
      /* Ensure no background color bleeding from sidebar */
      html, body {
        overflow-x: hidden !important;
+       max-width: 100vw !important;
+       position: relative !important;
+     }
+     
+     /* Fix footer section in sidebar */
+     #footer-section {
+       position: relative !important;
+       margin-top: auto !important;
+       padding-top: 20px !important;
+       padding-bottom: 20px !important;
+       border-top: 1px solid #e0e0e0 !important;
+       background: transparent !important;
+     }
+     
+     /* Sidebar navigation container - flexbox for footer positioning */
+     .sidebar-nav {
+       display: flex !important;
+       flex-direction: column !important;
+       height: calc(100vh - 60px) !important; /* Full height minus header */
+       overflow: hidden !important;
+     }
+     
+     .sidebar-nav > ul {
+       flex: 1 !important;
+       overflow-y: auto !important;
+       overflow-x: hidden !important;
+       padding-bottom: 10px !important;
+     }
+     
+     /* Ensure sidebar content doesn't overflow */
+     .sidebar-wrapper {
+       display: flex !important;
+       flex-direction: column !important;
+     }
+     
+     .sidebar-wrapper .sidebar-nav {
+       flex: 1 !important;
+       min-height: 0 !important;
+     }
+     
+     /* Prevent any scaling/zoom issues */
+     @media screen and (min-width: 992px) {
+       html {
+         zoom: 1 !important;
+         -webkit-transform: scale(1) !important;
+         transform: scale(1) !important;
+       }
+     }
+     
+     /* Fix cards and content overflow */
+     .card, .row, .col, [class*="col-"] {
+       max-width: 100% !important;
+       overflow-x: hidden !important;
+     }
+     
+     /* Fix table overflow */
+     .table-responsive, .table {
+       max-width: 100% !important;
+       overflow-x: auto !important;
      }
      
      /* Ensure main-content uses full available width */
