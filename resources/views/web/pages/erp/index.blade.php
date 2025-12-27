@@ -57,8 +57,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-notes-medical mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Digital EMR</h4>
-                            <p class="text-muted">Secure electronic medical records with customizable templates for physiotherapy assessments.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Digital EMR</h4>
+                            <p style="color: #36415a;">Secure electronic medical records with customizable templates for physiotherapy assessments.</p>
                         </div>
                     </div>
                 </div>
@@ -67,8 +67,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-calendar-alt mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Smart Scheduling</h4>
-                            <p class="text-muted">Drag-and-drop calendar, automated reminders, and online booking integration.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Smart Scheduling</h4>
+                            <p style="color: #36415a;">Drag-and-drop calendar, automated reminders, and online booking integration.</p>
                         </div>
                     </div>
                 </div>
@@ -77,8 +77,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-file-invoice-dollar mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Billing & Invoicing</h4>
-                            <p class="text-muted">Automated invoicing, insurance claim management, and financial reporting.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Billing & Invoicing</h4>
+                            <p style="color: #36415a;">Automated invoicing, insurance claim management, and financial reporting.</p>
                         </div>
                     </div>
                 </div>
@@ -87,8 +87,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-users mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Staff Management</h4>
-                            <p class="text-muted">Manage roles, permissions, schedules, and performance for your entire team.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Staff Management</h4>
+                            <p style="color: #36415a;">Manage roles, permissions, schedules, and performance for your entire team.</p>
                         </div>
                     </div>
                 </div>
@@ -97,8 +97,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-chart-line mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Analytics</h4>
-                            <p class="text-muted">Deep insights into clinic performance, patient retention, and revenue growth.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Analytics</h4>
+                            <p style="color: #36415a;">Deep insights into clinic performance, patient retention, and revenue growth.</p>
                         </div>
                     </div>
                 </div>
@@ -107,8 +107,8 @@
                     <div class="card border-0 shadow-sm h-100">
                         <div class="card-body p-4">
                             <i class="las la-shield-alt mb-3" style="font-size: 40px; color: #04b8c4;"></i>
-                            <h4 class="font-weight-bold mb-3">Secure & Compliant</h4>
-                            <p class="text-muted">HIPAA compliant security to keep your patient data safe and protected.</p>
+                            <h4 class="font-weight-bold mb-3" style="color: #02767F;">Secure & Compliant</h4>
+                            <p style="color: #36415a;">HIPAA compliant security to keep your patient data safe and protected.</p>
                         </div>
                     </div>
                 </div>

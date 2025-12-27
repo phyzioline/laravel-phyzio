@@ -663,7 +663,15 @@
         <!-- shop-section - end
        ================================================== -->
        <script>
-                $(document).ready(function() {
+                // Wait for jQuery to be available
+                (function() {
+                    function initCartButtons() {
+                        if (typeof jQuery === 'undefined') {
+                            setTimeout(initCartButtons, 100);
+                            return;
+                        }
+                        
+                        $(document).ready(function() {
 
                     // منع تكرار الحدث باستخدام off().on()
                     $(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function(e) {
@@ -745,7 +753,16 @@
                         });
                     });
 
-                });
+                        });
+                    }
+                    
+                    // Start initialization
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', initCartButtons);
+                    } else {
+                        initCartButtons();
+                    }
+                })();
             </script>
 
         <!-- Advanced CSS Animations and Styling -->

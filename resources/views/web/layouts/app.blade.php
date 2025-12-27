@@ -259,8 +259,8 @@
 
 @stack('scripts')
   
-  <!-- jquery include - Load first but defer -->
-  <script src="{{ asset('web/assets/js/jquery-3.4.1.min.js')}}" defer></script>
+  <!-- jquery include - Load synchronously for inline scripts -->
+  <script src="{{ asset('web/assets/js/jquery-3.4.1.min.js')}}"></script>
   
   <!-- Load Swiper after jQuery -->
   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js" defer></script>

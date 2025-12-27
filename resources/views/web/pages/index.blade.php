@@ -162,8 +162,8 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(8, 204, 219, 0.1);">
                                 <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3">Home Visits</h5>
-                            <p class="text-muted small mb-4">Book certified physiotherapists for home sessions.</p>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Home Visits</h5>
+                            <p class="small mb-4" style="color: #36415a;">Book certified physiotherapists for home sessions.</p>
                             <a href="{{ route('web.home_visits.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Book Now</a>
                         </div>
                     </div>
@@ -174,8 +174,8 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
                                 <i class="las la-clinic-medical" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3">Clinic ERP</h5>
-                            <p class="text-muted small mb-4">Manage your clinic with our complete software solution.</p>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Clinic ERP</h5>
+                            <p class="small mb-4" style="color: #36415a;">Manage your clinic with our complete software solution.</p>
                             <a href="{{ route('web.erp.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Manage Clinic</a>
                         </div>
                     </div>
@@ -186,8 +186,8 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
                                 <i class="las la-graduation-cap" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3">Learning Hub</h5>
-                            <p class="text-muted small mb-4">Advance your career with specialized courses.</p>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Learning Hub</h5>
+                            <p class="small mb-4" style="color: #36415a;">Advance your career with specialized courses.</p>
                             <a href="{{ route('web.courses.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Start Learning</a>
                         </div>
                     </div>
@@ -198,8 +198,8 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(20, 179, 191, 0.1);">
                                 <i class="las la-globe" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3">Data Hub</h5>
-                            <p class="text-muted small mb-4">Global insights and licensing requirements.</p>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Data Hub</h5>
+                            <p class="small mb-4" style="color: #36415a;">Global insights and licensing requirements.</p>
                             <a href="{{ route('web.datahub.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Explore Data</a>
                         </div>
                     </div>
@@ -333,8 +333,15 @@
     </ul>
 </div>
 <script>
-    $(document).ready(function () {
-
+    // Wait for jQuery to be available
+    (function() {
+        function initCartButtons() {
+            if (typeof jQuery === 'undefined') {
+                setTimeout(initCartButtons, 100);
+                return;
+            }
+            
+            $(document).ready(function () {
      
         $(document).off('click', '.add-to-cart').on('click', '.add-to-cart', function (e) {
             e.preventDefault();
@@ -439,7 +446,16 @@
             });
         });
 
-    });
+            });
+        }
+        
+        // Start initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initCartButtons);
+        } else {
+            initCartButtons();
+        }
+    })();
 </script>
 
                                             </div>
