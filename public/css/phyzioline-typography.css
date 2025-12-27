@@ -17,9 +17,12 @@ body {
 }
 
 /* Preserve Icon Fonts - CRITICAL: Must come after general rules to override */
-/* Line Awesome Icons */
-.las, .la, [class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"] {
-    font-family: "Line Awesome Free", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+/* Line Awesome Icons - Use actual font-family from line-awesome CSS */
+.las, .la, [class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"],
+i.las, i.la, i[class^="las"], i[class^="la-"], 
+span.las, span.la, span[class^="las"], span[class^="la-"] {
+    font-family: "Line Awesome Free" !important;
+    font-weight: 900 !important;
 }
 
 /* Font Awesome Icons */
@@ -42,8 +45,14 @@ body {
     font-family: "LineIcons" !important;
 }
 
-/* Generic icon class */
-.icon, i {
+/* Generic icon class - but preserve icon fonts */
+.icon {
+    font-family: inherit !important;
+}
+
+/* All i tags with icon classes should use icon fonts */
+i[class*="las"], i[class*="la-"], i[class*="fa"], i[class*="lni"], 
+i[class*="material"], i[class*="bi"] {
     font-family: inherit !important;
 }
 
@@ -61,10 +70,15 @@ td, th, li, ul, ol,
 }
 
 /* Text spans and divs - but exclude icon containers */
-span:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i),
-div:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i),
-a:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i) {
+span:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i):not(.icon),
+div:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i):not(.icon),
+a:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i):not(.icon) {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Explicitly exclude i tags from Inter font */
+i, i[class], i[class*="las"], i[class*="la-"], i[class*="fa"], i[class*="lni"], i[class*="material"], i[class*="bi"] {
+    font-family: inherit !important;
 }
 
 /* Typography Hierarchy - Inter Weights */

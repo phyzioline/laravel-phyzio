@@ -359,9 +359,14 @@
                                 @endauth
 
                                 <div class="text-center mt-4">
-                                    <button type="submit" class="btn btn-primary btn-lg px-5" 
+                                    <button type="submit" id="place_order_btn" class="btn btn-primary btn-lg px-5" 
                                             style="background-color: #02767F; border-color: #02767F;">
-                                        <i class="las la-paper-plane me-2"></i>Place Order
+                                        <span id="btn_text">
+                                            <i class="las la-paper-plane me-2"></i>Place Order
+                                        </span>
+                                        <span id="btn_error" style="display: none; color: #fff;">
+                                            <i class="las la-exclamation-circle me-2"></i>Please Select Payment Method
+                                        </span>
                                     </button>
                                 </div>
                             </form>
@@ -394,18 +399,35 @@
                         const paymentMethodAlert = document.getElementById('payment_method_alert');
                         
                         // Check payment method specifically
+                        const placeOrderBtn = document.getElementById('place_order_btn');
+                        const btnText = document.getElementById('btn_text');
+                        const btnError = document.getElementById('btn_error');
+                        
                         if (!paymentMethod.value || paymentMethod.value === '') {
                             event.preventDefault();
                             event.stopPropagation();
                             paymentMethod.classList.add('is-invalid');
                             paymentMethod.style.borderColor = '#dc3545';
                             paymentMethodAlert.style.display = 'block';
+                            
+                            // Show error in button
+                            btnText.style.display = 'none';
+                            btnError.style.display = 'inline';
+                            placeOrderBtn.style.backgroundColor = '#dc3545';
+                            placeOrderBtn.style.borderColor = '#dc3545';
+                            
                             paymentMethod.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             return false;
                         } else {
                             paymentMethod.classList.remove('is-invalid');
                             paymentMethod.style.borderColor = '#02767F';
                             paymentMethodAlert.style.display = 'none';
+                            
+                            // Restore button text
+                            btnText.style.display = 'inline';
+                            btnError.style.display = 'none';
+                            placeOrderBtn.style.backgroundColor = '#02767F';
+                            placeOrderBtn.style.borderColor = '#02767F';
                         }
                         
                         if (!form.checkValidity()) {
@@ -418,6 +440,17 @@
                 
                 // Remove error styling when payment method is selected
                 document.getElementById('payment_method').addEventListener('change', function() {
+                    const placeOrderBtn = document.getElementById('place_order_btn');
+                    const btnText = document.getElementById('btn_text');
+                    const btnError = document.getElementById('btn_error');
+                    
+                    // Restore button text when payment method is selected
+                    if (this.value) {
+                        btnText.style.display = 'inline';
+                        btnError.style.display = 'none';
+                        placeOrderBtn.style.backgroundColor = '#02767F';
+                        placeOrderBtn.style.borderColor = '#02767F';
+                    }
                     if (this.value) {
                         this.classList.remove('is-invalid');
                         this.style.borderColor = '#02767F';
