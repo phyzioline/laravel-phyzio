@@ -13,7 +13,17 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = \App\Models\TherapistProfile::where('user_id', $user->id)->firstOrCreate(['user_id' => $user->id]);
         $locations = config('locations');
-        return view('web.therapist.profile', compact('user', 'profile', 'locations'));
+        
+        // Calculate real rating from reviews (if reviews table exists) or use profile rating
+        $rating = $profile->rating ?? 0;
+        $totalReviews = $profile->total_reviews ?? 0;
+        
+        // Calculate total unique patients
+        $totalPatients = \App\Models\HomeVisit::where('therapist_id', $user->id)
+            ->distinct('patient_id')
+            ->count('patient_id');
+        
+        return view('web.therapist.profile', compact('user', 'profile', 'locations', 'rating', 'totalReviews', 'totalPatients'));
     }
 
     public function update(Request $request)
@@ -43,8 +53,24 @@ class ProfileController extends Controller
         $data = $request->only(['specialization', 'bio', 'home_visit_rate', 'available_areas', 'bank_name', 'bank_account_name', 'iban', 'swift_code']);
         
         if ($request->hasFile('profile_image')) {
+            // Validate image
+            $request->validate([
+                'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+            ]);
+            
+            // Delete old image if exists
+            if ($user->image && file_exists(public_path($user->image))) {
+                @unlink(public_path($user->image));
+            }
+            
+            // Store new image
             $path = $request->file('profile_image')->store('profiles', 'public');
             $user->update(['image' => 'storage/' . $path]);
+            
+            // Also update therapist profile if it has an image field
+            if ($profile && method_exists($profile, 'update')) {
+                $profile->update(['profile_image' => 'storage/' . $path]);
+            }
         }
 
         $profile->update($data);

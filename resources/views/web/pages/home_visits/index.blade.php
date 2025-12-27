@@ -175,31 +175,37 @@
                                 <form action="{{ url('/home_visits') }}" method="GET">
                             <div class="form-group">
                                 <label class="font-weight-bold">{{ __('Gender') }}</label>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="male">
-                                    <label class="custom-control-label" for="male">{{ __('Male') }}</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="female">
-                                    <label class="custom-control-label" for="female">{{ __('Female') }}</label>
-                                </div>
+                                <select name="gender" class="form-control">
+                                    <option value="">{{ __('All Genders') }}</option>
+                                    <option value="male" {{ request('gender') == 'male' ? 'selected' : '' }}>{{ __('Male') }}</option>
+                                    <option value="female" {{ request('gender') == 'female' ? 'selected' : '' }}>{{ __('Female') }}</option>
+                                </select>
                             </div>
                             
                             <hr>
                             
                             <div class="form-group">
                                 <label class="font-weight-bold">{{ __('Availability') }}</label>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="today">
-                                    <label class="custom-control-label" for="today">{{ __('Available Today') }}</label>
-                                </div>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="tomorrow">
-                                    <label class="custom-control-label" for="tomorrow">{{ __('Available Tomorrow') }}</label>
-                                </div>
+                                <select name="availability" class="form-control">
+                                    <option value="">{{ __('All Availability') }}</option>
+                                    <option value="today" {{ request('availability') == 'today' ? 'selected' : '' }}>{{ __('Available Today') }}</option>
+                                    <option value="tomorrow" {{ request('availability') == 'tomorrow' ? 'selected' : '' }}>{{ __('Available Tomorrow') }}</option>
+                                    <option value="this_week" {{ request('availability') == 'this_week' ? 'selected' : '' }}>{{ __('This Week') }}</option>
+                                </select>
                             </div>
                             
-                            <button type="submit" class="btn btn-block btn-outline-primary mt-4">{{ __('Apply Filters') }}</button>
+                            <div class="form-group">
+                                <label class="font-weight-bold">{{ __('Rating') }}</label>
+                                <select name="min_rating" class="form-control">
+                                    <option value="">{{ __('All Ratings') }}</option>
+                                    <option value="4" {{ request('min_rating') == '4' ? 'selected' : '' }}>4+ {{ __('Stars') }}</option>
+                                    <option value="4.5" {{ request('min_rating') == '4.5' ? 'selected' : '' }}>4.5+ {{ __('Stars') }}</option>
+                                    <option value="5" {{ request('min_rating') == '5' ? 'selected' : '' }}>5 {{ __('Stars') }}</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-block btn-primary mt-4" style="background-color: #02767F; border-color: #02767F;">{{ __('Apply Filters') }}</button>
+                            <a href="{{ url('/home_visits') }}" class="btn btn-block btn-outline-secondary mt-2">{{ __('Clear Filters') }}</a>
                         </form>
                     </div>
                 </div>
@@ -211,9 +217,14 @@
                         <div class="card-body p-4">
                             <div class="row">
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
-                                    <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
-                                         class="rounded-circle img-fluid mb-2" 
-                                         style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #f8f9fa;">
+                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="d-inline-block">
+                                        <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
+                                             class="rounded-circle img-fluid mb-2" 
+                                             style="width: 180px; height: 180px; object-fit: cover; border: 4px solid #02767F; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;"
+                                             onmouseover="this.style.transform='scale(1.05)'"
+                                             onmouseout="this.style.transform='scale(1)'"
+                                             alt="{{ $therapist->user->name }} Profile Photo">
+                                    </a>
                                 </div>
                                 <div class="col-md-6">
                                     <h4 class="font-weight-bold mb-1">

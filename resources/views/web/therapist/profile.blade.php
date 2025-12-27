@@ -36,12 +36,15 @@
                     
                     <div class="d-flex justify-content-center mb-3">
                          <div class="px-3 border-right">
-                             <div class="font-weight-bold text-dark h5 mb-0">4.9</div>
-                             <small class="text-muted">Rating</small>
+                             <div class="font-weight-bold text-dark h5 mb-0">{{ number_format($rating ?? 0, 1) }}</div>
+                             <small class="text-muted">{{ __('Rating') }}</small>
+                             @if($totalReviews > 0)
+                                 <small class="d-block text-muted" style="font-size: 0.7rem;">({{ $totalReviews }} {{ __('reviews') }})</small>
+                             @endif
                          </div>
                          <div class="px-3">
-                             <div class="font-weight-bold text-dark h5 mb-0">156</div>
-                             <small class="text-muted">Patients</small>
+                             <div class="font-weight-bold text-dark h5 mb-0">{{ $totalPatients ?? 0 }}</div>
+                             <small class="text-muted">{{ __('Patients') }}</small>
                          </div>
                     </div>
                 </div>
@@ -52,11 +55,16 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span>{{ __('Verification') }}</span>
-                        <span class="badge badge-success px-3 py-2">{{ __('Verified') }}</span>
+                        @php
+                            $verificationStatus = auth()->user()->verification_status ?? 'pending';
+                            $badgeClass = $verificationStatus === 'approved' ? 'badge-success' : ($verificationStatus === 'under_review' ? 'badge-warning' : 'badge-danger');
+                            $badgeText = $verificationStatus === 'approved' ? __('Verified') : ($verificationStatus === 'under_review' ? __('Under Review') : __('Pending'));
+                        @endphp
+                        <span class="badge {{ $badgeClass }} px-3 py-2">{{ $badgeText }}</span>
                     </div>
                      <div class="d-flex justify-content-between align-items-center">
-                        <span>{{ __('Subscription') }}</span>
-                        <span class="badge badge-info px-3 py-2">{{ __('Pro Plan') }}</span>
+                        <span>{{ __('Profile Status') }}</span>
+                        <span class="badge badge-info px-3 py-2">{{ $profile->status === 'approved' ? __('Active') : __('Pending') }}</span>
                     </div>
                 </div>
             </div>

@@ -100,8 +100,9 @@ class VerificationController extends Controller
             ]
         );
 
-        // If user was rejected, reset to under_review
-        if ($user->verification_status === 'rejected') {
+        // Update user verification status to 'under_review' when documents are uploaded
+        // This applies to: pending, rejected, or null status
+        if (in_array($user->verification_status, ['pending', 'rejected', null])) {
             $user->update(['verification_status' => 'under_review']);
         }
 

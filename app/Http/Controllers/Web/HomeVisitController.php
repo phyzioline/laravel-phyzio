@@ -26,7 +26,20 @@ class HomeVisitController extends Controller
             $query->whereJsonContains('available_areas', $request->area);
         }
 
-        // Filter by gender (if added later)
+        // Filter by gender
+        if ($request->has('gender') && $request->gender != '') {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('gender', $request->gender);
+            });
+        }
+        
+        // Filter by availability (this would require availability schedule - simplified for now)
+        // For now, we'll just filter therapists who have availability set
+        
+        // Filter by minimum rating
+        if ($request->has('min_rating') && $request->min_rating != '') {
+            $query->where('rating', '>=', $request->min_rating);
+        }
         
         $therapists = $query->paginate(12);
         

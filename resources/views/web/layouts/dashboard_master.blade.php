@@ -489,17 +489,26 @@
         </header>
 
         <main class="p-4">
-            @if(Auth::check() && !Auth::user()->isVerified() && in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
-                <!-- Red Sticky Bar - Account Not Verified -->
-                <div class="alert alert-danger mb-4 d-flex justify-content-between align-items-center" style="border-left: 5px solid #dc3545; background-color: #fff5f5;">
-                    <div>
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        <strong>{{ __('Your account is not active.') }}</strong>
-                        <span class="ml-2">{{ __('Upload required documents to activate your account and make it visible to users.') }}</span>
+            <!-- Verification Status Sticky Bar -->
+            @if(Auth::check() && in_array(auth()->user()->type, ['vendor', 'company', 'therapist']) && auth()->user()->verification_status !== 'approved')
+                @php
+                    $status = auth()->user()->verification_status ?? 'pending';
+                    $barColor = $status === 'under_review' ? '#ff9800' : '#dc3545'; // Orange for under_review, Red for pending/rejected
+                    $barText = $status === 'under_review' 
+                        ? __('Your account is under review. We will notify you once verification is complete.') 
+                        : __('Your account is not active. Upload required documents to activate your account and make it visible to users');
+                    $barIcon = $status === 'under_review' ? 'la-hourglass-half' : 'la-exclamation-triangle';
+                @endphp
+                <div class="verification-bar mb-4" style="background-color: {{ $barColor }}; color: white; padding: 12px 20px; border-radius: 8px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="las {{ $barIcon }} mr-2" style="font-size: 20px;"></i>
+                            <span class="font-weight-bold">{{ $barText }}</span>
+                        </div>
+                            <a href="{{ route('verification.verification-center') }}" class="btn btn-sm btn-light ml-3" style="white-space: nowrap;">
+                                <i class="las la-upload mr-1"></i> {{ $status === 'under_review' ? __('View Status') : __('Upload Documents') }}
+                            </a>
                     </div>
-                    <a href="{{ route('verification.verification-center') }}" class="btn btn-danger btn-sm">
-                        <i class="fas fa-upload mr-1"></i>{{ __('Upload Documents') }}
-                    </a>
                 </div>
             @endif
 
