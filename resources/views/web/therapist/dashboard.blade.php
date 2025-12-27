@@ -52,64 +52,80 @@
     </div>
 @endif
 
-<!-- Key Metrics Overview -->
+<!-- Key Metrics Overview - Matching Company Dashboard Style -->
 <div class="row">
     <!-- Active Patients -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card h-100">
-            <div class="icon-box icon-teal">
-                <i class="las la-user-injured"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ $activePatientsCount ?? 0 }}</h3>
-                <small class="text-muted">{{ __('Active Patients') }}</small>
-                <div class="text-success small mt-1"><i class="las la-users"></i> {{ __('Total Distinct') }}</div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">{{ __('Active Patients') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activePatientsCount ?? 0 }}</div>
+                        <small class="text-muted">{{ __('Last 6 months') }}</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="las la-user-injured fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Today's Visits -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card h-100">
-            <div class="icon-box icon-green">
-                <i class="las la-calendar-check"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ $todaysAppointmentsCount ?? 0 }}</h3>
-                <small class="text-muted">{{ __('Today\'s Visits') }}</small>
-                <div class="text-info small mt-1"><i class="las la-clock"></i> {{ __('Scheduled') }}</div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">{{ __('Today\'s Visits') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $todaysAppointmentsCount ?? 0 }}</div>
+                        <small class="text-muted">{{ __('Scheduled') }}</small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="las la-calendar-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Pending Requests -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card h-100">
-            <div class="icon-box icon-orange">
-                <i class="las la-clock"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ $pendingRequestsCount ?? 0 }}</h3>
-                <small class="text-muted">{{ __('Pending Requests') }}</small>
-                <div class="text-primary small mt-1"><a href="{{ route('therapist.schedule.index') }}">{{ __('Review Now') }}</a></div>
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">{{ __('Pending Requests') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingRequestsCount ?? 0 }}</div>
+                        <small class="text-muted"><a href="{{ route('therapist.schedule.index') }}" class="text-warning">{{ __('Review Now') }}</a></small>
+                    </div>
+                    <div class="col-auto">
+                        <i class="las la-clock fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Monthly Earnings -->
-    <div class="col-xl-3 col-md-6 mb-4">
-         <div class="stat-card h-100">
-            <div class="icon-box icon-blue">
-                <i class="las la-wallet"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ number_format($monthlyEarnings ?? 0) }} EGP</h3>
-                <small class="text-muted">{{ __('Monthly Earnings') }}</small>
-                @if($earningsGrowth > 0)
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ number_format($earningsGrowth, 1) }}% {{ __('vs last month') }}</div>
-                @else
-                <div class="text-muted small mt-1"><i class="las la-minus"></i> {{ __('Stable') }}</div>
-                @endif
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{ __('Monthly Earnings') }}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($monthlyEarnings ?? 0) }} EGP</div>
+                        @if(isset($earningsGrowth) && $earningsGrowth > 0)
+                        <small class="text-success"><i class="las la-arrow-up"></i> {{ number_format($earningsGrowth, 1) }}%</small>
+                        @else
+                        <small class="text-muted">{{ __('vs last month') }}</small>
+                        @endif
+                    </div>
+                    <div class="col-auto">
+                        <i class="las la-wallet fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -168,11 +184,11 @@
                  @forelse($todaysAppointments as $appt)
                  <div class="d-flex align-items-center mb-3">
                      <div class="bg-light text-primary rounded mr-3 d-flex align-items-center justify-content-center font-weight-bold" style="width: 50px; height: 50px;">
-                         {{ \Carbon\Carbon::parse($appt->appointment_time)->format('H:i') }}
+                         {{ \Carbon\Carbon::parse($appt->scheduled_at ?? $appt->appointment_time ?? now())->format('H:i') }}
                      </div>
                      <div class="flex-grow-1">
                          <h6 class="mb-0 font-weight-bold">{{ $appt->patient->name ?? 'Unknown' }}</h6>
-                         <small class="text-muted">{{ $appt->location_address ?? 'Home Visit' }}</small>
+                         <small class="text-muted">{{ $appt->address ?? $appt->location_address ?? 'Home Visit' }}</small>
                      </div>
                  </div>
                  @empty
@@ -193,9 +209,11 @@
                 <a href="{{ route('therapist.availability.edit') }}" class="btn btn-primary btn-block mb-2 shadow-sm" style="background-color: #28a745; border: none;">
                     <i class="las la-calendar-alt mr-2"></i> {{ __('Set Availability') }}
                 </a>
-                <a href="{{ route('dashboard.courses.create') }}" class="btn btn-outline-secondary btn-block mb-2">
+                @if(auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist')
+                <a href="{{ route('courses.create') }}" class="btn btn-outline-secondary btn-block mb-2">
                     <i class="las la-plus-circle mr-2"></i> {{ __('Create New Course') }}
                 </a>
+                @endif
                  <a href="{{ route('therapist.profile.edit') }}" class="btn btn-outline-secondary btn-block">
                     <i class="las la-user-cog mr-2"></i> {{ __('Update Profile') }}
                 </a>
