@@ -45,6 +45,7 @@ class HomeController extends Controller
         $monthly_sales_data = [];
         $top_products = [];
         $recent_orders = [];
+        $lowStockProducts = 0; // Initialize with default value
         
         if (auth()->user()->hasRole('vendor')) {
             // Calculate actual revenue from vendor payments
