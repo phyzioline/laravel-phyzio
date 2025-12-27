@@ -14,48 +14,66 @@ class PatientController extends Controller
         // Get unique patients from home visits
         $patientIds = HomeVisit::where('therapist_id', Auth::id())
             ->whereNotNull('patient_id')
-            ->select('patient_id')
             ->distinct()
-            ->pluck('patient_id');
+            ->pluck('patient_id')
+            ->toArray();
 
-        // Get patient users with their latest visit
-        $patients = \App\Models\User::whereIn('id', $patientIds)
-            ->with(['homeVisits' => function($query) {
-                $query->where('therapist_id', Auth::id())
-                      ->orderBy('scheduled_at', 'desc')
-                      ->limit(1);
-            }])
-            ->get()
-            ->map(function($user) {
-                $latestVisit = $user->homeVisits->first();
-                $age = $user->age ?? null;
-                
-                // Determine status based on latest visit
-                $status = 'Stable';
-                if ($latestVisit) {
-                    if ($latestVisit->status == 'completed') {
-                        $status = 'Stable';
-                    } elseif ($latestVisit->status == 'pending' || $latestVisit->status == 'requested') {
-                        $status = 'Needs Follow-up';
-                    } elseif ($latestVisit->urgency == 'urgent') {
-                        $status = 'Critical';
+        // If no patients, return empty collection
+        if (empty($patientIds)) {
+            $patients = collect();
+        } else {
+            // Get patient users with their latest visit
+            $patients = \App\Models\User::whereIn('id', $patientIds)
+                ->get()
+                ->map(function($user) {
+                    // Get latest visit for this patient with this therapist
+                    $latestVisit = HomeVisit::where('patient_id', $user->id)
+                        ->where('therapist_id', Auth::id())
+                        ->orderBy('scheduled_at', 'desc')
+                        ->first();
+                    
+                    // Determine status based on latest visit
+                    $status = 'Stable';
+                    if ($latestVisit) {
+                        if ($latestVisit->status == 'completed') {
+                            $status = 'Stable';
+                        } elseif (in_array($latestVisit->status, ['pending', 'requested'])) {
+                            $status = 'Needs Follow-up';
+                        } elseif ($latestVisit->urgency == 'urgent') {
+                            $status = 'Critical';
+                        }
                     }
-                }
-                
-                return (object)[
-                    'id' => '#P' . str_pad($user->id, 6, '0', STR_PAD_LEFT),
-                    'name' => $user->name,
-                    'age' => $age ?? 'N/A',
-                    'gender' => $user->gender ?? 'N/A',
-                    'last_visit' => $latestVisit ? $latestVisit->scheduled_at->format('M d, Y') : 'N/A',
-                    'status' => $status,
-                    'conditions' => $latestVisit && $latestVisit->complain_type ? [$latestVisit->complain_type] : [],
-                    'image_initial' => strtoupper(substr($user->name, 0, 1)),
-                    'user_id' => $user->id
-                ];
-            });
+                    
+                    return (object)[
+                        'id' => '#P' . str_pad($user->id, 6, '0', STR_PAD_LEFT),
+                        'name' => $user->name,
+                        'age' => $user->age ?? 'N/A',
+                        'gender' => $user->gender ?? 'N/A',
+                        'last_visit' => $latestVisit && $latestVisit->scheduled_at ? $latestVisit->scheduled_at->format('M d, Y') : 'N/A',
+                        'status' => $status,
+                        'conditions' => $latestVisit && $latestVisit->complain_type ? [$latestVisit->complain_type] : [],
+                        'image_initial' => strtoupper(substr($user->name, 0, 1)),
+                        'user_id' => $user->id
+                    ];
+                });
+        }
 
-        return view('web.therapist.patients.index', compact('patients'));
+        // Calculate stats
+        $totalPatients = $patients->count();
+        $newThisMonth = $patients->filter(function($p) {
+            // Check if patient has a visit this month
+            $visit = HomeVisit::where('patient_id', $p->user_id)
+                ->where('therapist_id', Auth::id())
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->first();
+            return $visit !== null;
+        })->count();
+        
+        $needFollowup = $patients->where('status', 'Needs Follow-up')->count();
+        $criticalCases = $patients->where('status', 'Critical')->count();
+
+        return view('web.therapist.patients.index', compact('patients', 'totalPatients', 'newThisMonth', 'needFollowup', 'criticalCases'));
     }
 
     public function create()

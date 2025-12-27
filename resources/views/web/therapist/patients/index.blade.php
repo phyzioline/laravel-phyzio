@@ -52,7 +52,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                 <div class="card-body">
                     <i class="las la-users text-teal mb-2" style="font-size: 32px; color: #00897b;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">156</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $totalPatients ?? 0 }}</h3>
                     <p class="text-muted small mb-0">{{ __('Total Patients') }}</p>
                 </div>
              </div>
@@ -61,7 +61,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                 <div class="card-body">
                     <i class="las la-user-plus text-success mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">12</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $newThisMonth ?? 0 }}</h3>
                     <p class="text-muted small mb-0">{{ __('New This Month') }}</p>
                 </div>
              </div>
@@ -70,7 +70,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                 <div class="card-body">
                     <i class="las la-exclamation-triangle text-warning mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">8</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $needFollowup ?? 0 }}</h3>
                     <p class="text-muted small mb-0">{{ __('Need Follow-up') }}</p>
                 </div>
              </div>
@@ -79,7 +79,7 @@
              <div class="card shadow-sm border-0 text-center py-3">
                 <div class="card-body">
                     <i class="las la-heartbeat text-danger mb-2" style="font-size: 32px;"></i>
-                    <h3 class="font-weight-bold text-dark mb-0">3</h3>
+                    <h3 class="font-weight-bold text-dark mb-0">{{ $criticalCases ?? 0 }}</h3>
                     <p class="text-muted small mb-0">{{ __('Critical Cases') }}</p>
                 </div>
              </div>
