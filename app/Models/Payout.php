@@ -8,6 +8,7 @@ class Payout extends Model
 {
     protected $fillable = [
         'vendor_id',
+        'therapist_id',
         'amount',
         'status',
         'payout_method',
@@ -30,6 +31,14 @@ class Payout extends Model
     public function vendor()
     {
         return $this->belongsTo(User::class, 'vendor_id');
+    }
+
+    /**
+     * Get the therapist that owns the payout.
+     */
+    public function therapist()
+    {
+        return $this->belongsTo(User::class, 'therapist_id');
     }
 
     /**

@@ -117,10 +117,16 @@ class HomeVisitService
                 'payment_status' => 'paid' // Assuming cash collected
             ]);
 
-            // 3. Free up therapist
+            // 3. Add earnings to therapist wallet (14-day hold period)
+            if ($visit->payment_status === 'paid' && $visit->total_amount > 0) {
+                $payoutService = app(\App\Services\TherapistPayoutService::class);
+                $payoutService->addEarnings($visit->therapist_id, $visit->total_amount, 14, 'home_visit'); // 14-day hold
+            }
+
+            // 4. Free up therapist
             TherapistGeoStatus::where('user_id', $visit->therapist_id)->update(['current_visit_id' => null]);
             
-            // 4. Update Trust Score (Job System Integration)
+            // 5. Update Trust Score (Job System Integration)
             $visit->therapist->increment('total_visits_completed');
             // $visit->therapist->updateTrustScore(); // Placeholder
 

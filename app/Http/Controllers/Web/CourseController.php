@@ -144,26 +144,42 @@ class CourseController extends Controller
             'exchanged_at' => now(),
         ]);
 
-        // Create vendor payment entry for the instructor (apply default commission)
-        $defaultCommissionRate = 15.00; // 15%
-        $subtotal = $converted;
-        $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
-        $vendorEarnings = $subtotal - $commissionAmount;
+        // Add earnings to therapist/instructor wallet (if instructor is a therapist)
+        $instructor = \App\Models\User::find($course->instructor_id);
+        if ($instructor && in_array($instructor->type, ['therapist', 'instructor'])) {
+            // Calculate earnings (apply commission if needed)
+            $defaultCommissionRate = 15.00; // 15% commission to platform
+            $subtotal = $converted;
+            $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
+            $instructorEarnings = $subtotal - $commissionAmount;
 
-        \App\Models\VendorPayment::create([
-            'vendor_id' => $course->instructor_id,
-            'order_id' => null,
-            'order_item_id' => null,
-            'product_amount' => $course->price ?? 0,
-            'quantity' => 1,
-            'subtotal' => $subtotal,
-            'commission_rate' => $defaultCommissionRate,
-            'commission_amount' => $commissionAmount,
-            'vendor_earnings' => $vendorEarnings,
-            'status' => 'pending',
-            'payment_id' => $payment->id,
-            'payment_reference' => $payment->reference,
-        ]);
+            // Add to therapist wallet (14-day hold period)
+            $payoutService = app(\App\Services\TherapistPayoutService::class);
+            $payoutService->addEarnings($course->instructor_id, $instructorEarnings, 14, 'course');
+        }
+
+        // Also create vendor payment entry for tracking (if instructor is also a vendor)
+        if ($instructor && $instructor->type === 'vendor') {
+            $defaultCommissionRate = 15.00; // 15%
+            $subtotal = $converted;
+            $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
+            $vendorEarnings = $subtotal - $commissionAmount;
+
+            \App\Models\VendorPayment::create([
+                'vendor_id' => $course->instructor_id,
+                'order_id' => null,
+                'order_item_id' => null,
+                'product_amount' => $course->price ?? 0,
+                'quantity' => 1,
+                'subtotal' => $subtotal,
+                'commission_rate' => $defaultCommissionRate,
+                'commission_amount' => $commissionAmount,
+                'vendor_earnings' => $vendorEarnings,
+                'status' => 'pending',
+                'payment_id' => $payment->id,
+                'payment_reference' => $payment->reference,
+            ]);
+        }
 
         return redirect()->route('web.courses.show', $course->id)->with('message', ['type' => 'success', 'text' => 'Enrollment successful!']);
     }

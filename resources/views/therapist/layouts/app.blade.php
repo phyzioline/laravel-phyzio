@@ -67,6 +67,56 @@
         display: none !important;
       }
     }
+
+    /* Fix main-wrapper to account for fixed header */
+    .main-wrapper {
+      margin-top: 70px !important; /* Header height */
+      padding-top: 20px !important;
+      min-height: calc(100vh - 70px);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Ensure header doesn't overlap content */
+    .top-header {
+      position: fixed !important;
+      top: 0 !important;
+      left: 260px !important;
+      right: 0 !important;
+      z-index: 999 !important;
+      height: 70px !important;
+    }
+
+    /* When sidebar is toggled, adjust margins */
+    body.toggled .main-wrapper {
+      margin-left: 0 !important;
+    }
+
+    body.toggled .top-header {
+      left: 0 !important;
+      width: 100% !important;
+    }
+
+    /* Ensure main-content has proper spacing */
+    .main-content {
+      padding: 20px;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Mobile responsive */
+    @media only screen and (max-width: 1199px) {
+      .main-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+        margin-top: 70px !important;
+      }
+      
+      .top-header {
+        left: 0 !important;
+        width: 100% !important;
+      }
+    }
   </style>
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">

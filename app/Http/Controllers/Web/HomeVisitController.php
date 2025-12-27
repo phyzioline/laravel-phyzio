@@ -153,6 +153,12 @@ class HomeVisitController extends Controller
             'exchanged_at' => now(),
         ]);
 
+        // Add earnings to therapist wallet when payment is processed
+        if ($visit->status === 'completed' && $visit->total_amount > 0) {
+            $payoutService = app(\App\Services\TherapistPayoutService::class);
+            $payoutService->addEarnings($visit->therapist_id, $visit->total_amount, 14, 'home_visit'); // 14-day hold
+        }
+
         return redirect()->route('web.home_visits.success', $id);
     }
 

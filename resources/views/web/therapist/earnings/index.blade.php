@@ -10,7 +10,9 @@
         </div>
         <div>
              <button class="btn btn-outline-secondary mr-2 shadow-sm"><i class="las la-download"></i> {{ __('Download Report') }}</button>
-             <button class="btn btn-primary shadow-sm"><i class="las la-university"></i> {{ __('Withdraw Funds') }}</button>
+             <button class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#payoutModal" {{ $walletSummary['available_balance'] < 100 ? 'disabled' : '' }}>
+                 <i class="las la-university"></i> {{ __('Request Payout') }}
+             </button>
         </div>
     </div>
 
@@ -51,20 +53,63 @@
         </div>
 
          <div class="col-md-4">
-             <div class="card shadow-sm border-0 border-left-warning h-100 py-2">
+             <div class="card shadow-sm border-0 border-left-info h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">{{ __('Pending Payout') }}</div>
-                            <div class="h3 mb-0 font-weight-bold text-gray-800">${{ number_format($pendingPayouts, 2) }}</div>
-                             <div class="text-muted small mt-1">{{ __('Scheduled for next Friday') }}</div>
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">{{ __('Available Balance') }}</div>
+                            <div class="h3 mb-0 font-weight-bold text-gray-800">${{ number_format($walletSummary['available_balance'] ?? 0, 2) }}</div>
+                             <div class="text-muted small mt-1">{{ __('Ready for withdrawal') }}</div>
                         </div>
                         <div class="col-auto">
-                            <i class="las la-hourglass-half fa-2x text-gray-300"></i>
+                            <i class="las la-money-bill-wave fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>
              </div>
+        </div>
+    </div>
+
+    <!-- Wallet Details Row -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 font-weight-bold">{{ __('Wallet Summary') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="text-muted small mb-1">{{ __('Available Balance') }}</div>
+                                <div class="h4 font-weight-bold text-success">${{ number_format($walletSummary['available_balance'] ?? 0, 2) }}</div>
+                                <small class="text-muted">{{ __('Ready to withdraw') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="text-muted small mb-1">{{ __('Pending Balance') }}</div>
+                                <div class="h4 font-weight-bold text-warning">${{ number_format($walletSummary['pending_balance'] ?? 0, 2) }}</div>
+                                <small class="text-muted">{{ __('On hold period') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="text-muted small mb-1">{{ __('On Hold') }}</div>
+                                <div class="h4 font-weight-bold text-danger">${{ number_format($walletSummary['on_hold_balance'] ?? 0, 2) }}</div>
+                                <small class="text-muted">{{ __('Frozen funds') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3">
+                                <div class="text-muted small mb-1">{{ __('Total Earned') }}</div>
+                                <div class="h4 font-weight-bold text-primary">${{ number_format($walletSummary['total_earned'] ?? 0, 2) }}</div>
+                                <small class="text-muted">{{ __('Lifetime earnings') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -128,5 +173,164 @@
               </div>
          </div>
      </div>
+
+    <!-- Payout History -->
+    @if(isset($payoutHistory) && $payoutHistory->count() > 0)
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 font-weight-bold">{{ __('Payout History') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Amount') }}</th>
+                                    <th>{{ __('Method') }}</th>
+                                    <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Reference') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($payoutHistory as $payout)
+                                <tr>
+                                    <td>{{ $payout->created_at->format('M d, Y') }}</td>
+                                    <td class="font-weight-bold">${{ number_format($payout->amount, 2) }}</td>
+                                    <td>{{ ucfirst(str_replace('_', ' ', $payout->payout_method)) }}</td>
+                                    <td>
+                                        @if($payout->status == 'pending')
+                                            <span class="badge badge-warning">{{ __('Pending') }}</span>
+                                        @elseif($payout->status == 'processing')
+                                            <span class="badge badge-info">{{ __('Processing') }}</span>
+                                        @elseif($payout->status == 'paid')
+                                            <span class="badge badge-success">{{ __('Paid') }}</span>
+                                        @elseif($payout->status == 'cancelled')
+                                            <span class="badge badge-danger">{{ __('Cancelled') }}</span>
+                                        @else
+                                            <span class="badge badge-secondary">{{ ucfirst($payout->status) }}</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $payout->reference_number ?? '-' }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 </div>
+
+<!-- Payout Request Modal -->
+<div class="modal fade" id="payoutModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ __('Request Payout') }}</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('therapist.earnings.payout.request') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    @if(session('error'))
+                        <div class="alert alert-danger">{{ session('error') }}</div>
+                    @endif
+                    
+                    <div class="form-group">
+                        <label>{{ __('Available Balance') }}</label>
+                        <input type="text" class="form-control" value="${{ number_format($walletSummary['available_balance'] ?? 0, 2) }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">{{ __('Amount') }} <span class="text-danger">*</span></label>
+                        <input type="number" step="0.01" min="100" max="{{ $walletSummary['available_balance'] ?? 0 }}" 
+                               class="form-control @error('amount') is-invalid @enderror" 
+                               id="amount" name="amount" 
+                               value="{{ old('amount') }}" 
+                               required>
+                        <small class="form-text text-muted">{{ __('Minimum payout: $100') }}</small>
+                        @error('amount')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="payout_method">{{ __('Payout Method') }} <span class="text-danger">*</span></label>
+                        <select class="form-control @error('payout_method') is-invalid @enderror" 
+                                id="payout_method" name="payout_method" required onchange="toggleBankDetails(this.value)">
+                            <option value="">{{ __('Select method') }}</option>
+                            <option value="bank_transfer" {{ old('payout_method') == 'bank_transfer' ? 'selected' : '' }}>{{ __('Bank Transfer') }}</option>
+                            <option value="payoneer" {{ old('payout_method') == 'payoneer' ? 'selected' : '' }}>{{ __('Payoneer') }}</option>
+                            <option value="wise" {{ old('payout_method') == 'wise' ? 'selected' : '' }}>{{ __('Wise') }}</option>
+                        </select>
+                        @error('payout_method')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Bank Details Display (when bank_transfer is selected) -->
+                    <div id="bankDetailsSection" style="display: none;">
+                        @if(isset($profile) && $profile->bank_name && $profile->iban)
+                            <div class="alert alert-info">
+                                <h6 class="font-weight-bold mb-2">{{ __('Bank Account Details') }}</h6>
+                                <div class="small">
+                                    <div><strong>{{ __('Bank Name') }}:</strong> {{ $profile->bank_name }}</div>
+                                    <div><strong>{{ __('Account Name') }}:</strong> {{ $profile->bank_account_name ?? '-' }}</div>
+                                    <div><strong>{{ __('IBAN') }}:</strong> {{ $profile->iban }}</div>
+                                    @if($profile->swift_code)
+                                        <div><strong>{{ __('SWIFT Code') }}:</strong> {{ $profile->swift_code }}</div>
+                                    @endif
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="las la-info-circle"></i> {{ __('These details will be used for the bank transfer. Update them in your profile if needed.') }}
+                                </small>
+                            </div>
+                        @else
+                            <div class="alert alert-warning">
+                                <i class="las la-exclamation-triangle"></i> 
+                                {{ __('Please complete your bank details in your profile before requesting a bank transfer.') }}
+                                <a href="{{ route('therapist.profile.edit') }}" class="alert-link">{{ __('Update Profile') }}</a>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">{{ __('Notes (Optional)') }}</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" maxlength="500">{{ old('notes') }}</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ __('Cancel') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ __('Submit Request') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleBankDetails(method) {
+    const bankSection = document.getElementById('bankDetailsSection');
+    if (method === 'bank_transfer') {
+        bankSection.style.display = 'block';
+    } else {
+        bankSection.style.display = 'none';
+    }
+}
+
+// Show bank details if bank_transfer is pre-selected
+document.addEventListener('DOMContentLoaded', function() {
+    const payoutMethod = document.getElementById('payout_method');
+    if (payoutMethod.value === 'bank_transfer') {
+        toggleBankDetails('bank_transfer');
+    }
+});
+</script>
 @endsection

@@ -3,13 +3,28 @@
 namespace App\Http\Controllers\Therapist;
 
 use App\Http\Controllers\Controller;
+use App\Services\TherapistPayoutService;
 use Illuminate\Http\Request;
 
 class EarningsController extends Controller
 {
+    protected $payoutService;
+
+    public function __construct(TherapistPayoutService $payoutService)
+    {
+        $this->payoutService = $payoutService;
+    }
+
     public function index()
     {
         $user = auth()->user();
+        $profile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+
+        // Get wallet summary
+        $walletSummary = $this->payoutService->getWalletSummary($user->id);
+        
+        // Get payout history
+        $payoutHistory = $this->payoutService->getTherapistPayouts($user->id);
 
         // 1. Home Visits Earnings
         $appointmentEarningsQuery = \App\Models\HomeVisit::where('therapist_id', $user->id)
@@ -22,9 +37,8 @@ class EarningsController extends Controller
             ->sum('total_amount');
             
         // 2. Course Earnings
-        // Get courses taught by this user
         $courseIds = \App\Models\Course::where('instructor_id', $user->id)->pluck('id');
-        $enrollmentEarningsQuery = \App\Models\Enrollment::whereIn('course_id', $courseIds); // Assuming paid_amount exists and status is completed/active
+        $enrollmentEarningsQuery = \App\Models\Enrollment::whereIn('course_id', $courseIds);
 
         $totalCourseEarnings = $enrollmentEarningsQuery->sum('paid_amount');
         $monthlyCourseEarnings = (clone $enrollmentEarningsQuery)
@@ -36,17 +50,10 @@ class EarningsController extends Controller
         $totalEarnings = $totalAppointmentEarnings + $totalCourseEarnings;
         $monthlyEarnings = $monthlyAppointmentEarnings + $monthlyCourseEarnings;
 
-        // Pending Payouts (Assumption: Earnings not yet withdrawn/paid out)
-        // For now, let's assume 'pending' status on appointments/enrollments implies pending payout or use a Wallet model if available. 
-        // If not, we'll placeholder this or calculate based on payment_status = 'pending'
-        $pendingAppointmentEarnings = \App\Models\HomeVisit::where('therapist_id', $user->id)
-            ->where('status', 'completed')
-            ->where('payment_status', 'pending') // Assuming such field exists or logic needs it
-            ->sum('total_amount');
-             
-        $pendingPayouts = $pendingAppointmentEarnings; // + Course pending if applicable
+        // Pending Payouts (from wallet)
+        $pendingPayouts = $walletSummary['pending_balance'] + $walletSummary['available_balance'];
 
-        // Recent Transactions (Merge Visits and Enrollments)
+        // Recent Transactions
         $appointments = \App\Models\HomeVisit::where('therapist_id', $user->id)
             ->latest('scheduled_at')
             ->take(5)
@@ -62,9 +69,59 @@ class EarningsController extends Controller
                 ];
             });
             
-        // You can merge with recent enrollments if desired
         $transactions = $appointments;
 
-        return view('web.therapist.earnings.index', compact('totalEarnings', 'monthlyEarnings', 'pendingPayouts', 'transactions'));
+        return view('web.therapist.earnings.index', compact(
+            'totalEarnings', 
+            'monthlyEarnings', 
+            'pendingPayouts', 
+            'transactions',
+            'walletSummary',
+            'payoutHistory',
+            'profile'
+        ));
+    }
+
+    /**
+     * Request a payout.
+     */
+    public function requestPayout(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:100',
+            'payout_method' => 'required|in:bank_transfer,payoneer,wise',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        try {
+            $therapistId = auth()->id();
+            $profile = \App\Models\TherapistProfile::where('user_id', $therapistId)->first();
+            
+            // Validate bank details if bank transfer is selected
+            if ($request->payout_method === 'bank_transfer') {
+                if (!$profile || !$profile->bank_name || !$profile->iban) {
+                    return redirect()
+                        ->back()
+                        ->withInput()
+                        ->with('error', 'Please complete your bank details in your profile before requesting a bank transfer payout.');
+                }
+            }
+            
+            $payout = $this->payoutService->requestPayout(
+                $therapistId,
+                $request->amount,
+                $request->payout_method,
+                $request->notes,
+                $profile
+            );
+
+            return redirect()
+                ->route('therapist.earnings.index')
+                ->with('success', 'Payout request submitted successfully. Awaiting admin approval.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+        }
     }
 }

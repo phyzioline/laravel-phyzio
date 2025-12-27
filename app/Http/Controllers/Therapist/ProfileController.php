@@ -59,17 +59,28 @@ class ProfileController extends Controller
             ]);
             
             // Delete old image if exists
-            if ($user->image && file_exists(public_path($user->image))) {
-                @unlink(public_path($user->image));
+            if ($user->image) {
+                $oldImagePath = public_path($user->image);
+                if (file_exists($oldImagePath)) {
+                    @unlink($oldImagePath);
+                }
+                // Also try storage path
+                $oldStoragePath = storage_path('app/public/' . str_replace('storage/', '', $user->image));
+                if (file_exists($oldStoragePath)) {
+                    @unlink($oldStoragePath);
+                }
             }
             
             // Store new image
             $path = $request->file('profile_image')->store('profiles', 'public');
-            $user->update(['image' => 'storage/' . $path]);
+            $imagePath = 'storage/' . $path;
+            
+            // Update user image
+            $user->update(['image' => $imagePath]);
             
             // Also update therapist profile if it has an image field
-            if ($profile && method_exists($profile, 'update')) {
-                $profile->update(['profile_image' => 'storage/' . $path]);
+            if ($profile) {
+                $profile->update(['profile_image' => $imagePath]);
             }
         }
 

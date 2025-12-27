@@ -20,8 +20,8 @@
                 <div class="card-body">
                     <div class="position-relative d-inline-block mb-3">
                         <div class="avatar-circle rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden;">
-                            @if(isset($user) && $user->profile_image)
-                                <img src="{{ asset('storage/' . $user->profile_image) }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;">
+                            @if(isset($user) && $user->image)
+                                <img src="{{ asset($user->image) }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                             @else
                                 <img id="profile-preview" src="" style="display:none;" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                                 <i class="las la-user text-muted" id="default-icon" style="font-size: 60px;"></i>

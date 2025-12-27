@@ -6,7 +6,7 @@
         <h4>Edit Course: {{ $course->title }}</h4>
     </div>
     <div class="card-body">
-        <form action="{{ route('therapist.courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('instructor.courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <button type="submit" class="btn btn-primary">Update Course</button>
-            <a href="{{ route('therapist.courses.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('instructor.courses.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

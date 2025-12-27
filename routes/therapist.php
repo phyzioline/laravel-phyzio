@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth', 'therapist', \App\Http\Middleware\SetDash
 
     // Earnings (New)
     Route::get('/earnings', [\App\Http\Controllers\Therapist\EarningsController::class, 'index'])->name('earnings.index');
+    Route::post('/earnings/payout', [\App\Http\Controllers\Therapist\EarningsController::class, 'requestPayout'])->name('earnings.payout.request');
 
     // Notifications (New)
     Route::get('/notifications', [\App\Http\Controllers\Therapist\NotificationController::class, 'index'])->name('notifications.index');

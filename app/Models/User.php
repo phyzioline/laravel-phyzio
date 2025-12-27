@@ -163,4 +163,26 @@ class User extends Authenticatable
             ? (int)(($approvedMandatory / $mandatoryDocs->count()) * 100)
             : 0;
     }
+
+    /**
+     * Get profile photo URL accessor
+     */
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->image) {
+            // If image path already includes storage/, use it as is
+            if (str_starts_with($this->image, 'storage/')) {
+                return asset($this->image);
+            }
+            // If it's a full URL, return as is
+            if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+                return $this->image;
+            }
+            // Otherwise, assume it's a relative path and add storage/
+            return asset('storage/' . $this->image);
+        }
+        
+        // Return default avatar
+        return asset('dashboard/images/Frame 127.svg');
+    }
 }
