@@ -21,7 +21,7 @@ class RegisterController extends Controller
     public function store(RegisterRequest $request)
     {
         $this->registerService->register($request->validated());
-        return redirect()->route('view_otp')->with('success', __('Registration successful!'));
+        return redirect()->route('view_otp.' . app()->getLocale())->with('success', __('Registration successful!'));
     }
 
     public function otp()

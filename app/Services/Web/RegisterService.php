@@ -69,6 +69,10 @@ class RegisterService
             ]);
         }
         if ($data['type'] === 'company') {
+            // Ensure company role exists before assigning
+            if (!\Spatie\Permission\Models\Role::where('name', 'company')->where('guard_name', 'web')->exists()) {
+                \Spatie\Permission\Models\Role::create(['name' => 'company', 'guard_name' => 'web']);
+            }
             $user->assignRole('company');
         }
 
