@@ -15,6 +15,10 @@ use App\Http\Controllers\Dashboard\SubCategoryController;
 use App\Http\Controllers\Dashboard\ShippingPolicyController;
 use App\Http\Controllers\Dashboard\PrivacyPolicyController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Http\Controllers\Dashboard\AdController;
+use App\Http\Controllers\Dashboard\CrmController;
+use App\Http\Controllers\Dashboard\TreatmentPlanController;
+use App\Http\Controllers\Dashboard\ExerciseController;
 
 // Dashboard routes WITHOUT locale prefix (dashboards don't need URL-based localization)
 // Language is changed via session/interface only
@@ -63,6 +67,12 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::resource('courses', \App\Http\Controllers\Dashboard\CourseController::class);
             Route::resource('jobs', \App\Http\Controllers\Dashboard\JobController::class);
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
+
+            // External Integrated Modules
+            Route::resource('ads', AdController::class);
+            Route::resource('crm', CrmController::class);
+            Route::resource('plans', TreatmentPlanController::class);
+            Route::resource('exercises', ExerciseController::class);
 
             // Financial Management
             Route::get('/payments', [\App\Http\Controllers\Dashboard\PaymentController::class, 'index'])->name('payments.index');
