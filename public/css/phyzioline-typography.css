@@ -7,10 +7,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* Global Font Application */
-* {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
-}
-
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     font-size: 14px;
@@ -18,6 +14,57 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Preserve Icon Fonts - CRITICAL: Must come after general rules to override */
+/* Line Awesome Icons */
+.las, .la, [class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"] {
+    font-family: "Line Awesome Free", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+}
+
+/* Font Awesome Icons */
+.fa, .fas, .far, .fal, .fab, [class^="fa"], [class*=" fa"] {
+    font-family: "Font Awesome 5 Free", "Font Awesome 5 Pro", "Font Awesome 6 Free" !important;
+}
+
+/* Material Icons */
+.material-icons, .material-icons-outlined, [class*="material-icons"] {
+    font-family: "Material Icons", "Material Icons Outlined" !important;
+}
+
+/* Bootstrap Icons */
+.bi, [class^="bi-"], [class*=" bi-"] {
+    font-family: "bootstrap-icons" !important;
+}
+
+/* LineIcons */
+.lni, [class^="lni-"], [class*=" lni-"] {
+    font-family: "LineIcons" !important;
+}
+
+/* Generic icon class */
+.icon, i {
+    font-family: inherit !important;
+}
+
+/* Apply Inter font to text elements only - Exclude icon containers */
+h1, h2, h3, h4, h5, h6,
+p, label, 
+input:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+textarea:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+select:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+button:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]),
+td, th, li, ul, ol,
+.card, .btn, .nav-link, .menu-title,
+.table, .form-control, .form-label {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Text spans and divs - but exclude icon containers */
+span:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i),
+div:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i),
+a:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]):not(i) {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* Typography Hierarchy - Inter Weights */
@@ -105,8 +152,11 @@ p, .text-body, body {
     font-weight: 500;
 }
 
-/* Form Elements */
-input, textarea, select, .form-control {
+/* Form Elements - Already covered above, but ensure icons in forms work */
+input:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+textarea:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+select:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]), 
+.form-control:not([class*="las"]):not([class*="la-"]):not([class*="fa"]):not([class*="lni"]):not([class*="material"]):not([class*="bi"]) {
     font-family: 'Inter', sans-serif !important;
     font-size: 14px;
     font-weight: 400;
