@@ -208,7 +208,7 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Payment Methods Distribution</h5>
-                                <div class="chart-container" style="height: 300px; max-height: 300px;">
+                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
                                     <canvas id="paymentMethodsChart"></canvas>
                                 </div>
                             </div>
@@ -220,7 +220,7 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">User Distribution</h5>
-                                <div class="chart-container" style="height: 300px; max-height: 300px;">
+                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
                                     <canvas id="userTypesChart"></canvas>
                                 </div>
                             </div>
@@ -232,7 +232,7 @@
                         <div class="card rounded-4">
                             <div class="card-body">
                                 <h5 class="card-title mb-4">Ecosystem Overview</h5>
-                                <div class="chart-container" style="height: 350px; max-height: 350px;">
+                                <div class="chart-container" style="height: 340px; min-height: 280px; max-height: 360px;">
                                     <canvas id="ecosystemChart"></canvas>
                                 </div>
                             </div>
@@ -656,7 +656,7 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-line text-primary"></i> Monthly Earnings</h5>
-                                <div class="chart-container" style="height: 250px; max-height: 250px;">
+                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
                                     <canvas id="vendorMonthlySalesChart"></canvas>
                                 </div>
                             </div>
@@ -668,7 +668,7 @@
                         <div class="card rounded-4 border-0 shadow-sm">
                             <div class="card-body">
                                 <h5 class="card-title mb-4"><i class="fa fa-chart-pie text-success"></i> Payment Methods</h5>
-                                <div class="chart-container" style="height: 250px; max-height: 250px;">
+                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
                                     <canvas id="vendorPaymentMethodsChart"></canvas>
                                 </div>
                             </div>

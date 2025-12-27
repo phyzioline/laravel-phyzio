@@ -8,8 +8,6 @@ $(function () {
 
   new PerfectScrollbar(".notify-list")
 
-  new PerfectScrollbar(".search-content")
-
   // new PerfectScrollbar(".mega-menu-widgets")
 
 
@@ -79,17 +77,7 @@ $(function () {
   })
 
 
-  /* sticky header */
-
-  $(document).ready(function () {
-    $(window).on("scroll", function () {
-      if ($(this).scrollTop() > 60) {
-        $('.top-header .navbar').addClass('sticky-header');
-      } else {
-        $('.top-header .navbar').removeClass('sticky-header');
-      }
-    });
-  });
+  /* sticky header - REMOVED for admin Arabic version */
 
 
   /* email */

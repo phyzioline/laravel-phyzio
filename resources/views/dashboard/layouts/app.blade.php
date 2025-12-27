@@ -145,18 +145,11 @@
        padding: 0 1.5rem !important;
      }
 
-     /* Search Area - Don't Expand Over Toggle */
-     .search-content {
-       max-width: 500px !important;
-       pointer-events: auto !important;
-       flex-grow: 1 !important;
-       flex-shrink: 1 !important;
-       margin-left: 0 !important;
-       padding-left: 0 !important;
-     }
-
-     /* GLOBAL DENSITY - "The Amazon Look" */
-     /* Removed zoom to fix table scaling issues */
+     /* ============================================
+        RESPONSIVE LAYOUT SYSTEM
+        Primary: 1440px, Usable: 1280px → 1920px
+        Content centered, max container: 1200-1240px
+        ============================================ */
 
      /* Professional Typography System - Inter Font */
      * {
@@ -167,8 +160,21 @@
        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
        color: #0F1111 !important;
        background-color: #f3f3f3 !important;
-       font-size: 14px !important;
+       font-size: 13px !important; /* Base: 13-14px */
        font-weight: 400 !important;
+       line-height: 1.5 !important; /* Line height: 1.4-1.5 */
+     }
+     
+     /* Section Headers: 16-18px */
+     h5, .h5, .card-title, .section-header {
+       font-size: 16px !important;
+       font-weight: 600 !important;
+       line-height: 1.5 !important;
+     }
+     
+     h6, .h6 {
+       font-size: 14px !important;
+       font-weight: 500 !important;
        line-height: 1.5 !important;
      }
      
@@ -222,16 +228,29 @@
        font-weight: 500 !important;
      }
 
-     /* Tighten up everything */
+     /* Cards - Vertical Growth, Minimum Height: 120-160px */
      .card {
        margin-bottom: 8px !important;
        border: 1px solid #ddd !important;
        border-radius: 2px !important;
        box-shadow: none !important;
+       min-height: 140px !important; /* Min: 120-160px */
+       display: flex !important;
+       flex-direction: column !important;
      }
      
      .card-body {
-       padding: 8px 12px !important;
+       padding: 12px 16px !important;
+       flex: 1 !important;
+       display: flex !important;
+       flex-direction: column !important;
+     }
+     
+     /* Charts - Height: 280-360px */
+     .chart-container {
+       min-height: 300px !important; /* Charts: 280-360px */
+       max-height: 360px !important;
+       height: 300px !important;
      }
 
      .table th, .table td {
@@ -241,9 +260,9 @@
 
      /* Typography already defined above with Inter font */
 
-     /* Sidebar - White background, no teal color */
+     /* Sidebar - Fixed Width: 240-260px (NOT scaling with screen) */
      .sidebar-wrapper {
-       width: 260px !important;
+       width: 250px !important; /* Fixed: 240-260px range */
        background: #ffffff !important;
        position: fixed !important;
        left: 0 !important;
@@ -278,8 +297,40 @@
        color: #0d9488 !important;
      }
 
-     /* Responsive fixes - Mobile & Tablet */
-     @media screen and (max-width: 991px) {
+     /* ============================================
+        RESPONSIVE BREAKPOINTS
+        ============================================ */
+     
+     /* ≥1440px - Full 3-column layout */
+     @media screen and (min-width: 1440px) {
+       .main-content {
+         max-width: 1220px !important;
+       }
+     }
+     
+     /* 1200-1439px - Cards tighten, same layout */
+     @media screen and (min-width: 1200px) and (max-width: 1439px) {
+       .main-content {
+         max-width: 1220px !important;
+       }
+       .card {
+         min-height: 130px !important;
+       }
+     }
+     
+     /* 992-1199px - Right panel moves below */
+     @media screen and (min-width: 992px) and (max-width: 1199px) {
+       .main-content {
+         max-width: 100% !important;
+         padding: 0 16px !important;
+       }
+       .card {
+         min-height: 120px !important;
+       }
+     }
+     
+     /* 768-991px - Single column */
+     @media screen and (min-width: 768px) and (max-width: 991px) {
        html body .top-header { 
          left: 0 !important; 
          width: 100% !important;
@@ -288,7 +339,11 @@
          margin-left: 0 !important; 
          width: 100% !important;
          max-width: 100% !important;
-         padding: 15px !important;
+         padding: 16px !important;
+       }
+       .main-content {
+         max-width: 100% !important;
+         padding: 0 !important;
        }
        .sidebar-wrapper {
          transform: translateX(-100%) !important;
@@ -302,42 +357,100 @@
          width: 100% !important;
          max-width: 100% !important;
        }
+       .card {
+         min-height: 120px !important;
+       }
+       .chart-container {
+         min-height: 280px !important;
+         max-height: 320px !important;
+       }
      }
      
-     /* Prevent zoom on mobile */
-     @media screen and (max-width: 768px) {
+     /* <768px - Mobile view (375px → 414px primary) */
+     @media screen and (max-width: 767px) {
        html {
          -webkit-text-size-adjust: 100% !important;
          -moz-text-size-adjust: 100% !important;
          -ms-text-size-adjust: 100% !important;
          text-size-adjust: 100% !important;
        }
+       html body .top-header { 
+         left: 0 !important; 
+         width: 100% !important;
+       }
+       .page-wrapper { 
+         margin-left: 0 !important; 
+         width: 100% !important;
+         max-width: 100% !important;
+         padding: 16px !important; /* Horizontal padding: 16px */
+       }
+       .main-content {
+         max-width: 100% !important; /* Max container: 100% width */
+         padding: 0 !important;
+       }
+       .sidebar-wrapper {
+         transform: translateX(-100%) !important;
+         transition: transform 0.3s ease !important;
+       }
+       .sidebar-wrapper.active {
+         transform: translateX(0) !important;
+       }
+       .main-wrapper {
+         margin-left: 0 !important;
+         width: 100% !important;
+         max-width: 100% !important;
+       }
        body {
-         font-size: 14px !important;
+         font-size: 13px !important;
+       }
+       .card {
+         min-height: 120px !important;
+         margin-bottom: 12px !important;
+       }
+       .card-body {
+         padding: 12px 16px !important; /* Horizontal padding: 16px */
+       }
+       .chart-container {
+         min-height: 280px !important;
+         max-height: 300px !important;
+       }
+       h5, .h5, .card-title {
+         font-size: 16px !important;
        }
      }
      
-     /* CRITICAL: Page Wrapper Layout Fix - Perfect Alignment */
+     /* CRITICAL: Page Wrapper - Centered Content Container */
      .page-wrapper {
-       margin-left: 260px !important; /* Sidebar width */
+       margin-left: 250px !important; /* Sidebar width */
        margin-top: 70px !important; /* Header height */
        margin-right: 0 !important;
        transition: all 0.3s ease;
        padding: 20px;
        min-height: calc(100vh - 70px);
-       width: calc(100% - 260px) !important; /* Full width minus sidebar */
-       max-width: calc(100% - 260px) !important;
+       width: calc(100% - 250px) !important;
+       max-width: calc(100% - 250px) !important;
        box-sizing: border-box;
        background-color: #f3f3f3 !important;
        overflow-x: hidden !important;
+       overflow-y: auto !important; /* Vertical scrolling only */
+       display: flex !important;
+       justify-content: center !important; /* Center content */
+     }
+     
+     /* Main Content Container - Centered, Max: 1200-1240px */
+     .main-content {
+       width: 100% !important;
+       max-width: 1220px !important; /* Max: 1200-1240px */
+       margin: 0 auto !important; /* Center horizontally */
+       box-sizing: border-box !important;
      }
      
      /* RTL Fixes for Arabic */
      [dir="rtl"] .page-wrapper {
        margin-left: 0 !important;
-       margin-right: 260px !important; /* Sidebar width on right */
-       width: calc(100% - 260px) !important;
-       max-width: calc(100% - 260px) !important;
+       margin-right: 250px !important; /* Sidebar width on right */
+       width: calc(100% - 250px) !important;
+       max-width: calc(100% - 250px) !important;
      }
      
      /* Prevent horizontal scroll and scaling issues */
@@ -358,6 +471,10 @@
        max-width: 100% !important;
      }
      
+     body.toggled .main-content {
+       max-width: 1220px !important; /* Keep centered container */
+     }
+     
      /* RTL Toggle State */
      [dir="rtl"] body.toggled .page-wrapper {
        margin-right: 0 !important;
@@ -370,20 +487,20 @@
      }
      
      [dir="rtl"] body.toggled .sidebar-wrapper {
-       right: -260px !important;
+       right: -250px !important;
        left: auto !important;
      }
      
      /* Main wrapper alternative */
      .main-wrapper {
-       margin-left: 260px !important;
+       margin-left: 250px !important;
        margin-top: 70px !important;
        margin-right: 0 !important;
        transition: all 0.3s ease;
        padding: 20px;
-       width: calc(100% - 260px) !important; /* Full width minus sidebar */
+       width: calc(100% - 250px) !important;
        background-color: #f3f3f3 !important;
-       max-width: calc(100vw - 260px - 40px) !important;
+       max-width: calc(100vw - 250px - 40px) !important;
        box-sizing: border-box;
      }
      
@@ -396,9 +513,9 @@
      /* RTL Main Wrapper Fix */
      [dir="rtl"] .main-wrapper {
        margin-left: 0 !important;
-       margin-right: 260px !important;
-       width: calc(100% - 260px) !important;
-       max-width: calc(100vw - 260px - 40px) !important;
+       margin-right: 250px !important;
+       width: calc(100% - 250px) !important;
+       max-width: calc(100vw - 250px - 40px) !important;
      }
      
      [dir="rtl"] body.toggled .main-wrapper {
@@ -408,9 +525,9 @@
      
      /* Fix header alignment - Ensure it starts after sidebar */
      .top-header {
-       left: 260px !important;
+       left: 250px !important;
        right: 0 !important;
-       width: calc(100% - 260px) !important;
+       width: calc(100% - 250px) !important;
        background-color: #ffffff !important;
        z-index: 999 !important;
      }
@@ -423,8 +540,8 @@
      /* RTL Header Fix */
      [dir="rtl"] .top-header {
        left: auto !important;
-       right: 260px !important;
-       width: calc(100% - 260px) !important;
+       right: 250px !important;
+       width: calc(100% - 250px) !important;
      }
      
      [dir="rtl"] body.toggled .top-header {
@@ -505,6 +622,16 @@
        }
      }
      
+     /* Ensure dashboard scrolls vertically, never horizontally */
+     html, body {
+       overflow-x: hidden !important;
+       overflow-y: auto !important;
+     }
+     
+     .page-wrapper, .main-content {
+       overflow-x: hidden !important;
+     }
+     
      /* Fix cards and content overflow */
      .card, .row, .col, [class*="col-"] {
        max-width: 100% !important;
@@ -517,12 +644,7 @@
        overflow-x: auto !important;
      }
      
-     /* Ensure main-content uses full available width */
-     .main-content {
-       width: 100% !important;
-       max-width: 100% !important;
-       box-sizing: border-box;
-     }
+     /* Main content already defined above with centered container */
    </style>
 </head>
 

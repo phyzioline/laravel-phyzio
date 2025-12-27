@@ -3,16 +3,7 @@
       <div class="btn-toggle" style="flex-shrink: 0; margin-right: 10px;">
         <i class="material-icons-outlined" style="color: #0d9488 !important; font-size: 26px; cursor: pointer;">menu</i>
       </div>
-      <div class="flex-grow-1 search-content d-flex align-items-center" style="max-width: 500px; margin-left: 0;">
-          <form action="#" method="GET" class="w-100">
-            <div class="input-group" style="height: 32px;">
-                <input type="text" name="q" class="form-control" placeholder="Search..." style="border-radius: 4px 0 0 4px !important; height: 32px !important; border: 1px solid #888C8C !important;">
-                <button class="btn btn-warning" type="submit" style="background: #febd69; border: 1px solid #888C8C; border-left: none; color: #000; border-radius: 0 4px 4px 0 !important; width: 45px; height: 32px; padding: 0;">
-                    <i class="material-icons-outlined" style="font-size: 20px;">search</i>
-                </button>
-            </div>
-          </form>
-      </div>
+      {{-- Search removed - placeholder functionality not implemented --}}
       <ul class="navbar-nav gap-1 nav-right-links align-items-center flex-shrink-0">
         {{-- Translation Button - Session-based for Dashboard --}}
         <li class="nav-item">

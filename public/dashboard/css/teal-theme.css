@@ -4,8 +4,9 @@
    SIDEBAR STYLING
    ============================================ */
 
-/* Sidebar Background - White (No Teal) */
-[data-bs-theme=blue-theme] body .sidebar-wrapper {
+/* Sidebar Background - White (No Teal) - Consolidated */
+[data-bs-theme=blue-theme] body .sidebar-wrapper,
+.sidebar-wrapper {
     background: #ffffff !important;
     color: #333333 !important;
     border-right: 1px solid #e0e0e0 !important;
