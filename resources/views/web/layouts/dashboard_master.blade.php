@@ -382,6 +382,21 @@
                     </a>
                 </li>
                  
+                <!-- Specialty Selection (if not selected) -->
+                @php
+                    $user = auth()->user();
+                    $clinic = \App\Models\Clinic::where('company_id', $user->id)->first();
+                @endphp
+                @if($clinic && !$clinic->hasSelectedSpecialty())
+                <li>
+                    <a href="{{ route('clinic.specialty-selection.show') }}" class="{{ request()->routeIs('clinic.specialty-selection.*') ? 'active' : '' }}" style="background-color: #ff9800; color: white;">
+                        <span class="las la-stethoscope"></span>
+                        <span>{{ __('Select Specialty') }}</span>
+                        <span class="badge badge-warning ml-2">{{ __('Required') }}</span>
+                    </a>
+                </li>
+                @endif
+                 
                 <!-- Job System for Clinics -->
                  <li>
                     <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
@@ -410,6 +425,14 @@
                         <span>{{ __('Doctors') }}</span>
                     </a>
                 </li>
+                <!-- Weekly Treatment Programs -->
+                <li>
+                    <a href="{{ route('clinic.programs.index') }}" class="{{ request()->routeIs('clinic.programs.*') ? 'active' : '' }}">
+                        <span class="las la-clipboard-list"></span>
+                        <span>{{ __('Treatment Programs') }}</span>
+                    </a>
+                </li>
+                
                 <li>
                     <a href="{{ route('clinic.appointments.index') }}" class="{{ request()->routeIs('clinic.appointments.*') ? 'active' : '' }}">
                         <span class="las la-calendar-check"></span>
