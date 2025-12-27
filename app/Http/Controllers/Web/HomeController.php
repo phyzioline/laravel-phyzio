@@ -22,15 +22,23 @@ class HomeController extends Controller
         $categories = Category::where('status', 'active')->get();
         
         // Get products with order count for sorting by best selling
-        // Only show products from verified vendors or buyers
+        // Show products from verified vendors, buyers, or existing vendors (grandfather clause)
         $productsQuery = Product::where('status', 'active')
             ->whereHas('user', function($q) {
                 $q->where(function($subQ) {
                     $subQ->where('type', 'buyer')
                          ->orWhere(function($typeQ) {
                              $typeQ->whereIn('type', ['vendor', 'company'])
-                                   ->where('verification_status', 'approved')
-                                   ->where('profile_visibility', 'visible');
+                                   ->where(function($statusQ) {
+                                       // New verified users
+                                       $statusQ->where(function($verified) {
+                                           $verified->where('verification_status', 'approved')
+                                                    ->where('profile_visibility', 'visible');
+                                       })
+                                       // OR existing users (grandfather clause)
+                                       ->orWhereNull('verification_status')
+                                       ->orWhere('verification_status', 'pending');
+                                   });
                          });
                 });
             })

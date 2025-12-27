@@ -18,13 +18,24 @@ class ShowService
         $query = Product::where('products.amount', '>', '0')
             ->where('products.status', 'active')
             ->whereHas('user', function($q) {
-                // Only show products from verified vendors or buyers (buyers don't need verification)
+                // Show products from:
+                // 1. Buyers (no verification needed)
+                // 2. Verified vendors/companies (approved and visible)
+                // 3. Existing vendors/companies (grandfather clause - NULL or pending status from before migration)
                 $q->where(function($subQ) {
                     $subQ->where('type', 'buyer')
                          ->orWhere(function($typeQ) {
                              $typeQ->whereIn('type', ['vendor', 'company'])
-                                   ->where('verification_status', 'approved')
-                                   ->where('profile_visibility', 'visible');
+                                   ->where(function($statusQ) {
+                                       // New verified users
+                                       $statusQ->where(function($verified) {
+                                           $verified->where('verification_status', 'approved')
+                                                    ->where('profile_visibility', 'visible');
+                                       })
+                                       // OR existing users (grandfather clause)
+                                       ->orWhereNull('verification_status')
+                                       ->orWhere('verification_status', 'pending');
+                                   });
                          });
                 });
             })
@@ -84,10 +95,47 @@ class ShowService
     public function ProductBySubCategory($id)
     {
         $products = Product::where('sub_category_id', $id)
-            ->where('amount','>' ,'0')->where('status', 'active')
+            ->where('amount','>' ,'0')
+            ->where('status', 'active')
+            ->whereHas('user', function($q) {
+                // Same visibility logic as main product listing
+                $q->where(function($subQ) {
+                    $subQ->where('type', 'buyer')
+                         ->orWhere(function($typeQ) {
+                             $typeQ->whereIn('type', ['vendor', 'company'])
+                                   ->where(function($statusQ) {
+                                       $statusQ->where(function($verified) {
+                                           $verified->where('verification_status', 'approved')
+                                                    ->where('profile_visibility', 'visible');
+                                       })
+                                       ->orWhereNull('verification_status')
+                                       ->orWhere('verification_status', 'pending');
+                                   });
+                         });
+                });
+            })
             ->paginate(50)
             ->withQueryString();
-        $count_product = Product::where('amount','>' ,'0')->where('sub_category_id', $id)->where('status','active')->count();
+        $count_product = Product::where('amount','>' ,'0')
+            ->where('sub_category_id', $id)
+            ->where('status','active')
+            ->whereHas('user', function($q) {
+                $q->where(function($subQ) {
+                    $subQ->where('type', 'buyer')
+                         ->orWhere(function($typeQ) {
+                             $typeQ->whereIn('type', ['vendor', 'company'])
+                                   ->where(function($statusQ) {
+                                       $statusQ->where(function($verified) {
+                                           $verified->where('verification_status', 'approved')
+                                                    ->where('profile_visibility', 'visible');
+                                       })
+                                       ->orWhereNull('verification_status')
+                                       ->orWhere('verification_status', 'pending');
+                                   });
+                         });
+                });
+            })
+            ->count();
 
         $categories = Category::with('subcategories')->get();
 
