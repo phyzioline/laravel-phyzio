@@ -78,6 +78,46 @@
         color: #02767F !important;
         background: rgba(4, 184, 196, 0.3) !important;
     }
+    
+    /* Fix white text on white backgrounds in main content */
+    /* Ensure hero text has proper background or colored text */
+    .slider-section .hero-text.text-white,
+    .slider-section .hero-praph.text-white {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    /* Fix any white text that might appear on white backgrounds */
+    section:not([style*="background"]):not([class*="bg-"]) .text-white,
+    .ecosystem-section .text-white,
+    .bg-white .text-white,
+    [style*="background-color: #fff"] .text-white,
+    [style*="background-color: white"] .text-white,
+    [style*="background: white"] .text-white,
+    [style*="background: #fff"] .text-white {
+        color: #02767F !important;
+    }
+    
+    /* Fix hero-li white text if on white background */
+    .slider-content .hero-li {
+        color: #02767F !important;
+    }
+    
+    /* Ensure sections with light backgrounds don't have white text */
+    .ecosystem-section,
+    section[style*="background-color: #f8f9fa"],
+    section[style*="background-color: #ffffff"],
+    .bg-light,
+    .bg-white {
+        color: #36415a !important;
+    }
+    
+    .ecosystem-section .text-white,
+    section[style*="background-color: #f8f9fa"] .text-white,
+    section[style*="background-color: #ffffff"] .text-white,
+    .bg-light .text-white,
+    .bg-white .text-white {
+        color: #02767F !important;
+    }
 </style>
 @endpush
 
@@ -87,7 +127,7 @@
        ================================================== -->
         <section id="slider-section" class="slider-section breadCumbNewPh clearfix">
             <div class="item d-flex align-items-center" data-background="{{ asset('web/assets/images/hero-bg.png') }}"
-                style="height: 35vh">
+                style="height: 35vh; background-color: #02767F; background-size: cover; background-position: center;">
                 <div class="container">
 
                     <div class="d-flex align-items-center">
@@ -269,21 +309,25 @@
     <ul class="clearfix">
         <li>
             <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Add To Cart">
-                <i class="las la-shopping-basket" style="font-size:18px"></i>
+                data-toggle="tooltip" data-placement="top" title="Add To Cart"
+                aria-label="Add {{ $product->{'product_name_' . app()->getLocale()} }} to cart">
+                <i class="las la-shopping-basket" style="font-size:18px" aria-hidden="true"></i>
             </button>
         </li>
         <li>
             <button type="button" class="add-to-favorite border-0 bg-transparent" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Add To Favorite">
+                data-toggle="tooltip" data-placement="top" title="Add To Favorite"
+                aria-label="Add {{ $product->{'product_name_' . app()->getLocale()} }} to favorites">
                 <i class="fa-heart favorite-icon {{ $product->favorite && $product->favorite->favorite_type ? 'fas' : 'far' }}"
-                   style="font-size:18px; color: {{ $product->favorite && $product->favorite->favorite_type ? 'red' : 'inherit' }};"></i>
+                   style="font-size:18px; color: {{ $product->favorite && $product->favorite->favorite_type ? 'red' : 'inherit' }};"
+                   aria-hidden="true"></i>
             </button>
         </li>
         <li>
             <button type="button" class="buy-now-btn" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Buy Now">
-                <i class="las la-bolt" style="font-size:18px"></i>
+                data-toggle="tooltip" data-placement="top" title="Buy Now"
+                aria-label="Buy {{ $product->{'product_name_' . app()->getLocale()} }} now">
+                <i class="las la-bolt" style="font-size:18px" aria-hidden="true"></i>
             </button>
         </li>
     </ul>

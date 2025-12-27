@@ -324,10 +324,10 @@
                     <div class="physio-tabs-nav ul-li mb-40">
                         <ul class="nav" role="tablist">
                             <li>
-                                <a class="active physio-tab-link text-white" style="padding : 10px 20px;" data-toggle="tab" href="#description-tab">Description</a>
+                                <a class="active physio-tab-link" style="padding : 10px 20px; background: #02767F; color: #fff; border-radius: 5px;" data-toggle="tab" href="#description-tab">Description</a>
                             </li>
                             <li>
-                                <a class="physio-tab-link text-white" style="padding : 10px 20px;" data-toggle="tab" href="#reviews-tab">Reviews ({{ $product->review_count }})</a>
+                                <a class="physio-tab-link" style="padding : 10px 20px; color: #02767F; border: 2px solid #02767F; border-radius: 5px;" data-toggle="tab" href="#reviews-tab">Reviews ({{ $product->review_count }})</a>
                             </li>
                         </ul>
                     </div>
@@ -1597,22 +1597,32 @@
 
             /* Physio Tab Navigation - Unique CSS */
             .physio-tab-link {
-                background: #f8f9fa;
-                color: #333;
+                background: #f8f9fa !important;
+                color: #02767F !important;
                 padding: 15px 30px;
                 border-radius: 25px;
                 text-decoration: none;
                 transition: all 0.3s ease;
-                border: 2px solid transparent;
+                border: 2px solid #02767F;
             }
 
             .physio-tab-link:hover,
             .physio-tab-link.active {
-                background: #04b8c4;
-                color: white;
+                background: #04b8c4 !important;
+                color: white !important;
                 border-color: #04b8c4;
                 transform: translateY(-2px) scale(1.05);
                 text-decoration: none;
+            }
+            
+            /* Fix white text on white backgrounds globally */
+            section:not([style*="background"]):not([class*="bg-"]) .text-white,
+            .bg-white .text-white,
+            [style*="background-color: #fff"] .text-white,
+            [style*="background-color: white"] .text-white,
+            [style*="background: white"] .text-white,
+            [style*="background: #fff"] .text-white {
+                color: #02767F !important;
             }
 
             .physio-tab-link:active {

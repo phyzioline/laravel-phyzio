@@ -5,8 +5,19 @@
     background: transparent;
     border: none;
     font-size: 1.6rem;
-    color: #fff;
+    color: #02767F;
     cursor: pointer;
+}
+
+/* Fix white text on transparent background - use teal color */
+.header-section:not(.stuck) .btn-cart,
+.header-section:not(.stuck) .mobile-btn-cart {
+    color: #02767F !important;
+}
+
+.header-section.stuck .btn-cart,
+.header-section.stuck .mobile-btn-cart {
+    color: #fff !important;
 }
   
 .header-section .btns-group > ul > li > button.btn-cart .cart-counter, .header-section .btns-group > ul > li > button.mobile-btn-cart .cart-counter {
@@ -20,6 +31,8 @@
     position: absolute;
     border-radius: 45px;
     display: inline-block;
+    background: #28a745;
+    padding: 2px 6px;
   }
 
 .cart-counter {
@@ -237,17 +250,34 @@ body.has-hero #header-section {
 }
 
 /* Header Icons */
-.btn-cart,
-.main-menu i,
-.btn-login {
+/* Fix white text visibility - only show white when header has background */
+.header-section.stuck .btn-cart,
+.header-section.stuck .main-menu i,
+.header-section.stuck .btn-login {
     color: #fff !important;
 }
 
+/* When header is transparent, use dark text */
+.header-section:not(.stuck) .btn-cart,
+.header-section:not(.stuck) .main-menu i,
+.header-section:not(.stuck) .btn-login {
+    color: #02767F !important;
+}
+
 /* Styling Menu Links */
-#header-section .main-menu ul li a {
+#header-section.stuck .main-menu ul li a {
     position: relative;
     font-size: 15px;
     color: #fff !important;
+    padding: 6px 8px;
+    font-weight: 600;
+}
+
+/* When header is transparent, use dark text for menu */
+#header-section:not(.stuck) .main-menu ul li a {
+    position: relative;
+    font-size: 15px;
+    color: #02767F !important;
     padding: 6px 8px;
     font-weight: 600;
 }
@@ -426,7 +456,16 @@ body.has-hero .shop-hero-banner {
 }
 
 /* Make menu icon visible always */
-.mobile-menu-btn {
+/* Mobile menu button - dark when transparent, white when stuck */
+.header-section:not(.stuck) .mobile-menu-btn {
+    display: block !important;
+    font-size: 26px;
+    color: #02767F !important;
+    background: none;
+    border: none;
+}
+
+.header-section.stuck .mobile-menu-btn {
     display: block !important;
     font-size: 26px;
     color: #fff !important;
@@ -653,8 +692,8 @@ body.has-hero .shop-hero-banner {
                             {{-- Wishlist --}}
                             <li>
                                 <button type="button">
-                                    <a style="color: #fff;" href="{{ route('favorites.index') }}" data-placement="top" title="{{ __('To Wishlist') }}">
-                                        <i class="la la-heart"></i>
+                                    <a class="wishlist-link" href="{{ route('favorites.index') }}" data-placement="top" title="{{ __('To Wishlist') }}" aria-label="{{ __('View Wishlist') }}">
+                                        <i class="la la-heart" aria-hidden="true"></i>
                                     </a>
                                 </button>
                             </li>
@@ -745,8 +784,8 @@ body.has-hero .shop-hero-banner {
                                         {{ Auth::user()->name }} <i class="las la-angle-down"></i>
                                     </button>
                                 @else
-                                    <a style="color: #fff;" href="{{ route('view_login.' . app()->getLocale()) }}">
-                                        <button class="btn-cart btn-login px-4 py-1">{{ __('Log In') }}</button>
+                                    <a class="login-link" href="{{ route('view_login.' . app()->getLocale()) }}" aria-label="{{ __('Log In') }}">
+                                        <button class="btn-cart btn-login px-4 py-1" aria-label="{{ __('Log In') }}">{{ __('Log In') }}</button>
                                     </a>
                                 @endif
                             </li>

@@ -77,15 +77,11 @@
   <link rel="icon" type="image/png" href="{{ asset('web/assets/images/logo.png') }}" />
   <link rel="apple-touch-icon" href="{{ asset('web/assets/images/logo.png') }}" />
 
-  <!-- Preload Critical CSS -->
-  <link rel="preload" href="{{ asset('web/assets/css/bootstrap.min.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/bootstrap.min.css')}}"></noscript>
+  <!-- Critical CSS - Load synchronously for faster FCP/LCP -->
+  <link rel="stylesheet" href="{{ asset('web/assets/css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{ asset('web/assets/css/style.css')}}?v=1.0">
   
-  <!-- Defer Non-Critical CSS -->
-  <link rel="preload" href="{{ asset('web/assets/css/style.css')}}?v=1.0" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/style.css')}}?v=1.0"></noscript>
-
-  <!-- css include - Loaded with defer -->
+  <!-- Non-Critical CSS - Load asynchronously -->
   <link rel="preload" href="{{ asset('web/assets/css/line-awesome.min.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/line-awesome.min.css')}}"></noscript>
   
@@ -98,9 +94,10 @@
   <link rel="preload" href="{{ asset('web/assets/css/jquery-ui.css')}}" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="{{ asset('web/assets/css/jquery-ui.css')}}"></noscript>
   
-  <!-- font - Optimized with font-display swap -->
-  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet"></noscript>
+  <!-- font - Optimized with font-display swap and preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet">
   
   <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
@@ -134,10 +131,15 @@
     margin-left: auto !important; /* pushes it right */
     margin-right: 10px !important;
     font-size: 28px !important;
-    color: #fff !important;
+    color: #02767F !important; /* Dark color for visibility on transparent header */
     position: relative;
     z-index: 99999; /* فوق الهيدر */
   }
+   
+   /* When header is stuck, use white color */
+   .header-section.stuck .mobile-menu-btn {
+       color: #fff !important;
+   }
 
   /* Ensure mobile header layout is flex aligned properly */
     .brand-logo {
