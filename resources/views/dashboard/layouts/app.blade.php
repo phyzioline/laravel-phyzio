@@ -335,7 +335,8 @@
          left: 0 !important; 
          width: 100% !important;
        }
-       .page-wrapper { 
+       .page-wrapper,
+       .page-content { 
          margin-left: 0 !important; 
          width: 100% !important;
          max-width: 100% !important;
@@ -378,7 +379,8 @@
          left: 0 !important; 
          width: 100% !important;
        }
-       .page-wrapper { 
+       .page-wrapper,
+       .page-content { 
          margin-left: 0 !important; 
          width: 100% !important;
          max-width: 100% !important;
@@ -420,7 +422,8 @@
      }
      
      /* CRITICAL: Page Wrapper - Centered Content Container */
-     .page-wrapper {
+     .page-wrapper,
+     .page-content {
        margin-left: 250px !important; /* Sidebar width */
        margin-top: 70px !important; /* Header height */
        margin-right: 0 !important;
@@ -452,7 +455,8 @@
      }
      
      /* RTL Fixes for Arabic */
-     [dir="rtl"] .page-wrapper {
+     [dir="rtl"] .page-wrapper,
+     [dir="rtl"] .page-content {
        margin-left: 0 !important;
        margin-right: 250px !important; /* Sidebar width on right */
        width: calc(100% - 250px) !important;
@@ -471,7 +475,8 @@
      }
      
      /* When sidebar is toggled/collapsed */
-     body.toggled .page-wrapper {
+     body.toggled .page-wrapper,
+     body.toggled .page-content {
        margin-left: 0 !important;
        width: 100% !important;
        max-width: 100% !important;
@@ -482,7 +487,8 @@
      }
      
      /* RTL Toggle State */
-     [dir="rtl"] body.toggled .page-wrapper {
+     [dir="rtl"] body.toggled .page-wrapper,
+     [dir="rtl"] body.toggled .page-content {
        margin-right: 0 !important;
        margin-left: 0 !important;
      }
@@ -634,7 +640,9 @@
        overflow-y: auto !important;
      }
      
-     .page-wrapper, .main-content {
+     .page-wrapper,
+     .page-content,
+     .main-content {
        overflow-x: hidden !important;
      }
      

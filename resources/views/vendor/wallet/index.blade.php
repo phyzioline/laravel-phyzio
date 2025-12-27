@@ -1,18 +1,19 @@
 @extends('dashboard.layouts.app')
 
 @section('content')
-<main class="page-content">
-    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-        <div class="breadcrumb-title pe-3">My Wallet</div>
-        <div class="ps-3">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0 p-0">
-                    <li class="breadcrumb-item"><a href="{{ route('vendor.dashboard') }}"><i class="bx bx-home-alt"></i></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Wallet</li>
-                </ol>
-            </nav>
+<main class="page-wrapper">
+    <div class="main-content">
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">My Wallet</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard.home') }}"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Wallet</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
-    </div>
 
     <div class="row">
         {{--Wallet Balance Cards --}}
@@ -203,6 +204,7 @@
             </div>
             @endif
         </div>
+    </div>
     </div>
 </main>
 @endsection

@@ -25,6 +25,14 @@ class FeedbackController extends Controller
             'message' => 'required|string',
         ]);
 
+        // Save to Database
+        try {
+            \App\Models\Feedback::create($validated);
+        } catch (\Exception $e) {
+            // Log error but continue to send email if possible, or handle gracefully
+            \Log::error('Failed to save feedback: ' . $e->getMessage());
+        }
+
         // Send email logic
         try {
             // Check if Mail implementation is ready, otherwise just log or "fake" it for now if no mail class exists

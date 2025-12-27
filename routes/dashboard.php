@@ -69,8 +69,14 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
 
             // External Integrated Modules
+            Route::get('ads/settings', [AdController::class, 'settings'])->name('ads.settings');
+            Route::post('ads/account/{id}/toggle', [AdController::class, 'toggleTracking'])->name('ads.toggle');
             Route::resource('ads', AdController::class);
+            
+            Route::get('crm/dashboard', [CrmController::class, 'dashboard'])->name('crm.dashboard');
+            Route::get('crm/contacts', [CrmController::class, 'contacts'])->name('crm.contacts');
             Route::resource('crm', CrmController::class);
+            
             Route::resource('plans', TreatmentPlanController::class);
             Route::resource('exercises', ExerciseController::class);
 

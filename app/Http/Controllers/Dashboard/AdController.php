@@ -15,6 +15,27 @@ class AdController extends Controller
         return view('dashboard.ads.index', compact('ads'));
     }
 
+    public function settings()
+    {
+        // Fetch accounts, or create stub data if empty
+        $facebookAccounts = \App\Models\AdAccount::where('platform', 'facebook')->get();
+        $googleAccounts = \App\Models\AdAccount::where('platform', 'google')->get();
+
+        // If no accounts, we can pass empty collections or mock data for the visual preview if desired by the user.
+        // For now, let's pass what we have.
+        
+        return view('dashboard.ads.settings', compact('facebookAccounts', 'googleAccounts'));
+    }
+
+    public function toggleTracking(Request $request, $id)
+    {
+        $account = \App\Models\AdAccount::findOrFail($id);
+        $account->auto_tracking = $request->input('auto_tracking');
+        $account->save();
+        
+        return response()->json(['success' => true]);
+    }
+
     public function create()
     {
         return view('dashboard.ads.create');

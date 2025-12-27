@@ -214,8 +214,20 @@
                       <div class="menu-title">{{ __("AI & Modules") }}</div>
                   </a>
                   <ul>
-                      <li><a href="{{ route('dashboard.ads.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Ads Manager") }}</a></li>
-                      <li><a href="{{ route('dashboard.crm.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("CRM") }}</a></li>
+                      <li>
+                          <a href="javascript:;" class="has-arrow"><i class="bi bi-arrow-right-short"></i>{{ __("Ads Manager") }}</a>
+                          <ul>
+                              <li><a href="{{ route('dashboard.ads.index') }}"><i class="bi bi-circle"></i>{{ __("Dashboard") }}</a></li>
+                              <li><a href="{{ route('dashboard.ads.settings') }}"><i class="bi bi-circle"></i>{{ __("Settings") }}</a></li>
+                          </ul>
+                      </li>
+                      <li>
+                          <a href="javascript:;" class="has-arrow"><i class="bi bi-arrow-right-short"></i>{{ __("CRM") }}</a>
+                          <ul>
+                              <li><a href="{{ route('dashboard.crm.dashboard') }}"><i class="bi bi-circle"></i>{{ __("Dashboard") }}</a></li>
+                              <li><a href="{{ route('dashboard.crm.contacts') }}"><i class="bi bi-circle"></i>{{ __("Contacts List") }}</a></li>
+                          </ul>
+                      </li>
                       <li><a href="{{ route('dashboard.plans.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Treatment Plans") }}</a></li>
                       <li><a href="{{ route('dashboard.exercises.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Exercise Lib") }}</a></li>
                   </ul>
