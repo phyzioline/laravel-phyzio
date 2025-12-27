@@ -104,6 +104,17 @@ class VerificationController extends Controller
                 'reviewed_at' => now(),
             ]);
 
+            // Also update therapist profile status if user is a therapist
+            if ($user->type === 'therapist') {
+                $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+                if ($therapistProfile) {
+                    $therapistProfile->update([
+                        'status' => 'approved',
+                        'verified_at' => now(),
+                    ]);
+                }
+            }
+
             // Send approval email for companies
             if ($user->type === 'company') {
                 Mail::to($user->email)->send(new CompanyAccountApprovedEmail($user));
@@ -144,6 +155,17 @@ class VerificationController extends Controller
                 'profile_visibility' => 'visible',
                 'status' => 'active',
             ]);
+
+            // Also update therapist profile status if user is a therapist
+            if ($user->type === 'therapist') {
+                $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+                if ($therapistProfile) {
+                    $therapistProfile->update([
+                        'status' => 'approved',
+                        'verified_at' => now(),
+                    ]);
+                }
+            }
 
             // Send approval email for companies when auto-approved
             if ($user->type === 'company') {

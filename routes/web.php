@@ -284,6 +284,10 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 
 // Clinic Dashboard Routes (Outside Access)
     Route::group(['prefix' => 'clinic', 'as' => 'clinic.', 'middleware' => ['auth']], function () {
+        // Specialty Selection (must be before dashboard to catch first-time users)
+        Route::get('/specialty-selection', [\App\Http\Controllers\Clinic\SpecialtySelectionController::class, 'show'])->name('specialty-selection.show');
+        Route::post('/specialty-selection', [\App\Http\Controllers\Clinic\SpecialtySelectionController::class, 'store'])->name('specialty-selection.store');
+        
         Route::get('/dashboard', [\App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
         
         Route::get('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'index'])->name('doctors.index');
@@ -305,9 +309,18 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
+        
+        // Appointments with specialty fields
+        Route::get('/appointments/specialty-fields', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getSpecialtyFields'])->name('appointments.specialtyFields');
+        Route::post('/appointments/calculate-price', [\App\Http\Controllers\Clinic\AppointmentController::class, 'calculatePrice'])->name('appointments.calculatePrice');
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
+        
+        // Weekly Programs
+        Route::get('/programs/calculate-price', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'calculatePrice'])->name('programs.calculatePrice');
+        Route::post('/programs/{id}/activate', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'activate'])->name('programs.activate');
+        Route::resource('programs', \App\Http\Controllers\Clinic\WeeklyProgramController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
