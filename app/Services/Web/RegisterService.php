@@ -35,46 +35,91 @@ class RegisterService
             throw $e; // Re-throw to be handled by controller or global handler, or handled here if we want to return redirect
         }
 
-        $data['password']  = Hash::make($data['password']);
-        $data['code']      = rand(1000, 9999);
-        $data['expire_at'] = Carbon::now()->addMinutes(5);
+        // Generate OTP code
+        $code = rand(1000, 9999);
+        $expire_at = Carbon::now()->addMinutes(5);
 
-        // Set verification status and profile visibility based on user type
-        if ($data['type'] === 'buyer') {
-            // Buyers are auto-approved and visible
-            $data['verification_status'] = 'approved';
-            $data['profile_visibility'] = 'visible';
-            $data['status'] = 'active';
-        } else {
-            // Vendor, Company, Therapist need verification
-            $data['verification_status'] = 'pending';
-            $data['profile_visibility'] = 'hidden';
-            $data['status'] = 'inactive';
-        }
+        // Store registration data in session (NOT in database yet)
+        Session::put('registration_data', [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'password' => Hash::make($data['password']), // Hash password before storing in session
+            'type' => $data['type'],
+            'country' => $data['country'] ?? null,
+            'image' => $data['image'] ?? asset('default/default.png'),
+            'code' => $code,
+            'expire_at' => $expire_at->toDateTimeString(),
+        ]);
 
-        Mail::to($data['email'])->send(new OTPEmail($data['code']));
+        // Send OTP email
+        Mail::to($data['email'])->send(new OTPEmail($code));
 
+        // Store email in session for OTP page
         Session::put('email', $data['email']);
 
-        $user = $this->model->create($data);
+        return true; // Return true instead of user object
+    }
+
+    /**
+     * Create user after successful OTP verification
+     */
+    public function createUserAfterVerification()
+    {
+        $registrationData = Session::get('registration_data');
+
+        if (!$registrationData) {
+            throw new \Exception('Registration data not found in session');
+        }
+
+        // Clean up any unverified users with the same email (from previous failed attempts)
+        User::where('email', $registrationData['email'])
+            ->whereNull('email_verified_at')
+            ->delete();
+
+        // Set verification status and profile visibility based on user type
+        if ($registrationData['type'] === 'buyer') {
+            // Buyers are auto-approved and visible
+            $registrationData['verification_status'] = 'approved';
+            $registrationData['profile_visibility'] = 'visible';
+            $registrationData['status'] = 'active';
+        } else {
+            // Vendor, Company, Therapist need verification
+            $registrationData['verification_status'] = 'pending';
+            $registrationData['profile_visibility'] = 'hidden';
+            $registrationData['status'] = 'inactive';
+        }
+
+        // Remove OTP-related data before creating user
+        $code = $registrationData['code'];
+        $expire_at = $registrationData['expire_at'];
+        unset($registrationData['code']);
+        unset($registrationData['expire_at']);
+
+        // Create user in database
+        $user = $this->model->create($registrationData);
         
-        if ($data['type'] === 'vendor') {
+        // Assign roles based on user type
+        if ($registrationData['type'] === 'vendor') {
             $user->assignRole('vendor');
         }
-        if ($data['type'] === 'therapist') {
+        if ($registrationData['type'] === 'therapist') {
             $user->assignRole('therapist');
             \App\Models\TherapistProfile::create([
                 'user_id' => $user->id,
                 'status' => 'pending',
             ]);
         }
-        if ($data['type'] === 'company') {
+        if ($registrationData['type'] === 'company') {
             // Ensure company role exists before assigning
             if (!\Spatie\Permission\Models\Role::where('name', 'company')->where('guard_name', 'web')->exists()) {
                 \Spatie\Permission\Models\Role::create(['name' => 'company', 'guard_name' => 'web']);
             }
             $user->assignRole('company');
         }
+
+        // Clear registration data from session
+        Session::forget('registration_data');
 
         return $user;
     }

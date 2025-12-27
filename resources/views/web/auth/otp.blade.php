@@ -64,7 +64,11 @@
                            {{__('Submit')}}
                         </button>
                       </form>
-                      <p class="text-center"><a href="#" class="link">Didn’t receive the code?</a></p>
+                      <p class="text-center">
+                        <a href="{{ route('resend_otp.' . app()->getLocale()) }}" class="link" id="resend-link">
+                          {{ __('Didn\'t receive the code?') }} {{ __('Resend') }}
+                        </a>
+                      </p>
                     </div>
                   </div>
                 </div>

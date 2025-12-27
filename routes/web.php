@@ -51,6 +51,7 @@ foreach ($supportedLocales as $locale) {
     Route::post('/register', [RegisterController::class, 'store'])->name("register.{$locale}");
 
     Route::get('/otp', [RegisterController::class, 'otp'])->name("view_otp.{$locale}");
+    Route::get('/otp/resend', [RegisterController::class, 'resendOtp'])->name("resend_otp.{$locale}");
     Route::post('/verify', [RegisterController::class, 'verify'])->name("verify.{$locale}");
 
     // Company Registration

@@ -26,7 +26,37 @@ class RegisterController extends Controller
 
     public function otp()
     {
+        // Check if registration data exists in session
+        if (!\Illuminate\Support\Facades\Session::has('registration_data')) {
+            return redirect()->route('view_register.' . app()->getLocale())
+                ->withErrors(['error' => __('Registration session expired. Please register again.')]);
+        }
+        
         return view('web.auth.otp');
+    }
+
+    public function resendOtp()
+    {
+        $registrationData = \Illuminate\Support\Facades\Session::get('registration_data');
+
+        if (!$registrationData) {
+            return redirect()->route('view_register.' . app()->getLocale())
+                ->withErrors(['error' => __('Registration session expired. Please register again.')]);
+        }
+
+        // Generate new OTP
+        $newCode = rand(1000, 9999);
+        $expireAt = Carbon::now()->addMinutes(5);
+
+        // Update OTP in session
+        $registrationData['code'] = $newCode;
+        $registrationData['expire_at'] = $expireAt->toDateTimeString();
+        \Illuminate\Support\Facades\Session::put('registration_data', $registrationData);
+
+        // Resend OTP email
+        \Illuminate\Support\Facades\Mail::to($registrationData['email'])->send(new \App\Mail\OTPEmail($newCode));
+
+        return back()->with('success', __('OTP code has been resent to your email.'));
     }
     // public function verify(CodeRequest $codeRequest)
     // {
@@ -37,40 +67,61 @@ class RegisterController extends Controller
     public function verify(Request $request)
     {
         $data = $request->all();
+        $registrationData = \Illuminate\Support\Facades\Session::get('registration_data');
 
-        $user = User::where('email', $data['email'])->first();
-
-        if (! $user) {
-            return back()->withErrors(['email' => __('Email not registered')]);
+        // Check if registration data exists in session
+        if (!$registrationData) {
+            return back()->withErrors(['email' => __('Registration session expired. Please register again.')]);
         }
 
-        if ($user->email_verified_at) {
-            return back()->withErrors(['email' => __('The user account has already been verified')]);
+        // Verify email matches
+        if ($registrationData['email'] !== $data['email']) {
+            return back()->withErrors(['email' => __('Email mismatch. Please use the email you registered with.')]);
         }
 
-        if ($user->code !== $data['otp']) {
+        // Verify OTP code
+        if ($registrationData['code'] != $data['otp']) {
             return back()->withErrors(['otp' => __('Wrong OTP code')]);
         }
 
-        if (Carbon::parse($user->expire_at)->lt(Carbon::now())) {
-            return back()->withErrors(['otp' => __('The OTP code has expired')]);
+        // Check if OTP has expired
+        $expireAt = Carbon::parse($registrationData['expire_at']);
+        if ($expireAt->lt(Carbon::now())) {
+            // Clear expired session data
+            \Illuminate\Support\Facades\Session::forget('registration_data');
+            return back()->withErrors(['otp' => __('The OTP code has expired. Please register again.')]);
         }
 
-        // $token = $user->createToken("API TOKEN")->plainTextToken;
-        $user->update([
-            'email_verified_at' => Carbon::now(),
-            'code'              => null,
-            'expire_at'         => null,
-        ]);
+        // Check if user already exists (in case of race condition)
+        $existingUser = User::where('email', $registrationData['email'])->first();
+        if ($existingUser) {
+            // Clear session and login existing user
+            \Illuminate\Support\Facades\Session::forget('registration_data');
+            Auth::login($existingUser);
+            return redirect()->route('home.' . app()->getLocale())->with('success', __('Welcome back!'));
+        }
 
-        Auth::login($user);
+        // Create user in database after successful OTP verification
+        try {
+            $user = $this->registerService->createUserAfterVerification();
+            
+            // Mark email as verified
+            $user->update([
+                'email_verified_at' => Carbon::now(),
+            ]);
 
-        // Redirect based on user type
-        if ($user->type === 'buyer') {
-            return redirect()->route('home.' . app()->getLocale())->with('success', __('Welcome! Your account has been verified.'));
-        } else {
-            // Vendor, Company, Therapist go to "Complete Your Account" page
-            return redirect()->route('verification.complete-account')->with('success', __('Welcome! Please complete your account verification.'));
+            Auth::login($user);
+
+            // Redirect based on user type
+            if ($user->type === 'buyer') {
+                return redirect()->route('home.' . app()->getLocale())->with('success', __('Welcome! Your account has been verified.'));
+            } else {
+                // Vendor, Company, Therapist go to "Complete Your Account" page
+                return redirect()->route('verification.complete-account')->with('success', __('Welcome! Please complete your account verification.'));
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('User Creation Error: ' . $e->getMessage());
+            return back()->withErrors(['error' => __('Failed to create account. Please try again.')]);
         }
     }
 

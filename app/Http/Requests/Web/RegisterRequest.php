@@ -23,9 +23,33 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => [
+                'required',
+                'email',
+                function ($attribute, $value, $fail) {
+                    // Only check uniqueness for verified users
+                    $existingUser = \App\Models\User::where('email', $value)
+                        ->whereNotNull('email_verified_at')
+                        ->first();
+                    if ($existingUser) {
+                        $fail(__('The email has already been taken.'));
+                    }
+                },
+            ],
             'password' => 'required|confirmed|min:8',
-            'phone' => 'required|string|unique:users,phone',
+            'phone' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    // Only check uniqueness for verified users
+                    $existingUser = \App\Models\User::where('phone', $value)
+                        ->whereNotNull('email_verified_at')
+                        ->first();
+                    if ($existingUser) {
+                        $fail(__('The phone number has already been taken.'));
+                    }
+                },
+            ],
             'country' => 'required|string|max:2', // Country code (EG, SA, etc.)
             'image' => 'nullable|image|max:10240',
             'type' => 'required|in:vendor,buyer,therapist,company',
