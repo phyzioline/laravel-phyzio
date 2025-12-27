@@ -37,7 +37,7 @@
   <link href="{{ asset('dashboard/sass/responsive.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('dashboard/css/dash.css')}}">
   <link rel="stylesheet" href="{{ asset('dashboard/css/teal-theme.css')}}">
-  <!-- Phyzioline Typography System -->
+  <!-- Phyzioline Typography System - Load AFTER icon fonts to preserve them -->
   <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
   
   <!-- RTL Support for Arabic -->

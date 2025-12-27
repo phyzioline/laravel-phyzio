@@ -3,79 +3,17 @@
  * Inter Font - Weights: 400, 500, 600, 700
  * Applied globally across all dashboards
  * 
- * IMPORTANT: Icon fonts are preserved with highest specificity
+ * CRITICAL: Icon fonts MUST be preserved - Load this AFTER icon font CSS files
  */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* ============================================
-   ICON FONT PRESERVATION - HIGHEST PRIORITY
-   Must come FIRST to ensure icons work
-   ============================================ */
-
-/* Font Awesome Icons - HIGHEST SPECIFICITY */
-i.fa, i.fas, i.far, i.fal, i.fab,
-.fa, .fas, .far, .fal, .fab,
-[class*="fa fa-"], [class*="fas fa-"], [class*="far fa-"],
-[class^="fa"], [class*=" fa"],
-i[class*="fa"], span[class*="fa"], div[class*="fa"],
-.card i.fa, .card-body i.fa, .btn i.fa {
-    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
-    font-weight: 900 !important;
-    font-style: normal !important;
-    font-variant: normal !important;
-    text-rendering: auto !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-}
-
-/* Line Awesome Icons */
-i.las, i.la, 
-.las, .la,
-[class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"],
-i[class^="las"], i[class^="la-"], 
-span[class^="las"], span[class^="la-"] {
-    font-family: "Line Awesome Free" !important;
-    font-weight: 900 !important;
-    font-style: normal !important;
-}
-
-/* Material Icons */
-i.material-icons, i.material-icons-outlined,
-.material-icons, .material-icons-outlined,
-[class*="material-icons"] {
-    font-family: "Material Icons", "Material Icons Outlined" !important;
-    font-weight: normal !important;
-    font-style: normal !important;
-}
-
-/* Bootstrap Icons */
-i.bi, i[class^="bi-"],
-.bi, [class^="bi-"], [class*=" bi-"] {
-    font-family: "bootstrap-icons" !important;
-    font-weight: normal !important;
-    font-style: normal !important;
-}
-
-/* LineIcons */
-i.lni, i[class^="lni-"],
-.lni, [class^="lni-"], [class*=" lni-"] {
-    font-family: "LineIcons" !important;
-    font-weight: normal !important;
-    font-style: normal !important;
-}
-
-/* Generic icon class */
-.icon {
-    font-family: inherit !important;
-}
-
-/* ============================================
    INTER FONT APPLICATION
-   Applied to text elements only
+   Applied to text elements only - EXCLUDE ALL ICONS
    ============================================ */
 
-/* Global Font Application */
+/* Global Font Application - BUT EXCLUDE ICONS */
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     font-size: 14px;
@@ -147,89 +85,99 @@ p, .text-body {
     font-weight: 400;
 }
 
-/* Buttons */
-.btn {
+/* Buttons - But exclude icon elements inside */
+.btn:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
     font-size: 14px;
     letter-spacing: 0.01em;
 }
 
-.btn-lg {
+.btn-lg:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-size: 16px;
     font-weight: 600;
     padding: 12px 24px;
 }
 
-.btn-sm {
+.btn-sm:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-size: 12px;
     font-weight: 500;
     padding: 6px 12px;
 }
 
-.btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info {
+.btn-primary:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.btn-success:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.btn-danger:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.btn-warning:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.btn-info:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
 }
 
 /* Form Elements */
-input, textarea, select, .form-control {
+input:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+textarea:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+select:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.form-control:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-family: 'Inter', sans-serif !important;
     font-size: 14px;
     font-weight: 400;
 }
 
-.form-label {
+.form-label:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
     font-size: 14px;
     margin-bottom: 0.5rem;
 }
 
 /* Tables */
-.table {
+.table:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-size: 14px;
     font-weight: 400;
 }
 
-.table thead th {
+.table thead th:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 600;
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.table td {
+.table td:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 400;
 }
 
 /* Cards */
-.card-title {
+.card-title:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 600;
     font-size: 18px;
 }
 
-.card-subtitle {
+.card-subtitle:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
     font-size: 14px;
 }
 
 /* Navigation */
-.nav-link, .sidebar-menu a, .menu-title {
+.nav-link:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.sidebar-menu a:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.menu-title:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
     font-size: 14px;
 }
 
 /* Badges */
-.badge {
+.badge:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 500;
     font-size: 12px;
 }
 
 /* Alerts */
-.alert {
+.alert:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-size: 14px;
     font-weight: 400;
 }
 
-.alert strong, .alert .font-weight-bold {
+.alert strong:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]), 
+.alert .font-weight-bold:not(i):not([class*="fa"]):not([class*="las"]):not([class*="la-"]):not([class*="bi"]):not([class*="lni"]):not([class*="material"]) {
     font-weight: 600;
 }
 
@@ -238,3 +186,89 @@ input, textarea, select, .form-control {
 .font-weight-medium { font-weight: 500 !important; }
 .font-weight-semibold { font-weight: 600 !important; }
 .font-weight-bold { font-weight: 700 !important; }
+
+/* ============================================
+   ICON FONT PRESERVATION - ABSOLUTE OVERRIDE
+   These rules MUST override everything else
+   Load this CSS file AFTER icon font CSS files
+   ============================================ */
+
+/* Font Awesome Icons - MAXIMUM SPECIFICITY */
+i.fa, i.fas, i.far, i.fal, i.fab,
+i[class*="fa fa-"], i[class*="fas fa-"], i[class*="far fa-"],
+i[class^="fa"], i[class*=" fa"],
+.fa, .fas, .far, .fal, .fab,
+[class*="fa fa-"], [class*="fas fa-"], [class*="far fa-"],
+[class^="fa"]:not([class*="false"]):not([class*="fade"]), 
+[class*=" fa"]:not([class*="false"]):not([class*="fade"]),
+span[class*="fa"], div[class*="fa"],
+.card i.fa, .card-body i.fa, .btn i.fa,
+.stat-card i.fa, .icon-box i.fa {
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free", "Font Awesome 5 Pro" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    speak: none !important;
+}
+
+/* Line Awesome Icons - MAXIMUM SPECIFICITY */
+i.las, i.la, 
+i[class^="las"], i[class^="la-"], i[class*=" las"], i[class*=" la-"],
+.las, .la,
+[class^="las"], [class^="la-"], [class*=" las"], [class*=" la-"],
+span[class^="las"], span[class^="la-"],
+.card i.las, .card-body i.las, .btn i.las,
+.stat-card i.las, .icon-box i.las {
+    font-family: "Line Awesome Free" !important;
+    font-weight: 900 !important;
+    font-style: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Material Icons - MAXIMUM SPECIFICITY */
+i.material-icons, i.material-icons-outlined,
+i[class*="material-icons"],
+.material-icons, .material-icons-outlined,
+[class*="material-icons"] {
+    font-family: "Material Icons", "Material Icons Outlined" !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    text-rendering: optimizeLegibility !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+/* Bootstrap Icons - MAXIMUM SPECIFICITY */
+i.bi, i[class^="bi-"], i[class*=" bi-"],
+.bi, [class^="bi-"], [class*=" bi-"] {
+    font-family: "bootstrap-icons" !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+/* LineIcons - MAXIMUM SPECIFICITY */
+i.lni, i[class^="lni-"], i[class*=" lni-"],
+.lni, [class^="lni-"], [class*=" lni-"] {
+    font-family: "LineIcons" !important;
+    font-weight: normal !important;
+    font-style: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+/* Generic icon class */
+.icon {
+    font-family: inherit !important;
+}
+
+/* CRITICAL: Ensure ALL i tags with icon classes use icon fonts */
+i[class*="fa"], i[class*="las"], i[class*="la-"], i[class*="bi"], 
+i[class*="lni"], i[class*="material"] {
+    font-family: inherit !important;
+}
