@@ -84,51 +84,51 @@ html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
    MENU ITEMS STYLING
    ============================================ */
 
-/* Main Menu Items - White Text on Teal */
+/* Main Menu Items - Dark Text on White Background */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a {
-    color: #ffffff !important;
+    color: #333333 !important;
     font-weight: 500;
     font-size: 13px !important;
     transition: all 0.3s ease;
 }
 
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a .parent-icon {
-    color: #ffffff !important;
+    color: #017A82 !important;
 }
 
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a .menu-title {
-    color: #ffffff !important;
+    color: #333333 !important;
     font-size: 13px !important;
 }
 
-/* Hover State - Light Background */
+/* Hover State - Light Gray Background */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a:hover {
-    background-color: rgba(255, 255, 255, 0.15) !important;
-    color: #ffffff !important;
+    background-color: #f5f5f5 !important;
+    color: #017A82 !important;
     border-radius: 8px;
     transform: translateX(5px);
 }
 
-/* Active Link - Bright Highlight */
+/* Active Link - Teal Highlight */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu .mm-active>a,
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu a.mm-active {
-    background-color: rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
+    background-color: #e0f7fa !important;
+    color: #017A82 !important;
     font-size: 13px !important;
-    border-left: 4px solid #ffffff;
+    border-left: 4px solid #017A82 !important;
     font-weight: 600;
 }
 
 /* Submenu Items */
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a {
-    color: rgba(255, 255, 255, 0.9) !important;
+    color: #666666 !important;
     padding-left: 50px;
     font-size: 13px !important;
 }
 
 [data-bs-theme=blue-theme] .sidebar-wrapper .sidebar-nav .metismenu ul a:hover {
-    color: #ffffff !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #017A82 !important;
+    background-color: #f5f5f5 !important;
     font-size: 13px !important;
 }
 
@@ -137,11 +137,12 @@ html[data-bs-theme=blue-theme] body .sidebar-wrapper .sidebar-header img,
    ============================================ */
 
 [data-bs-theme=blue-theme] .sidebar-wrapper #footer-section {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: #6c757d !important;
+    background: transparent !important;
 }
 
 [data-bs-theme=blue-theme] .sidebar-wrapper #footer-section a {
-    color: #ffffff !important;
+    color: #017A82 !important;
     font-weight: bold;
 }
 
