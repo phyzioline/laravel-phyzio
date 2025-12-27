@@ -79,43 +79,36 @@
         background: rgba(4, 184, 196, 0.3) !important;
     }
     
-    /* Fix white text on white backgrounds in main content */
-    /* Ensure hero text has proper background or colored text */
+    /* Ensure hero text has text shadow for visibility */
     .slider-section .hero-text.text-white,
     .slider-section .hero-praph.text-white {
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     
-    /* Fix any white text that might appear on white backgrounds */
-    section:not([style*="background"]):not([class*="bg-"]) .text-white,
+    /* Fix white text on white backgrounds in main content (not header/hero) */
     .ecosystem-section .text-white,
     .bg-white .text-white,
-    [style*="background-color: #fff"] .text-white,
-    [style*="background-color: white"] .text-white,
-    [style*="background: white"] .text-white,
-    [style*="background: #fff"] .text-white {
-        color: #02767F !important;
-    }
-    
-    /* Fix hero-li white text if on white background */
-    .slider-content .hero-li {
+    [style*="background-color: #fff"] .text-white:not(.hero-text):not(.hero-praph),
+    [style*="background-color: white"] .text-white:not(.hero-text):not(.hero-praph),
+    [style*="background: white"] .text-white:not(.hero-text):not(.hero-praph),
+    [style*="background: #fff"] .text-white:not(.hero-text):not(.hero-praph) {
         color: #02767F !important;
     }
     
     /* Ensure sections with light backgrounds don't have white text */
-    .ecosystem-section,
-    section[style*="background-color: #f8f9fa"],
-    section[style*="background-color: #ffffff"],
-    .bg-light,
-    .bg-white {
+    .ecosystem-section:not(.slider-section),
+    section[style*="background-color: #f8f9fa"]:not(.slider-section),
+    section[style*="background-color: #ffffff"]:not(.slider-section),
+    .bg-light:not(.slider-section),
+    .bg-white:not(.slider-section) {
         color: #36415a !important;
     }
     
-    .ecosystem-section .text-white,
-    section[style*="background-color: #f8f9fa"] .text-white,
-    section[style*="background-color: #ffffff"] .text-white,
-    .bg-light .text-white,
-    .bg-white .text-white {
+    .ecosystem-section .text-white:not(.hero-text):not(.hero-praph),
+    section[style*="background-color: #f8f9fa"] .text-white:not(.hero-text):not(.hero-praph),
+    section[style*="background-color: #ffffff"] .text-white:not(.hero-text):not(.hero-praph),
+    .bg-light .text-white:not(.hero-text):not(.hero-praph),
+    .bg-white .text-white:not(.hero-text):not(.hero-praph) {
         color: #02767F !important;
     }
 </style>

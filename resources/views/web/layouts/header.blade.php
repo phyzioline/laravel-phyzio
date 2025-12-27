@@ -5,19 +5,8 @@
     background: transparent;
     border: none;
     font-size: 1.6rem;
-    color: #02767F;
+    color: #fff;
     cursor: pointer;
-}
-
-/* Fix white text on transparent background - use teal color */
-.header-section:not(.stuck) .btn-cart,
-.header-section:not(.stuck) .mobile-btn-cart {
-    color: #02767F !important;
-}
-
-.header-section.stuck .btn-cart,
-.header-section.stuck .mobile-btn-cart {
-    color: #fff !important;
 }
   
 .header-section .btns-group > ul > li > button.btn-cart .cart-counter, .header-section .btns-group > ul > li > button.mobile-btn-cart .cart-counter {
@@ -249,35 +238,18 @@ body.has-hero #header-section {
     gap: 15px;
 }
 
-/* Header Icons */
-/* Fix white text visibility - only show white when header has background */
-.header-section.stuck .btn-cart,
-.header-section.stuck .main-menu i,
-.header-section.stuck .btn-login {
+/* Header Icons - Always white */
+.btn-cart,
+.main-menu i,
+.btn-login {
     color: #fff !important;
 }
 
-/* When header is transparent, use dark text */
-.header-section:not(.stuck) .btn-cart,
-.header-section:not(.stuck) .main-menu i,
-.header-section:not(.stuck) .btn-login {
-    color: #02767F !important;
-}
-
-/* Styling Menu Links */
-#header-section.stuck .main-menu ul li a {
+/* Styling Menu Links - Always white */
+#header-section .main-menu ul li a {
     position: relative;
     font-size: 15px;
     color: #fff !important;
-    padding: 6px 8px;
-    font-weight: 600;
-}
-
-/* When header is transparent, use dark text for menu */
-#header-section:not(.stuck) .main-menu ul li a {
-    position: relative;
-    font-size: 15px;
-    color: #02767F !important;
     padding: 6px 8px;
     font-weight: 600;
 }
@@ -456,16 +428,7 @@ body.has-hero .shop-hero-banner {
 }
 
 /* Make menu icon visible always */
-/* Mobile menu button - dark when transparent, white when stuck */
-.header-section:not(.stuck) .mobile-menu-btn {
-    display: block !important;
-    font-size: 26px;
-    color: #02767F !important;
-    background: none;
-    border: none;
-}
-
-.header-section.stuck .mobile-menu-btn {
+.mobile-menu-btn {
     display: block !important;
     font-size: 26px;
     color: #fff !important;
@@ -575,40 +538,28 @@ body.has-hero .shop-hero-banner {
             <i class="las la-bars"></i>
         </button>
 
-        <!-- TRACK YOUR ORDER BUTTON (Mobile) - Shows after order placement -->
-        @php
-            $showTrackButton = false;
-            $trackUrl = '#';
-            
-            // Check if user just placed an order (success message in session)
-            if (session('success') || session('guest_order')) {
-                $showTrackButton = true;
-                if (Auth::check()) {
-                    $trackUrl = route('history_order.index');
-                } else {
-                    // For guests, link to order history with email parameter if available
-                    $guestOrder = session('guest_order');
-                    if ($guestOrder && isset($guestOrder->order_number)) {
-                        $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
-                    } else {
-                        $trackUrl = route('history_order.index');
-                    }
-                }
-            }
-            // Also show if user has recent orders (within last 30 days)
-            elseif (Auth::check() && \App\Models\Order::where('user_id', auth()->id())->where('created_at', '>=', now()->subDays(30))->exists()) {
-                $showTrackButton = true;
-                $trackUrl = route('history_order.index');
-            }
-        @endphp
-        
-        @if($showTrackButton)
-        <a href="{{ $trackUrl }}" 
+        <!-- TRACK YOUR ORDER BUTTON (Mobile) - Always show for logged in users -->
+        @if(Auth::check())
+        <a href="{{ route('history_order.index') }}" 
            class="btn-track-order-mobile" 
            title="{{ __('Track Your Order') }}">
             <i class="las la-shipping-fast"></i>
             <span class="track-order-text-mobile">{{ __('Track Order') }}</span>
         </a>
+        @elseif(session('success') || session('guest_order'))
+            @php
+                $trackUrl = route('history_order.index');
+                $guestOrder = session('guest_order');
+                if ($guestOrder && isset($guestOrder->order_number)) {
+                    $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
+                }
+            @endphp
+            <a href="{{ $trackUrl }}" 
+               class="btn-track-order-mobile" 
+               title="{{ __('Track Your Order') }}">
+                <i class="las la-shipping-fast"></i>
+                <span class="track-order-text-mobile">{{ __('Track Order') }}</span>
+            </a>
         @endif
 
         <!-- LOGIN BUTTON REMOVED (Duplicate) -->
@@ -776,6 +727,16 @@ body.has-hero .shop-hero-banner {
                                             </a>
                                             <div class="dropdown-divider"></div>
                                         @endif
+                                        <a class="dropdown-item" href="{{ route('history_order.index') }}">
+                                            <i class="las la-history mr-2"></i> {{ __('Order History') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('history_order.index') }}">
+                                            <i class="las la-shipping-fast mr-2"></i> {{ __('Track Your Order') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('favorites.index') }}">
+                                            <i class="la la-heart mr-2"></i> {{ __('My Wishlist') }}
+                                        </a>
+                                        <div class="dropdown-divider"></div>
                                         <a class="dropdown-item text-danger" href="{{ route('logout') }}">
                                             <i class="las la-sign-out-alt mr-2"></i> {{ __('Logout') }}
                                         </a>

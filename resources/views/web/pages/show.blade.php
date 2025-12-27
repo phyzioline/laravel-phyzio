@@ -657,7 +657,15 @@ header,
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <script>
-            $(document).ready(function() {
+            // Wait for jQuery to be available
+            (function() {
+                function initShopButtons() {
+                    if (typeof jQuery === 'undefined') {
+                        setTimeout(initShopButtons, 100);
+                        return;
+                    }
+                    
+                    $(document).ready(function() {
                 // Add to Cart
                 $(document).on('click', '.noon-btn-add-cart', function(e) {
                     e.preventDefault();
@@ -777,7 +785,16 @@ header,
                         }
                     });
                 });
-            });
+                    });
+                }
+                
+                // Start initialization
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', initShopButtons);
+                } else {
+                    initShopButtons();
+                }
+            })();
         </script>
     @endpush
 </main>

@@ -131,15 +131,10 @@
     margin-left: auto !important; /* pushes it right */
     margin-right: 10px !important;
     font-size: 28px !important;
-    color: #02767F !important; /* Dark color for visibility on transparent header */
+    color: #fff !important; /* White color for header */
     position: relative;
     z-index: 99999; /* فوق الهيدر */
   }
-   
-   /* When header is stuck, use white color */
-   .header-section.stuck .mobile-menu-btn {
-       color: #fff !important;
-   }
 
   /* Ensure mobile header layout is flex aligned properly */
     .brand-logo {
@@ -257,10 +252,10 @@
 		================================================== -->
 
 
-@stack('scripts')
-  
   <!-- jquery include - Load synchronously for inline scripts -->
   <script src="{{ asset('web/assets/js/jquery-3.4.1.min.js')}}"></script>
+  
+@stack('scripts')
   
   <!-- Load Swiper after jQuery -->
   <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js" defer></script>
