@@ -255,6 +255,15 @@
        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05) !important;
      }
      
+     /* RTL Sidebar Fix for Arabic */
+     [dir="rtl"] .sidebar-wrapper {
+       left: auto !important;
+       right: 0 !important;
+       border-right: none !important;
+       border-left: 1px solid #e0e0e0 !important;
+       box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05) !important;
+     }
+     
      /* Body background - Clean white/gray, no sidebar color bleeding */
      body {
        background-color: #f3f3f3 !important;
@@ -323,6 +332,14 @@
        overflow-x: hidden !important;
      }
      
+     /* RTL Fixes for Arabic */
+     [dir="rtl"] .page-wrapper {
+       margin-left: 0 !important;
+       margin-right: 260px !important; /* Sidebar width on right */
+       width: calc(100% - 260px) !important;
+       max-width: calc(100% - 260px) !important;
+     }
+     
      /* Prevent horizontal scroll and scaling issues */
      html, body {
        overflow-x: hidden !important;
@@ -339,6 +356,22 @@
        margin-left: 0 !important;
        width: 100% !important;
        max-width: 100% !important;
+     }
+     
+     /* RTL Toggle State */
+     [dir="rtl"] body.toggled .page-wrapper {
+       margin-right: 0 !important;
+       margin-left: 0 !important;
+     }
+     
+     [dir="rtl"] body.toggled .top-header .navbar {
+       right: 0 !important;
+       left: auto !important;
+     }
+     
+     [dir="rtl"] body.toggled .sidebar-wrapper {
+       right: -260px !important;
+       left: auto !important;
      }
      
      /* Main wrapper alternative */
@@ -417,12 +450,33 @@
        min-height: 0 !important;
      }
      
-     /* Prevent any scaling/zoom issues */
+     /* Prevent any scaling/zoom issues - Fixed for both LTR and RTL */
      @media screen and (min-width: 992px) {
        html {
          zoom: 1 !important;
          -webkit-transform: scale(1) !important;
          transform: scale(1) !important;
+       }
+       
+       /* Ensure no zoom in RTL */
+       [dir="rtl"] html {
+         zoom: 1 !important;
+         -webkit-transform: scale(1) !important;
+         transform: scale(1) !important;
+       }
+     }
+     
+     /* RTL Mobile Responsive Fixes */
+     @media screen and (max-width: 991px) {
+       [dir="rtl"] .sidebar-wrapper {
+         transform: translateX(100%) !important; /* Slide from right */
+       }
+       [dir="rtl"] .sidebar-wrapper.active {
+         transform: translateX(0) !important;
+       }
+       [dir="rtl"] .top-header .navbar {
+         right: 0 !important;
+         left: auto !important;
        }
      }
      
