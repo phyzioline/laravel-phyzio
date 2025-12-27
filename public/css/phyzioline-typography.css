@@ -1,0 +1,176 @@
+/**
+ * Phyzioline Professional Typography System
+ * Inter Font - Weights: 400, 500, 600, 700
+ * Applied globally across all dashboards
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Global Font Application */
+* {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Hierarchy - Inter Weights */
+h1, .h1 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+}
+
+h2, .h2 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.3px;
+    margin-bottom: 0.875rem;
+}
+
+h3, .h3 {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+}
+
+h4, .h4 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.625rem;
+}
+
+h5, .h5 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+h6, .h6 {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+/* Body Text */
+p, .text-body, body {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.text-small {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.text-large {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+}
+
+.btn-lg {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 24px;
+}
+
+.btn-sm {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+}
+
+.btn-primary, .btn-success, .btn-danger, .btn-warning, .btn-info {
+    font-weight: 500;
+}
+
+/* Form Elements */
+input, textarea, select, .form-control {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+/* Tables */
+.table {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.table thead th {
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table td {
+    font-weight: 400;
+}
+
+/* Cards */
+.card-title {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.card-subtitle {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Navigation */
+.nav-link, .sidebar-menu a, .menu-title {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    font-size: 12px;
+}
+
+/* Alerts */
+.alert {
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.alert strong, .alert .font-weight-bold {
+    font-weight: 600;
+}
+
+/* Utility Classes */
+.font-weight-normal { font-weight: 400 !important; }
+.font-weight-medium { font-weight: 500 !important; }
+.font-weight-semibold { font-weight: 600 !important; }
+.font-weight-bold { font-weight: 700 !important; }
+

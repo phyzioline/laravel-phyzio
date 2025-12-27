@@ -7,14 +7,19 @@
     <title>@yield('title') - {{ config('app.name', 'Phyzioline') }}</title>
     <link rel="icon" type="image/png" href="{{ asset('web/assets/images/logo.png') }}" />
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Fonts - Inter for Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    
+    <!-- Phyzioline Typography System -->
+    <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
     
     <style>
         :root {
@@ -23,27 +28,80 @@
             --bg-color: #f8f9fa;
             --sidebar-width: 260px;
             --text-color: #333;
-            --font-english: 'Inter', sans-serif;
-            --font-arabic: 'Cairo', sans-serif;
+            --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        /* Professional Typography System - Inter Font */
+        * {
+            font-family: var(--font-primary) !important;
         }
 
         body {
-            font-family: var(--font-arabic); /* Default to Cairo for uniform look, or switch based on logic */
+            font-family: var(--font-primary);
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
-            font-size: 14px; /* Base size */
+            font-size: 14px;
             font-weight: 400;
+            line-height: 1.6;
         }
         
-        /* Typography Rules */
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 700 !important; /* Bold headers only */
+        /* Typography Hierarchy - Inter Weights */
+        h1 { 
+            font-size: 32px; 
+            font-weight: 700; 
+            line-height: 1.2;
+            letter-spacing: -0.5px;
         }
-        h1 { font-size: 24px; }
-        h2 { font-size: 22px; }
-        h3 { font-size: 20px; }
-        h4 { font-size: 18px; }
+        h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            line-height: 1.3;
+            letter-spacing: -0.3px;
+        }
+        h3 { 
+            font-size: 24px; 
+            font-weight: 600; 
+            line-height: 1.4;
+        }
+        h4 { 
+            font-size: 20px; 
+            font-weight: 600; 
+            line-height: 1.4;
+        }
+        h5 { 
+            font-size: 18px; 
+            font-weight: 600; 
+            line-height: 1.5;
+        }
+        h6 { 
+            font-size: 16px; 
+            font-weight: 500; 
+            line-height: 1.5;
+        }
+        
+        /* Body Text */
+        p, body, .text-body {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .btn-lg {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .btn-sm {
+            font-size: 12px;
+            font-weight: 500;
+        }
 
         /* Table Rules */
         table, .table {
@@ -77,13 +135,15 @@
         .sidebar-brand {
             padding: 20px;
             text-align: center;
-            font-size: 24px;
-            font-weight: bold;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .sidebar-brand img {
-            max-width: 150px;
+            max-width: 180px;
+            height: auto;
             filter: brightness(0) invert(1);
         }
 
@@ -259,7 +319,11 @@
     <!-- Sidebar -->
     <div class="dashboard-sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <span class="las la-clinic-medical"></span> Phyzioline
+            <a href="{{ '/' . app()->getLocale() }}" style="display: block;">
+                <img src="{{ asset('web/assets/images/LOGO PHYSIOLINE SVG 1 (2).svg') }}" 
+                     alt="Phyzioline Logo" 
+                     style="max-width: 180px; height: auto;">
+            </a>
         </div>
 
         <ul class="sidebar-menu">

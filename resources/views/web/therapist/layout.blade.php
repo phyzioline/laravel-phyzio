@@ -9,9 +9,38 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/line-awesome.min.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('web/assets/css/style.css')}}" />
     <link href="{{ asset('dashboard/css/teal-theme.css')}}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400&display=swap" rel="stylesheet">
+    <!-- Phyzioline Typography System -->
+    <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
+    <!-- Inter Font - Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #f4f6f9; font-family: 'Alexandria', sans-serif; }
+        /* Professional Typography System - Inter Font */
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        }
+        
+        body { 
+            background-color: #f4f6f9; 
+            font-family: 'Inter', sans-serif !important;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+        
+        /* Typography Hierarchy */
+        h1 { font-size: 32px; font-weight: 700; line-height: 1.2; letter-spacing: -0.5px; }
+        h2 { font-size: 28px; font-weight: 700; line-height: 1.3; letter-spacing: -0.3px; }
+        h3 { font-size: 24px; font-weight: 600; line-height: 1.4; }
+        h4 { font-size: 20px; font-weight: 600; line-height: 1.4; }
+        h5 { font-size: 18px; font-weight: 600; line-height: 1.5; }
+        h6 { font-size: 16px; font-weight: 500; line-height: 1.5; }
+        
+        .btn {
+            font-weight: 500;
+            font-size: 14px;
+        }
     </style>
     @stack('css')
 </head>
@@ -22,7 +51,9 @@
     <div class="sidebar">
         <div class="text-center mb-4">
             <a href="{{ '/' . app()->getLocale() }}">
-                <img src="{{ asset('web/assets/images/logo.png') }}" alt="Phyzioline" style="max-width: 80%;">
+                <img src="{{ asset('web/assets/images/LOGO PHYSIOLINE SVG 1 (2).svg') }}" 
+                     alt="Phyzioline Logo" 
+                     style="max-width: 180px; height: auto;">
             </a>
         </div>
         <nav>

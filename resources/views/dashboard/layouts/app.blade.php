@@ -19,7 +19,10 @@
   <link rel="stylesheet" type="text/css" href="{{ asset('dashboard/assets/plugins/simplebar/css/simplebar.css')}}">
   <!--bootstrap css-->
   <link href="{{ asset('dashboard/assets/css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Inter Font - Professional Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
     integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
@@ -34,6 +37,8 @@
   <link href="{{ asset('dashboard/sass/responsive.css')}}" rel="stylesheet">
   <link rel="stylesheet" href="{{ asset('dashboard/css/dash.css')}}">
   <link rel="stylesheet" href="{{ asset('dashboard/css/teal-theme.css')}}">
+  <!-- Phyzioline Typography System -->
+  <link rel="stylesheet" href="{{ asset('css/phyzioline-typography.css')}}">
   
   <!-- RTL Support for Arabic -->
   @if(app()->getLocale() == 'ar')
@@ -153,12 +158,68 @@
      /* GLOBAL DENSITY - "The Amazon Look" */
      /* Removed zoom to fix table scaling issues */
 
+     /* Professional Typography System - Inter Font */
+     * {
+       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+     }
+
      body {
-       font-family: "Amazon Ember", Arial, sans-serif !important;
+       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
        color: #0F1111 !important;
        background-color: #f3f3f3 !important;
-       font-size: 13px !important;
+       font-size: 14px !important;
+       font-weight: 400 !important;
+       line-height: 1.5 !important;
+     }
+     
+     /* Typography Hierarchy - Inter Weights */
+     h1, .h1 { 
+       font-size: 32px !important; 
+       font-weight: 700 !important; 
+       line-height: 1.2 !important;
+       letter-spacing: -0.5px !important;
+     }
+     h2, .h2 { 
+       font-size: 28px !important; 
+       font-weight: 700 !important; 
        line-height: 1.3 !important;
+       letter-spacing: -0.3px !important;
+     }
+     h3, .h3 { 
+       font-size: 24px !important; 
+       font-weight: 600 !important; 
+       line-height: 1.4 !important;
+     }
+     h4, .h4 { 
+       font-size: 20px !important; 
+       font-weight: 600 !important; 
+       line-height: 1.4 !important;
+     }
+     h5, .h5 { 
+       font-size: 18px !important; 
+       font-weight: 600 !important; 
+       line-height: 1.5 !important;
+     }
+     h6, .h6 { 
+       font-size: 16px !important; 
+       font-weight: 500 !important; 
+       line-height: 1.5 !important;
+     }
+     
+     /* Buttons */
+     .btn {
+       font-weight: 500 !important;
+       font-size: 14px !important;
+     }
+     
+     .btn-lg {
+       font-size: 16px !important;
+       font-weight: 600 !important;
+     }
+     
+     .btn-sm {
+       font-size: 12px !important;
+       font-weight: 500 !important;
      }
 
      /* Tighten up everything */
@@ -178,10 +239,7 @@
        font-size: 12px !important;
      }
 
-     /* Global Title Scaling */
-     h1, .h1 { font-size: 18px !important; font-weight: 700 !important; }
-     h2, .h2 { font-size: 16px !important; font-weight: 700 !important; }
-     h3, .h3 { font-size: 14px !important; font-weight: 700 !important; }
+     /* Typography already defined above with Inter font */
 
      /* Sidebar - Keep brand colors but make compact */
      .sidebar-wrapper {
