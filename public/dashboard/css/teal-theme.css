@@ -4,10 +4,11 @@
    SIDEBAR STYLING
    ============================================ */
 
-/* Sidebar Background - Teal Gradient */
+/* Sidebar Background - White (No Teal) */
 [data-bs-theme=blue-theme] body .sidebar-wrapper {
-    background: linear-gradient(180deg, #0f766e 0%, #0d9488 100%) !important;
-    color: #ffffff !important;
+    background: #ffffff !important;
+    color: #333333 !important;
+    border-right: 1px solid #e0e0e0 !important;
 }
 
 /* Sidebar Header - FORCE White Background with Original Logo */
