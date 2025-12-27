@@ -245,6 +245,18 @@
      .sidebar-wrapper {
        width: 260px !important;
        background: #017A82 !important;
+       position: fixed !important;
+       left: 0 !important;
+       top: 0 !important;
+       height: 100vh !important;
+       z-index: 1000 !important;
+       overflow-y: auto !important;
+     }
+     
+     /* Body background - Clean white/gray, no sidebar color bleeding */
+     body {
+       background-color: #f3f3f3 !important;
+       background-image: none !important;
      }
      
      .sidebar-nav .menu-title {
@@ -261,40 +273,63 @@
        .page-wrapper { margin-left: 0 !important; }
      }
      
-     /* CRITICAL: Page Wrapper Layout Fix */
+     /* CRITICAL: Page Wrapper Layout Fix - Perfect Alignment */
      .page-wrapper {
        margin-left: 260px !important; /* Sidebar width */
        margin-top: 70px !important; /* Header height */
+       margin-right: 0 !important;
        transition: all 0.3s ease;
        padding: 20px;
        min-height: calc(100vh - 70px);
-       width: calc(100vw - 260px - 40px) !important; /* Full width minus sidebar and padding */
-       max-width: calc(100vw - 260px - 40px) !important;
+       width: calc(100% - 260px) !important; /* Full width minus sidebar */
+       max-width: calc(100% - 260px) !important;
        box-sizing: border-box;
+       background-color: #f3f3f3 !important;
      }
      
      /* When sidebar is toggled/collapsed */
      body.toggled .page-wrapper {
        margin-left: 0 !important;
-       width: calc(100vw - 40px) !important;
-       max-width: calc(100vw - 40px) !important;
+       width: 100% !important;
+       max-width: 100% !important;
      }
      
      /* Main wrapper alternative */
      .main-wrapper {
        margin-left: 260px !important;
        margin-top: 70px !important;
+       margin-right: 0 !important;
        transition: all 0.3s ease;
        padding: 20px;
-       width: calc(100vw - 260px - 40px) !important; /* Full width minus sidebar and padding */
+       width: calc(100% - 260px) !important; /* Full width minus sidebar */
+       background-color: #f3f3f3 !important;
        max-width: calc(100vw - 260px - 40px) !important;
        box-sizing: border-box;
      }
      
      body.toggled .main-wrapper {
        margin-left: 0 !important;
-       width: calc(100vw - 40px) !important;
-       max-width: calc(100vw - 40px) !important;
+       width: 100% !important;
+       max-width: 100% !important;
+     }
+     
+     /* Fix header alignment - Ensure it starts after sidebar */
+     .top-header {
+       left: 260px !important;
+       right: 0 !important;
+       width: calc(100% - 260px) !important;
+       background-color: #ffffff !important;
+       z-index: 999 !important;
+     }
+     
+     body.toggled .top-header {
+       left: 0 !important;
+       width: 100% !important;
+     }
+     
+     /* Ensure no background color bleeding from sidebar */
+     html, body {
+       overflow-x: hidden !important;
      }
      
      /* Ensure main-content uses full available width */
