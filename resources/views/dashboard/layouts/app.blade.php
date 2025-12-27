@@ -445,6 +445,12 @@
        box-sizing: border-box !important;
      }
      
+     /* RTL Fixes for Arabic - No extra margin on main-content */
+     [dir="rtl"] .main-content {
+       margin-left: 0 !important;
+       margin-right: 0 !important; /* No margin - already inside page-wrapper */
+     }
+     
      /* RTL Fixes for Arabic */
      [dir="rtl"] .page-wrapper {
        margin-left: 0 !important;
