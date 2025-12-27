@@ -149,6 +149,8 @@ class User extends Authenticatable
 
     /**
      * Get verification progress percentage
+     * Counts documents that have been uploaded (uploaded, under_review, or approved)
+     * not just approved ones, to show progress as user uploads documents
      */
     public function getVerificationProgress(): int
     {
@@ -158,17 +160,19 @@ class User extends Authenticatable
         }
 
         $mandatoryDocs = $requiredDocs->where('mandatory', true);
-        $approvedMandatory = 0;
+        $uploadedMandatory = 0;
 
         foreach ($mandatoryDocs as $doc) {
             $userDoc = $this->getDocument($doc->document_type);
-            if ($userDoc && $userDoc->status === 'approved') {
-                $approvedMandatory++;
+            // Count documents that have been uploaded (not missing)
+            // This includes: uploaded, under_review, approved, rejected
+            if ($userDoc && $userDoc->status !== 'missing') {
+                $uploadedMandatory++;
             }
         }
 
         return $mandatoryDocs->count() > 0 
-            ? (int)(($approvedMandatory / $mandatoryDocs->count()) * 100)
+            ? (int)(($uploadedMandatory / $mandatoryDocs->count()) * 100)
             : 0;
     }
 

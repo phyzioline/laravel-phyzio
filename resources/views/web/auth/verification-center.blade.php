@@ -201,7 +201,26 @@
                     @endif
 
                     <div class="text-center mt-4">
-                        <a href="{{ route('dashboard.home') }}" class="btn btn-outline-primary">
+                        @php
+                            $user = Auth::user();
+                            $dashboardRoute = 'dashboard.home'; // Default to admin dashboard
+                            
+                            // Check user type and roles to determine correct dashboard
+                            if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
+                                $dashboardRoute = 'dashboard.home';
+                            } elseif ($user->type === 'therapist') {
+                                $dashboardRoute = 'therapist.dashboard';
+                            } elseif ($user->type === 'company') {
+                                $dashboardRoute = 'company.dashboard';
+                            } elseif ($user->hasRole('instructor')) {
+                                $dashboardRoute = 'instructor.dashboard';
+                            } elseif ($user->hasRole('clinic')) {
+                                $dashboardRoute = 'clinic.dashboard';
+                            } elseif ($user->type === 'vendor' || $user->type === 'buyer') {
+                                $dashboardRoute = 'home.' . app()->getLocale();
+                            }
+                        @endphp
+                        <a href="{{ route($dashboardRoute) }}" class="btn btn-outline-primary">
                             <i class="fas fa-arrow-left mr-2"></i>{{ __('Back to Dashboard') }}
                         </a>
                     </div>
