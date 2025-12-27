@@ -35,20 +35,46 @@ class LoginService
             return redirect()->back();
         }
 
-        if ($user->type == 'vendor' && $user->status == 'inactive') {
+        // Check status for vendor, company, and therapist
+        if (in_array($user->type, ['vendor', 'company', 'therapist']) && $user->status == 'inactive') {
             Auth::logout();
-            Session::flash('message', ['type' => 'error', 'text' => __('Your account is inactive!')]);
+            Session::flash('message', ['type' => 'error', 'text' => __('Your account is inactive! Please wait for approval.')]);
             return redirect()->back();
         }
 
+        // Handle different user types
         if ($user->type == 'vendor' || $user->type == 'buyer') {
             Session::flash('message', ['type' => 'success', 'text' => __('Welcome Home!')]);
-            return redirect()->route('home');
+            return redirect()->route('home.' . app()->getLocale());
         }
 
-        Auth::logout();
-        Session::flash('message', ['type' => 'error', 'text' => __('There are no invalid credentials!')]);
-        return redirect()->back();
+        // Company users - redirect to company dashboard
+        if ($user->type == 'company') {
+            Session::flash('message', ['type' => 'success', 'text' => __('Welcome to your dashboard!')]);
+            return redirect()->route('company.dashboard');
+        }
+
+        // Therapist users - redirect to therapist dashboard
+        if ($user->type == 'therapist') {
+            Session::flash('message', ['type' => 'success', 'text' => __('Welcome to your dashboard!')]);
+            return redirect()->route('therapist.dashboard');
+        }
+
+        // Instructor users
+        if ($user->hasRole('instructor')) {
+            Session::flash('message', ['type' => 'success', 'text' => __('Welcome to your dashboard!')]);
+            return redirect()->route('instructor.dashboard');
+        }
+
+        // Clinic users
+        if ($user->hasRole('clinic')) {
+            Session::flash('message', ['type' => 'success', 'text' => __('Welcome to your dashboard!')]);
+            return redirect()->route('clinic.dashboard');
+        }
+
+        // Default fallback
+        Session::flash('message', ['type' => 'success', 'text' => __('Welcome Home!')]);
+        return redirect()->route('home.' . app()->getLocale());
     }
 
     Session::flash('message', ['type' => 'error', 'text' => __('The data is incorrect!')]);

@@ -29,7 +29,7 @@ class SocialLoginController extends Controller
 
             if ($provider_user) {
                 Auth::login($provider_user);
-                return redirect()->route('home.' . app()->getLocale());
+                return $this->redirectToDashboard($provider_user);
             }
 
             // 2. Check if email already exists (Manual Registration)
@@ -46,7 +46,7 @@ class SocialLoginController extends Controller
                 ]);
 
                 Auth::login($existing_user);
-                return redirect()->route('home.' . app()->getLocale());
+                return $this->redirectToDashboard($existing_user);
             }
 
             // 3. Create NEW User (if email doesn't exist)
@@ -72,5 +72,39 @@ class SocialLoginController extends Controller
                 'email' => 'Login Failed: ' . $e->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * Redirect user to appropriate dashboard based on their type
+     */
+    private function redirectToDashboard($user)
+    {
+        // Company users
+        if ($user->type === 'company') {
+            return redirect()->route('company.dashboard');
+        }
+
+        // Therapist users
+        if ($user->type === 'therapist') {
+            return redirect()->route('therapist.dashboard');
+        }
+
+        // Instructor users
+        if ($user->hasRole('instructor')) {
+            return redirect()->route('instructor.dashboard');
+        }
+
+        // Clinic users
+        if ($user->hasRole('clinic')) {
+            return redirect()->route('clinic.dashboard');
+        }
+
+        // Vendor and buyer users
+        if ($user->type === 'vendor' || $user->type === 'buyer') {
+            return redirect()->route('home.' . app()->getLocale());
+        }
+
+        // Default fallback
+        return redirect()->route('home.' . app()->getLocale());
     }
 }
