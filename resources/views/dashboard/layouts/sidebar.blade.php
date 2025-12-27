@@ -215,7 +215,7 @@
                   </a>
                   <ul>
                       @can('roles-index')
-                          <li><a href="{{ route('dashboard.roles.index') }}"><i class="bi bi-arrow-right-short"></i>Roles & Permissions</a></li>
+                          <li><a href="{{ route('dashboard.roles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __('Roles & Permissions') }}</a></li>
                       @endcan
                       @can('setting-update')
                           <li><a href="{{ route('dashboard.settings.show') }}"><i class="bi bi-arrow-right-short"></i>General Settings</a></li>

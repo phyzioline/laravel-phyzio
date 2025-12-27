@@ -124,12 +124,11 @@
                 <div class="container">
 
                     <div class="d-flex align-items-center">
-                        <h1 class="hero-text text-white mb-2" style="font-size : 40px; text-align : left">Physicaltherapy Software Solutions</h1>
+                        <h1 class="hero-text text-white mb-2" style="font-size : 40px; text-align : left">{{ __('Physicaltherapy Software Solutions') }}</h1>
 
                     </div>
                     <div class="hero-size">
-                        <h5 class="hero-praph text-white">All Physical Therapist Needs is Our Mission
-                            From PT to PT </h5>
+                        <h5 class="hero-praph text-white">{{ __('All Physical Therapist Needs is Our Mission From PT to PT') }}</h5>
                     </div>
 
 
@@ -145,8 +144,8 @@
         <section class="ecosystem-section py-5" style="background-color: #f8f9fa;">
             <div class="container">
                 <div class="text-center mb-5">
-                    <h2 class="font-weight-bold" style="color: #04b8c4;">Our Ecosystem</h2>
-                    <p class="text-muted">Comprehensive solutions for the physiotherapy community</p>
+                    <h2 class="font-weight-bold" style="color: #04b8c4;">{{ __('Our Ecosystem') }}</h2>
+                    <p class="text-muted">{{ __('Comprehensive solutions for the physiotherapy community') }}</p>
                 </div>
                 <div class="row">
                     <!-- Appointments -->
@@ -155,9 +154,9 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(8, 204, 219, 0.1);">
                                 <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Home Visits</h5>
-                            <p class="small mb-4" style="color: #36415a;">Book certified physiotherapists for home sessions.</p>
-                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Book Now</a>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">{{ __('Home Visits') }}</h5>
+                            <p class="small mb-4" style="color: #36415a;">{{ __('Book certified physiotherapists for home sessions.') }}</p>
+                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">{{ __('Book Now') }}</a>
                         </div>
                     </div>
 
@@ -167,9 +166,9 @@
                             <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
                                 <i class="las la-clinic-medical" style="font-size: 32px; color: #04b8c4;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Clinic ERP</h5>
-                            <p class="small mb-4" style="color: #36415a;">Manage your clinic with our complete software solution.</p>
-                            <a href="{{ route('web.erp.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Manage Clinic</a>
+                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">{{ __('Clinic ERP') }}</h5>
+                            <p class="small mb-4" style="color: #36415a;">{{ __('Manage your clinic with our complete software solution.') }}</p>
+                            <a href="{{ route('web.erp.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">{{ __('Manage Clinic') }}</a>
                         </div>
                     </div>
 
@@ -1428,7 +1427,7 @@
             <div class="container bg-case">
                 <div class="row justify-content-center d-flex align-items-center p-2">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-offers">
-                        <h1 class="element-offers">CLINIC MANAGEMENT SYSTEMS</h1>
+                        <h1 class="element-offers">{{ __('CLINIC MANAGEMENT SYSTEMS') }}</h1>
                         <h4 class="element-offer">by Phyzioline</h4>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-offers">
@@ -1439,13 +1438,12 @@
                 </div>
                 <div style="width: 800px; max-width: 100%;" class="d-flex justify-content-start title-offers m-0">
                     <span class="span-offers">
-                        Empowering Physical Therapy Through Innovation Where Healing Meets Technology, and Possibilities are
-                        Redefined
+                        {{ __('Empowering Physical Therapy Through Innovation Where Healing Meets Technology, and Possibilities are Redefined') }}
                     </span>
                 </div>
 
             </div>
-            <button class="custom-button">SOON THE OPENING</button>
+            <button class="custom-button">{{ __('SOON THE OPENING') }}</button>
 
         </section>
 

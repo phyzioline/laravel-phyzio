@@ -85,14 +85,14 @@
                                         <h6 class="text-primary font-weight-bold mb-3"><i class="las la-stethoscope"></i> {{ __('Condition Type') }}</h6>
                                         <div class="row no-gutters mb-3">
                                             @foreach(['Orthopedic' => 'bone', 'Neurological' => 'brain', 'Post-Surgery' => 'procedure', 'Elderly' => 'blind', 'Pediatric' => 'baby', 'Sports' => 'running'] as $label => $icon)
-                                            <div class="col-4 col-md-4 p-1">
-                                                <label class="btn btn-outline-white bg-white text-dark btn-block border p-2 shadow-sm complain-option mb-0 h-100 d-flex flex-column align-items-center justify-content-center">
-                                                    <input type="radio" name="complain_type" value="{{ $label }}" class="d-none" required>
-                                                    <i class="las la-{{ $icon }} la-2x mb-1 text-primary"></i>
-                                                    <small class="font-weight-bold" style="font-size: 0.75rem; line-height: 1.1;">{{ $label }}</small>
-                                                </label>
-                                            </div>
-                                            @endforeach
+                                                <div class="col-4 col-md-4 p-1">
+                                                    <label class="btn btn-outline-white bg-white text-dark btn-block border p-2 shadow-sm complain-option mb-0 h-100 d-flex flex-column align-items-center justify-content-center">
+                                                        <input type="radio" name="complain_type" value="{{ $label }}" class="d-none" required>
+                                                        <i class="las la-{{ $icon }} la-2x mb-1 text-primary"></i>
+                                                        <small class="font-weight-bold" style="font-size: 0.75rem; line-height: 1.1;">{{ __($label) }}</small>
+                                                    </label>
+                                                </div>
+                                                @endforeach
                                         </div>
 
                                         <!-- Address -->
