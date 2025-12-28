@@ -35,12 +35,18 @@ class SelfSchedulingController extends Controller
         
         // Get patient's clinic (if they have one assigned)
         $clinic = null;
+        $patient = null;
         if ($user->type === 'patient' || $user->type === 'user') {
             // Try to find clinic through patient record
             $patient = \App\Models\Patient::where('user_id', $user->id)->first();
             if ($patient) {
                 $clinic = Clinic::find($patient->clinic_id);
             }
+        }
+        
+        // If clinic_id provided in request, use that
+        if ($request->filled('clinic_id')) {
+            $clinic = Clinic::find($request->clinic_id);
         }
 
         // If no clinic, show clinic selection

@@ -478,6 +478,14 @@
                     </a>
                 </li>
 
+                <!-- 10.6. Intake Forms (Pre-Visit Questionnaires) -->
+                <li>
+                    <a href="{{ route('clinic.intake-forms.index') }}" class="{{ request()->routeIs('clinic.intake-forms.*') ? 'active' : '' }}">
+                        <span class="las la-file-alt"></span>
+                        <span>{{ __('Intake Forms') }}</span>
+                    </a>
+                </li>
+
                 <!-- 11. Analytics (View Reports) -->
                 <li>
                     <a href="{{ route('clinic.analytics.index') }}" class="{{ request()->routeIs('clinic.analytics.*') ? 'active' : '' }}">
