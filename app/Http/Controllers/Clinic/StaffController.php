@@ -45,11 +45,7 @@ class StaffController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
-        }
-
+        // Show form even if no clinic
         return view('web.clinic.staff.create', compact('clinic'));
     }
 

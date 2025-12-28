@@ -33,9 +33,16 @@ class WeeklyProgramController extends BaseClinicController
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
 
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $programs = collect();
+            $stats = [
+                'total' => 0,
+                'active' => 0,
+                'completed' => 0,
+                'pending' => 0,
+            ];
+            return view('web.clinic.programs.index', compact('programs', 'stats', 'clinic'));
         }
 
         $query = WeeklyProgram::where('clinic_id', $clinic->id)
@@ -69,9 +76,11 @@ class WeeklyProgramController extends BaseClinicController
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
 
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $patients = collect();
+            $episodes = collect();
+            return view('web.clinic.programs.create', compact('patients', 'episodes', 'clinic'));
         }
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();

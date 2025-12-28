@@ -12,9 +12,10 @@ class DoctorController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $doctors = collect();
+            return view('web.clinic.doctors.index', compact('doctors', 'clinic'));
         }
 
         // Get real doctors/therapists linked to this clinic
@@ -47,11 +48,7 @@ class DoctorController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
-        }
-
+        // Show form even if no clinic
         return view('web.clinic.doctors.create', compact('clinic'));
     }
 
@@ -95,9 +92,20 @@ class DoctorController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show doctor even if no clinic (might be shared doctor)
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $doctor = User::where('type', 'therapist')->orWhere('type', 'doctor')->findOrFail($id);
+            $doctorData = (object)[
+                'id' => $doctor->id,
+                'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
+                'specialty' => $doctor->specialization ?? 'General',
+                'email' => $doctor->email,
+                'phone' => $doctor->phone,
+                'bio' => $doctor->bio ?? 'No bio available.',
+                'patients' => 0,
+                'status' => 'Available',
+            ];
+            return view('web.clinic.doctors.show', compact('doctor', 'doctorData', 'clinic'));
         }
 
         $doctor = User::where('type', 'therapist')

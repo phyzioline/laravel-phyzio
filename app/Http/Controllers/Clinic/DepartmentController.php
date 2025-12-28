@@ -12,9 +12,10 @@ class DepartmentController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $departments = collect();
+            return view('web.clinic.departments.index', compact('departments', 'clinic'));
         }
 
         // Get real departments/specialties from clinic
@@ -92,11 +93,7 @@ class DepartmentController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
-        }
-
+        // Show form even if no clinic (user can see they need to set up clinic)
         return view('web.clinic.departments.create', compact('clinic'));
     }
 }
