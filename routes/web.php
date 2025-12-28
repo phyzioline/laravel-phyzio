@@ -156,6 +156,12 @@ foreach ($supportedLocales as $locale) {
         Route::get('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name('patient.home_visits.create');
         Route::post('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.home_visits.store');
         Route::get('/home_visits/status/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.home_visits.show');
+        
+        // Patient Self-Scheduling
+        Route::get('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'index'])->name('patient.self-schedule.index');
+        Route::get('/self-schedule/available-slots', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'getAvailableSlots'])->name('patient.self-schedule.slots');
+        Route::post('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'store'])->name('patient.self-schedule.store');
+        Route::post('/self-schedule/intake-form', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'submitIntakeForm'])->name('patient.self-schedule.submitIntake');
 
         // Therapist Flow (Legacy - Consolidated into therapist.php)
         // Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');
@@ -329,6 +335,10 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         // Waitlist Management
         Route::get('/waitlist/position', [\App\Http\Controllers\Clinic\WaitlistController::class, 'getPosition'])->name('waitlist.position');
         Route::resource('waitlist', \App\Http\Controllers\Clinic\WaitlistController::class);
+        
+        // Intake Forms
+        Route::post('/intake-forms/{id}/toggle', [\App\Http\Controllers\Clinic\IntakeFormController::class, 'toggleActive'])->name('intake-forms.toggle');
+        Route::resource('intake-forms', \App\Http\Controllers\Clinic\IntakeFormController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
