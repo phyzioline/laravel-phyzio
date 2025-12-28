@@ -351,17 +351,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': formData.get('_token')
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'An error occurred');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
-            if (data.success || response.ok) {
-                window.location.href = '{{ route("clinic.appointments.index") }}';
+            if (data.success) {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = '{{ route("clinic.appointments.index") }}';
+                }
             } else {
                 alert(data.message || 'An error occurred');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Network error. Please try again.');
+            alert(error.message || 'Network error. Please try again.');
         });
     });
     

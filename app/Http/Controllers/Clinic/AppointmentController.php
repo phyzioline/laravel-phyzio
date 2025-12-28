@@ -99,10 +99,16 @@ class AppointmentController extends BaseClinicController
         $clinic = $this->getUserClinic($user);
 
         if (!$clinic) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Clinic not found.'
+                ], 404);
+            }
             return redirect()->back()->with('error', 'Clinic not found.');
         }
 
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'nullable|exists:users,id',
             'appointment_date' => 'required|date',
@@ -114,6 +120,17 @@ class AppointmentController extends BaseClinicController
             'duration_minutes' => 'nullable|integer|min:15|max:120',
             'session_type' => 'nullable|string'
         ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
 
         $start = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
         
@@ -167,6 +184,15 @@ class AppointmentController extends BaseClinicController
             \Log::warning('Failed to calculate appointment price', [
                 'appointment_id' => $appointment->id,
                 'error' => $e->getMessage()
+            ]);
+        }
+
+        // Return JSON for AJAX requests, redirect for regular form submissions
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment scheduled successfully.',
+                'redirect' => route('clinic.appointments.index')
             ]);
         }
 

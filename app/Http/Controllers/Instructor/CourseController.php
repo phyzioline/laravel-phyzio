@@ -36,7 +36,7 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = \Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'specialty' => 'required|string',
             'level' => 'required|in:student,junior,senior,consultant',
@@ -51,6 +51,14 @@ class CourseController extends Controller
             'seats' => 'nullable|integer',
             'trailer_url' => 'nullable|url',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $validated = $validator->validated();
 
         DB::beginTransaction();
         try {

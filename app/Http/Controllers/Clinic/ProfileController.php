@@ -17,13 +17,19 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'commercial_register' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
             'tax_card' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:4096',
             'password' => 'nullable|string|min:8|confirmed',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $data = $request->only(['name', 'phone']);
 

@@ -40,13 +40,38 @@
                     <div class="card-body p-5">
                         <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" id="courseForm">
                             @csrf
+                            
+                            @if($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+                            
+                            @if(session('error'))
+                                <div class="alert alert-danger">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+                            
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
 
                             <!-- STEP 1: Basic Info -->
                             <div class="wizard-step" id="step-1">
                                 <h4 class="font-weight-bold mb-4">{{ __('Step 1: Course Information') }}</h4>
                                 <div class="form-group">
                                     <label class="font-weight-bold">{{ __('Course Title') }} <span class="text-danger">*</span></label>
-                                    <input type="text" name="title" class="form-control form-control-lg" placeholder="{{ __('e.g., Advanced Manual Therapy Techniques') }}" required>
+                                    <input type="text" name="title" class="form-control form-control-lg @error('title') is-invalid @enderror" placeholder="{{ __('e.g., Advanced Manual Therapy Techniques') }}" value="{{ old('title') }}" required>
+                                    @error('title')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -69,7 +94,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="font-weight-bold">{{ __('Description') }} <span class="text-danger">*</span></label>
-                                    <textarea name="description" rows="5" class="form-control" placeholder="{{ __('Detailed description of what students will learn...') }}"></textarea>
+                                    <textarea name="description" rows="5" class="form-control @error('description') is-invalid @enderror" placeholder="{{ __('Detailed description of what students will learn...') }}">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <label class="font-weight-bold">{{ __('Cover Image') }}</label>
@@ -164,7 +192,7 @@
 
                                 <div class="d-flex justify-content-between mt-4">
                                     <button type="button" class="btn btn-outline-secondary px-4 prev-step" data-prev="3"><i class="las la-arrow-left"></i> {{ __('Previous') }}</button>
-                                    <button type="submit" class="btn btn-teal text-white px-5 rounded-pill shadow" style="background-color: #0d9488;">{{ __('Submit for Review') }}</button>
+                                    <button type="submit" class="btn btn-teal text-white px-5 rounded-pill shadow" id="finalSubmitBtn" style="background-color: #0d9488;">{{ __('Submit for Review') }}</button>
                                 </div>
                             </div>
 
@@ -200,9 +228,30 @@
         }
 
         document.querySelectorAll('.next-step').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const currentStep = this.closest('.wizard-step').id.replace('step-', '');
                 const next = this.getAttribute('data-next');
-                showStep(next);
+                
+                // Validate current step before proceeding
+                const currentStepElement = document.getElementById('step-' + currentStep);
+                const requiredFields = currentStepElement.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (isValid) {
+                    showStep(next);
+                } else {
+                    alert('Please fill in all required fields before proceeding.');
+                }
             });
         });
 
@@ -212,6 +261,18 @@
                 showStep(prev);
             });
         });
+        
+        // Handle final form submission
+        const form = document.getElementById('courseForm');
+        const finalSubmitBtn = document.getElementById('finalSubmitBtn');
+        
+        if (form && finalSubmitBtn) {
+            form.addEventListener('submit', function(e) {
+                // Don't prevent default - let form submit normally
+                finalSubmitBtn.disabled = true;
+                finalSubmitBtn.innerHTML = '<i class="las la-spinner la-spin"></i> {{ __('Submitting...") }}';
+            });
+        }
     });
 </script>
 <style>

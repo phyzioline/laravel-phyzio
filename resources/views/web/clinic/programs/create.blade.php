@@ -431,17 +431,41 @@ document.addEventListener('DOMContentLoaded', function() {
                 'X-CSRF-TOKEN': formData.get('_token')
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    // Display validation errors if available
+                    if (data.errors) {
+                        let errorMsg = 'Validation errors:\n';
+                        for (let field in data.errors) {
+                            errorMsg += field + ': ' + data.errors[field][0] + '\n';
+                        }
+                        alert(errorMsg);
+                    } else {
+                        alert(data.message || 'An error occurred');
+                    }
+                    throw new Error(data.message || 'Validation failed');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
-                window.location.href = data.redirect || '{{ route("clinic.programs.index") }}';
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    window.location.href = '{{ route("clinic.programs.index") }}';
+                }
             } else {
                 alert(data.message || 'An error occurred');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Network error. Please try again.');
+            // Don't show alert if it's already been shown above
+            if (!error.message.includes('Validation failed') && !error.message.includes('An error occurred')) {
+                alert('Network error. Please try again.');
+            }
         });
     });
 });

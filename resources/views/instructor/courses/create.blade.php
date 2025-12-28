@@ -21,7 +21,29 @@
                 </ul>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data">
+                @if($errors->any())
+                    <div class="alert alert-danger mb-4">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
+                @if(session('error'))
+                    <div class="alert alert-danger mb-4">
+                        {{ session('error') }}
+                    </div>
+                @endif
+                
+                @if(session('success'))
+                    <div class="alert alert-success mb-4">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                
+                <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" id="courseCreateForm">
                     @csrf
                     
                     <div class="row">
@@ -30,31 +52,40 @@
                             
                             <div class="form-group mb-3">
                                 <label>Course Title <span class="text-danger">*</span></label>
-                                <input type="text" name="title" class="form-control" placeholder="e.g. Advanced Manual Therapy for Cervical Spine" required>
+                                <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" placeholder="e.g. Advanced Manual Therapy for Cervical Spine" value="{{ old('title') }}" required>
+                                @error('title')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="form-group mb-3">
                                 <label>Clinical Specialty <span class="text-danger">*</span></label>
-                                <select name="specialty" class="form-control" required>
+                                <select name="specialty" class="form-control @error('specialty') is-invalid @enderror" required>
                                     <option value="">Select Specialty</option>
-                                    <option value="Orthopedic">Orthopedic / Musculoskeletal</option>
-                                    <option value="Neurological">Neurological</option>
-                                    <option value="Pediatric">Pediatric</option>
-                                    <option value="Sports">Sports Rehab</option>
-                                    <option value="Cardiopulmonary">Cardiopulmonary</option>
-                                    <option value="Geriatric">Geriatric</option>
-                                    <option value="Womens Health">Women's Health</option>
+                                    <option value="Orthopedic" {{ old('specialty') == 'Orthopedic' ? 'selected' : '' }}>Orthopedic / Musculoskeletal</option>
+                                    <option value="Neurological" {{ old('specialty') == 'Neurological' ? 'selected' : '' }}>Neurological</option>
+                                    <option value="Pediatric" {{ old('specialty') == 'Pediatric' ? 'selected' : '' }}>Pediatric</option>
+                                    <option value="Sports" {{ old('specialty') == 'Sports' ? 'selected' : '' }}>Sports Rehab</option>
+                                    <option value="Cardiopulmonary" {{ old('specialty') == 'Cardiopulmonary' ? 'selected' : '' }}>Cardiopulmonary</option>
+                                    <option value="Geriatric" {{ old('specialty') == 'Geriatric' ? 'selected' : '' }}>Geriatric</option>
+                                    <option value="Womens Health" {{ old('specialty') == 'Womens Health' ? 'selected' : '' }}>Women's Health</option>
                                 </select>
+                                @error('specialty')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                              <div class="form-group mb-3">
                                 <label>Level <span class="text-danger">*</span></label>
-                                <select name="level" class="form-control" required>
-                                    <option value="student">Student (Undergraduate)</option>
-                                    <option value="junior">Junior (0-3 Years)</option>
-                                    <option value="senior">Senior (3-7 Years)</option>
-                                    <option value="consultant">Consultant / Expert</option>
+                                <select name="level" class="form-control @error('level') is-invalid @enderror" required>
+                                    <option value="student" {{ old('level') == 'student' ? 'selected' : '' }}>Student (Undergraduate)</option>
+                                    <option value="junior" {{ old('level') == 'junior' ? 'selected' : '' }}>Junior (0-3 Years)</option>
+                                    <option value="senior" {{ old('level') == 'senior' ? 'selected' : '' }}>Senior (3-7 Years)</option>
+                                    <option value="consultant" {{ old('level') == 'consultant' ? 'selected' : '' }}>Consultant / Expert</option>
                                 </select>
+                                @error('level')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="form-group mb-3">
@@ -68,7 +99,10 @@
 
                             <div class="form-group mb-3">
                                 <label>Course Description & Clinical Focus <span class="text-danger">*</span></label>
-                                <textarea name="description" class="form-control" rows="5" required placeholder="Describe what the therapist will learn and apply..."></textarea>
+                                <textarea name="description" class="form-control @error('description') is-invalid @enderror" rows="5" required placeholder="Describe what the therapist will learn and apply...">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             
                             <div class="form-group mb-3">
@@ -136,11 +170,30 @@
                     </div>
 
                     <div class="text-right mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">Next: Build Curriculum <i class="las la-arrow-right"></i></button>
+                        <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                            Next: Build Curriculum <i class="las la-arrow-right"></i>
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('courseCreateForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (form && submitBtn) {
+        form.addEventListener('submit', function(e) {
+            // Don't prevent default - let form submit normally
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="las la-spinner la-spin"></i> Creating...';
+        });
+    }
+});
+</script>
+@endpush
 @endsection

@@ -1,25 +1,23 @@
-@extends('clinic.layouts.app')
+@extends('web.layouts.dashboard_master')
+
+@section('title', 'Clinic Profile')
+@section('header_title', 'Profile & Settings')
 
 @section('content')
-<div class="row">
+<div class="row mb-4">
     <div class="col-12">
-        <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0 font-size-18">{{ __('Clinic Profile') }}</h4>
-            <div class="page-title-right">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="{{ route('clinic.dashboard') }}">{{ __('Dashboard') }}</a></li>
-                    <li class="breadcrumb-item active">{{ __('Profile') }}</li>
-                </ol>
-            </div>
-        </div>
+        <h4 class="font-weight-bold" style="color: #333;">{{ __('Clinic Profile') }}</h4>
+        <p class="text-muted">{{ __('Manage your clinic information and settings') }}</p>
     </div>
 </div>
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">{{ __('Edit Company Information') }}</h4>
+        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <h5 class="card-title font-weight-bold mb-0">{{ __('Edit Company Information') }}</h5>
+            </div>
+            <div class="card-body px-4">
 
                 @if(session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -122,7 +120,12 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">{{ __('Save Changes') }}</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="las la-save"></i> {{ __('Save Changes') }}
+                        </button>
+                        <a href="{{ route('clinic.dashboard') }}" class="btn btn-secondary">
+                            <i class="las la-times"></i> {{ __('Cancel') }}
+                        </a>
                     </div>
                 </form>
             </div>
