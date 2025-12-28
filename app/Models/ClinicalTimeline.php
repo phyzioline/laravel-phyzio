@@ -66,7 +66,11 @@ class ClinicalTimeline extends Model
      */
     public function episode(): BelongsTo
     {
-        return $this->belongsTo(Episode::class);
+        // Use EpisodeOfCare if it exists, otherwise fallback to Episode
+        if (class_exists(\App\Models\EpisodeOfCare::class)) {
+            return $this->belongsTo(\App\Models\EpisodeOfCare::class, 'episode_id');
+        }
+        return $this->belongsTo(\App\Models\Episode::class, 'episode_id');
     }
 
     /**

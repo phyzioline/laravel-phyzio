@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clinic;
 use App\Models\ClinicalNote;
 use App\Models\ClinicalTemplate;
 use App\Models\ClinicalTimeline;
+use App\Models\EpisodeOfCare;
 use App\Services\Clinical\VoiceToTextService;
 use App\Services\Clinical\CodingValidationService;
 use Illuminate\Http\Request;
@@ -101,12 +102,12 @@ class ClinicalNoteController extends BaseClinicController
         // Get related data
         $patient = $patientId ? \App\Models\Patient::find($patientId) : null;
         $appointment = $appointmentId ? \App\Models\ClinicAppointment::find($appointmentId) : null;
-        $episode = $episodeId ? \App\Models\Episode::find($episodeId) : null;
+        $episode = $episodeId ? EpisodeOfCare::find($episodeId) : null;
 
         // Get patients and episodes for dropdowns
         $patients = \App\Models\Patient::where('clinic_id', $clinic->id)->get();
         $episodes = $patientId 
-            ? \App\Models\Episode::where('patient_id', $patientId)->get()
+            ? EpisodeOfCare::where('patient_id', $patientId)->get()
             : collect();
 
         // Get voice-to-text config

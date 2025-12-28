@@ -11,12 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clinical_notes', function (Blueprint $table) {
+        // Determine which episodes table exists
+        $episodeTable = Schema::hasTable('episodes_of_care') ? 'episodes_of_care' : (Schema::hasTable('episodes') ? 'episodes' : null);
+        
+        Schema::create('clinical_notes', function (Blueprint $table) use ($episodeTable) {
             $table->id();
             $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('appointment_id')->nullable()->constrained('clinic_appointments')->onDelete('set null');
-            $table->foreignId('episode_id')->nullable()->constrained('episodes')->onDelete('set null');
+            
+            // Episode ID - use correct table name
+            if ($episodeTable) {
+                $table->foreignId('episode_id')->nullable()->constrained($episodeTable)->onDelete('set null');
+            } else {
+                $table->unsignedBigInteger('episode_id')->nullable();
+            }
+            
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             
             // Note Type & Template
@@ -106,11 +116,17 @@ return new class extends Migration
             $table->index(['clinic_id', 'is_active']);
         });
 
-        Schema::create('clinical_timeline', function (Blueprint $table) {
+        Schema::create('clinical_timeline', function (Blueprint $table) use ($episodeTable) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
-            $table->foreignId('episode_id')->nullable()->constrained('episodes')->onDelete('cascade');
+            
+            // Episode ID - use correct table name
+            if ($episodeTable) {
+                $table->foreignId('episode_id')->nullable()->constrained($episodeTable)->onDelete('cascade');
+            } else {
+                $table->unsignedBigInteger('episode_id')->nullable();
+            }
             
             $table->string('event_type'); // note_created, appointment_completed, assessment_added, etc.
             $table->string('title');
