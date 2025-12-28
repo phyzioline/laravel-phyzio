@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -16,16 +17,38 @@ return new class extends Migration
     {
         // Check if episodes table exists but episodes_of_care doesn't
         if (Schema::hasTable('episodes') && !Schema::hasTable('episodes_of_care')) {
-            // Drop foreign keys from dependent tables first
+            // Drop foreign keys from dependent tables first (only if they exist)
             if (Schema::hasTable('assessments')) {
-                Schema::table('assessments', function (Blueprint $table) {
-                    $table->dropForeign(['episode_id']);
-                });
+                // Check if foreign key exists before trying to drop it
+                $foreignKeys = DB::select("
+                    SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = 'assessments' 
+                    AND CONSTRAINT_NAME LIKE '%episode_id%'
+                ");
+                
+                if (!empty($foreignKeys)) {
+                    Schema::table('assessments', function (Blueprint $table) {
+                        $table->dropForeign(['episode_id']);
+                    });
+                }
             }
             if (Schema::hasTable('clinic_treatment_plans')) {
-                Schema::table('clinic_treatment_plans', function (Blueprint $table) {
-                    $table->dropForeign(['episode_id']);
-                });
+                // Check if foreign key exists before trying to drop it
+                $foreignKeys = DB::select("
+                    SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = 'clinic_treatment_plans' 
+                    AND CONSTRAINT_NAME LIKE '%episode_id%'
+                ");
+                
+                if (!empty($foreignKeys)) {
+                    Schema::table('clinic_treatment_plans', function (Blueprint $table) {
+                        $table->dropForeign(['episode_id']);
+                    });
+                }
             }
             
             // Rename episodes to episodes_of_care

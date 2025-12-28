@@ -25,7 +25,26 @@ class ClinicProfileController extends Controller implements HasMiddleware
      */
     public function index()
     {
-        $clinic_profiles = \App\Models\ClinicProfile::all();
+        // Use Clinic model - the main clinics table
+        $clinic_profiles = \App\Models\Clinic::with('company')
+            ->where('is_deleted', false)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function($clinic) {
+                return (object)[
+                    'id' => $clinic->id,
+                    'name' => $clinic->name,
+                    'plan' => ucfirst($clinic->subscription_tier ?? 'basic'),
+                    'status' => $clinic->is_active ? 'active' : 'inactive',
+                    'email' => $clinic->email,
+                    'phone' => $clinic->phone,
+                    'city' => $clinic->city,
+                    'country' => $clinic->country,
+                    'created_at' => $clinic->created_at,
+                    'company_name' => $clinic->company->name ?? 'N/A',
+                ];
+            });
+        
         return view('dashboard.clinic_profiles.index', compact('clinic_profiles'));
     }
 

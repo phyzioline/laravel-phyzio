@@ -20,22 +20,46 @@
                         </tr>
                     </thead>
                     <tbody>
-                    <tbody>
-                        @foreach($clinic_profiles as $clinic)
+                        @forelse($clinic_profiles as $clinic)
                         <tr>
                             <td>{{ $clinic->id }}</td>
-                            <td>{{ $clinic->name }}</td>
-                            <td>{{ $clinic->plan ?? 'Standard' }}</td>
+                            <td>
+                                <strong>{{ $clinic->name }}</strong>
+                                @if(isset($clinic->company_name))
+                                    <br><small class="text-muted">Company: {{ $clinic->company_name }}</small>
+                                @endif
+                            </td>
+                            <td>{{ $clinic->plan }}</td>
                             <td>
                                 <span class="badge badge-{{ $clinic->status == 'active' ? 'success' : 'secondary' }}">
                                     {{ ucfirst($clinic->status) }}
                                 </span>
                             </td>
                             <td>
-                                <a href="#" class="btn btn-info btn-sm">View</a>
+                                <a href="{{ route('clinic.dashboard') }}?clinic_id={{ $clinic->id }}" class="btn btn-info btn-sm" title="View Clinic Dashboard">
+                                    <i class="las la-eye"></i> View
+                                </a>
+                                @if($clinic->status == 'inactive')
+                                    <form action="{{ route('dashboard.clinic_profiles.update', $clinic->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="activate">
+                                        <button type="submit" class="btn btn-success btn-sm" title="Activate Clinic">
+                                            <i class="las la-check"></i> Activate
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <i class="las la-clinic fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No clinics found.</p>
+                                <p class="text-muted">Clinics will appear here once they register.</p>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

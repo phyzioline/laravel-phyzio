@@ -183,7 +183,7 @@ foreach ($supportedLocales as $locale) {
             Route::resource('episodes.assessments', App\Http\Controllers\Clinic\AssessmentController::class);
             
             Route::resource('patients', App\Http\Controllers\Clinic\PatientController::class);
-            Route::resource('appointments', App\Http\Controllers\Clinic\AppointmentController::class);
+            // Appointments routes moved to clinic group below
             Route::resource('plans', App\Http\Controllers\Clinic\TreatmentPlanController::class);
             Route::resource('invoices', App\Http\Controllers\Clinic\InvoiceController::class);
         });
