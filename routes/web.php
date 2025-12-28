@@ -174,19 +174,8 @@ foreach ($supportedLocales as $locale) {
             Route::resource('feed', App\Http\Controllers\Admin\FeedController::class);
         });
 
-        // Clinic ERP Routes
-        Route::prefix('clinic')->name('clinic.')->group(function () {
-            Route::get('/dashboard', [App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
-            
-            // Episodes & Clinical Care (New ERP)
-            Route::resource('episodes', App\Http\Controllers\Clinic\EpisodeController::class);
-            Route::resource('episodes.assessments', App\Http\Controllers\Clinic\AssessmentController::class);
-            
-            Route::resource('patients', App\Http\Controllers\Clinic\PatientController::class);
-            // Appointments routes moved to clinic group below
-            Route::resource('plans', App\Http\Controllers\Clinic\TreatmentPlanController::class);
-            Route::resource('invoices', App\Http\Controllers\Clinic\InvoiceController::class);
-        });
+        // Clinic ERP Routes - MOVED TO OUTSIDE LOCALE GROUP (see line 286)
+        // These routes are now defined outside the locale group to avoid conflicts
         
           Route::get('complecet_info_view',[LoginController::class, 'complecet_info_view'])->name('complecet_info_view');
         Route::post('complecet_info',[LoginController::class, 'complecet_info'])->name('complecet_info');
@@ -289,6 +278,10 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::post('/specialty-selection', [\App\Http\Controllers\Clinic\SpecialtySelectionController::class, 'store'])->name('specialty-selection.store');
         
         Route::get('/dashboard', [\App\Http\Controllers\Clinic\DashboardController::class, 'index'])->name('dashboard');
+        
+        // Episodes & Clinical Care (New ERP)
+        Route::resource('episodes', \App\Http\Controllers\Clinic\EpisodeController::class);
+        Route::resource('episodes.assessments', \App\Http\Controllers\Clinic\AssessmentController::class);
         
         Route::get('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'index'])->name('doctors.index');
         Route::get('/doctors/create', [\App\Http\Controllers\Clinic\DoctorController::class, 'create'])->name('doctors.create');
