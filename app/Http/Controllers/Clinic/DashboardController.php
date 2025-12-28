@@ -143,6 +143,9 @@ class DashboardController extends Controller
         if ($clinic) {
             $clinicSpecialty = $clinic->primarySpecialty;
             $specialtyDisplayName = $clinic->getPrimarySpecialtyDisplayName();
+            
+            // Reload clinic to ensure relationships are loaded
+            $clinic->load('primarySpecialty');
         }
 
         // Recent activities (from new features)
