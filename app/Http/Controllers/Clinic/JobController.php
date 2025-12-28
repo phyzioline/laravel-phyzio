@@ -2,43 +2,67 @@
 
 namespace App\Http\Controllers\Clinic;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use Illuminate\Support\Facades\Auth;
 
-class JobController extends Controller
+class JobController extends BaseClinicController
 {
     public function index()
     {
-        $jobs = Job::where('clinic_id', Auth::id())
+        $clinic = $this->getUserClinic();
+        
+        // Show empty state instead of redirecting
+        if (!$clinic) {
+            $jobs = collect();
+            return view('web.clinic.jobs.index', compact('jobs', 'clinic'));
+        }
+
+        $jobs = Job::where('clinic_id', $clinic->id)
                     ->withCount('applications')
                     ->latest()
                     ->get();
-        return view('web.clinic.jobs.index', compact('jobs'));
+        return view('web.clinic.jobs.index', compact('jobs', 'clinic'));
     }
 
     public function applicants($id)
     {
-        $job = Job::where('clinic_id', Auth::id())->with('applications.therapist.therapistProfile')->findOrFail($id);
-        return view('web.clinic.jobs.applicants', compact('job'));
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        $job = Job::where('clinic_id', $clinic->id)
+                    ->with('applications.therapist.therapistProfile')
+                    ->findOrFail($id);
+        return view('web.clinic.jobs.applicants', compact('job', 'clinic'));
     }
 
     public function create()
     {
+        $clinic = $this->getUserClinic();
+        
         if (Auth::user()->status !== 'active') {
             return redirect()->route('clinic.dashboard')->with('error', 'Your account is pending approval. You cannot post jobs yet.');
         }
 
+        // Show form even if no clinic
         $specialties = ['Orthopedic', 'Neurological', 'Pediatric', 'Sports', 'Geriatric', 'Women Health', 'Cardiopulmonary'];
         $techniques = ['Manual Therapy', 'Dry Needling', 'Cupping', 'Kinesiotaping', 'Electrotherapy', 'Exercise Therapy'];
         $equipment = ['Ultrasound', 'TENS', 'Laser', 'Shockwave', 'Treadmill', 'Balance Board'];
 
-        return view('web.clinic.jobs.create', compact('specialties', 'techniques', 'equipment'));
+        return view('web.clinic.jobs.create', compact('specialties', 'techniques', 'equipment', 'clinic'));
     }
 
     public function store(Request $request)
     {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found. Please contact support to set up your clinic.');
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -59,7 +83,7 @@ class JobController extends Controller
         ]);
 
         $job = Job::create([
-            'clinic_id' => Auth::id(),
+            'clinic_id' => $clinic->id,
             'title' => $request->title,
             'description' => $request->description,
             'type' => $request->type,
@@ -86,7 +110,13 @@ class JobController extends Controller
 
     public function destroy($id)
     {
-        $job = Job::where('clinic_id', Auth::id())->where('id', $id)->firstOrFail();
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        $job = Job::where('clinic_id', $clinic->id)->where('id', $id)->firstOrFail();
         $job->delete();
         return redirect()->route('clinic.jobs.index')->with('success', 'Job deleted successfully!');
     }

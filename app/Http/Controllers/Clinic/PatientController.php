@@ -94,12 +94,23 @@ class PatientController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+        // Try to find patient even if no clinic (might be shared patient)
+        try {
+            if ($clinic) {
+                $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+            } else {
+                // If no clinic, try to find patient anyway (might be accessible)
+                $patient = Patient::findOrFail($id);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // Patient not found - show empty state
+            $patient = null;
+            $appointments = collect();
+            $treatmentPlans = collect();
+            $invoices = collect();
+            return view('web.clinic.patients.show', compact('patient', 'appointments', 'treatmentPlans', 'invoices', 'clinic'))
+                ->with('error', 'Patient not found.');
         }
-
-        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
         
         // Load relationships
         $appointments = $patient->appointments()->latest()->get();
@@ -121,12 +132,18 @@ class PatientController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+        // Try to find patient even if no clinic
+        try {
+            if ($clinic) {
+                $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+            } else {
+                $patient = Patient::findOrFail($id);
+            }
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return redirect()->route('clinic.patients.index')
+                ->with('error', 'Patient not found.');
         }
 
-        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
         return view('web.clinic.patients.edit', compact('patient', 'clinic'));
     }
 

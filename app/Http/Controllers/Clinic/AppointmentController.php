@@ -39,12 +39,20 @@ class AppointmentController extends BaseClinicController
         $endOfWeek = Carbon::now()->endOfWeek();
         $endOfWeek = $endOfWeek->addDays(7); // Show 2 weeks
         
+        // Show empty state instead of using clinic_id = 0
+        if (!$clinic) {
+            $appointments = collect();
+            $patients = collect();
+            $therapists = collect();
+            return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
+        }
+        
         $appointments = ClinicAppointment::with(['patient', 'doctor', 'additionalData'])
-                        ->where('clinic_id', $clinic->id ?? 0)
+                        ->where('clinic_id', $clinic->id)
                         ->whereBetween('appointment_date', [$startOfWeek, $endOfWeek])
                         ->get();
 
-        $patients = Patient::where('clinic_id', $clinic->id ?? 0)->get(); 
+        $patients = Patient::where('clinic_id', $clinic->id)->get(); 
         $therapists = User::where('type', 'therapist')->get();
 
         return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
@@ -187,6 +195,13 @@ class AppointmentController extends BaseClinicController
     {
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
+
+        if (!$clinic) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Clinic not found.'
+            ], 404);
+        }
 
         $request->validate([
             'specialty' => 'required|string',

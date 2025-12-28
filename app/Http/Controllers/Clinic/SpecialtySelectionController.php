@@ -30,9 +30,11 @@ class SpecialtySelectionController extends BaseClinicController
         // Adjust this based on your actual user-clinic relationship
         $clinic = $this->getUserClinic($user);
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found. Please contact support.');
+            $availableSpecialties = ClinicSpecialty::getAvailableSpecialties();
+            return view('web.clinic.specialty-selection', compact('clinic', 'availableSpecialties'))
+                ->with('error', 'Clinic not found. Please contact support to set up your clinic.');
         }
 
         // Check if already selected

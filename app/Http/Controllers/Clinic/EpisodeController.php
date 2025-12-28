@@ -44,9 +44,11 @@ class EpisodeController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $patients = collect();
+            $therapists = collect();
+            return view('clinic.erp.episodes.create', compact('patients', 'therapists', 'clinic'));
         }
 
         // Get patients from this clinic
@@ -96,9 +98,11 @@ class EpisodeController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // If no clinic, still show episode but with warning
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $episode->load(['assessments', 'treatments', 'outcomes']);
+            return view('clinic.erp.episodes.show', compact('episode', 'clinic'))
+                ->with('warning', 'Clinic not found. Some features may be limited.');
         }
 
         // Verify episode belongs to this clinic

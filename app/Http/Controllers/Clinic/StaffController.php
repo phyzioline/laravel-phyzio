@@ -13,9 +13,10 @@ class StaffController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $staff = collect();
+            return view('web.clinic.staff.index', compact('staff', 'clinic'));
         }
 
         // Get real staff members - filter by clinic's company if possible
