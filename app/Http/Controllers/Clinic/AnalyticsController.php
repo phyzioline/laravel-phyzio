@@ -71,20 +71,85 @@ class AnalyticsController extends BaseClinicController
             ->where('status', 'active')
             ->count();
         
-        // Returning vs New patients
+        // Returning vs New patients (last 3 months)
+        $threeMonthsAgo = now()->subMonths(3);
         $returningPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
-            ->whereHas('appointments', function($q) {
-                $q->where('created_at', '>=', now()->subMonths(3));
+            ->where('created_at', '<', $threeMonthsAgo)
+            ->whereHas('appointments', function($q) use ($threeMonthsAgo) {
+                $q->where('clinic_id', $clinic->id)
+                  ->where('created_at', '>=', $threeMonthsAgo);
             })
             ->count();
         
         $newPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
-            ->where('created_at', '>=', now()->subMonths(3))
+            ->where('created_at', '>=', $threeMonthsAgo)
             ->count();
 
-        $patientGrowthPercentage = $totalPatients > 0 
-            ? round(($newPatients / $totalPatients) * 100, 1) 
+        // Calculate patient growth percentage
+        $previousPeriodPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
+            ->whereBetween('created_at', [now()->subMonths(6), now()->subMonths(3)])
+            ->count();
+        
+        $patientGrowthPercentage = $previousPeriodPatients > 0 
+            ? round((($newPatients - $previousPeriodPatients) / $previousPeriodPatients) * 100, 1) 
+            : ($newPatients > 0 ? 100 : 0);
+
+        // Additional metrics
+        $completedAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('status', 'completed')
+            ->count();
+        
+        $cancelledAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('status', 'cancelled')
+            ->count();
+        
+        $completionRate = $totalAppointments > 0 
+            ? round(($completedAppointments / $totalAppointments) * 100, 1) 
             : 0;
+        
+        // Revenue from programs
+        $programRevenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+            ->where('status', 'active')
+            ->sum('paid_amount');
+        
+        // Total revenue (from payments, invoices, or programs)
+        $totalRevenue = 0;
+        if (\Schema::hasTable('payments')) {
+            $totalRevenue = DB::table('payments')
+                ->where('clinic_id', $clinic->id)
+                ->where('status', 'paid')
+                ->sum('amount');
+        } elseif (\Schema::hasTable('invoices')) {
+            $totalRevenue = DB::table('invoices')
+                ->where('clinic_id', $clinic->id)
+                ->where('status', 'paid')
+                ->sum('amount');
+        }
+        
+        // Add program revenue
+        $totalRevenue += $programRevenue;
+        
+        // Average appointment value
+        $avgAppointmentValue = $completedAppointments > 0 
+            ? round($totalRevenue / $completedAppointments, 2) 
+            : 0;
+        
+        // Specialty distribution
+        $specialtyDistribution = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->whereNotNull('specialty')
+            ->select('specialty', DB::raw('count(*) as count'))
+            ->groupBy('specialty')
+            ->get()
+            ->pluck('count', 'specialty')
+            ->toArray();
+        
+        // Appointment status distribution
+        $statusDistribution = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->select('status', DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->get()
+            ->pluck('count', 'status')
+            ->toArray();
         
         return view('web.clinic.analytics.index', compact(
             'monthlyRevenue', 
@@ -96,6 +161,14 @@ class AnalyticsController extends BaseClinicController
             'returningPatients',
             'newPatients',
             'patientGrowthPercentage',
+            'completedAppointments',
+            'cancelledAppointments',
+            'completionRate',
+            'totalRevenue',
+            'programRevenue',
+            'avgAppointmentValue',
+            'specialtyDistribution',
+            'statusDistribution',
             'clinic'
         ));
     }

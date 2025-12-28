@@ -10,6 +10,9 @@ use App\Models\ReservationAdditionalData;
 use App\Models\User; // Assuming therapists are Users
 use App\Services\Clinic\SpecialtyReservationFieldsService;
 use App\Services\Clinic\PaymentCalculatorService;
+use App\Services\Clinic\AppointmentOverlapService;
+use App\Services\Clinic\BillingAutomationService;
+use App\Services\Clinic\EquipmentAllocationService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -18,13 +21,22 @@ class AppointmentController extends BaseClinicController
 {
     protected $fieldsService;
     protected $paymentCalculator;
+    protected $overlapService;
+    protected $billingAutomation;
+    protected $equipmentAllocation;
 
     public function __construct(
         SpecialtyReservationFieldsService $fieldsService,
-        PaymentCalculatorService $paymentCalculator
+        PaymentCalculatorService $paymentCalculator,
+        AppointmentOverlapService $overlapService,
+        BillingAutomationService $billingAutomation,
+        EquipmentAllocationService $equipmentAllocation
     ) {
         $this->fieldsService = $fieldsService;
         $this->paymentCalculator = $paymentCalculator;
+        $this->overlapService = $overlapService;
+        $this->billingAutomation = $billingAutomation;
+        $this->equipmentAllocation = $equipmentAllocation;
     }
 
     /**
@@ -133,6 +145,32 @@ class AppointmentController extends BaseClinicController
         }
 
         $start = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+        $durationMinutes = $request->duration_minutes ?? 60;
+        
+        // Check for overlaps before creating appointment
+        $overlapCheck = $this->overlapService->checkOverlaps(
+            $request->doctor_id,
+            $request->patient_id,
+            $start,
+            $durationMinutes
+        );
+
+        if ($overlapCheck['has_overlap']) {
+            $errorMessage = implode(' ', array_column($overlapCheck['conflicts'], 'message'));
+            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Appointment conflict detected: ' . $errorMessage,
+                    'errors' => ['appointment_time' => [$errorMessage]],
+                    'overlap_details' => $overlapCheck
+                ], 422);
+            }
+            
+            return redirect()->back()
+                ->withErrors(['appointment_time' => $errorMessage])
+                ->withInput();
+        }
         
         // Create appointment
         $appointment = ClinicAppointment::create([
@@ -185,6 +223,21 @@ class AppointmentController extends BaseClinicController
                 'appointment_id' => $appointment->id,
                 'error' => $e->getMessage()
             ]);
+        }
+
+        // Allocate equipment if specified in additional data
+        if ($request->has('equipment') && is_array($request->equipment) && !empty($request->equipment)) {
+            $equipmentTypes = array_filter($request->equipment);
+            if (!empty($equipmentTypes)) {
+                $allocation = $this->equipmentAllocation->allocateEquipment($appointment, $equipmentTypes);
+                if (!$allocation['success'] && !empty($allocation['errors'])) {
+                    // Log but don't fail appointment - equipment can be allocated later
+                    \Log::warning('Equipment allocation failed', [
+                        'appointment_id' => $appointment->id,
+                        'errors' => $allocation['errors']
+                    ]);
+                }
+            }
         }
 
         // Return JSON for AJAX requests, redirect for regular form submissions
@@ -261,6 +314,155 @@ class AppointmentController extends BaseClinicController
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Update appointment status
+     */
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+
+        if (!$clinic) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Clinic not found.'
+                ], 404);
+            }
+            return redirect()->back()->with('error', 'Clinic not found.');
+        }
+
+        $appointment = ClinicAppointment::where('clinic_id', $clinic->id)
+            ->findOrFail($id);
+
+        $validator = \Validator::make($request->all(), [
+            'status' => 'required|in:scheduled,confirmed,in_progress,completed,cancelled,no_show',
+            'appointment_date' => 'nullable|date',
+            'appointment_time' => 'nullable',
+            'duration_minutes' => 'nullable|integer|min:15|max:120',
+            'notes' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        // If updating time, check for overlaps
+        if ($request->has('appointment_date') && $request->has('appointment_time')) {
+            $newStart = Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+            $durationMinutes = $request->duration_minutes ?? $appointment->duration_minutes;
+            
+            $overlapCheck = $this->overlapService->checkOverlaps(
+                $appointment->doctor_id,
+                $appointment->patient_id,
+                $newStart,
+                $durationMinutes,
+                $appointment->id // Exclude current appointment
+            );
+
+            if ($overlapCheck['has_overlap']) {
+                $errorMessage = implode(' ', array_column($overlapCheck['conflicts'], 'message'));
+                
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Appointment conflict detected: ' . $errorMessage,
+                        'errors' => ['appointment_time' => [$errorMessage]]
+                    ], 422);
+                }
+                
+                return redirect()->back()
+                    ->withErrors(['appointment_time' => $errorMessage])
+                    ->withInput();
+            }
+
+            $appointment->appointment_date = $newStart;
+        }
+
+        $oldStatus = $appointment->status;
+        $newStatus = $request->status;
+
+        // Update appointment
+        $appointment->update([
+            'status' => $newStatus,
+            'duration_minutes' => $request->duration_minutes ?? $appointment->duration_minutes,
+            'notes' => $request->notes ?? $appointment->notes,
+        ]);
+
+        // Trigger billing automation when appointment is completed
+        if ($newStatus === 'completed' && $oldStatus !== 'completed') {
+            try {
+                $invoiceData = $this->billingAutomation->generateInvoiceOnCompletion($appointment);
+                
+                // If payment method is insurance, create insurance claim
+                if ($appointment->payment_method === 'insurance' && $invoiceData) {
+                    $this->billingAutomation->processInsuranceClaim($appointment, $invoiceData);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Billing automation failed', [
+                    'appointment_id' => $appointment->id,
+                    'error' => $e->getMessage()
+                ]);
+                // Don't fail the appointment update if billing fails
+            }
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Appointment updated successfully.',
+                'appointment' => $appointment->fresh(['patient', 'doctor'])
+            ]);
+        }
+
+        return redirect()->route('clinic.appointments.index')
+            ->with('success', 'Appointment updated successfully.');
+    }
+
+    /**
+     * Get available time slots for a doctor
+     */
+    public function getAvailableSlots(Request $request)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+
+        if (!$clinic) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Clinic not found.'
+            ], 404);
+        }
+
+        $request->validate([
+            'doctor_id' => 'required|exists:users,id',
+            'date' => 'required|date',
+            'slot_duration' => 'nullable|integer|min:15|max:120'
+        ]);
+
+        $doctorId = $request->doctor_id;
+        $date = Carbon::parse($request->date);
+        $slotDuration = $request->slot_duration ?? 60;
+
+        $availableSlots = $this->overlapService->getAvailableSlots(
+            $doctorId,
+            $date,
+            $slotDuration
+        );
+
+        return response()->json([
+            'success' => true,
+            'slots' => $availableSlots
+        ]);
     }
 
     // getUserClinic method inherited from BaseClinicController
