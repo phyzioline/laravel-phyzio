@@ -27,7 +27,13 @@ class EpisodeController extends BaseClinicController
                         ->latest()
                         ->get();
                         
-        return view('clinic.erp.episodes.index', compact('episodes', 'clinic'));
+        // Check if view exists, use appropriate path
+        $viewPath = 'web.clinic.episodes.index';
+        if (!view()->exists($viewPath)) {
+            $viewPath = 'clinic.erp.episodes.index';
+        }
+        
+        return view($viewPath, compact('episodes', 'clinic'));
     }
 
     /**

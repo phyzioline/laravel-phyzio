@@ -315,22 +315,22 @@ php artisan migrate
 
 ### **2. Access Dashboard:**
 ```
-http://your-domain.com/clinic/dashboard
+http://phyzioline.com/clinic/dashboard
 ```
 
 ### **3. Select Specialty (First Time):**
 ```
-http://your-domain.com/clinic/specialty-selection
+http://phyzioline.com/clinic/specialty-selection
 ```
 
 ### **4. Create Program:**
 ```
-http://your-domain.com/clinic/programs/create
+http://phyzioline.com/clinic/programs/create
 ```
 
 ### **5. Create Appointment:**
 ```
-http://your-domain.com/clinic/appointments/create
+http:/phyzioline.com/clinic/appointments/create
 ```
 
 ---
