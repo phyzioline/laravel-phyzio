@@ -11,6 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Drop table if it exists (from failed previous migration)
+        Schema::dropIfExists('therapist_module_verifications');
+        
         Schema::create('therapist_module_verifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('therapist_profile_id')->constrained('therapist_profiles')->onDelete('cascade');
