@@ -137,9 +137,20 @@ class PaymentCalculatorService
         // Calculate total without discount
         $totalWithoutDiscount = $singleSessionPrice * $totalSessions;
 
-        // Apply program discount
+        // Apply program discount (specialty-specific)
         $pricingConfig = $this->getPricingConfig($clinic, $specialty);
-        $discountPercentage = $pricingConfig->getDiscountPercentage('weekly_program');
+        $discountType = $params['payment_plan'] ?? 'weekly_program';
+        
+        // Map payment plan to discount type
+        if ($discountType === 'upfront') {
+            $discountType = 'weekly_program'; // Use weekly program discount for upfront
+        } elseif ($discountType === 'monthly') {
+            $discountType = 'monthly_package';
+        } else {
+            $discountType = 'weekly_program';
+        }
+        
+        $discountPercentage = $pricingConfig->getDiscountPercentage($discountType);
         $discountAmount = ($totalWithoutDiscount * $discountPercentage) / 100;
         $totalWithDiscount = $totalWithoutDiscount - $discountAmount;
 

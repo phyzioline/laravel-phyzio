@@ -149,6 +149,9 @@ class PricingConfig extends Model
      */
     public static function createDefault(Clinic $clinic, string $specialty): self
     {
+        $specialtyAdjustment = self::getSpecialtyAdjustment($specialty);
+        $discountRules = self::getSpecialtyDiscountRules($specialty);
+        
         return self::create([
             'clinic_id' => $clinic->id,
             'specialty' => $specialty,
@@ -156,19 +159,79 @@ class PricingConfig extends Model
             'evaluation_price' => self::getDefaultBasePrice($specialty) * 1.5,
             'followup_price' => self::getDefaultBasePrice($specialty),
             're_evaluation_price' => self::getDefaultBasePrice($specialty) * 1.3,
-            'specialty_adjustment' => 1.0,
+            'specialty_adjustment' => $specialtyAdjustment,
             'therapist_level_multipliers' => self::DEFAULT_THERAPIST_MULTIPLIERS,
             'equipment_pricing' => self::getDefaultEquipmentPricing(),
-            'location_factors' => self::DEFAULT_LOCATION_FACTORS,
+            'location_factors' => self::getSpecialtyLocationFactors($specialty),
             'duration_factors' => self::DEFAULT_DURATION_FACTORS,
-            'discount_rules' => [
-                'weekly_program' => 10,
-                'monthly_package' => 20,
-                'insurance' => 0
-            ],
+            'discount_rules' => $discountRules,
             'insurance_enabled' => false,
             'is_active' => true
         ]);
+    }
+    
+    /**
+     * Get specialty-specific adjustment coefficient
+     */
+    protected static function getSpecialtyAdjustment(string $specialty): float
+    {
+        return match($specialty) {
+            'sports' => 1.2,        // 20% premium for sports
+            'neurological' => 1.15,  // 15% premium for neuro (longer sessions)
+            'womens_health' => 1.1, // 10% premium for specialized care
+            'cardiorespiratory' => 1.1, // 10% premium for monitoring
+            'home_care' => 1.3,      // 30% premium for travel
+            'pediatric' => 0.9,      // 10% discount (shorter sessions)
+            'geriatric' => 0.95,     // 5% discount (lower intensity)
+            default => 1.0           // Standard for orthopedic
+        };
+    }
+    
+    /**
+     * Get specialty-specific discount rules
+     */
+    protected static function getSpecialtyDiscountRules(string $specialty): array
+    {
+        return match($specialty) {
+            'neurological' => [
+                'weekly_program' => 15,  // Higher discount for long-term programs
+                'monthly_package' => 25,
+                'insurance' => 0
+            ],
+            'sports' => [
+                'weekly_program' => 10,
+                'monthly_package' => 20,
+                'upfront' => 15,
+                'insurance' => 0
+            ],
+            'pediatric' => [
+                'weekly_program' => 10,
+                'monthly_package' => 18,
+                'insurance' => 0
+            ],
+            default => [
+                'weekly_program' => 10,
+                'monthly_package' => 20,
+                'insurance' => 0
+            ]
+        };
+    }
+    
+    /**
+     * Get specialty-specific location factors
+     */
+    protected static function getSpecialtyLocationFactors(string $specialty): array
+    {
+        // Home care has higher premium
+        if ($specialty === 'home_care') {
+            return [
+                'clinic' => 1.0,
+                'home_base' => 1.3,
+                'home_premium' => 1.6
+            ];
+        }
+        
+        return self::DEFAULT_LOCATION_FACTORS;
     }
 
     /**

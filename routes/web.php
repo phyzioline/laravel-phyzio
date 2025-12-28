@@ -313,7 +313,8 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
         
         // Weekly Programs
-        Route::get('/programs/calculate-price', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'calculatePrice'])->name('programs.calculatePrice');
+        Route::get('/programs/get-template', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'getTemplate'])->name('programs.getTemplate');
+        Route::post('/programs/calculate-price', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'calculatePrice'])->name('programs.calculatePrice');
         Route::post('/programs/{id}/activate', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'activate'])->name('programs.activate');
         Route::resource('programs', \App\Http\Controllers\Clinic\WeeklyProgramController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');

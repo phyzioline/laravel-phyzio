@@ -4,6 +4,33 @@
 @section('header_title', 'Company Portal')
 
 @section('content')
+<!-- Specialty Selection Modal (Popup on first entry) -->
+@if($clinic && !$clinic->hasSelectedSpecialty())
+<div class="modal fade show" id="specialtySelectionModal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" style="display: block;">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+            <div class="modal-header bg-primary text-white" style="border-radius: 15px 15px 0 0;">
+                <h4 class="modal-title font-weight-bold">
+                    <i class="las la-stethoscope"></i> Select Your Physical Therapy Specialty
+                </h4>
+            </div>
+            <div class="modal-body p-4">
+                <div class="alert alert-info mb-4">
+                    <i class="las la-info-circle"></i> 
+                    <strong>Welcome!</strong> Please select your clinic's primary specialty to activate the right tools, assessment forms, and treatment templates for your practice.
+                </div>
+                <p class="text-muted mb-4">This selection will customize your dashboard, reservation forms, payment calculations, and weekly program templates. You can add more specialties later from settings.</p>
+                <div class="text-center">
+                    <a href="{{ route('clinic.specialty-selection.show') }}" class="btn btn-primary btn-lg">
+                        <i class="las la-arrow-right"></i> Select Specialty Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade show"></div>
+@endif
 <div class="row mb-4">
     <div class="col-12">
         <h3 style="color: #00897b; font-weight: 700;">

@@ -8,6 +8,7 @@ use App\Models\Patient;
 use App\Models\EpisodeOfCare;
 use App\Services\Clinic\WeeklyProgramService;
 use App\Services\Clinic\PaymentCalculatorService;
+use App\Services\Clinic\SpecialtyProgramTemplateService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -16,13 +17,16 @@ class WeeklyProgramController extends BaseClinicController
 {
     protected $programService;
     protected $paymentCalculator;
+    protected $templateService;
 
     public function __construct(
         WeeklyProgramService $programService,
-        PaymentCalculatorService $paymentCalculator
+        PaymentCalculatorService $paymentCalculator,
+        SpecialtyProgramTemplateService $templateService
     ) {
         $this->programService = $programService;
         $this->paymentCalculator = $paymentCalculator;
+        $this->templateService = $templateService;
     }
 
     /**
@@ -113,17 +117,21 @@ class WeeklyProgramController extends BaseClinicController
         $specialty = $request->get('specialty', $clinic->primary_specialty);
         $patientId = $request->get('patient_id');
 
+        // Get specialty-specific template
+        $template = $specialty ? $this->templateService->getTemplate($specialty) : null;
+        $defaults = $specialty ? $this->templateService->getDefaults($specialty) : null;
+
         // Calculate preview pricing if patient and specialty selected
         $pricingPreview = null;
-        if ($patientId && $specialty) {
+        if ($patientId && $specialty && $defaults) {
             $pricingPreview = $this->paymentCalculator->calculateProgramPrice(
                 $clinic,
                 [
                     'specialty' => $specialty,
-                    'sessions_per_week' => 2,
-                    'total_weeks' => 4,
+                    'sessions_per_week' => $defaults['sessions_per_week'],
+                    'total_weeks' => $defaults['total_weeks'],
                     'location' => 'clinic',
-                    'duration_minutes' => 60
+                    'duration_minutes' => $defaults['duration_minutes']
                 ]
             );
         }
@@ -135,7 +143,9 @@ class WeeklyProgramController extends BaseClinicController
             'therapists',
             'specialty',
             'patientId',
-            'pricingPreview'
+            'pricingPreview',
+            'template',
+            'defaults'
         ));
     }
 
@@ -255,6 +265,30 @@ class WeeklyProgramController extends BaseClinicController
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to activate program: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Get specialty template (AJAX)
+     */
+    public function getTemplate(Request $request)
+    {
+        $specialty = $request->get('specialty');
+        
+        if (!$specialty) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Specialty is required.'
+            ], 400);
+        }
+        
+        $template = $this->templateService->getTemplate($specialty);
+        $defaults = $this->templateService->getDefaults($specialty);
+        
+        return response()->json([
+            'success' => true,
+            'template' => $template,
+            'defaults' => $defaults
+        ]);
     }
 
     /**

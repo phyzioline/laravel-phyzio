@@ -57,19 +57,18 @@
                             <div class="form-group">
                                 <label>{{ __('Sessions per Week') }} <span class="text-danger">*</span></label>
                                 <select name="sessions_per_week" id="sessions_per_week" class="form-control" required>
-                                    <option value="1">1 session/week</option>
-                                    <option value="2" selected>2 sessions/week</option>
-                                    <option value="3">3 sessions/week</option>
-                                    <option value="4">4 sessions/week</option>
-                                    <option value="5">5 sessions/week</option>
+                                    <option value="">{{ __('Select Specialty First') }}</option>
                                 </select>
+                                <small class="text-muted" id="sessions_help"></small>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{{ __('Total Weeks') }} <span class="text-danger">*</span></label>
-                                <input type="number" name="total_weeks" id="total_weeks" 
-                                       class="form-control" min="1" max="52" value="4" required>
+                                <select name="total_weeks" id="total_weeks" class="form-control" required>
+                                    <option value="">{{ __('Select Specialty First') }}</option>
+                                </select>
+                                <small class="text-muted" id="weeks_help"></small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -86,12 +85,13 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>{{ __('Duration per Session (minutes)') }}</label>
-                                <select name="duration_minutes" class="form-control">
+                                <select name="duration_minutes" id="duration_minutes" class="form-control">
                                     <option value="30">30 minutes</option>
                                     <option value="45">45 minutes</option>
-                                    <option value="60" selected">60 minutes</option>
+                                    <option value="60" selected>60 minutes</option>
                                     <option value="90">90 minutes</option>
                                 </select>
+                                <small class="text-muted" id="duration_help"></small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -199,6 +199,122 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('programForm');
     const pricingPreview = document.getElementById('pricingPreview');
+    const specialtySelect = document.getElementById('specialty');
+    const sessionsPerWeekSelect = document.getElementById('sessions_per_week');
+    const totalWeeksSelect = document.getElementById('total_weeks');
+    const durationSelect = document.getElementById('duration_minutes');
+    
+    // Specialty templates data (passed from controller)
+    const specialtyTemplates = @json([
+        'orthopedic' => $template ?? null,
+        'pediatric' => null,
+        'neurological' => null,
+        'sports' => null,
+        'geriatric' => null,
+        'womens_health' => null,
+        'cardiorespiratory' => null,
+        'home_care' => null
+    ]);
+    
+    // Load template when specialty changes
+    specialtySelect.addEventListener('change', function() {
+        const specialty = this.value;
+        if (specialty) {
+            loadSpecialtyTemplate(specialty);
+            calculatePrice();
+        } else {
+            clearTemplate();
+        }
+    });
+    
+    // Load specialty template from server
+    function loadSpecialtyTemplate(specialty) {
+        fetch(`{{ route('clinic.programs.getTemplate') }}?specialty=${specialty}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.template) {
+                applyTemplate(data.template, data.defaults);
+            }
+        })
+        .catch(error => {
+            console.error('Error loading template:', error);
+        });
+    }
+    
+    // Apply template to form
+    function applyTemplate(template, defaults) {
+        // Sessions per week
+        sessionsPerWeekSelect.innerHTML = '';
+        if (template.sessions_per_week) {
+            template.sessions_per_week.forEach(count => {
+                const option = document.createElement('option');
+                option.value = count;
+                option.textContent = `${count} session${count > 1 ? 's' : ''}/week`;
+                if (count === defaults.sessions_per_week) {
+                    option.selected = true;
+                }
+                sessionsPerWeekSelect.appendChild(option);
+            });
+        }
+        
+        // Total weeks
+        totalWeeksSelect.innerHTML = '';
+        if (template.total_weeks) {
+            template.total_weeks.forEach(weeks => {
+                const option = document.createElement('option');
+                option.value = weeks;
+                option.textContent = `${weeks} week${weeks > 1 ? 's' : ''}`;
+                if (weeks === defaults.total_weeks) {
+                    option.selected = true;
+                }
+                totalWeeksSelect.appendChild(option);
+            });
+        }
+        
+        // Duration
+        if (defaults.duration_minutes) {
+            durationSelect.value = defaults.duration_minutes;
+        }
+        
+        // Payment plan
+        if (defaults.payment_plan) {
+            document.getElementById('payment_plan').value = defaults.payment_plan;
+        }
+        
+        // Update help text
+        document.getElementById('sessions_help').textContent = 
+            `Recommended: ${template.default_sessions_per_week} sessions/week for ${template.name}`;
+        document.getElementById('weeks_help').textContent = 
+            `Recommended: ${template.default_total_weeks} weeks`;
+        document.getElementById('duration_help').textContent = 
+            `Default: ${template.session_duration_minutes} minutes`;
+        
+        // Update template info
+        const templateInfo = document.getElementById('templateInfo');
+        if (templateInfo) {
+            templateInfo.innerHTML = `
+                <h6 class="font-weight-bold mb-2">
+                    <i class="las la-info-circle"></i> ${template.name}
+                </h6>
+                <p class="mb-2">${template.description}</p>
+                ${template.special_notes ? `<small class="text-muted"><i class="las la-exclamation-triangle"></i> ${template.special_notes}</small>` : ''}
+            `;
+        }
+    }
+    
+    function clearTemplate() {
+        sessionsPerWeekSelect.innerHTML = '<option value="">Select Specialty First</option>';
+        totalWeeksSelect.innerHTML = '<option value="">Select Specialty First</option>';
+    }
+    
+    // Initialize if specialty is pre-selected
+    @if($specialty && $defaults)
+        applyTemplate(@json($template), @json($defaults));
+    @endif
     
     // Fields that trigger price calculation
     const priceFields = ['specialty', 'sessions_per_week', 'total_weeks', 'duration_minutes', 'therapist_level', 'payment_plan'];
