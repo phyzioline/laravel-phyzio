@@ -28,74 +28,125 @@ class DashboardController extends Controller
                 ->with('info', 'Please select your physical therapy specialty to continue.');
         }
 
-        try {
-            // Attempt to load real data
-            if (class_exists('\\App\\Models\\Patient')) {
-                $totalPatients = \App\Models\Patient::count();
-            } else {
-                $totalPatients = 156;
+        // Initialize with zeros
+        $totalPatients = 0;
+        $activePlans = 0;
+        $todayAppointments = 0;
+        $completedToday = 0;
+        $outstandingPayments = 0;
+        $timeline = collect();
+        $activePrograms = 0;
+        $totalPrograms = 0;
+        $monthlyRevenue = 0;
+        $activeDoctors = 0;
+
+        if ($clinic) {
+            try {
+                // Get REAL data filtered by clinic
+                $totalPatients = \App\Models\Patient::where('clinic_id', $clinic->id)->count();
+                
+                // Active treatment plans
+                if (\Schema::hasTable('treatment_plans')) {
+                    $activePlans = \DB::table('treatment_plans')
+                        ->where('clinic_id', $clinic->id)
+                        ->where('status', 'active')
+                        ->count();
+                }
+                
+                // Weekly Programs (NEW FEATURE)
+                if (\Schema::hasTable('weekly_programs')) {
+                    $totalPrograms = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)->count();
+                    $activePrograms = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+                        ->where('status', 'active')
+                        ->count();
+                }
+                
+                // Today's appointments (REAL DATA)
+                $todayAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereDate('appointment_date', today())
+                    ->count();
+                    
+                $completedToday = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereDate('appointment_date', today())
+                    ->where('status', 'completed')
+                    ->count();
+                
+                // Upcoming appointments timeline
+                $timeline = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->with(['patient', 'doctor'])
+                    ->where('appointment_date', '>=', now())
+                    ->where('status', '!=', 'cancelled')
+                    ->orderBy('appointment_date', 'asc')
+                    ->take(5)
+                    ->get();
+                
+                // Active doctors/therapists
+                $activeDoctors = \App\Models\User::where('type', 'therapist')
+                    ->whereHas('therapistProfile', function($q) use ($clinic) {
+                        // Filter by clinic if relationship exists
+                    })
+                    ->count();
+                
+                // Monthly revenue (from appointments or payments)
+                if (\Schema::hasTable('payments')) {
+                    $monthlyRevenue = \DB::table('payments')
+                        ->where('created_at', '>=', now()->startOfMonth())
+                        ->where('created_at', '<=', now()->endOfMonth())
+                        ->where('status', 'paid')
+                        ->sum('amount');
+                }
+                
+                // Outstanding payments
+                if (\Schema::hasTable('invoices')) {
+                    $outstandingPayments = \DB::table('invoices')
+                        ->where('clinic_id', $clinic->id)
+                        ->where('status', 'pending')
+                        ->sum('amount');
+                }
+                
+            } catch (\Exception $e) {
+                \Log::error('Dashboard data fetch error', [
+                    'clinic_id' => $clinic->id ?? null,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                // Keep zeros if error
             }
+        }
+
+        // Monthly performance data (last 4 weeks)
+        $weeklyData = [];
+        $weeklyLabels = [];
+        for ($i = 3; $i >= 0; $i--) {
+            $weekStart = now()->subWeeks($i)->startOfWeek();
+            $weekEnd = now()->subWeeks($i)->endOfWeek();
+            $weeklyLabels[] = 'Week ' . (4 - $i);
             
-            if (\Schema::hasTable('treatment_plans')) {
-                $activePlans = \DB::table('treatment_plans')->where('status', 'active')->count();
+            if ($clinic) {
+                $weekAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereBetween('appointment_date', [$weekStart, $weekEnd])
+                    ->count();
+                $weeklyData[] = $weekAppointments;
             } else {
-                $activePlans = 42;
+                $weeklyData[] = 0;
             }
-            
-            if (class_exists('\\App\\Models\\ClinicAppointment')) {
-                $todayAppointments = \App\Models\ClinicAppointment::whereDate('start_time', today())->count();
-                $completedToday = \App\Models\ClinicAppointment::whereDate('start_time', today())->where('status', 'completed')->count();
-                $timeline = \App\Models\ClinicAppointment::with(['patient', 'therapist'])
-                                ->where('start_time', '>=', now())
-                                ->orderBy('start_time', 'asc')
-                                ->take(5)
-                                ->get();
-            } else {
-                throw new \Exception('ClinicAppointment model not found');
-            }
-            
-            if (\Schema::hasTable('invoices')) {
-                $outstandingPayments = \DB::table('invoices')->where('status', 'pending')->sum('amount');
-            } else {
-                $outstandingPayments = 12500;
-            }
-        } catch (\Exception $e) {
-            // Use mock data if queries fail
-            $totalPatients = 156;
-            $activePlans = 42;
-            $todayAppointments = 18;
-            $completedToday = 12;
-            $outstandingPayments = 12500;
-            $timeline = collect([
-                (object)[
-                    'id' => 1,
-                    'patient' => (object)['first_name' => 'Sarah', 'last_name' => 'Johnson'],
-                    'therapist' => (object)['name' => 'Dr. Michael'],
-                    'type' => 'Consultation',
-                    'start_time' => now()->addHours(2),
-                    'status' => 'scheduled'
-                ],
-                (object)[
-                    'id' => 2,
-                    'patient' => (object)['first_name' => 'James', 'last_name' => 'Wilson'],
-                    'therapist' => (object)['name' => 'Dr. Emily'],
-                    'type' => 'Follow-up',
-                    'start_time' => now()->addHours(4),
-                    'status' => 'scheduled'
-                ]
-            ]);
         }
 
         $monthlyPerformance = [
-            'labels' => ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            'data' => [12, 19, 15, 22]
+            'labels' => $weeklyLabels,
+            'data' => $weeklyData
         ];
 
-        // Get clinic specialty info for dashboard
+        // Get clinic specialty info
         $clinicSpecialty = null;
+        $specialtyDisplayName = null;
         if ($clinic) {
             $clinicSpecialty = $clinic->primarySpecialty;
+            $specialtyDisplayName = $clinic->getPrimarySpecialtyDisplayName();
         }
+
+        // Recent activities (from new features)
+        $recentActivities = $this->getRecentActivities($clinic);
 
         return view('web.clinic.dashboard', compact(
             'totalPatients', 
@@ -106,8 +157,75 @@ class DashboardController extends Controller
             'timeline',
             'monthlyPerformance',
             'clinic',
-            'clinicSpecialty'
+            'clinicSpecialty',
+            'specialtyDisplayName',
+            'activePrograms',
+            'totalPrograms',
+            'monthlyRevenue',
+            'activeDoctors',
+            'recentActivities'
         ));
+    }
+
+    /**
+     * Get recent activities from new features
+     */
+    protected function getRecentActivities($clinic)
+    {
+        $activities = collect();
+        
+        if (!$clinic) {
+            return $activities;
+        }
+
+        try {
+            // Recent programs
+            $recentPrograms = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(function($program) {
+                    return (object)[
+                        'type' => 'program',
+                        'icon' => 'las la-clipboard-list',
+                        'color' => 'primary',
+                        'title' => 'New Treatment Program Created',
+                        'description' => $program->program_name . ' for ' . ($program->patient->first_name ?? 'Patient'),
+                        'time' => $program->created_at->diffForHumans(),
+                        'link' => route('clinic.programs.show', $program->id)
+                    ];
+                });
+            $activities = $activities->merge($recentPrograms);
+
+            // Recent appointments
+            $recentAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                ->with('patient')
+                ->latest()
+                ->take(3)
+                ->get()
+                ->map(function($appointment) {
+                    return (object)[
+                        'type' => 'appointment',
+                        'icon' => 'las la-calendar-check',
+                        'color' => 'info',
+                        'title' => 'New Appointment Scheduled',
+                        'description' => ($appointment->patient->first_name ?? 'Patient') . ' - ' . ($appointment->specialty ? ucfirst($appointment->specialty) : 'Appointment'),
+                        'time' => $appointment->created_at->diffForHumans(),
+                        'link' => route('clinic.appointments.index')
+                    ];
+                });
+            $activities = $activities->merge($recentAppointments);
+
+            // Sort by time and take latest 5
+            $activities = $activities->sortByDesc(function($activity) {
+                return $activity->time;
+            })->take(5);
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching recent activities', ['error' => $e->getMessage()]);
+        }
+
+        return $activities;
     }
 
     /**
