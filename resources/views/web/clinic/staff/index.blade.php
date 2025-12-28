@@ -22,7 +22,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($staff as $member)
+                    @forelse($staff as $member)
                     <tr>
                         <td>
                             <div class="d-flex align-items-center">
@@ -45,7 +45,17 @@
                             <button class="btn btn-sm btn-link text-danger"><i class="las la-trash"></i></button>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <i class="las la-users fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No staff members found.</p>
+                            <a href="{{ route('clinic.staff.create') }}" class="btn btn-primary btn-sm">
+                                <i class="las la-user-plus"></i> Add Your First Staff Member
+                            </a>
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

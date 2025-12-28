@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clinic;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class StaffController extends BaseClinicController
 {
@@ -17,9 +18,15 @@ class StaffController extends BaseClinicController
                 ->with('error', 'Clinic not found.');
         }
 
-        // Get real staff members (users with type 'staff' or 'receptionist', etc.)
-        $staff = User::whereIn('type', ['staff', 'receptionist', 'nurse', 'admin'])
-            ->get()
+        // Get real staff members - filter by clinic's company if possible
+        $query = User::whereIn('type', ['staff', 'receptionist', 'nurse', 'admin']);
+        
+        // Try to filter by company_id if column exists
+        if (Schema::hasColumn('users', 'company_id')) {
+            $query->where('company_id', $clinic->company_id);
+        }
+        
+        $staff = $query->get()
             ->map(function($staffMember) {
                 return (object)[
                     'id' => $staffMember->id,
