@@ -70,12 +70,62 @@ return new class extends Migration
             // Re-add foreign keys pointing to episodes_of_care
             if (Schema::hasTable('assessments')) {
                 Schema::table('assessments', function (Blueprint $table) {
-                    $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    // Check if episode_id column exists, if not add it
+                    if (!Schema::hasColumn('assessments', 'episode_id')) {
+                        $table->foreignId('episode_id')->nullable()->after('id');
+                    }
+                    // Check if foreign key doesn't already exist
+                    $foreignKeys = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'assessments' 
+                        AND CONSTRAINT_NAME LIKE '%episode_id%'
+                    ");
+                    if (empty($foreignKeys)) {
+                        $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    }
                 });
             }
+            
+            // Also check clinical_assessments table (if it exists)
+            if (Schema::hasTable('clinical_assessments')) {
+                Schema::table('clinical_assessments', function (Blueprint $table) {
+                    // Check if episode_id column exists, if not add it
+                    if (!Schema::hasColumn('clinical_assessments', 'episode_id')) {
+                        $table->foreignId('episode_id')->nullable()->after('id');
+                    }
+                    // Check if foreign key doesn't already exist
+                    $foreignKeys = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'clinical_assessments' 
+                        AND CONSTRAINT_NAME LIKE '%episode_id%'
+                    ");
+                    if (empty($foreignKeys)) {
+                        $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    }
+                });
+            }
+            
             if (Schema::hasTable('clinic_treatment_plans')) {
                 Schema::table('clinic_treatment_plans', function (Blueprint $table) {
-                    $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    // Check if episode_id column exists, if not add it
+                    if (!Schema::hasColumn('clinic_treatment_plans', 'episode_id')) {
+                        $table->foreignId('episode_id')->nullable()->after('id');
+                    }
+                    // Check if foreign key doesn't already exist
+                    $foreignKeys = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'clinic_treatment_plans' 
+                        AND CONSTRAINT_NAME LIKE '%episode_id%'
+                    ");
+                    if (empty($foreignKeys)) {
+                        $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    }
                 });
             }
         } elseif (!Schema::hasTable('episodes_of_care')) {
