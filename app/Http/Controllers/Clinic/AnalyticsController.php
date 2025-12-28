@@ -11,9 +11,22 @@ class AnalyticsController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $monthlyRevenue = [];
+            $monthlyLabels = [];
+            $patientGrowth = [];
+            $totalPatients = 0;
+            $totalAppointments = 0;
+            $activePrograms = 0;
+            $returningPatients = 0;
+            $newPatients = 0;
+            $patientGrowthPercentage = 0;
+            return view('web.clinic.analytics.index', compact(
+                'monthlyRevenue', 'monthlyLabels', 'patientGrowth', 
+                'totalPatients', 'totalAppointments', 'activePrograms',
+                'returningPatients', 'newPatients', 'patientGrowthPercentage', 'clinic'
+            ));
         }
 
         // Real monthly revenue data (last 6 months)

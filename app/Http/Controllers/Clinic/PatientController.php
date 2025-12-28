@@ -15,9 +15,10 @@ class PatientController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found. Please contact support.');
+            $patients = collect();
+            return view('web.clinic.patients.index', compact('patients', 'clinic'));
         }
 
         $query = Patient::where('clinic_id', $clinic->id);

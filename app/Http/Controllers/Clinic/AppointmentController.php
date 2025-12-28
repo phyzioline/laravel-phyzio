@@ -58,9 +58,12 @@ class AppointmentController extends BaseClinicController
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
 
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $appointments = collect();
+            $patients = collect();
+            $therapists = collect();
+            return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
         }
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();

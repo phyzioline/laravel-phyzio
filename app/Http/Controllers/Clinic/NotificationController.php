@@ -11,9 +11,10 @@ class NotificationController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $notifications = collect();
+            return view('web.clinic.notifications.index', compact('notifications', 'clinic'));
         }
 
         // Get real notifications from database

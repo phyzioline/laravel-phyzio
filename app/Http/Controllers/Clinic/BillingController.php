@@ -11,9 +11,12 @@ class BillingController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Show empty state instead of redirecting
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found.');
+            $invoices = collect();
+            $pendingPayments = 0;
+            $totalRevenue = 0;
+            return view('web.clinic.billing.index', compact('invoices', 'pendingPayments', 'totalRevenue', 'clinic'));
         }
 
         // Get real invoices from database

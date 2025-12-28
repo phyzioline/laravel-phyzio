@@ -16,9 +16,10 @@ class EpisodeController extends BaseClinicController
     {
         $clinic = $this->getUserClinic();
         
+        // Don't redirect - show empty state instead
         if (!$clinic) {
-            return redirect()->route('clinic.dashboard')
-                ->with('error', 'Clinic not found. Please contact support.');
+            $episodes = collect();
+            return view('clinic.erp.episodes.index', compact('episodes', 'clinic'));
         }
 
         $episodes = EpisodeOfCare::where('clinic_id', $clinic->id)
