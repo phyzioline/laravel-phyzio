@@ -35,7 +35,14 @@ class WeeklyProgramController extends BaseClinicController
 
         // Show empty state instead of redirecting
         if (!$clinic) {
-            $programs = collect();
+            // Return empty paginated collection to avoid errors with ->total() and ->links()
+            $programs = new \Illuminate\Pagination\LengthAwarePaginator(
+                collect([]),
+                0,
+                15,
+                1,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
             $stats = [
                 'total' => 0,
                 'active' => 0,
@@ -65,7 +72,15 @@ class WeeklyProgramController extends BaseClinicController
 
         $programs = $query->latest()->paginate(15);
 
-        return view('web.clinic.programs.index', compact('programs', 'clinic'));
+        // Calculate stats for the view
+        $stats = [
+            'total' => WeeklyProgram::where('clinic_id', $clinic->id)->count(),
+            'active' => WeeklyProgram::where('clinic_id', $clinic->id)->where('status', 'active')->count(),
+            'completed' => WeeklyProgram::where('clinic_id', $clinic->id)->where('status', 'completed')->count(),
+            'pending' => WeeklyProgram::where('clinic_id', $clinic->id)->where('status', 'pending')->count(),
+        ];
+
+        return view('web.clinic.programs.index', compact('programs', 'stats', 'clinic'));
     }
 
     /**

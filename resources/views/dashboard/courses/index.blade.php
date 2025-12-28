@@ -29,23 +29,45 @@
                             <td>{{ $course->instructor->user->name ?? 'N/A' }}</td>
                             <td>{{ $course->price }} SAR</td>
                             <td>
-                                <span class="badge badge-{{ $course->status == 'published' ? 'success' : ($course->status == 'pending' ? 'warning' : 'secondary') }}">
-                                    {{ ucfirst($course->status) }}
-                                </span>
+                                @if($course->status == 'published')
+                                    <span class="badge badge-success">Published</span>
+                                @elseif($course->status == 'review')
+                                    <span class="badge badge-warning">Pending Review</span>
+                                @else
+                                    <span class="badge badge-secondary">Draft</span>
+                                @endif
                             </td>
                             <td>
-                                <a href="#" class="btn btn-info btn-sm">View</a>
-                                <form action="{{ route('dashboard.courses.update', $course->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('PUT')
-                                    @if($course->status == 'pending')
-                                        <input type="hidden" name="status" value="published">
-                                        <button class="btn btn-success btn-sm">Approve</button>
-                                    @elseif($course->status == 'published')
+                                <a href="{{ route('dashboard.courses.show', $course->id) }}" class="btn btn-info btn-sm">
+                                    <i class="las la-eye"></i> View
+                                </a>
+                                @if($course->status == 'review')
+                                    <form action="{{ route('dashboard.courses.update', $course->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="approve">
+                                        <button type="submit" class="btn btn-success btn-sm" title="Approve Course">
+                                            <i class="las la-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('dashboard.courses.update', $course->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Reject Course" onclick="return confirm('Are you sure you want to reject this course?')">
+                                            <i class="las la-times"></i> Reject
+                                        </button>
+                                    </form>
+                                @elseif($course->status == 'published')
+                                    <form action="{{ route('dashboard.courses.update', $course->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
                                         <input type="hidden" name="status" value="draft">
-                                        <button class="btn btn-warning btn-sm">Unpublish</button>
-                                    @endif
-                                </form>
+                                        <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to unpublish this course?')">
+                                            <i class="las la-ban"></i> Unpublish
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @endforeach

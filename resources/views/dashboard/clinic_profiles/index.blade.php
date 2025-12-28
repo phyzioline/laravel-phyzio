@@ -31,21 +31,40 @@
                             </td>
                             <td>{{ $clinic->plan }}</td>
                             <td>
-                                <span class="badge badge-{{ $clinic->status == 'active' ? 'success' : 'secondary' }}">
-                                    {{ ucfirst($clinic->status) }}
-                                </span>
+                                @if($clinic->status == 'active')
+                                    <span class="badge badge-success">Approved</span>
+                                @else
+                                    <span class="badge badge-warning">Pending Approval</span>
+                                @endif
                             </td>
                             <td>
                                 <a href="{{ route('clinic.dashboard') }}?clinic_id={{ $clinic->id }}" class="btn btn-info btn-sm" title="View Clinic Dashboard">
                                     <i class="las la-eye"></i> View
                                 </a>
-                                @if($clinic->status == 'inactive')
+                                @if($clinic->status == 'pending')
                                     <form action="{{ route('dashboard.clinic_profiles.update', $clinic->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('PUT')
-                                        <input type="hidden" name="action" value="activate">
-                                        <button type="submit" class="btn btn-success btn-sm" title="Activate Clinic">
-                                            <i class="las la-check"></i> Activate
+                                        <input type="hidden" name="action" value="approve">
+                                        <button type="submit" class="btn btn-success btn-sm" title="Approve Clinic">
+                                            <i class="las la-check"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('dashboard.clinic_profiles.update', $clinic->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Reject Clinic" onclick="return confirm('Are you sure you want to reject this clinic?')">
+                                            <i class="las la-times"></i> Reject
+                                        </button>
+                                    </form>
+                                @elseif($clinic->status == 'active')
+                                    <form action="{{ route('dashboard.clinic_profiles.update', $clinic->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="deactivate">
+                                        <button type="submit" class="btn btn-warning btn-sm" title="Deactivate Clinic" onclick="return confirm('Are you sure you want to deactivate this clinic?')">
+                                            <i class="las la-ban"></i> Deactivate
                                         </button>
                                     </form>
                                 @endif

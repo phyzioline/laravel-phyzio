@@ -63,7 +63,7 @@ class CourseController extends Controller
                 'price' => $validated['price'],
                 'category_id' => $validated['category_id'],
                 'equipment_required' => $validated['equipment_required'] ?? [],
-                'status' => 'draft',
+                'status' => 'draft', // Will be changed to 'review' when instructor submits for approval
                 'clinical_focus' => $request->clinical_focus,
                 'seats' => $validated['seats'] ?? null,
                 'type' => $validated['type'] ?? 'online',
@@ -114,6 +114,17 @@ class CourseController extends Controller
     {
          if ($course->instructor_id !== Auth::id()) {
             abort(403);
+        }
+
+        // Handle status changes - when publishing, set to 'review' for admin approval
+        if ($request->has('status')) {
+            if ($request->status === 'published') {
+                // Instructor wants to publish, but needs admin approval first
+                $course->update(['status' => 'review']);
+                return back()->with('success', 'Course submitted for review. It will be published after admin approval.');
+            } else {
+                $course->update(['status' => $request->status]);
+            }
         }
 
         // Handle simple updates for basics

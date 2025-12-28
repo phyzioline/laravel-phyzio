@@ -44,8 +44,14 @@ class CourseController extends Controller
         ]);
 
         $data = $request->all();
-        $data['instructor_id'] = Auth::id(); 
-        $data['status'] = $request->input('status'); 
+        $data['instructor_id'] = Auth::id();
+        
+        // If therapist tries to publish, set to 'review' for admin approval
+        if ($request->input('status') === 'published') {
+            $data['status'] = 'review';
+        } else {
+            $data['status'] = $request->input('status');
+        } 
 
         if ($request->hasFile('thumbnail')) {
             $data['thumbnail'] = $request->file('thumbnail')->store('courses/thumbnails', 'public');

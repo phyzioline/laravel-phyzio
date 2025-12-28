@@ -23,9 +23,22 @@ class CourseController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $courses = \App\Models\Course::with('instructor')->get();
+        $query = \App\Models\Course::with('instructor');
+        
+        // Filter by status if provided
+        if ($request->has('status')) {
+            if ($request->status === 'pending') {
+                $query->where('status', 'review');
+            } elseif ($request->status === 'approved') {
+                $query->where('status', 'published');
+            } elseif ($request->status === 'draft') {
+                $query->where('status', 'draft');
+            }
+        }
+        
+        $courses = $query->orderBy('created_at', 'desc')->get();
         return view('dashboard.courses.index', compact('courses'));
     }
 
@@ -83,11 +96,27 @@ class CourseController extends Controller implements HasMiddleware
         
         $request->validate([
             'title' => 'sometimes|string|max:255',
-            'status' => 'sometimes|in:draft,pending,published',
+            'status' => 'sometimes|in:draft,review,published',
+            'action' => 'sometimes|in:approve,reject',
         ]);
 
+        // Handle approval actions
+        if ($request->has('action')) {
+            if ($request->action === 'approve') {
+                $course->update(['status' => 'published']);
+                return redirect()->route('dashboard.courses.index')
+                    ->with('message', ['type' => 'success', 'text' => 'Course approved and published successfully!']);
+            } elseif ($request->action === 'reject') {
+                $course->update(['status' => 'draft']);
+                return redirect()->route('dashboard.courses.index')
+                    ->with('message', ['type' => 'success', 'text' => 'Course rejected and moved to draft.']);
+            }
+        }
+        
+        // Regular update
         $course->update($request->all());
-        return redirect()->route('dashboard.courses.index')->with('message', ['type' => 'success', 'text' => 'Course updated successfully!']);
+        return redirect()->route('dashboard.courses.index')
+            ->with('message', ['type' => 'success', 'text' => 'Course updated successfully!']);
     }
 
     /**

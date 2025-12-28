@@ -17,7 +17,14 @@ class PatientController extends BaseClinicController
         
         // Show empty state instead of redirecting
         if (!$clinic) {
-            $patients = collect();
+            // Return empty paginated collection to avoid errors with ->links()
+            $patients = new \Illuminate\Pagination\LengthAwarePaginator(
+                collect([]),
+                0,
+                10,
+                1,
+                ['path' => request()->url(), 'query' => request()->query()]
+            );
             return view('web.clinic.patients.index', compact('patients', 'clinic'));
         }
 
