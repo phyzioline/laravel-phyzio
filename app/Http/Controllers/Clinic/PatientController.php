@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers\Clinic;
 
-use App\Http\Controllers\Controller;
 use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class PatientController extends Controller
+class PatientController extends BaseClinicController
 {
     /**
      * Display a listing of the patients.
      */
     public function index(Request $request)
     {
-        $query = Patient::query(); // Add ->where('clinic_id', Auth::user()->clinic_id) if multi-tenant
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found. Please contact support.');
+        }
+
+        $query = Patient::where('clinic_id', $clinic->id);
 
         if ($request->has('search') && $request->filled('search')) {
             $search = $request->search;
@@ -32,7 +38,7 @@ class PatientController extends Controller
 
         $patients = $query->latest()->paginate(10)->withQueryString();
 
-        return view('web.clinic.patients.index', compact('patients'));
+        return view('web.clinic.patients.index', compact('patients', 'clinic'));
     }
 
     /**
@@ -48,6 +54,12 @@ class PatientController extends Controller
      */
     public function store(Request $request)
     {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found. Please contact support.');
+        }
+
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -58,12 +70,12 @@ class PatientController extends Controller
         ]);
 
         $patient = new Patient();
-        // $patient->clinic_id = Auth::user()->clinic_id; // Uncomment if applicable
+        $patient->clinic_id = $clinic->id; // CRITICAL: Set clinic_id
         $patient->first_name = $request->first_name;
         $patient->last_name = $request->last_name;
         $patient->phone = $request->phone;
         $patient->email = $request->email;
-        $patient->date_of_birth = $request->dob; // Mapped to correct column
+        $patient->date_of_birth = $request->dob;
         $patient->gender = $request->gender;
         $patient->address = $request->address;
         $patient->medical_history = $request->medical_history;
@@ -79,21 +91,26 @@ class PatientController extends Controller
      */
     public function show($id)
     {
-        $patient = Patient::findOrFail($id);
-        // Load relationships (appointments, plans, invoices)
-        // $patient->load(['appointments', 'treatmentPlans', 'invoices']); 
+        $clinic = $this->getUserClinic();
         
-        // Mocking Data for View Development until relations are fully set in Models
-        $appointments = collect([]); 
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found.');
+        }
+
+        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+        
+        // Load relationships
+        $appointments = $patient->appointments()->latest()->get();
         $treatmentPlans = collect([]);
         $invoices = collect([]);
         
-        // Check if relations exist dynamically to avoid crashing
-        if (method_exists($patient, 'appointments')) $appointments = $patient->appointments()->latest()->get();
-        if (method_exists($patient, 'treatmentPlans')) $treatmentPlans = $patient->treatmentPlans()->latest()->get();
-        // if (method_exists($patient, 'invoices')) $invoices = $patient->invoices()->latest()->get();
+        // Check if relations exist dynamically
+        if (method_exists($patient, 'treatmentPlans')) {
+            $treatmentPlans = $patient->treatmentPlans()->latest()->get();
+        }
 
-        return view('web.clinic.patients.show', compact('patient', 'appointments', 'treatmentPlans', 'invoices'));
+        return view('web.clinic.patients.show', compact('patient', 'appointments', 'treatmentPlans', 'invoices', 'clinic'));
     }
 
     /**
@@ -101,8 +118,15 @@ class PatientController extends Controller
      */
     public function edit($id)
     {
-        $patient = Patient::findOrFail($id);
-        return view('web.clinic.patients.edit', compact('patient'));
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found.');
+        }
+
+        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+        return view('web.clinic.patients.edit', compact('patient', 'clinic'));
     }
 
     /**
@@ -110,7 +134,37 @@ class PatientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Add update logic
-        return back();
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'email' => 'nullable|email',
+            'dob' => 'nullable|date',
+            'gender' => 'nullable|in:male,female',
+        ]);
+
+        $patient->update([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'phone' => $request->phone,
+            'email' => $request->email,
+            'date_of_birth' => $request->dob,
+            'gender' => $request->gender,
+            'address' => $request->address,
+            'medical_history' => $request->medical_history,
+            'insurance_provider' => $request->insurance_provider,
+            'insurance_number' => $request->insurance_number,
+        ]);
+
+        return redirect()->route('clinic.patients.show', $patient->id)
+            ->with('success', 'Patient updated successfully.');
     }
 }

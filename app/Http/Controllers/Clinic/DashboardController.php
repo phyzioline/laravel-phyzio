@@ -8,7 +8,7 @@ use App\Services\Clinic\SpecialtySelectionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DashboardController extends Controller
+class DashboardController extends BaseClinicController
 {
     protected $specialtySelectionService;
 
@@ -231,23 +231,4 @@ class DashboardController extends Controller
         return $activities;
     }
 
-    /**
-     * Get user's clinic
-     * Adjust this method based on your actual user-clinic relationship
-     */
-    protected function getUserClinic($user)
-    {
-        // Option 1: User has direct clinic relationship
-        if (method_exists($user, 'clinic') && $user->clinic) {
-            return $user->clinic;
-        }
-
-        // Option 2: User is company and has clinics
-        if ($user->type === 'company' && method_exists($user, 'clinics')) {
-            return $user->clinics()->first();
-        }
-
-        // Option 3: Find clinic by company_id matching user_id
-        return Clinic::where('company_id', $user->id)->first();
-    }
 }

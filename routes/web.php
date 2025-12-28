@@ -292,6 +292,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         Route::get('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'index'])->name('doctors.index');
         Route::get('/doctors/create', [\App\Http\Controllers\Clinic\DoctorController::class, 'create'])->name('doctors.create');
+        Route::post('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'store'])->name('doctors.store');
         Route::get('/doctors/{id}', [\App\Http\Controllers\Clinic\DoctorController::class, 'show'])->name('doctors.show');
         
         Route::get('/departments', [\App\Http\Controllers\Clinic\DepartmentController::class, 'index'])->name('departments.index');
@@ -299,6 +300,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         Route::get('/staff', [\App\Http\Controllers\Clinic\StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [\App\Http\Controllers\Clinic\StaffController::class, 'create'])->name('staff.create');
+        Route::post('/staff', [\App\Http\Controllers\Clinic\StaffController::class, 'store'])->name('staff.store');
         
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');

@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class AppointmentController extends Controller
+class AppointmentController extends BaseClinicController
 {
     protected $fieldsService;
     protected $paymentCalculator;

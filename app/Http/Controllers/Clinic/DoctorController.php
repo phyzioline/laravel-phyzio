@@ -2,55 +2,124 @@
 
 namespace App\Http\Controllers\Clinic;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class DoctorController extends Controller
+class DoctorController extends BaseClinicController
 {
     public function index()
     {
-        // Mock data for company-doctors.html
-        $doctors = collect([
-            (object)[
-                'id' => 1,
-                'name' => 'Dr. Sarah Johnson',
-                'specialty' => 'Sports Physiotherapy',
-                'patients' => 124,
-                'status' => 'Available',
-                'image' => 'doc1.jpg' // Placeholder
-            ],
-            (object)[
-                'id' => 2,
-                'name' => 'Dr. David Smith',
-                'specialty' => 'Orthopedics',
-                'patients' => 98,
-                'status' => 'In Session',
-                'image' => 'doc2.jpg'
-            ],
-            // Add more as needed
-        ]);
-        return view('web.clinic.doctors.index', compact('doctors'));
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found.');
+        }
+
+        // Get real doctors/therapists linked to this clinic
+        // Assuming doctors are users with type 'therapist' or 'doctor'
+        $doctors = User::where('type', 'therapist')
+            ->orWhere('type', 'doctor')
+            ->get()
+            ->map(function($doctor) use ($clinic) {
+                // Get patient count for this doctor in this clinic
+                $patientCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->where('doctor_id', $doctor->id)
+                    ->distinct('patient_id')
+                    ->count('patient_id');
+                
+                return (object)[
+                    'id' => $doctor->id,
+                    'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
+                    'specialty' => $doctor->specialization ?? 'General',
+                    'patients' => $patientCount,
+                    'status' => 'Available', // TODO: Add status logic
+                    'email' => $doctor->email,
+                    'phone' => $doctor->phone,
+                ];
+            });
+        
+        return view('web.clinic.doctors.index', compact('doctors', 'clinic'));
     }
 
     public function create()
     {
-        return view('web.clinic.doctors.create');
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found.');
+        }
+
+        return view('web.clinic.doctors.create', compact('clinic'));
+    }
+
+    public function store(Request $request)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required|string|max:20',
+            'specialization' => 'required|string',
+            'bio' => 'nullable|string',
+        ]);
+
+        $doctor = User::create([
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make('password'), // Default password, should be changed
+            'type' => 'therapist',
+            'specialization' => $request->specialization,
+            'bio' => $request->bio,
+        ]);
+
+        // Link doctor to clinic if there's a relationship table
+        // This depends on your schema - might need clinic_user pivot table
+
+        return redirect()->route('clinic.doctors.index')
+            ->with('success', 'Doctor registered successfully.');
     }
 
     public function show($id)
     {
-        // Mock doctor details
-        $doctor = (object)[
-                'id' => $id,
-                'name' => 'Dr. Sarah Johnson',
-                'specialty' => 'Sports Physiotherapy',
-                'email' => 'sarah.j@clinic.com',
-                'phone' => '+123 456 7890',
-                'bio' => 'Experienced sports physiotherapist with 10+ years specializing in athlete recovery.',
-                'patients' => 124,
-                'status' => 'Available',
-                'image' => 'doc1.jpg' 
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.dashboard')
+                ->with('error', 'Clinic not found.');
+        }
+
+        $doctor = User::where('type', 'therapist')
+            ->orWhere('type', 'doctor')
+            ->findOrFail($id);
+        
+        $patientCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('doctor_id', $doctor->id)
+            ->distinct('patient_id')
+            ->count('patient_id');
+
+        $doctorData = (object)[
+            'id' => $doctor->id,
+            'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
+            'specialty' => $doctor->specialization ?? 'General',
+            'email' => $doctor->email,
+            'phone' => $doctor->phone,
+            'bio' => $doctor->bio ?? 'No bio available.',
+            'patients' => $patientCount,
+            'status' => 'Available',
         ];
-        return view('web.clinic.doctors.show', compact('doctor'));
+        
+        return view('web.clinic.doctors.show', compact('doctor', 'doctorData', 'clinic'));
     }
 }
