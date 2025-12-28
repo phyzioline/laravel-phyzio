@@ -502,6 +502,14 @@
                     </a>
                 </li>
 
+                <!-- 12.5. Insurance Claims (RCM) -->
+                <li>
+                    <a href="{{ route('clinic.insurance-claims.index') }}" class="{{ request()->routeIs('clinic.insurance-claims.*') ? 'active' : '' }}">
+                        <span class="las la-file-invoice-dollar"></span>
+                        <span>{{ __('Insurance Claims') }}</span>
+                    </a>
+                </li>
+
                 <!-- 13. Job System (Post Jobs - Secondary Feature) -->
                 <li>
                     <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">

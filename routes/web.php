@@ -304,6 +304,13 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');
+        
+        // Insurance Claims (RCM)
+        Route::post('/insurance-claims/{id}/submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'submit'])->name('insurance-claims.submit');
+        Route::post('/insurance-claims/batch-submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'batchSubmit'])->name('insurance-claims.batchSubmit');
+        Route::post('/appointments/{id}/create-claim', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'createFromAppointment'])->name('insurance-claims.createFromAppointment');
+        Route::resource('insurance-claims', \App\Http\Controllers\Clinic\InsuranceClaimController::class);
+        
         Route::get('/notifications', [\App\Http\Controllers\Clinic\NotificationController::class, 'index'])->name('notifications.index');
         
         Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index');
