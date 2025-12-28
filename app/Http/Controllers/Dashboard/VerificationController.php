@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserDocument;
+use App\Models\TherapistProfile;
+use App\Models\TherapistModuleVerification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -49,7 +51,19 @@ class VerificationController extends Controller
 
         $userDocuments = $user->documents()->get()->keyBy('document_type');
 
-        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments'));
+        // Get module verifications for therapists
+        $moduleVerifications = null;
+        $therapistProfile = null;
+        if ($user->type === 'therapist') {
+            $therapistProfile = TherapistProfile::where('user_id', $user->id)->first();
+            if ($therapistProfile) {
+                $moduleVerifications = TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
+                    ->get()
+                    ->keyBy('module_type');
+            }
+        }
+
+        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments', 'moduleVerifications', 'therapistProfile'));
     }
 
     /**
@@ -72,8 +86,13 @@ class VerificationController extends Controller
             'reviewed_at' => now(),
         ]);
 
-        // Check if all mandatory documents are approved
-        $this->checkUserVerificationStatus($user);
+        // If document is module-specific, check module verification
+        if ($document->module_type && $user->type === 'therapist') {
+            $this->checkModuleVerification($user, $document->module_type);
+        } else {
+            // Check if all mandatory documents are approved (for general verification)
+            $this->checkUserVerificationStatus($user);
+        }
 
         return back()->with('success', __('Document ' . $request->action . 'd successfully.'));
     }
@@ -105,13 +124,31 @@ class VerificationController extends Controller
             ]);
 
             // Also update therapist profile status if user is a therapist
+            // When initial documents are approved, grant home_visit access only
             if ($user->type === 'therapist') {
-                $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+                $therapistProfile = TherapistProfile::where('user_id', $user->id)->first();
                 if ($therapistProfile) {
                     $therapistProfile->update([
                         'status' => 'approved',
                         'verified_at' => now(),
+                        'home_visit_verified' => true, // Grant home visit access
+                        'home_visit_verified_at' => now(),
                     ]);
+
+                    // Create or update module verification record
+                    TherapistModuleVerification::updateOrCreate(
+                        [
+                            'therapist_profile_id' => $therapistProfile->id,
+                            'user_id' => $user->id,
+                            'module_type' => 'home_visit',
+                        ],
+                        [
+                            'status' => 'approved',
+                            'verified_at' => now(),
+                            'reviewed_by' => auth()->id(),
+                            'reviewed_at' => now(),
+                        ]
+                    );
                 }
             }
 
@@ -157,13 +194,31 @@ class VerificationController extends Controller
             ]);
 
             // Also update therapist profile status if user is a therapist
+            // When initial documents are approved, grant home_visit access only
             if ($user->type === 'therapist') {
-                $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+                $therapistProfile = TherapistProfile::where('user_id', $user->id)->first();
                 if ($therapistProfile) {
                     $therapistProfile->update([
                         'status' => 'approved',
                         'verified_at' => now(),
+                        'home_visit_verified' => true, // Grant home visit access
+                        'home_visit_verified_at' => now(),
                     ]);
+
+                    // Create or update module verification record
+                    TherapistModuleVerification::updateOrCreate(
+                        [
+                            'therapist_profile_id' => $therapistProfile->id,
+                            'user_id' => $user->id,
+                            'module_type' => 'home_visit',
+                        ],
+                        [
+                            'status' => 'approved',
+                            'verified_at' => now(),
+                            'reviewed_by' => auth()->id(),
+                            'reviewed_at' => now(),
+                        ]
+                    );
                 }
             }
 
@@ -176,6 +231,138 @@ class VerificationController extends Controller
             $hasUnderReview = $user->documents()->where('status', 'under_review')->exists();
             if ($hasUnderReview) {
                 $user->update(['verification_status' => 'under_review']);
+            }
+        }
+    }
+
+    /**
+     * Approve or reject a therapist module
+     */
+    public function reviewModule(Request $request, $userId, $moduleType)
+    {
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+            'admin_note' => 'nullable|string|max:1000',
+        ]);
+
+        $user = User::findOrFail($userId);
+        
+        if ($user->type !== 'therapist') {
+            return back()->with('error', 'Only therapists can have module verifications.');
+        }
+
+        $therapistProfile = TherapistProfile::where('user_id', $user->id)->firstOrFail();
+        
+        $moduleVerification = TherapistModuleVerification::updateOrCreate(
+            [
+                'therapist_profile_id' => $therapistProfile->id,
+                'user_id' => $user->id,
+                'module_type' => $moduleType,
+            ],
+            [
+                'status' => $request->action === 'approve' ? 'approved' : 'rejected',
+                'admin_note' => $request->admin_note,
+                'reviewed_by' => auth()->id(),
+                'reviewed_at' => now(),
+                'verified_at' => $request->action === 'approve' ? now() : null,
+            ]
+        );
+
+        // Update therapist profile module verification status
+        $fieldMap = [
+            'home_visit' => 'home_visit_verified',
+            'courses' => 'courses_verified',
+            'clinic' => 'clinic_verified',
+        ];
+
+        $dateFieldMap = [
+            'home_visit' => 'home_visit_verified_at',
+            'courses' => 'courses_verified_at',
+            'clinic' => 'clinic_verified_at',
+        ];
+
+        if (isset($fieldMap[$moduleType])) {
+            $therapistProfile->update([
+                $fieldMap[$moduleType] => $request->action === 'approve',
+                $dateFieldMap[$moduleType] => $request->action === 'approve' ? now() : null,
+            ]);
+        }
+
+        return back()->with('success', __('Module ' . $moduleType . ' ' . $request->action . 'd successfully.'));
+    }
+
+    /**
+     * Check module verification based on module-specific documents
+     */
+    private function checkModuleVerification(User $user, string $moduleType)
+    {
+        if ($user->type !== 'therapist') {
+            return;
+        }
+
+        $therapistProfile = TherapistProfile::where('user_id', $user->id)->first();
+        if (!$therapistProfile) {
+            return;
+        }
+
+        // Get all module-specific documents for this module
+        $moduleDocuments = $user->documents()
+            ->where('module_type', $moduleType)
+            ->get();
+
+        // Check if all module documents are approved
+        $allApproved = $moduleDocuments->count() > 0 && 
+                      $moduleDocuments->every(fn($doc) => $doc->status === 'approved');
+
+        if ($allApproved) {
+            // Update module verification
+            $moduleVerification = TherapistModuleVerification::updateOrCreate(
+                [
+                    'therapist_profile_id' => $therapistProfile->id,
+                    'user_id' => $user->id,
+                    'module_type' => $moduleType,
+                ],
+                [
+                    'status' => 'approved',
+                    'verified_at' => now(),
+                    'reviewed_by' => auth()->id(),
+                    'reviewed_at' => now(),
+                ]
+            );
+
+            // Update therapist profile
+            $fieldMap = [
+                'home_visit' => 'home_visit_verified',
+                'courses' => 'courses_verified',
+                'clinic' => 'clinic_verified',
+            ];
+
+            $dateFieldMap = [
+                'home_visit' => 'home_visit_verified_at',
+                'courses' => 'courses_verified_at',
+                'clinic' => 'clinic_verified_at',
+            ];
+
+            if (isset($fieldMap[$moduleType])) {
+                $therapistProfile->update([
+                    $fieldMap[$moduleType] => true,
+                    $dateFieldMap[$moduleType] => now(),
+                ]);
+            }
+        } else {
+            // Update status to under_review if documents are uploaded
+            $hasUploaded = $moduleDocuments->contains(fn($doc) => in_array($doc->status, ['uploaded', 'under_review']));
+            if ($hasUploaded) {
+                TherapistModuleVerification::updateOrCreate(
+                    [
+                        'therapist_profile_id' => $therapistProfile->id,
+                        'user_id' => $user->id,
+                        'module_type' => $moduleType,
+                    ],
+                    [
+                        'status' => 'under_review',
+                    ]
+                );
             }
         }
     }

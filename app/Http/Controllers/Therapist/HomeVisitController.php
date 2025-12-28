@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Therapist;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ChecksModuleAccess;
 use Illuminate\Http\Request;
 
 use App\Models\HomeVisit;
@@ -10,6 +11,8 @@ use App\Services\HomeVisit\HomeVisitService;
 
 class HomeVisitController extends Controller
 {
+    use ChecksModuleAccess;
+
     protected $visitService;
 
     public function __construct(HomeVisitService $visitService)
@@ -20,6 +23,11 @@ class HomeVisitController extends Controller
 
     public function index()
     {
+        // Check module access
+        $accessCheck = $this->checkModuleAccess('home_visit');
+        if ($accessCheck !== true) {
+            return $accessCheck;
+        }
         // Unified Home Visits (Merged Logic)
         $allVisits = HomeVisit::where('therapist_id', auth()->id())
             ->with(['patient'])

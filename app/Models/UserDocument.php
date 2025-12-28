@@ -12,6 +12,7 @@ class UserDocument extends Model
     protected $fillable = [
         'user_id',
         'document_type',
+        'module_type', // home_visit, courses, clinic, or null for general
         'file_path',
         'status',
         'admin_note',

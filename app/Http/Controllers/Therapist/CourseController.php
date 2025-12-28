@@ -3,17 +3,25 @@
 namespace App\Http\Controllers\Therapist;
 
 use App\Http\Controllers\Controller;
+use App\Traits\ChecksModuleAccess;
 use Illuminate\Http\Request;
 use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 
 class CourseController extends Controller
 {
+    use ChecksModuleAccess;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        // Check module access
+        $accessCheck = $this->checkModuleAccess('courses');
+        if ($accessCheck !== true) {
+            return $accessCheck;
+        }
         // Only show courses where the logged-in therapist is the instructor
         $courses = Course::where('instructor_id', Auth::id())->with('instructor')->get();
         return view('therapist.courses.index', compact('courses'));
