@@ -14,6 +14,7 @@
     </div>
 </div>
 
+@if($doctors && $doctors->count() > 0)
 <div class="row">
     @foreach($doctors as $doctor)
     <div class="col-xl-3 col-md-6 mb-4">
@@ -24,20 +25,47 @@
                 </div>
                 <h5 class="font-weight-bold text-dark mb-1">{{ $doctor->name }}</h5>
                 <p class="text-muted small mb-2">{{ $doctor->specialty }}</p>
-                <div class="badge badge-light text-primary mb-3">{{ $doctor->patients }} Patients</div>
+                <div class="badge badge-light text-primary mb-3">
+                    {{ $doctor->patients ?? 0 }} {{ __('Patients') }}
+                    @if(isset($doctor->appointments) && $doctor->appointments > 0)
+                        <span class="text-muted">• {{ $doctor->appointments }} {{ __('Appointments') }}</span>
+                    @endif
+                </div>
                 
                 <div class="d-flex justify-content-center mb-3">
-                     <button class="btn btn-sm btn-outline-info mr-2"><i class="las la-envelope"></i></button>
-                     <button class="btn btn-sm btn-outline-success"><i class="las la-phone"></i></button>
+                     <a href="mailto:{{ $doctor->email }}" class="btn btn-sm btn-outline-info mr-2"><i class="las la-envelope"></i></a>
+                     <a href="tel:{{ $doctor->phone }}" class="btn btn-sm btn-outline-success"><i class="las la-phone"></i></a>
                 </div>
                 
                 <div class="border-top pt-3">
-                    <span class="badge {{ $doctor->status == 'Available' ? 'badge-success' : 'badge-warning' }}">{{ $doctor->status }}</span>
-                    <a href="{{ route('clinic.doctors.show', 1) }}" class="btn btn-sm btn-link text-primary ml-2">View Profile</a>
+                    <span class="badge {{ $doctor->status == 'Available' ? 'badge-success' : ($doctor->status == 'Busy' ? 'badge-danger' : 'badge-info') }}">{{ $doctor->status }}</span>
+                    <a href="{{ route('clinic.doctors.show', $doctor->id) }}" class="btn btn-sm btn-link text-primary ml-2">{{ __('View Profile') }}</a>
                 </div>
             </div>
         </div>
     </div>
     @endforeach
 </div>
+@else
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm text-center py-5" style="border-radius: 15px;">
+            <div class="card-body">
+                <i class="las la-user-md fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">{{ __('No Doctors Found') }}</h5>
+                <p class="text-muted">{{ __('Register doctors to assign them to appointments and patients.') }}</p>
+                @if($clinic)
+                    <a href="{{ route('clinic.doctors.create') }}" class="btn btn-primary mt-3">
+                        <i class="las la-plus"></i> {{ __('Add Your First Doctor') }}
+                    </a>
+                @else
+                    <div class="alert alert-warning mt-3">
+                        <i class="las la-exclamation-triangle"></i> {{ __('Please set up your clinic first.') }}
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection

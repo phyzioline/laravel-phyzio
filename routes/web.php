@@ -290,6 +290,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         Route::get('/departments', [\App\Http\Controllers\Clinic\DepartmentController::class, 'index'])->name('departments.index');
         Route::get('/departments/create', [\App\Http\Controllers\Clinic\DepartmentController::class, 'create'])->name('departments.create');
+        Route::post('/departments', [\App\Http\Controllers\Clinic\DepartmentController::class, 'store'])->name('departments.store');
         
         Route::get('/staff', [\App\Http\Controllers\Clinic\StaffController::class, 'index'])->name('staff.index');
         Route::get('/staff/create', [\App\Http\Controllers\Clinic\StaffController::class, 'create'])->name('staff.create');

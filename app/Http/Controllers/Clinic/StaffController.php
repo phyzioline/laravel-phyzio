@@ -58,13 +58,19 @@ class StaffController extends BaseClinicController
             return back()->with('error', 'Clinic not found.');
         }
 
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|max:20',
             'role' => 'required|in:staff,receptionist,nurse',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         $staffData = [
             'first_name' => $request->first_name,

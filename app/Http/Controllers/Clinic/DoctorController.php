@@ -19,10 +19,27 @@ class DoctorController extends BaseClinicController
         }
 
         // Get real doctors/therapists linked to this clinic
-        // Assuming doctors are users with type 'therapist' or 'doctor'
-        $doctors = User::where('type', 'therapist')
-            ->orWhere('type', 'doctor')
-            ->get()
+        // Get doctor IDs who have appointments in this clinic
+        $doctorIds = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->whereNotNull('doctor_id')
+            ->distinct()
+            ->pluck('doctor_id')
+            ->toArray();
+        
+        // Also check if doctors are linked via company_id (if column exists)
+        $query = User::whereIn('type', ['therapist', 'doctor']);
+        
+        if (!empty($doctorIds)) {
+            $query->whereIn('id', $doctorIds);
+        } elseif (\Schema::hasColumn('users', 'company_id')) {
+            // Fallback: show doctors from same company
+            $query->where('company_id', $clinic->company_id);
+        } else {
+            // If no linking mechanism, show all therapists (for now)
+            $query->where('type', 'therapist');
+        }
+        
+        $doctors = $query->get()
             ->map(function($doctor) use ($clinic) {
                 // Get patient count for this doctor in this clinic
                 $patientCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
@@ -30,12 +47,42 @@ class DoctorController extends BaseClinicController
                     ->distinct('patient_id')
                     ->count('patient_id');
                 
+                // Get appointment count for this doctor
+                $appointmentCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->where('doctor_id', $doctor->id)
+                    ->count();
+                
+                // Get today's appointments
+                $todayAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->where('doctor_id', $doctor->id)
+                    ->whereDate('appointment_date', today())
+                    ->where('status', '!=', 'cancelled')
+                    ->count();
+                
+                // Determine status based on appointments
+                $status = 'Available';
+                if ($todayAppointments > 0) {
+                    $status = 'Busy';
+                }
+                
+                // Check if doctor has upcoming appointments
+                $upcomingCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->where('doctor_id', $doctor->id)
+                    ->where('appointment_date', '>', now())
+                    ->where('status', '!=', 'cancelled')
+                    ->count();
+                
+                if ($upcomingCount > 0 && $todayAppointments == 0) {
+                    $status = 'Scheduled';
+                }
+                
                 return (object)[
                     'id' => $doctor->id,
                     'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
                     'specialty' => $doctor->specialization ?? 'General',
                     'patients' => $patientCount,
-                    'status' => 'Available', // TODO: Add status logic
+                    'appointments' => $appointmentCount,
+                    'status' => $status,
                     'email' => $doctor->email,
                     'phone' => $doctor->phone,
                 ];
@@ -60,32 +107,43 @@ class DoctorController extends BaseClinicController
             return back()->with('error', 'Clinic not found.');
         }
 
-        $request->validate([
+        $validator = \Validator::make($request->all(), [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|string|max:20',
             'specialization' => 'required|string',
             'bio' => 'nullable|string',
+            'password' => 'nullable|string|min:8',
         ]);
 
-        $doctor = User::create([
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $doctorData = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make('password'), // Default password, should be changed
+            'password' => Hash::make($request->password ?? 'password'), // Default password, should be changed
             'type' => 'therapist',
             'specialization' => $request->specialization,
             'bio' => $request->bio,
-        ]);
+        ];
+        
+        // Link doctor to clinic's company if company_id column exists
+        if (\Schema::hasColumn('users', 'company_id')) {
+            $doctorData['company_id'] = $clinic->company_id;
+        }
 
-        // Link doctor to clinic if there's a relationship table
-        // This depends on your schema - might need clinic_user pivot table
+        $doctor = User::create($doctorData);
 
         return redirect()->route('clinic.doctors.index')
-            ->with('success', 'Doctor registered successfully.');
+            ->with('success', 'Doctor registered successfully. They can now be assigned to appointments.');
     }
 
     public function show($id)
@@ -117,6 +175,34 @@ class DoctorController extends BaseClinicController
             ->distinct('patient_id')
             ->count('patient_id');
 
+        // Get appointment count
+        $appointmentCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('doctor_id', $doctor->id)
+            ->count();
+        
+        // Get today's appointments
+        $todayAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('doctor_id', $doctor->id)
+            ->whereDate('appointment_date', today())
+            ->where('status', '!=', 'cancelled')
+            ->count();
+        
+        // Determine status
+        $status = 'Available';
+        if ($todayAppointments > 0) {
+            $status = 'Busy';
+        } else {
+            $upcomingCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                ->where('doctor_id', $doctor->id)
+                ->where('appointment_date', '>', now())
+                ->where('status', '!=', 'cancelled')
+                ->count();
+            
+            if ($upcomingCount > 0) {
+                $status = 'Scheduled';
+            }
+        }
+        
         $doctorData = (object)[
             'id' => $doctor->id,
             'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
@@ -125,7 +211,8 @@ class DoctorController extends BaseClinicController
             'phone' => $doctor->phone,
             'bio' => $doctor->bio ?? 'No bio available.',
             'patients' => $patientCount,
-            'status' => 'Available',
+            'appointments' => $appointmentCount,
+            'status' => $status,
         ];
         
         return view('web.clinic.doctors.show', compact('doctor', 'doctorData', 'clinic'));

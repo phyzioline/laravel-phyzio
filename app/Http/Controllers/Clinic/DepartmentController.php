@@ -96,4 +96,65 @@ class DepartmentController extends BaseClinicController
         // Show form even if no clinic (user can see they need to set up clinic)
         return view('web.clinic.departments.create', compact('clinic'));
     }
+
+    public function store(Request $request)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        $validator = \Validator::make($request->all(), [
+            'specialty' => 'required|string|in:' . implode(',', array_keys(ClinicSpecialty::getAvailableSpecialties())),
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Check if specialty already exists for this clinic
+        $existing = ClinicSpecialty::where('clinic_id', $clinic->id)
+            ->where('specialty', $request->specialty)
+            ->first();
+
+        if ($existing) {
+            if (!$existing->is_active) {
+                // Reactivate existing specialty
+                $existing->update([
+                    'is_active' => true,
+                    'activated_at' => now()
+                ]);
+                return redirect()->route('clinic.departments.index')
+                    ->with('success', 'Department reactivated successfully.');
+            } else {
+                return back()->with('error', 'This department already exists.');
+            }
+        }
+
+        // Create new specialty
+        $isPrimary = !$clinic->hasSelectedSpecialty(); // First specialty becomes primary
+        
+        ClinicSpecialty::create([
+            'clinic_id' => $clinic->id,
+            'specialty' => $request->specialty,
+            'is_primary' => $isPrimary,
+            'is_active' => true,
+            'activated_at' => now()
+        ]);
+
+        // If this is the first specialty, update clinic
+        if ($isPrimary) {
+            $clinic->update([
+                'primary_specialty' => $request->specialty,
+                'specialty_selected' => true,
+                'specialty_selected_at' => now()
+            ]);
+        }
+
+        return redirect()->route('clinic.departments.index')
+            ->with('success', 'Department added successfully.');
+    }
 }
