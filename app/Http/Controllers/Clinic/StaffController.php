@@ -69,15 +69,22 @@ class StaffController extends BaseClinicController
             'role' => 'required|in:staff,receptionist,nurse',
         ]);
 
-        $staff = User::create([
+        $staffData = [
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
-            'password' => Hash::make('password'), // Default password
+            'password' => Hash::make('password'), // Default password - should be changed
             'type' => $request->role,
-        ]);
+        ];
+        
+        // Link staff to clinic's company if company_id column exists
+        if (Schema::hasColumn('users', 'company_id')) {
+            $staffData['company_id'] = $clinic->company_id;
+        }
+        
+        $staff = User::create($staffData);
 
         return redirect()->route('clinic.staff.index')
             ->with('success', 'Staff member registered successfully.');
