@@ -66,7 +66,7 @@
                 <i class="las la-clipboard-list"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $programs->total() }}</h3>
+                <h3 class="font-weight-bold mb-0">{{ $stats['total'] ?? ($programs->total() ?? $programs->count()) }}</h3>
                 <small class="text-muted">{{ __('Total Programs') }}</small>
             </div>
         </div>
@@ -77,7 +77,7 @@
                 <i class="las la-play-circle"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $programs->where('status', 'active')->count() }}</h3>
+                <h3 class="font-weight-bold mb-0">{{ $stats['active'] ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Active Programs') }}</small>
             </div>
         </div>
@@ -88,7 +88,7 @@
                 <i class="las la-check-circle"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $programs->where('status', 'completed')->count() }}</h3>
+                <h3 class="font-weight-bold mb-0">{{ $stats['completed'] ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Completed') }}</small>
             </div>
         </div>
@@ -99,7 +99,7 @@
                 <i class="las la-file-alt"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">{{ $programs->where('status', 'draft')->count() }}</h3>
+                <h3 class="font-weight-bold mb-0">{{ $stats['pending'] ?? 0 }}</h3>
                 <small class="text-muted">{{ __('Draft') }}</small>
             </div>
         </div>
