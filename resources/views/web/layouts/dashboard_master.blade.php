@@ -375,14 +375,15 @@
             
             <!-- Clinic Specific (Company Dashboard Design) -->
             @if(request()->routeIs('clinic.*') || auth()->user()->hasRole('clinic'))
-                 <li>
+                <!-- 1. Dashboard (Overview) -->
+                <li>
                     <a href="{{ route('clinic.dashboard') }}" class="{{ request()->routeIs('clinic.dashboard') ? 'active' : '' }}">
-                         <span class="las la-chart-pie"></span> <!-- Icon matching Vercel Dashboard -->
+                        <span class="las la-chart-pie"></span>
                         <span>{{ __('Dashboard') }}</span>
                     </a>
                 </li>
                  
-                <!-- Specialty Selection (if not selected) -->
+                <!-- 2. Specialty Selection (Critical Setup - if not selected) -->
                 @php
                     $user = auth()->user();
                     $clinic = \App\Models\Clinic::where('company_id', $user->id)->first();
@@ -396,16 +397,48 @@
                     </a>
                 </li>
                 @endif
-                 
-                <!-- Job System for Clinics -->
-                 <li>
-                    <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
-                        <span class="las la-briefcase"></span>
-                        <span>{{ __('Job System') }}</span>
+
+                <!-- 3. Profile & Settings (Clinic Configuration) -->
+                <li>
+                    <a href="{{ route('clinic.profile.index') }}" class="{{ request()->routeIs('clinic.profile.*') ? 'active' : '' }}">
+                        <span class="las la-cog"></span>
+                        <span>{{ __('Profile & Settings') }}</span>
                     </a>
                 </li>
 
-                <!-- Clinic Episodes (New ERP Module) -->
+                <!-- 4. Staff Management (Hire and Manage Staff) -->
+                <li>
+                    <a href="{{ route('clinic.staff.index') }}" class="{{ request()->routeIs('clinic.staff.*') ? 'active' : '' }}">
+                        <span class="las la-users"></span>
+                        <span>{{ __('Staff') }}</span>
+                    </a>
+                </li>
+
+                <!-- 5. Doctors/Therapists (Assign Therapists) -->
+                <li>
+                    <a href="{{ route('clinic.doctors.index') }}" class="{{ request()->routeIs('clinic.doctors.*') ? 'active' : '' }}">
+                        <span class="las la-user-nurse"></span>
+                        <span>{{ __('Doctors') }}</span>
+                    </a>
+                </li>
+
+                <!-- 6. Services/Departments (Set Up Services) -->
+                <li>
+                    <a href="{{ route('clinic.departments.index') }}" class="{{ request()->routeIs('clinic.departments.*') ? 'active' : '' }}">
+                        <span class="las la-hospital"></span>
+                        <span>{{ __('Services') }}</span>
+                    </a>
+                </li>
+
+                <!-- 7. Patients (Register Patients) -->
+                <li>
+                    <a href="{{ route('clinic.patients.index') }}" class="{{ request()->routeIs('clinic.patients.*') ? 'active' : '' }}">
+                        <span class="las la-user-injured"></span>
+                        <span>{{ __('Patients') }}</span>
+                    </a>
+                </li>
+
+                <!-- 8. Clinical Episodes (Create Episodes for Patients) -->
                 <li>
                     <a href="{{ route('clinic.episodes.index') }}" class="{{ request()->routeIs('clinic.episodes.*') ? 'active' : '' }}">
                         <span class="las la-notes-medical"></span>
@@ -413,19 +446,7 @@
                     </a>
                 </li>
 
-                 <li>
-                    <a href="{{ route('clinic.departments.index') }}" class="{{ request()->routeIs('clinic.departments.*') ? 'active' : '' }}">
-                        <span class="las la-stethoscope"></span>
-                        <span>{{ __('Services') }}</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('clinic.doctors.index') }}" class="{{ request()->routeIs('clinic.doctors.*') ? 'active' : '' }}">
-                         <span class="las la-user-nurse"></span>
-                        <span>{{ __('Doctors') }}</span>
-                    </a>
-                </li>
-                <!-- Weekly Treatment Programs -->
+                <!-- 9. Treatment Programs (Create Weekly Programs) -->
                 <li>
                     <a href="{{ route('clinic.programs.index') }}" class="{{ request()->routeIs('clinic.programs.*') ? 'active' : '' }}">
                         <span class="las la-clipboard-list"></span>
@@ -433,37 +454,40 @@
                     </a>
                 </li>
                 
+                <!-- 10. Appointments (Schedule Appointments) -->
                 <li>
                     <a href="{{ route('clinic.appointments.index') }}" class="{{ request()->routeIs('clinic.appointments.*') ? 'active' : '' }}">
                         <span class="las la-calendar-check"></span>
                         <span>{{ __('Appointments') }}</span>
                     </a>
                 </li>
+
+                <!-- 11. Analytics (View Reports) -->
                 <li>
-                    <a href="{{ route('clinic.patients.index') }}" class="{{ request()->routeIs('clinic.patients.*') ? 'active' : '' }}">
-                         <span class="las la-user-injured"></span>
-                        <span>{{ __('Patients') }}</span>
-                    </a>
-                </li>
-                 <li>
-                    <a href="{{ route('clinic.staff.index') }}" class="{{ request()->routeIs('clinic.staff.*') ? 'active' : '' }}">
-                        <span class="las la-users"></span>
-                        <span>{{ __('Staff') }}</span>
-                    </a>
-                </li>
-                 <li>
                     <a href="{{ route('clinic.analytics.index') }}" class="{{ request()->routeIs('clinic.analytics.*') ? 'active' : '' }}">
                         <span class="las la-chart-bar"></span>
                         <span>{{ __('Analytics') }}</span>
                     </a>
                 </li>
-                 <li>
+
+                <!-- 12. Billing (Financial Management) -->
+                <li>
                     <a href="{{ route('clinic.billing.index') }}" class="{{ request()->routeIs('clinic.billing.*') ? 'active' : '' }}">
                         <span class="las la-file-invoice-dollar"></span>
                         <span>{{ __('Billing') }}</span>
                     </a>
                 </li>
-                  <li>
+
+                <!-- 13. Job System (Post Jobs - Secondary Feature) -->
+                <li>
+                    <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
+                        <span class="las la-briefcase"></span>
+                        <span>{{ __('Job System') }}</span>
+                    </a>
+                </li>
+
+                <!-- 14. Notifications (Alerts) -->
+                <li>
                     <a href="{{ route('clinic.notifications.index') }}" class="{{ request()->routeIs('clinic.notifications.*') ? 'active' : '' }}">
                         <span class="las la-bell"></span>
                         <span>{{ __('Notifications') }}</span>
