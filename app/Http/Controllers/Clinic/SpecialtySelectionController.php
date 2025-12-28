@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class SpecialtySelectionController extends Controller
+class SpecialtySelectionController extends BaseClinicController
 {
     protected $specialtySelectionService;
 
@@ -99,24 +99,6 @@ class SpecialtySelectionController extends Controller
         }
     }
 
-    /**
-     * Get user's clinic
-     * Adjust this method based on your actual user-clinic relationship
-     */
-    protected function getUserClinic($user)
-    {
-        // Option 1: User has direct clinic relationship
-        if ($user->clinic) {
-            return $user->clinic;
-        }
-
-        // Option 2: User is company and has clinics
-        if ($user->type === 'company' && method_exists($user, 'clinics')) {
-            return $user->clinics()->first();
-        }
-
-        // Option 3: Find clinic by company_id matching user_id
-        return Clinic::where('company_id', $user->id)->first();
-    }
+    // getUserClinic method inherited from BaseClinicController
 }
 

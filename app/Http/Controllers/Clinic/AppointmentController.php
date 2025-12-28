@@ -219,19 +219,5 @@ class AppointmentController extends BaseClinicController
         }
     }
 
-    /**
-     * Get user's clinic
-     */
-    protected function getUserClinic($user)
-    {
-        if (method_exists($user, 'clinic') && $user->clinic) {
-            return $user->clinic;
-        }
-
-        if ($user->type === 'company' && method_exists($user, 'clinics')) {
-            return $user->clinics()->first();
-        }
-
-        return Clinic::where('company_id', $user->id)->first();
-    }
+    // getUserClinic method inherited from BaseClinicController
 }
