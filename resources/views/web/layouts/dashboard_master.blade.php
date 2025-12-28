@@ -446,6 +446,14 @@
                     </a>
                 </li>
 
+                <!-- 8.5. Clinical Notes/EMR (Documentation) -->
+                <li>
+                    <a href="{{ route('clinic.clinical-notes.index') }}" class="{{ request()->routeIs('clinic.clinical-notes.*') ? 'active' : '' }}">
+                        <span class="las la-file-medical"></span>
+                        <span>{{ __('Clinical Notes (EMR)') }}</span>
+                    </a>
+                </li>
+
                 <!-- 9. Treatment Programs (Create Weekly Programs) -->
                 <li>
                     <a href="{{ route('clinic.programs.index') }}" class="{{ request()->routeIs('clinic.programs.*') ? 'active' : '' }}">
@@ -459,6 +467,14 @@
                     <a href="{{ route('clinic.appointments.index') }}" class="{{ request()->routeIs('clinic.appointments.*') ? 'active' : '' }}">
                         <span class="las la-calendar-check"></span>
                         <span>{{ __('Appointments') }}</span>
+                    </a>
+                </li>
+
+                <!-- 10.5. Waitlist (Manage Patient Waitlist) -->
+                <li>
+                    <a href="{{ route('clinic.waitlist.index') }}" class="{{ request()->routeIs('clinic.waitlist.*') ? 'active' : '' }}">
+                        <span class="las la-list"></span>
+                        <span>{{ __('Waitlist') }}</span>
                     </a>
                 </li>
 

@@ -1,248 +1,188 @@
-# 🚀 DEPLOYMENT INSTRUCTIONS
-## Fix Route Errors - Deploy to Server
+# Deployment Instructions - EMR & Scheduling System
 
-**Server:** 147.93.85.27  
-**SSH User:** phyziolinegit  
-**Project Path:** `/home/phyziolinegit/htdocs/phyzioline.com`
+## 🚀 Server Deployment Steps
 
----
-
-## ✅ WHAT WAS FIXED
-
-Fixed route errors by adding locale prefix with fallback to all route calls:
-- `view_login` → `(app()->getLocale() ?: 'en') . '.view_login'`
-- `web.shop.search` → `(app()->getLocale() ?: 'en') . '.web.shop.search'`
-- `login`, `register`, `forget_password`, `verify` routes
-
-**Files Updated (10 files):**
-- `resources/views/web/auth/login.blade.php`
-- `resources/views/web/auth/register.blade.php`
-- `resources/views/web/auth/forget_password.blade.php`
-- `resources/views/web/auth/otp.blade.php`
-- `resources/views/web/layouts/header.blade.php`
-- `resources/views/web/layouts/sidebar.blade.php`
-- `resources/views/web/layouts/footer.blade.php`
-- `resources/views/web/pages/index.blade.php`
-- `resources/views/web/pages/show.blade.php`
-- `resources/views/web/pages/jobs/show.blade.php`
-
----
-
-## 📋 DEPLOYMENT METHODS
-
-### **Method 1: SSH Deployment (Recommended - Fastest)**
-
-#### Step 1: Connect to Server
+### 1. Pull Latest Changes
 ```bash
-ssh phyziolinegit@147.93.85.27
-```
-*Enter your password when prompted*
-
-#### Step 2: Navigate to Project
-```bash
-cd /home/phyziolinegit/htdocs/phyzioline.com
-```
-
-#### Step 3: Pull Latest Code from GitHub
-```bash
+cd /path/to/your/laravel/project
 git pull origin main
 ```
 
-#### Step 4: Clear All Caches (IMPORTANT!)
+### 2. Run Database Migrations
+```bash
+php artisan migrate
+```
+
+This will create the following new tables:
+- `clinical_notes`
+- `clinical_templates`
+- `clinical_timeline`
+- `waitlists`
+- `calendar_syncs`
+- `intake_forms`
+- `intake_form_responses`
+- `appointment_reminders`
+- `equipment_inventory`
+- `equipment_reservations`
+
+### 3. Seed Clinical Templates
+```bash
+php artisan db:seed --class=ClinicalTemplateSeeder
+```
+
+This will create 7 default clinical note templates for all specialties.
+
+### 4. Clear Cache
 ```bash
 php artisan config:clear
 php artisan cache:clear
-php artisan view:clear
 php artisan route:clear
+php artisan view:clear
 ```
 
-#### Step 5: Optimize (Optional but Recommended)
+### 5. Optimize (Production Only)
 ```bash
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
 
-#### Step 6: Exit SSH
+### 6. Set Up Scheduled Tasks (Optional but Recommended)
+
+Add to your server's crontab:
 ```bash
-exit
+* * * * * cd /path/to/your/laravel/project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-**✅ Done! Your site should now work correctly.**
-
----
-
-### **Method 2: Using the Deployment Script**
-
-If you have the `deploy.sh` script on the server:
-
-```bash
-# Connect to server
-ssh phyziolinegit@147.93.85.27
-
-# Navigate to project
-cd /home/phyziolinegit/htdocs/phyzioline.com
-
-# Make script executable (first time only)
-chmod +x deploy.sh
-
-# Run deployment script
-./deploy.sh
+Then add to `app/Console/Kernel.php`:
+```php
+protected function schedule(Schedule $schedule)
+{
+    // Send appointment reminders
+    $schedule->call(function () {
+        app(\App\Services\Notifications\AppointmentReminderService::class)->sendPendingReminders();
+    })->everyMinute();
+    
+    // Check waitlist for available slots
+    $schedule->call(function () {
+        // Auto-book from waitlist logic
+    })->hourly();
+}
 ```
 
----
+## 📋 What Was Added
 
-### **Method 3: CloudPanel File Manager (If SSH Not Working)**
+### New Features in Sidebar
+- ✅ **Clinical Notes (EMR)** - Added to sidebar after Clinical Episodes
+- ✅ **Waitlist** - Added to sidebar after Appointments (placeholder for now)
 
-1. **Login to CloudPanel:**
-   - URL: `https://147.93.85.27:8443`
-   - Use your CloudPanel credentials
+### New Routes
+- `/clinic/clinical-notes` - Clinical notes listing
+- `/clinic/clinical-notes/create` - Create new note
+- `/clinic/clinical-notes/{id}` - View note
+- `/clinic/clinical-notes/{id}/edit` - Edit note
+- `/clinic/clinical-notes/{id}/sign` - Sign note
+- `/clinic/clinical-notes/templates` - Get templates (AJAX)
+- `/clinic/clinical-notes/validate-coding` - Validate coding (AJAX)
+- `/clinic/waitlist` - Waitlist (placeholder)
 
-2. **Navigate to File Manager:**
-   - Go to your Laravel project directory
+### New Database Tables
+1. **Clinical EMR:**
+   - `clinical_notes` - SOAP notes
+   - `clinical_templates` - Note templates
+   - `clinical_timeline` - Patient history
 
-3. **Pull from Git (if Git is available in CloudPanel):**
-   - Use the terminal in CloudPanel
-   - Run: `git pull origin main`
+2. **Scheduling:**
+   - `waitlists` - Patient waitlist
+   - `calendar_syncs` - Calendar integration
+   - `intake_forms` - Intake form templates
+   - `intake_form_responses` - Form responses
+   - `appointment_reminders` - Reminder tracking
 
-4. **OR Upload Files Manually:**
-   - Upload the 10 modified view files from your local machine
-   - Replace the existing files in:
-     - `resources/views/web/auth/`
-     - `resources/views/web/layouts/`
-     - `resources/views/web/pages/`
+3. **Equipment:**
+   - `equipment_inventory` - Equipment tracking
+   - `equipment_reservations` - Equipment bookings
 
-5. **Clear Cache via CloudPanel Terminal:**
-   ```bash
-   php artisan config:clear
-   php artisan cache:clear
-   php artisan view:clear
-   php artisan route:clear
-   ```
+## ⚙️ Configuration Needed
 
----
+### 1. Voice-to-Text (Optional)
+Currently uses browser Web Speech API (no server config needed).
+For production cloud service:
+- Add Google Cloud Speech-to-Text credentials (if using)
+- Or AWS Transcribe credentials
+- Or Azure Speech Services credentials
 
-## 🔍 VERIFICATION STEPS
+### 2. Calendar Sync (Future)
+When implementing calendar sync:
+- Google Calendar API credentials
+- Microsoft Outlook API credentials
+- OAuth redirect URLs
 
-After deployment, verify the fixes work:
+### 3. SMS/Push Notifications (Future)
+When implementing reminders:
+- Twilio credentials (for SMS)
+- Firebase credentials (for push)
+- Email service configuration
 
-1. **Test Homepage:**
-   - Visit: `https://phyzioline.com/en` or `https://phyzioline.com/ar`
-   - Should load without errors
+## ✅ Verification Checklist
 
-2. **Test Search:**
-   - Try the search bar on homepage
-   - Should work without "Route not found" error
+After deployment, verify:
 
-3. **Test Login/Register:**
-   - Click "Login" or "Register" links
-   - Should navigate without errors
+- [ ] Migrations ran successfully
+- [ ] Clinical templates seeded
+- [ ] Can access `/clinic/clinical-notes`
+- [ ] Can create a clinical note
+- [ ] Voice-to-text works in browser
+- [ ] Coding validation works
+- [ ] Can sign a note
+- [ ] Sidebar shows "Clinical Notes (EMR)"
+- [ ] Sidebar shows "Waitlist"
 
-4. **Check Browser Console:**
-   - Open browser DevTools (F12)
-   - Check for any JavaScript errors
-   - Check Network tab for failed requests
+## 🔧 Troubleshooting
 
----
-
-## ⚠️ TROUBLESHOOTING
-
-### If you get "Route not found" errors after deployment:
-
-1. **Clear route cache:**
-   ```bash
-   php artisan route:clear
-   php artisan route:cache
-   ```
-
-2. **Check if locale is set correctly:**
-   ```bash
-   php artisan tinker
-   >>> app()->getLocale()
-   ```
-   Should return 'en' or 'ar'
-
-3. **Verify routes exist:**
-   ```bash
-   php artisan route:list | grep view_login
-   php artisan route:list | grep web.shop.search
-   ```
-
-### If SSH connection fails:
-
-- Use CloudPanel File Manager method instead
-- Or check if your IP is whitelisted on the server
-
-### If site shows blank page:
-
-1. **Check Laravel logs:**
-   ```bash
-   tail -f storage/logs/laravel.log
-   ```
-
-2. **Check file permissions:**
-   ```bash
-   chmod -R 755 storage bootstrap/cache
-   ```
-
-3. **Clear all caches again:**
-   ```bash
-   php artisan optimize:clear
-   ```
-
----
-
-## 📝 QUICK REFERENCE
-
-**One-Line Deployment (SSH):**
+### Migration Errors
+If migrations fail:
 ```bash
-ssh phyziolinegit@147.93.85.27 "cd /home/phyziolinegit/htdocs/phyzioline.com && git pull origin main && php artisan config:clear && php artisan cache:clear && php artisan view:clear && php artisan route:clear"
+php artisan migrate:rollback --step=1
+php artisan migrate
 ```
 
-**Check Current Git Status:**
+### Template Seeder Issues
+If seeder fails:
 ```bash
-ssh phyziolinegit@147.93.85.27 "cd /home/phyziolinegit/htdocs/phyzioline.com && git status"
+php artisan db:seed --class=ClinicalTemplateSeeder --force
 ```
 
-**View Recent Commits:**
+### Route Not Found
+Clear route cache:
 ```bash
-ssh phyziolinegit@147.93.85.27 "cd /home/phyziolinegit/htdocs/phyzioline.com && git log --oneline -5"
+php artisan route:clear
+php artisan route:cache
 ```
 
----
+### View Not Found
+Clear view cache:
+```bash
+php artisan view:clear
+php artisan view:cache
+```
 
-## ✅ DEPLOYMENT CHECKLIST
+## 📝 Notes
 
-Before deploying:
-- [x] Code committed to GitHub
-- [ ] Tested locally (if possible)
-- [ ] Have SSH access or CloudPanel access
-- [ ] Know server password/credentials
+- **Clinical Notes (EMR)** is fully functional
+- **Waitlist** route is a placeholder (controller/views pending)
+- **Calendar Sync** services are ready but need OAuth setup
+- **Appointment Reminders** service is ready but needs email/SMS config
+- **Equipment Inventory** is ready for use
 
-After deploying:
-- [ ] Clear all caches
-- [ ] Test homepage loads
-- [ ] Test search functionality
-- [ ] Test login/register links
-- [ ] Check for errors in browser console
-- [ ] Verify routes work in both English and Arabic
+## 🎯 Next Steps (Optional)
 
----
-
-## 🆘 NEED HELP?
-
-If something goes wrong:
-
-1. **Check Laravel logs:** `storage/logs/laravel.log`
-2. **Check server error logs:** Usually in CloudPanel
-3. **Rollback if needed:**
-   ```bash
-   git reset --hard HEAD~1
-   php artisan optimize:clear
-   ```
+1. Set up scheduled tasks for reminders
+2. Configure email service for reminders
+3. Set up calendar OAuth (when ready)
+4. Create waitlist controller/views (when ready)
 
 ---
 
-**Last Updated:** December 21, 2025  
-**Commit:** b5ffb95 - Fix route errors: Add locale prefix with fallback
-
+**Deployment Date:** January 2025  
+**Version:** 1.0

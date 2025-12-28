@@ -319,6 +319,17 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::post('/programs/calculate-price', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'calculatePrice'])->name('programs.calculatePrice');
         Route::post('/programs/{id}/activate', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'activate'])->name('programs.activate');
         Route::resource('programs', \App\Http\Controllers\Clinic\WeeklyProgramController::class);
+        
+        // Clinical Notes (EMR)
+        Route::get('/clinical-notes/templates', [\App\Http\Controllers\Clinic\ClinicalNoteController::class, 'getTemplates'])->name('clinical-notes.templates');
+        Route::post('/clinical-notes/validate-coding', [\App\Http\Controllers\Clinic\ClinicalNoteController::class, 'validateCoding'])->name('clinical-notes.validateCoding');
+        Route::post('/clinical-notes/{id}/sign', [\App\Http\Controllers\Clinic\ClinicalNoteController::class, 'sign'])->name('clinical-notes.sign');
+        Route::resource('clinical-notes', \App\Http\Controllers\Clinic\ClinicalNoteController::class);
+        
+        // Waitlist (Placeholder route - controller to be created)
+        Route::get('/waitlist', function() {
+            return redirect()->route('clinic.appointments.index')->with('info', 'Waitlist management coming soon!');
+        })->name('waitlist.index');
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
