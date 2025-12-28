@@ -24,8 +24,8 @@ return new class extends Migration
             $table->timestamps();
 
             // Ensure one verification record per module per therapist
-            $table->unique(['therapist_profile_id', 'module_type']);
-            $table->index(['user_id', 'module_type']);
+            $table->unique(['therapist_profile_id', 'module_type'], 'tmv_profile_module_unique');
+            $table->index(['user_id', 'module_type'], 'tmv_user_module_idx');
         });
     }
 
