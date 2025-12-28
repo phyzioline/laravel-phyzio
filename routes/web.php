@@ -326,10 +326,9 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::post('/clinical-notes/{id}/sign', [\App\Http\Controllers\Clinic\ClinicalNoteController::class, 'sign'])->name('clinical-notes.sign');
         Route::resource('clinical-notes', \App\Http\Controllers\Clinic\ClinicalNoteController::class);
         
-        // Waitlist (Placeholder route - controller to be created)
-        Route::get('/waitlist', function() {
-            return redirect()->route('clinic.appointments.index')->with('info', 'Waitlist management coming soon!');
-        })->name('waitlist.index');
+        // Waitlist Management
+        Route::get('/waitlist/position', [\App\Http\Controllers\Clinic\WaitlistController::class, 'getPosition'])->name('waitlist.position');
+        Route::resource('waitlist', \App\Http\Controllers\Clinic\WaitlistController::class);
         Route::get('/jobs/{id}/applicants', [\App\Http\Controllers\Clinic\JobController::class, 'applicants'])->name('jobs.applicants');
         Route::resource('jobs', \App\Http\Controllers\Clinic\JobController::class);
     });
