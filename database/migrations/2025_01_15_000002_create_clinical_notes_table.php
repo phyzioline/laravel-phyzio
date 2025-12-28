@@ -14,7 +14,16 @@ return new class extends Migration
         // Determine which episodes table exists
         $episodeTable = Schema::hasTable('episodes_of_care') ? 'episodes_of_care' : (Schema::hasTable('episodes') ? 'episodes' : null);
         
-        Schema::create('clinical_notes', function (Blueprint $table) use ($episodeTable) {
+        // Check if tables already exist (from previous failed migration)
+        if (Schema::hasTable('clinical_notes')) {
+            // Table exists, just add missing columns/foreign keys if needed
+            Schema::table('clinical_notes', function (Blueprint $table) use ($episodeTable) {
+                if (!Schema::hasColumn('clinical_notes', 'episode_id') && $episodeTable) {
+                    $table->foreignId('episode_id')->nullable()->constrained($episodeTable)->onDelete('set null');
+                }
+            });
+        } else {
+            Schema::create('clinical_notes', function (Blueprint $table) use ($episodeTable) {
             $table->id();
             $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
@@ -85,9 +94,11 @@ return new class extends Migration
             $table->index(['therapist_id', 'created_at']);
             $table->index(['specialty', 'note_type']);
             $table->index('status');
-        });
+            });
+        }
 
-        Schema::create('clinical_templates', function (Blueprint $table) {
+        if (!Schema::hasTable('clinical_templates')) {
+            Schema::create('clinical_templates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('clinic_id')->nullable()->constrained('clinics')->onDelete('cascade');
             $table->string('name');
@@ -114,9 +125,11 @@ return new class extends Migration
             
             $table->index(['specialty', 'note_type']);
             $table->index(['clinic_id', 'is_active']);
-        });
+            });
+        }
 
-        Schema::create('clinical_timeline', function (Blueprint $table) use ($episodeTable) {
+        if (!Schema::hasTable('clinical_timeline')) {
+            Schema::create('clinical_timeline', function (Blueprint $table) use ($episodeTable) {
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
@@ -144,7 +157,8 @@ return new class extends Migration
             $table->index(['patient_id', 'event_date']);
             $table->index(['clinic_id', 'episode_id']);
             $table->index('event_type');
-        });
+            });
+        }
     }
 
     /**
