@@ -205,16 +205,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const durationSelect = document.getElementById('duration_minutes');
     
     // Specialty templates data (passed from controller)
-    const specialtyTemplates = @json([
-        'orthopedic' => $template ?? null,
-        'pediatric' => null,
-        'neurological' => null,
-        'sports' => null,
-        'geriatric' => null,
-        'womens_health' => null,
-        'cardiorespiratory' => null,
-        'home_care' => null
-    ]);
+    // Templates are loaded dynamically from server, but we pass current template if available
+    @php
+        $specialtyTemplates = [
+            'orthopedic' => null,
+            'pediatric' => null,
+            'neurological' => null,
+            'sports' => null,
+            'geriatric' => null,
+            'womens_health' => null,
+            'cardiorespiratory' => null,
+            'home_care' => null,
+        ];
+        // Set template for current specialty if available
+        if ($specialty && isset($specialtyTemplates[$specialty]) && $template) {
+            $specialtyTemplates[$specialty] = $template;
+        }
+    @endphp
+    const specialtyTemplates = @json($specialtyTemplates);
     
     // Load template when specialty changes
     specialtySelect.addEventListener('change', function() {

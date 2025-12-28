@@ -50,8 +50,10 @@ class SocialLoginController extends Controller
             }
 
             // 3. Create NEW User (if email doesn't exist)
+            $fullName = $user->getName();
+            
             $new_user = User::create([
-                'name'           => $user->getName(),
+                'name'           => $fullName,
                 'email'          => $user->getEmail(),
                 'password'       => Crypt::encrypt(Str::random(8)),
                 'email_verified_at' => now(),
@@ -62,6 +64,8 @@ class SocialLoginController extends Controller
                 'country'        => null,
                 'type'           => 'buyer', 
                 'status'         => 'active',
+                'verification_status' => 'approved', // Google users are auto-verified
+                'profile_visibility' => 'visible', // Google users are visible
             ]);
 
             Auth::login($new_user);

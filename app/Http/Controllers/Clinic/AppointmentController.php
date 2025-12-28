@@ -83,6 +83,7 @@ class AppointmentController extends BaseClinicController
             $appointments = collect();
             $patients = collect();
             $therapists = collect();
+            $startOfWeek = now()->startOfWeek();
             return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
         }
 

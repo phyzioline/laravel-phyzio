@@ -11,6 +11,13 @@
                 <h5 class="font-weight-bold mb-0">Doctor Information</h5>
             </div>
             <div class="card-body">
+                @if(!$clinic)
+                    <div class="alert alert-warning mb-4">
+                        <i class="las la-exclamation-triangle"></i> 
+                        <strong>Warning:</strong> No clinic found. You need to have a clinic associated with your account to register doctors.
+                    </div>
+                @endif
+                
                 @if($errors->any())
                     <div class="alert alert-danger mb-4">
                         <ul class="mb-0">

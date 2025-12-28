@@ -11,6 +11,13 @@
                 <h5 class="font-weight-bold mb-0">Staff Information</h5>
             </div>
             <div class="card-body">
+                @if(!$clinic)
+                    <div class="alert alert-warning mb-4">
+                        <i class="las la-exclamation-triangle"></i> 
+                        <strong>Warning:</strong> No clinic found. You need to have a clinic associated with your account to register staff members.
+                    </div>
+                @endif
+                
                 <form action="{{ route('clinic.staff.store') }}" method="POST">
                     @csrf
                     <div class="form-row">

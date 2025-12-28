@@ -35,6 +35,11 @@ class Patient extends Model
         return $this->hasMany(ClinicAppointment::class);
     }
 
+    public function insurance()
+    {
+        return $this->hasMany(PatientInsurance::class);
+    }
+
     public function getFullNameAttribute()
     {
         return "{$this->first_name} {$this->last_name}";
