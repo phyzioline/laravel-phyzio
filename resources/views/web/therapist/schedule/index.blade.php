@@ -1,6 +1,27 @@
 @extends('therapist.layouts.app')
 
 @section('content')
+<style>
+    /* Fix modal z-index and pointer events */
+    #addSlotModal {
+        z-index: 1055 !important;
+    }
+    .modal-backdrop {
+        z-index: 1054 !important;
+        pointer-events: auto !important;
+    }
+    .modal {
+        pointer-events: auto !important;
+    }
+    .modal-content {
+        pointer-events: auto !important;
+    }
+    /* Ensure modal is clickable */
+    .modal.show {
+        display: block !important;
+        pointer-events: auto !important;
+    }
+</style>
 <div class="container-fluid py-4" style="background-color: #f8f9fa;">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -94,9 +115,9 @@
 </div>
 
 <!-- Add Availability Modal -->
-<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
+<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="z-index: 1056;">
       <div class="modal-header">
         <h5 class="modal-title">Set Availability</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -160,4 +181,35 @@
     </div>
   </div>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        // Ensure modal is properly initialized
+        var addSlotModal = new bootstrap.Modal(document.getElementById('addSlotModal'), {
+            backdrop: true,
+            keyboard: true,
+            focus: true
+        });
+        
+        // Handle modal open
+        $('#addSlotModal').on('show.bs.modal', function () {
+            // Remove any blocking overlays
+            $('.overlay').hide();
+            $('body').removeClass('toggled');
+        });
+        
+        // Ensure modal content is clickable
+        $('#addSlotModal').on('shown.bs.modal', function () {
+            $(this).css('pointer-events', 'auto');
+            $('.modal-content', this).css('pointer-events', 'auto');
+        });
+        
+        // Fix backdrop click
+        $('.modal-backdrop').on('click', function() {
+            addSlotModal.hide();
+        });
+    });
+</script>
+@endpush
 @endsection
