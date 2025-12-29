@@ -60,14 +60,17 @@ class ProfileController extends Controller
                 'profile_image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
             ]);
             
-            // Delete old image if exists
+            // Delete old image if exists (handle both storage path and relative path)
             if ($user->image) {
-                $oldImagePath = public_path($user->image);
-                if (file_exists($oldImagePath)) {
-                    @unlink($oldImagePath);
+                // If path starts with 'storage/', it's old format, try to delete from public
+                if (strpos($user->image, 'storage/') === 0) {
+                    $oldImagePath = public_path($user->image);
+                    if (file_exists($oldImagePath)) {
+                        @unlink($oldImagePath);
+                    }
                 }
-                // Also try storage path
-                $oldStoragePath = storage_path('app/public/' . str_replace('storage/', '', $user->image));
+                // Try storage path (relative path format)
+                $oldStoragePath = storage_path('app/public/' . $user->image);
                 if (file_exists($oldStoragePath)) {
                     @unlink($oldStoragePath);
                 }
@@ -75,11 +78,15 @@ class ProfileController extends Controller
             
             // Delete old profile photo if exists
             if ($profile->profile_photo) {
-                $oldProfilePhotoPath = public_path($profile->profile_photo);
-                if (file_exists($oldProfilePhotoPath)) {
-                    @unlink($oldProfilePhotoPath);
+                // If path starts with 'storage/', it's old format
+                if (strpos($profile->profile_photo, 'storage/') === 0) {
+                    $oldProfilePhotoPath = public_path($profile->profile_photo);
+                    if (file_exists($oldProfilePhotoPath)) {
+                        @unlink($oldProfilePhotoPath);
+                    }
                 }
-                $oldProfilePhotoStorage = storage_path('app/public/' . str_replace('storage/', '', $profile->profile_photo));
+                // Try storage path (relative path format)
+                $oldProfilePhotoStorage = storage_path('app/public/' . $profile->profile_photo);
                 if (file_exists($oldProfilePhotoStorage)) {
                     @unlink($oldProfilePhotoStorage);
                 }
@@ -87,14 +94,15 @@ class ProfileController extends Controller
             
             // Store new image
             $path = $request->file('profile_image')->store('therapists/photos', 'public');
-            $imagePath = 'storage/' . $path;
+            // Store just the relative path (e.g., 'therapists/photos/filename.jpg')
+            // This will work with Storage::url() in views
             
-            // Update user image
-            $user->update(['image' => $imagePath]);
+            // Update user image - store relative path
+            $user->update(['image' => $path]);
             
-            // Update therapist profile with profile_photo
+            // Update therapist profile with profile_photo - store relative path
             $profile->update([
-                'profile_photo' => $imagePath
+                'profile_photo' => $path
             ]);
         }
 

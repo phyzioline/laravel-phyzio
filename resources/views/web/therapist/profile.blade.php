@@ -51,10 +51,32 @@
         <div class="col-lg-4 mb-4">
              <div class="card shadow border-0 text-center">
                 <div class="card-body">
-                    <div class="position-relative d-inline-block mb-3">
+                        <div class="position-relative d-inline-block mb-3">
                         <div class="avatar-circle rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden;">
-                            @if(isset($user) && $user->image)
-                                <img src="{{ asset($user->image) }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;">
+                            @php
+                                use Illuminate\Support\Facades\Storage;
+                                $profileImage = null;
+                                if(isset($user)) {
+                                    // Try profile_photo first, then image
+                                    $imagePath = $profile->profile_photo ?? $user->image ?? null;
+                                    if($imagePath) {
+                                        // Handle different path formats
+                                        if(strpos($imagePath, 'http') === 0) {
+                                            // Already a full URL
+                                            $profileImage = $imagePath;
+                                        } elseif(strpos($imagePath, 'storage/') === 0) {
+                                            // Path starts with storage/, use asset
+                                            $profileImage = asset($imagePath);
+                                        } else {
+                                            // Relative path, use Storage::url
+                                            $profileImage = Storage::url($imagePath);
+                                        }
+                                    }
+                                }
+                            @endphp
+                            @if($profileImage)
+                                <img src="{{ $profileImage }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;" onerror="this.style.display='none'; document.getElementById('default-icon').style.display='block';">
+                                <i class="las la-user text-muted" id="default-icon" style="font-size: 60px; display: none;"></i>
                             @else
                                 <img id="profile-preview" src="" style="display:none;" class="rounded-circle w-100 h-100" style="object-fit: cover;">
                                 <i class="las la-user text-muted" id="default-icon" style="font-size: 60px;"></i>
@@ -83,24 +105,12 @@
                 </div>
             </div>
             
-             <div class="card shadow border-0 mt-4">
-                <div class="card-header bg-white font-weight-bold text-dark">{{ __('Account Status') }}</div>
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span>{{ __('Verification') }}</span>
-                        @php
-                            $verificationStatus = auth()->user()->verification_status ?? 'pending';
-                            $badgeClass = $verificationStatus === 'approved' ? 'badge-success' : ($verificationStatus === 'under_review' ? 'badge-warning' : 'badge-danger');
-                            $badgeText = $verificationStatus === 'approved' ? __('Verified') : ($verificationStatus === 'under_review' ? __('Under Review') : __('Pending'));
-                        @endphp
-                        <span class="badge {{ $badgeClass }} px-3 py-2">{{ $badgeText }}</span>
-                    </div>
-                     <div class="d-flex justify-content-between align-items-center">
-                        <span>{{ __('Profile Status') }}</span>
-                        <span class="badge badge-info px-3 py-2">{{ $profile->status === 'approved' ? __('Active') : __('Pending') }}</span>
-                    </div>
+            <!-- Account Health Widget -->
+            @if(in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
+                <div class="card shadow border-0 mt-4">
+                    @include('web.components.account-health')
                 </div>
-            </div>
+            @endif
         </div>
 
         <!-- Main Form -->
@@ -167,6 +177,53 @@
                                         <span class="input-group-text bg-light border-right-0"><i class="las la-tags"></i></span>
                                     </div>
                                     <input type="number" name="home_visit_rate" class="form-control border-left-0" value="{{ old('home_visit_rate', $profile->home_visit_rate) }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-uppercase text-muted small font-weight-bold mb-3 mt-4 border-bottom pb-2">{{ __('Bank Details') }}</h6>
+                        <div class="alert alert-info">
+                            <i class="las la-info-circle"></i> 
+                            <strong>{{ __('Payment Information') }}</strong><br>
+                            {{ __('Add your bank details to receive payments. This information is kept secure and confidential.') }}
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="small font-weight-bold text-dark">{{ __('Bank Name') }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"><i class="las la-university"></i></span>
+                                    </div>
+                                    <input type="text" name="bank_name" class="form-control border-left-0" value="{{ old('bank_name', $profile->bank_name ?? '') }}" placeholder="{{ __('e.g. CIB, NBE, QNB') }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="small font-weight-bold text-dark">{{ __('Account Holder Name') }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"><i class="las la-user"></i></span>
+                                    </div>
+                                    <input type="text" name="bank_account_name" class="form-control border-left-0" value="{{ old('bank_account_name', $profile->bank_account_name ?? '') }}" placeholder="{{ __('Full name as in bank account') }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label class="small font-weight-bold text-dark">{{ __('IBAN') }}</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"><i class="las la-credit-card"></i></span>
+                                    </div>
+                                    <input type="text" name="iban" class="form-control border-left-0" value="{{ old('iban', $profile->iban ?? '') }}" placeholder="{{ __('EG123456789...') }}">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="small font-weight-bold text-dark">{{ __('SWIFT Code') }} <small class="text-muted">({{ __('Optional') }})</small></label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-light border-right-0"><i class="las la-globe"></i></span>
+                                    </div>
+                                    <input type="text" name="swift_code" class="form-control border-left-0" value="{{ old('swift_code', $profile->swift_code ?? '') }}" placeholder="{{ __('For international transfers') }}">
                                 </div>
                             </div>
                         </div>
