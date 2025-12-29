@@ -119,137 +119,176 @@
         <!-- slider-section - start
        ================================================== -->
         <!-- Hero Section - Start -->
-        <section id="hero-section" class="hero-section position-relative d-flex align-items-center" 
-            style="min-height: 85vh; background: linear-gradient(135deg, #02767F 0%, #035e66 100%); overflow: hidden;">
-            
-            <!-- Animated Background Shapes -->
-            <div class="position-absolute w-100 h-100 top-0 left-0" style="z-index: 1;">
-                <div class="position-absolute rounded-circle bg-white opacity-10" style="top: -10%; right: -5%; width: 500px; height: 500px; opacity: 0.05;"></div>
-                <div class="position-absolute rounded-circle bg-white opacity-10" style="bottom: 10%; left: -10%; width: 300px; height: 300px; opacity: 0.05;"></div>
-            </div>
-
-            <div class="container position-relative" style="z-index: 2;">
-                <div class="row align-items-center">
-                    <div class="col-lg-7 text-white" data-aos="fade-right">
-                        <span class="d-inline-block py-1 px-3 rounded-pill bg-white text-primary mb-3 font-weight-bold" style="color: #02767F !important;">
+    <!-- hero-section - start
+    ================================================== -->
+    <section id="hero-section" class="hero-section clearfix" style="background: linear-gradient(135deg, #02767F 0%, #004d57 100%); position: relative; overflow: hidden; padding-top: 180px; padding-bottom: 100px;">
+        
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="hero-content text-white" data-aos="fade-right" data-aos-duration="1000">
+                        <span class="sub-title text-uppercase mb-3 d-block font-weight-bold" style="letter-spacing: 2px; color: #7de8f0;">
                             {{ __('The #1 Physical Therapy Platform') }}
                         </span>
                         <h1 class="display-3 font-weight-bold mb-4" style="line-height: 1.2;">
                             {{ __('Empowering The') }} <br>
-                            <span style="color: #4bd1db;">{{ __('Physiotherapy Community') }}</span>
+                            <span style="color: #ffcc00;">{{ __('Physiotherapy Community') }}</span>
                         </h1>
                         <p class="lead mb-5" style="opacity: 0.9; font-size: 1.25rem;">
                             {{ __('From certified home visits and clinic management to continuous learning and career growth. Phyzioline is your complete professional ecosystem.') }}
                         </p>
-                        <div class="d-flex flex-wrap gap-3">
-                            <a href="{{ route('view_register.' . app()->getLocale()) }}" class="btn btn-light btn-lg rounded-pill px-5 py-3 font-weight-bold shadow-lg mr-3" style="color: #02767F;">
+                        <div class="btn-wrap">
+                            <a href="{{ route('register') }}" class="btn btn-light btn-lg rounded-pill px-5 font-weight-bold text-primary mr-3 shadow-lg" style="color: #02767F !important;">
                                 {{ __('Join Now') }}
                             </a>
-                            <a href="#ecosystem" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 font-weight-bold">
+                            <a href="#services-section" class="btn btn-outline-light btn-lg rounded-pill px-5 font-weight-bold">
                                 {{ __('Explore Services') }}
                             </a>
                         </div>
                     </div>
-                    <div class="col-lg-5 d-none d-lg-block" data-aos="fade-left">
-                        <img src="{{ asset('web/assets/images/hero-bg.png') }}" class="img-fluid rounded-xl shadow-none" style="transform: scale(1.1);" alt="Phyzioline App">
-                    </div>
                 </div>
+                <!-- Removed the decoration PNG as requested -->
             </div>
-        </section>
-        <!-- Hero Section - End -->
-        <!-- slider-section - end
-       ================================================== -->
+        </div>
+        
+        <!-- Background shapes for modern look -->
+        <div class="shape-1" style="position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+        <div class="shape-2" style="position: absolute; bottom: -50px; left: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+    </section>
+    <!-- hero-section - end
+    ================================================== -->
 
-        <!-- Ecosystem Section - Start -->
-        <section id="ecosystem" class="ecosystem-section py-5" style="background-color: #f8f9fa;">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <h2 class="font-weight-bold" style="color: #04b8c4;">{{ __('Our Ecosystem') }}</h2>
-                    <p class="text-muted">{{ __('Comprehensive solutions for the physiotherapy community') }}</p>
-                </div>
-                <div class="row">
-                    <!-- Appointments -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(8, 204, 219, 0.1);">
-                                <i class="las la-user-md" style="font-size: 32px; color: #04b8c4;"></i>
-                            </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">{{ __('Home Visits') }}</h5>
-                            <p class="small mb-4" style="color: #36415a;">{{ __('Book certified physiotherapists for home sessions.') }}</p>
-                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">{{ __('Book Now') }}</a>
+    <!-- service-section - start
+    ================================================== -->
+    <section id="services-section" class="service-section sec-ptb-100 clearfix">
+        <div class="container">
+            <div class="section-title text-center mb-5">
+                <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 1px;">{{ __('Our Ecosystem') }}</span>
+                <h2 class="display-4 font-weight-bold" style="color: #36415a">{{ __('Comprehensive solutions for the physiotherapy community') }}</h2>
+            </div>
+        
+            <!-- Home Visits -->
+            <div class="service-wrapper mb-5" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 order-lg-last">
+                        <div class="service-image shadow-lg rounded overflow-hidden">
+                            <img src="{{ asset('web/assets/images/home_visit_illustration.jpg') }}" onerror="this.src='https://via.placeholder.com/600x400?text=Home+Visits'" alt="Home Visits" class="img-fluid w-100">
                         </div>
                     </div>
-
-                    <!-- Clinic ERP -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
-                                <i class="las la-clinic-medical" style="font-size: 32px; color: #04b8c4;"></i>
+                    <div class="col-lg-6">
+                        <div class="service-content p-4">
+                            <div class="icon-wrapper mb-3">
+                                <i class="las la-user-nurse" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
                             </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">{{ __('Clinic ERP') }}</h5>
-                            <p class="small mb-4" style="color: #36415a;">{{ __('Manage your clinic with our complete software solution.') }}</p>
-                            <a href="{{ route('web.erp.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">{{ __('Manage Clinic') }}</a>
-                        </div>
-                    </div>
-
-                    <!-- Learning -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(4, 184, 196, 0.1);">
-                                <i class="las la-graduation-cap" style="font-size: 32px; color: #04b8c4;"></i>
-                            </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Learning Hub</h5>
-                            <p class="small mb-4" style="color: #36415a;">Advance your career with specialized courses.</p>
-                            <a href="{{ route('web.courses.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Start Learning</a>
-                        </div>
-                    </div>
-
-                    <!-- Data Hub -->
-                    <div class="col-lg-3 col-md-6 mb-4">
-                        <div class="card h-100 border-0 shadow-sm text-center p-4 hover-card">
-                            <div class="icon-box mb-3 mx-auto d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px; background-color: rgba(20, 179, 191, 0.1);">
-                                <i class="las la-globe" style="font-size: 32px; color: #04b8c4;"></i>
-                            </div>
-                            <h5 class="font-weight-bold mb-3" style="color: #02767F;">Data Hub</h5>
-                            <p class="small mb-4" style="color: #36415a;">Global insights and licensing requirements.</p>
-                            <a href="{{ route('web.datahub.index') }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">Explore Data</a>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('For Patients') }}: {{ __('Home Visits') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('Expert Care,') }} <br> {{ __('At Your Doorstep') }}</h4>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Find specialized physiotherapists for private home sessions. We verify every practitioner to ensure you receive the safest and most effective care.') }}
+                            </p>
+                            <ul class="list-unstyled mb-4 text-muted">
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Licensed & Verified Therapists') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Personalized Treatment Plans') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Convenient Scheduling') }}</li>
+                            </ul>
+                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                                {{ __('Book a Visit') }}
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- Ecosystem Section - End -->
 
-        <!-- search-section - start
-       ================================================== -->
-        <section class="mt-5">
-            <div class="container">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-10">
-                        <form action="{{ route('web.shop.search.' . app()->getLocale()) }}" method="GET" class="search-bar-form">
-                            <div class="search-bar-wrapper d-flex align-items-center">
-                                <input type="search" 
-                                       name="search" 
-                                       value="{{ old('search') }}"
-                                       placeholder="Search for products, categories..." 
-                                       class="form-control search-input-main" 
-                                       style="flex: 1; padding: 15px 20px; font-size: 16px; border: 2px solid #02767F; border-radius: 50px 0 0 50px; border-right: none;" />
-                                <button type="submit" class="search-submit-btn-main" 
-                                        style="padding: 15px 30px; background: #02767F; color: white; border: 2px solid #02767F; border-radius: 0 50px 50px 0; cursor: pointer; transition: all 0.3s ease;">
-                                    <i class="las la-search" style="font-size: 20px;"></i> Search
-                                </button>
+            <!-- Clinic Management -->
+            <div class="service-wrapper mb-5" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="service-image shadow-lg rounded overflow-hidden">
+                            <!-- Assuming we might have an illustration, otherwise using placeholder/structure -->
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px; background: #f8f9fa;">
+                                <i class="las la-clinic-medical" style="font-size: 100px; color: #cbd5e0;"></i>
                             </div>
-                        </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="service-content p-4">
+                            <div class="icon-wrapper mb-3">
+                                <i class="las la-laptop-medical" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
+                            </div>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('For Clinics') }}: {{ __('Clinic ERP') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('The Future of') }} <br> {{ __('Clinic Management') }}</h4>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Streamline your practice with our Clinical ERP. From patient scheduling and electronic medical records to billing and analytics - all in one secure platform.') }}
+                            </p>
+                            <ul class="list-unstyled mb-4 text-muted">
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Smart Scheduling System') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Electronic Health Records (EHR)') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Financial Management & Billing') }}</li>
+                            </ul>
+                            <a href="{{ route('web.erp.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                                {{ __('Manage Your Clinic') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- search-section - end
-       ================================================== -->
+            <!-- Jobs Section (with new illustration) -->
+            <div class="service-wrapper mb-5" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 order-lg-last">
+                        <div class="service-image shadow-lg rounded overflow-hidden">
+                             <img src="{{ asset('web/assets/images/jobs_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/jobs_illustration.png') }}'" alt="Phyzioline Jobs" class="img-fluid w-100">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="service-content p-4">
+                            <div class="icon-wrapper mb-3">
+                                <i class="las la-briefcase" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
+                            </div>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('Careers') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('Find Your Dream') }} <br> {{ __('Job Opportunity') }}</h4>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Connect with top clinics, hospitals, and recruitment agencies. Whether you are looking for a full-time position or freelance opportunities, Phyzioline Jobs is your gateway.') }}
+                            </p>
+                            <a href="{{ route('web.jobs.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                                {{ __('Browse Jobs') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- shop-section - start
-       ================================================== -->
+            <!-- Courses Section (with new illustration) -->
+            <div class="service-wrapper mb-5" data-aos="fade-up">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="service-image shadow-lg rounded overflow-hidden">
+                            <img src="{{ asset('web/assets/images/courses_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/courses_illustration.png') }}'" alt="Learning Hub" class="img-fluid w-100">
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="service-content p-4">
+                            <div class="icon-wrapper mb-3">
+                                <i class="las la-graduation-cap" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
+                            </div>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('Education') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('Continuous') }} <br> {{ __('Learning Hub') }}</h4>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Stay ahead in your career with accredited physiotherapy courses. Learn from global experts and gain new certifications directly through our platform.') }}
+                            </p>
+                            <a href="{{ route('web.courses.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                                {{ __('Start Learning') }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+    <!-- service-section - end
+    ================================================== -->
+
 
         <!-- shop-section - start
         ================================================== -->
@@ -257,8 +296,32 @@
             <div class="container">
                 <div class="section-title text-center mb-5">
                     <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 2px;">{{ __('Online Store') }}</span>
-                    <h2 class="display-4 font-weight-bold mb-3" style="color: #36415a">{{ __('Featured Medical Equipment') }}</h2>
+                    <!-- Updated Shop Title as requested -->
+                    <h2 class="display-4 font-weight-bold mb-3" style="color: #36415a">{{ __('All Physical Therapy Devices') }}</h2>
                     <p class="lead text-muted">{{ __('Browse our top-rated physiotherapy equipment and supplies.') }}</p>
+                </div>
+                
+                <!-- Shop Illustration if needed/requested -->
+                 <div class="row justify-content-center mb-5">
+                    <div class="col-md-10">
+                         <img src="{{ asset('web/assets/images/shop_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/shop_illustration.png') }}'" alt="Shop Illustration" class="img-fluid rounded shadow-sm w-100 mb-4">
+                    </div>
+                </div>
+
+                <!-- Fix for Search Bar (RTL support) -->
+                <div class="row justify-content-center mb-5">
+                     <div class="col-md-8">
+                        <div class="input-group search-group shadow-sm" style="border-radius: 50px; overflow: hidden; {{ app()->getLocale() == 'ar' ? 'direction: rtl;' : '' }}">
+                             <input type="text" id="searchInput" class="form-control border-0 py-4 px-4 searchInput" 
+                                    placeholder="{{ __('Search your Product') }}" 
+                                    style="font-size: 1.1rem; background: #f8f9fa; {{ app()->getLocale() == 'ar' ? 'text-align: right;' : '' }}">
+                             <div class="input-group-append" style="{{ app()->getLocale() == 'ar' ? 'margin-left: 0; margin-right: -1px;' : '' }}">
+                                 <button class="btn btn-primary px-5 font-weight-bold" type="button" style="background: #02767F; border-color: #02767F;">
+                                     <i class="las la-search mr-2"></i> {{ __('Search') }}
+                                 </button>
+                             </div>
+                        </div>
+                     </div>
                 </div>
 
                 <div class="row justify-content-center mb-5">
