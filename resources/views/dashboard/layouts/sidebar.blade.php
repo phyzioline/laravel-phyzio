@@ -13,7 +13,7 @@
       <div class="sidebar-nav">
           <!--navigation-->
           <ul class="metismenu" id="sidenav">
-              <!-- Dashboard Home -->
+              <!-- 1. Dashboard Home -->
               <li>
                   <a href="{{ route('dashboard.home') }}">
                       <div class="parent-icon"><i class="material-icons-outlined">home</i></div>
@@ -21,7 +21,24 @@
                   </a>
               </li>
 
-              <!-- Catalog Management -->
+              <!-- 2. Verifications & Approvals (High Priority) -->
+              @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-shield-check"></i></div>
+                      <div class="menu-title">{{ __("Verifications") }}</div>
+                  </a>
+                  <ul>
+                      <li><a href="{{ route('dashboard.verifications.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("User Verifications") }}</a></li>
+                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Verifications") }}</a></li>
+                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'under_review']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Under Review") }}</a></li>
+                      <li><a href="{{ route('dashboard.clinic_profiles.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Clinics") }}</a></li>
+                      <li><a href="{{ route('dashboard.courses.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Courses") }}</a></li>
+                  </ul>
+              </li>
+              @endif
+
+              <!-- 3. Catalog Management -->
               @can('products-index')
               <li>
                   <a href="javascript:;" class="has-arrow">
@@ -48,36 +65,7 @@
               </li>
               @endcan
 
-              <!-- Inventory Management -->
-              @can('products-index')
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-boxes"></i></div>
-                      <div class="menu-title">{{ __("Inventory") }}</div>
-                  </a>
-                  <ul>
-                      <li><a href="{{ route('dashboard.inventory.manage') }}"><i class="bi bi-arrow-right-short"></i>Manage Inventory</a></li>
-                      <li><a href="{{ route('dashboard.inventory.stock-levels') }}"><i class="bi bi-arrow-right-short"></i>Stock Levels</a></li>
-                      <li><a href="{{ route('dashboard.inventory.reports') }}"><i class="bi bi-arrow-right-short"></i>Inventory Reports</a></li>
-                  </ul>
-              </li>
-              @endcan
-
-              <!-- Pricing -->
-              @can('products-index')
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-tag"></i></div>
-                      <div class="menu-title">{{ __("Pricing") }}</div>
-                  </a>
-                  <ul>
-                      <li><a href="{{ route('dashboard.pricing.manage') }}"><i class="bi bi-arrow-right-short"></i>Manage Pricing</a></li>
-                      <li><a href="{{ route('dashboard.pricing.rules') }}"><i class="bi bi-arrow-right-short"></i>Price Rules</a></li>
-                  </ul>
-              </li>
-              @endcan
-
-              <!-- Orders -->
+              <!-- 4. Orders (Core Business) -->
               @can('orders-index')
               <li>
                   <a href="javascript:;" class="has-arrow">
@@ -115,21 +103,7 @@
               </li>
               @endif
 
-              <!-- Vendor Dashboard (Only for Vendors) -->
-              @if(auth()->user()->type === 'vendor')
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-shop"></i></div>
-                      <div class="menu-title">{{ __("Vendor Hub") }}</div>
-                  </a>
-                  <ul style="font-size: 0.9em;">
-                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
-                  </ul>
-              </li>
-              @endif
-
-
-              <!-- Multi-Vendor Management (Admin Only) -->
+              <!-- 8. Multi-Vendor Management (Admin Only) -->
               @if(auth()->user()->type !== 'vendor')
               <li>
                   <a href="javascript:;" class="has-arrow">
@@ -146,7 +120,20 @@
               </li>
               @endif
 
-              <!-- Business Reports & Analytics -->
+              <!-- 9. Vendor Dashboard (Only for Vendors) -->
+              @if(auth()->user()->type === 'vendor')
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-shop"></i></div>
+                      <div class="menu-title">{{ __("Vendor Hub") }}</div>
+                  </a>
+                  <ul style="font-size: 0.9em;">
+                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
+                  </ul>
+              </li>
+              @endif
+
+              <!-- 10. Business Reports & Analytics -->
               @can('reports-index')
               <li>
                   <a href="javascript:;" class="has-arrow">
@@ -163,38 +150,7 @@
               </li>
               @endcan
 
-              <!-- Customers -->
-              @can('users-index')
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-people"></i></div>
-                      <div class="menu-title">{{ __("Customers") }}</div>
-                  </a>
-                  <ul>
-                      <li><a href="{{ route('dashboard.users.index') }}"><i class="bi bi-arrow-right-short"></i>Manage Users</a></li>
-                      <li><a href="{{ route('dashboard.reports.customer-insights') }}"><i class="bi bi-arrow-right-short"></i>Customer Insights</a></li>
-                  </ul>
-              </li>
-              @endcan
-
-              <!-- Verifications & Approvals -->
-              @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-shield-check"></i></div>
-                      <div class="menu-title">{{ __("Verifications") }}</div>
-                  </a>
-                  <ul>
-                      <li><a href="{{ route('dashboard.verifications.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("User Verifications") }}</a></li>
-                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Verifications") }}</a></li>
-                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'under_review']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Under Review") }}</a></li>
-                      <li><a href="{{ route('dashboard.clinic_profiles.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Clinics") }}</a></li>
-                      <li><a href="{{ route('dashboard.courses.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Courses") }}</a></li>
-                  </ul>
-              </li>
-              @endif
-
-              <!-- Ecosystem Management -->
+              <!-- 11. Ecosystem Management -->
               @if(auth()->user()->can('therapist_profiles-index') || auth()->user()->can('appointments-index') || auth()->user()->can('clinic_profiles-index') || auth()->user()->can('courses-index') || auth()->user()->can('jobs-index') || auth()->user()->can('data_points-index'))
               <li>
                   <a href="javascript:;" class="has-arrow">
@@ -224,7 +180,8 @@
               </li>
               @endif
 
-              <!-- Integrated External Modules -->
+              <!-- 12. AI & Modules (Admin Only) -->
+              @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-cpu"></i></div>
@@ -238,6 +195,16 @@
                               <li><a href="{{ route('dashboard.ads.settings') }}"><i class="bi bi-circle"></i>{{ __("Settings") }}</a></li>
                           </ul>
                       </li>
+                      <!-- Customers moved here below Ads Manager -->
+                      @can('users-index')
+                      <li>
+                          <a href="javascript:;" class="has-arrow"><i class="bi bi-arrow-right-short"></i>{{ __("Customers") }}</a>
+                          <ul>
+                              <li><a href="{{ route('dashboard.users.index') }}"><i class="bi bi-circle"></i>{{ __("Manage Users") }}</a></li>
+                              <li><a href="{{ route('dashboard.reports.customer-insights') }}"><i class="bi bi-circle"></i>{{ __("Customer Insights") }}</a></li>
+                          </ul>
+                      </li>
+                      @endcan
                       <li>
                           <a href="javascript:;" class="has-arrow"><i class="bi bi-arrow-right-short"></i>{{ __("CRM") }}</a>
                           <ul>
@@ -249,8 +216,9 @@
                       <li><a href="{{ route('dashboard.exercises.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Exercise Lib") }}</a></li>
                   </ul>
               </li>
+              @endif
 
-              <!-- Settings -->
+              <!-- 13. Settings (Last) -->
               <li>
                   <a href="javascript:;" class="has-arrow">
                       <div class="parent-icon"><i class="bi bi-gear"></i></div>

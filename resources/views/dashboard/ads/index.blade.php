@@ -1,6 +1,53 @@
 @extends('dashboard.layouts.app')
 
+@push('styles')
+<style>
+    /* AI & Modules Pages - Full Width (100%) ignoring header and sidebar */
+    .page-wrapper {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        margin-top: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+    
+    .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Content area should account for header and sidebar */
+    .ai-modules-content {
+        margin-left: 250px; /* Sidebar width */
+        margin-top: 70px; /* Header height */
+        padding: 20px;
+        width: calc(100% - 250px);
+        min-height: calc(100vh - 70px);
+    }
+    
+    /* RTL Support */
+    [dir="rtl"] .ai-modules-content {
+        margin-left: 0;
+        margin-right: 250px;
+    }
+    
+    /* When sidebar is toggled */
+    body.toggled .ai-modules-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    [dir="rtl"] body.toggled .ai-modules-content {
+        margin-right: 0;
+    }
+</style>
+@endpush
+
 @section('content')
+<div class="ai-modules-content">
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -56,5 +103,6 @@
             </div>
         </div>
     </div>
+</div>
 </div>
 @endsection

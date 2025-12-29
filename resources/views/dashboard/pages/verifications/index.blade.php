@@ -75,11 +75,15 @@
                                     } elseif ($user->type === 'company') {
                                         $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->first();
                                         if ($companyProfile) {
-                                            $moduleVerifications = \App\Models\CompanyModuleVerification::where('company_profile_id', $companyProfile->id)
-                                                ->whereIn('status', ['pending', 'under_review'])
-                                                ->get();
-                                            foreach ($moduleVerifications as $mv) {
-                                                $pendingModules[] = ucfirst(str_replace('_', ' ', $mv->module_type));
+                                            try {
+                                                $moduleVerifications = \App\Models\CompanyModuleVerification::where('company_profile_id', $companyProfile->id)
+                                                    ->whereIn('status', ['pending', 'under_review'])
+                                                    ->get();
+                                                foreach ($moduleVerifications as $mv) {
+                                                    $pendingModules[] = ucfirst(str_replace('_', ' ', $mv->module_type));
+                                                }
+                                            } catch (\Exception $e) {
+                                                // Table doesn't exist yet, skip
                                             }
                                         }
                                     }

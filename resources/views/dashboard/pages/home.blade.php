@@ -39,162 +39,161 @@
 
 
             @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
-                <div class="row g-4">
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-user text-primary"></i> {{ __('Number of User') }}
-                                    </h5>
+                <div class="row g-3">
+                    <!-- Reduced card sizes: col-lg-3 col-md-4 instead of col-lg-4 col-md-6 -->
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-user text-primary"></i> {{ __('Users') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $user ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $user ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-store text-primary"></i> {{ __('Number of Vendor')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-store text-primary"></i> {{ __('Vendors') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $vendor ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $vendor ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-cart-shopping text-primary"></i> {{ __('Number of Buyer')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-cart-shopping text-primary"></i> {{ __('Buyers') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $buyer ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $buyer ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-box text-primary"></i> {{ __('Number of Product')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-box text-primary"></i> {{ __('Products') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $product ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $product ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-receipt text-primary"></i> {{ __('Number of Order')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-receipt text-primary"></i> {{ __('Orders') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $order ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $order ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-receipt text-primary"></i> {{ __('Number of Order Card')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-credit-card text-primary"></i> {{ __('Card Orders') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $order_card ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $order_card ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-receipt text-primary"></i> {{ __('Number of Order Cash')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-money-bill text-primary"></i> {{ __('Cash Orders') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $order_cash ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $order_cash ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                  
-
-                    <div class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-tags text-primary"></i> {{ __('Number of Tag')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-tags text-primary"></i> {{ __('Tags') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $tag ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold" style="color: #02767F;">{{ $tag ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
                     {{-- Ecosystem Stats --}}
-                    <div class="col-lg-3 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-user-md text-success"></i> {{ __('Therapists')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-user-md text-success"></i> {{ __('Therapists') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $therapist_count ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold text-success">{{ $therapist_count ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-clinic-medical text-info"></i> {{ __('Clinics')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-clinic-medical text-info"></i> {{ __('Clinics') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $clinic_count ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold text-info">{{ $clinic_count ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-calendar-check text-warning"></i> {{ __('Home Visits')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-calendar-check text-warning"></i> {{ __('Home Visits') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $appointment_count ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold text-warning">{{ $appointment_count ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
-                                    <h5 class="mb-0">
-                                        <i class="fa fa-graduation-cap text-danger"></i> {{ __('Courses')  }}
-                                    </h5>
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-muted small">
+                                        <i class="fa fa-graduation-cap text-danger"></i> {{ __('Courses') }}
+                                    </h6>
                                 </div>
-                                <h2 class="mt-4 fw-bold">{{ $course_count ?? 0 }}</h2>
+                                <h3 class="mb-0 fw-bold text-danger">{{ $course_count ?? 0 }}</h3>
                             </div>
                         </div>
                     </div>
@@ -202,13 +201,13 @@
                 </div>
 
                 {{-- Charts Section --}}
-                <div class="row g-4 mt-4">
+                <div class="row g-3 mt-3">
                     {{-- Payment Methods Chart --}}
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Payment Methods Distribution</h5>
-                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="card-title mb-3 small fw-bold">Payment Methods</h6>
+                                <div class="chart-container" style="height: 250px;">
                                     <canvas id="paymentMethodsChart"></canvas>
                                 </div>
                             </div>
@@ -216,23 +215,47 @@
                     </div>
 
                     {{-- User Types Chart --}}
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">User Distribution</h5>
-                                <div class="chart-container" style="height: 320px; min-height: 280px; max-height: 360px;">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="card-title mb-3 small fw-bold">User Distribution</h6>
+                                <div class="chart-container" style="height: 250px;">
                                     <canvas id="userTypesChart"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    {{-- Order Status Chart --}}
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="card-title mb-3 small fw-bold">Order Status</h6>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="orderStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Sales Trend Chart --}}
+                    <div class="col-lg-8 col-md-12 col-sm-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="card-title mb-3 small fw-bold">Sales Trend (Last 30 Days)</h6>
+                                <div class="chart-container" style="height: 280px;">
+                                    <canvas id="salesTrendChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Ecosystem Overview Chart --}}
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="card rounded-4">
-                            <div class="card-body">
-                                <h5 class="card-title mb-4">Ecosystem Overview</h5>
-                                <div class="chart-container" style="height: 340px; min-height: 280px; max-height: 360px;">
+                    <div class="col-lg-4 col-md-12 col-sm-12">
+                        <div class="card rounded-3 border-0 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="card-title mb-3 small fw-bold">Ecosystem Overview</h6>
+                                <div class="chart-container" style="height: 280px;">
                                     <canvas id="ecosystemChart"></canvas>
                                 </div>
                             </div>
@@ -241,62 +264,62 @@
                 </div>
 
                 {{-- System Health Indicators --}}
-                <div class="row g-4 mt-4">
+                <div class="row g-3 mt-3">
                     <div class="col-12">
-                        <h5 class="mb-3"><i class="fa fa-heartbeat text-danger"></i> System Health</h5>
+                        <h6 class="mb-2"><i class="fa fa-heartbeat text-danger"></i> System Health</h6>
                     </div>
                     
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #28a745 !important;">
-                            <div class="card-body">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm" style="border-left: 3px solid #28a745 !important;">
+                            <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <p class="text-muted mb-1 small">Total Revenue</p>
-                                        <h3 class="mb-0 fw-bold">${{ number_format($totalRevenue, 2) }}</h3>
+                                        <h5 class="mb-0 fw-bold">${{ number_format($totalRevenue ?? 0, 2) }}</h5>
                                     </div>
-                                    <i class="fa fa-dollar-sign fa-2x text-success opacity-50"></i>
+                                    <i class="fa fa-dollar-sign fa-lg text-success opacity-50"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #ffc107 !important;">
-                            <div class="card-body">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm" style="border-left: 3px solid #ffc107 !important;">
+                            <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <p class="text-muted mb-1 small">Today's Home Visits</p>
-                                        <h3 class="mb-0 fw-bold">{{ $todayAppointments }}</h3>
+                                        <p class="text-muted mb-1 small">Today's Visits</p>
+                                        <h5 class="mb-0 fw-bold">{{ $todayAppointments ?? 0 }}</h5>
                                     </div>
-                                    <i class="fa fa-calendar-day fa-2x text-warning opacity-50"></i>
+                                    <i class="fa fa-calendar-day fa-lg text-warning opacity-50"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #17a2b8 !important;">
-                            <div class="card-body">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm" style="border-left: 3px solid #17a2b8 !important;">
+                            <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <p class="text-muted mb-1 small">Active Platform</p>
-                                        <h3 class="mb-0 fw-bold text-success">Online</h3>
+                                        <p class="text-muted mb-1 small">Platform Status</p>
+                                        <h5 class="mb-0 fw-bold text-success">Online</h5>
                                     </div>
-                                    <i class="fa fa-check-circle fa-2x text-info opacity-50"></i>
+                                    <i class="fa fa-check-circle fa-lg text-info opacity-50"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
-                        <div class="card rounded-4 border-0 shadow-sm" style="border-left: 4px solid #6c757d !important;">
-                            <div class="card-body">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                        <div class="card rounded-3 border-0 shadow-sm" style="border-left: 3px solid #6c757d !important;">
+                            <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <p class="text-muted mb-1 small">System Status</p>
-                                        <h3 class="mb-0 fw-bold text-muted">Stable</h3>
+                                        <h5 class="mb-0 fw-bold text-muted">Stable</h5>
                                     </div>
-                                    <i class="fa fa-server fa-2x text-secondary opacity-50"></i>
+                                    <i class="fa fa-server fa-lg text-secondary opacity-50"></i>
                                 </div>
                             </div>
                         </div>
@@ -304,102 +327,105 @@
                 </div>
 
                 {{-- Quick Access Cards --}}
-                <div class="row g-4 mt-4">
+                <div class="row g-3 mt-3">
                     <div class="col-12">
-                        <h5 class="mb-3"><i class="fa fa-bolt text-warning"></i> Quick Access</h5>
+                        <h6 class="mb-2"><i class="fa fa-bolt text-warning"></i> Quick Access</h6>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
+                        <a href="{{ route('dashboard.verifications.index') }}" class="text-decoration-none">
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-shield-check fa-2x mb-2" style="color: #02767F;"></i>
+                                    <h6 class="fw-bold mb-0 small">Verifications</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.users.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-users fa-3x mb-3" style="color: #02767F;"></i>
-                                    <h6 class="fw-bold mb-1">Manage Users</h6>
-                                    <small class="text-muted">View & edit all users</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-users fa-2x mb-2" style="color: #02767F;"></i>
+                                    <h6 class="fw-bold mb-0 small">Users</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.therapist_profiles.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-user-md fa-3x mb-3 text-success"></i>
-                                    <h6 class="fw-bold mb-1">Manage Therapists</h6>
-                                    <small class="text-muted">Approve & manage</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-user-md fa-2x mb-2 text-success"></i>
+                                    <h6 class="fw-bold mb-0 small">Therapists</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.home_visits.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-calendar-check fa-3x mb-3 text-warning"></i>
-                                    <h6 class="fw-bold mb-1">Home Visits</h6>
-                                    <small class="text-muted">View all bookings</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-calendar-check fa-2x mb-2 text-warning"></i>
+                                    <h6 class="fw-bold mb-0 small">Home Visits</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.clinic_profiles.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-clinic-medical fa-3x mb-3 text-info"></i>
-                                    <h6 class="fw-bold mb-1">Manage Clinics</h6>
-                                    <small class="text-muted">Clinic profiles</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-clinic-medical fa-2x mb-2 text-info"></i>
+                                    <h6 class="fw-bold mb-0 small">Clinics</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.courses.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-graduation-cap fa-3x mb-3 text-danger"></i>
-                                    <h6 class="fw-bold mb-1">Manage Courses</h6>
-                                    <small class="text-muted">Learning hub</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-graduation-cap fa-2x mb-2 text-danger"></i>
+                                    <h6 class="fw-bold mb-0 small">Courses</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.products.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-box fa-3x mb-3" style="color: #02767F;"></i>
-                                    <h6 class="fw-bold mb-1">Products</h6>
-                                    <small class="text-muted">Inventory management</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-box fa-2x mb-2" style="color: #02767F;"></i>
+                                    <h6 class="fw-bold mb-0 small">Products</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.orders.index') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-receipt fa-3x mb-3 text-success"></i>
-                                    <h6 class="fw-bold mb-1">Orders</h6>
-                                    <small class="text-muted">View all orders</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-receipt fa-2x mb-2 text-success"></i>
+                                    <h6 class="fw-bold mb-0 small">Orders</h6>
                                 </div>
                             </div>
                         </a>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.settings.show') }}" class="text-decoration-none">
-                            <div class="card rounded-4 border-0 shadow-sm hover-lift h-100">
-                                <div class="card-body text-center py-4">
-                                    <i class="fa fa-cog fa-3x mb-3 text-secondary"></i>
-                                    <h6 class="fw-bold mb-1">Settings</h6>
-                                    <small class="text-muted">System configuration</small>
+                            <div class="card rounded-3 border-0 shadow-sm hover-lift h-100">
+                                <div class="card-body text-center p-3">
+                                    <i class="fa fa-cog fa-2x mb-2 text-secondary"></i>
+                                    <h6 class="fw-bold mb-0 small">Settings</h6>
                                 </div>
                             </div>
                         </a>
@@ -408,29 +434,29 @@
 
                 {{-- Pending Approvals --}}
                 @if(collect($pendingApprovals)->sum('count') > 0)
-                <div class="row g-4 mt-4">
+                <div class="row g-3 mt-3">
                     <div class="col-12">
-                        <h5 class="mb-3"><i class="fa fa-clock text-warning"></i> Pending Approvals</h5>
+                        <h6 class="mb-2"><i class="fa fa-clock text-warning"></i> Pending Approvals</h6>
                     </div>
 
                     @foreach($pendingApprovals as $pending)
                         @if($pending['count'] > 0)
-                        <div class="col-lg-4 col-md-6">
-                            <div class="card rounded-4 border-0 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                            <div class="card rounded-3 border-0 shadow-sm">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div>
-                                            <h6 class="mb-1">{{ $pending['title'] }}</h6>
-                                            <p class="text-muted mb-0 small">Requires attention</p>
+                                            <h6 class="mb-0 small fw-bold">{{ $pending['title'] }}</h6>
+                                            <p class="text-muted mb-0" style="font-size: 0.75rem;">Requires attention</p>
                                         </div>
                                         <div class="text-center">
-                                            <span class="badge bg-{{ $pending['color'] }} rounded-circle p-3" style="font-size: 1.2rem;">
+                                            <span class="badge bg-{{ $pending['color'] }} rounded-circle p-2" style="font-size: 1rem; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
                                                 {{ $pending['count'] }}
                                             </span>
                                         </div>
                                     </div>
-                                    <a href="{{ $pending['link'] }}" class="btn btn-sm btn-outline-{{ $pending['color'] }} w-100 mt-3">
-                                        <i class="fa {{ $pending['icon'] }}"></i> Review Now
+                                    <a href="{{ $pending['link'] }}" class="btn btn-sm btn-outline-{{ $pending['color'] }} w-100 mt-2">
+                                        <i class="fa {{ $pending['icon'] }}"></i> Review
                                     </a>
                                 </div>
                             </div>
@@ -530,48 +556,150 @@
                         }
                     });
 
-                    // Ecosystem Overview Chart
-                    const ecosystemCtx = document.getElementById('ecosystemChart').getContext('2d');
-                    new Chart(ecosystemCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: ['Products', 'Orders', 'Therapists', 'Clinics', 'Appointments', 'Courses'],
-                            datasets: [{
-                                label: 'Count',
-                                data: [
-                                    {{ $product ?? 0 }}, 
-                                    {{ $order ?? 0 }}, 
-                                    {{ $therapist_count ?? 0 }}, 
-                                    {{ $clinic_count ?? 0 }}, 
-                                    {{ $appointment_count ?? 0 }}, 
-                                    {{ $course_count ?? 0 }}
-                                ],
-                                backgroundColor: [
-                                    '#02767F',
-                                    '#04b8c4',
-                                    '#28a745',
-                                    '#17a2b8',
-                                    '#ffc107',
-                                    '#dc3545'
-                                ],
-                                borderWidth: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+                    // Order Status Chart
+                    const orderStatusCtx = document.getElementById('orderStatusChart');
+                    if (orderStatusCtx) {
+                        new Chart(orderStatusCtx.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Pending', 'Processing', 'Completed', 'Cancelled'],
+                                datasets: [{
+                                    data: [
+                                        {{ \App\Models\Order::where('status', 'pending')->count() }},
+                                        {{ \App\Models\Order::where('status', 'processing')->count() }},
+                                        {{ \App\Models\Order::where('status', 'completed')->count() }},
+                                        {{ \App\Models\Order::where('status', 'cancelled')->count() }}
+                                    ],
+                                    backgroundColor: ['#ffc107', '#17a2b8', '#28a745', '#dc3545'],
+                                    borderWidth: 0
+                                }]
                             },
-                            plugins: {
-                                legend: {
-                                    display: false
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                    }
                                 }
                             }
+                        });
+                    }
+
+                    // Sales Trend Chart (Last 30 Days)
+                    const salesTrendCtx = document.getElementById('salesTrendChart');
+                    if (salesTrendCtx) {
+                        const last30Days = [];
+                        const salesData = @json(\App\Models\Order::where('created_at', '>=', now()->subDays(30))
+                            ->where('payment_status', 'paid')
+                            ->selectRaw('DATE(created_at) as date, SUM(total) as total')
+                            ->groupBy('date')
+                            ->orderBy('date')
+                            ->pluck('total', 'date')
+                            ->mapWithKeys(function ($total, $date) {
+                                return [\Carbon\Carbon::parse($date)->format('M d') => (float)$total];
+                            })
+                            ->toArray());
+                        
+                        // Generate all 30 days labels
+                        const labels = [];
+                        for (let i = 29; i >= 0; i--) {
+                            const date = new Date();
+                            date.setDate(date.getDate() - i);
+                            labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
                         }
-                    });
+                        
+                        // Map sales data to labels (fill missing days with 0)
+                        const data = labels.map(label => salesData[label] || 0);
+                        
+                        new Chart(salesTrendCtx.getContext('2d'), {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Sales ($)',
+                                    data: data,
+                                    borderColor: '#02767F',
+                                    backgroundColor: 'rgba(2, 118, 127, 0.1)',
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 5
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(value) {
+                                                return '$' + value.toFixed(0);
+                                            }
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return 'Sales: $' + context.parsed.y.toFixed(2);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // Ecosystem Overview Chart
+                    const ecosystemCtx = document.getElementById('ecosystemChart');
+                    if (ecosystemCtx) {
+                        new Chart(ecosystemCtx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['Products', 'Orders', 'Therapists', 'Clinics', 'Appointments', 'Courses'],
+                                datasets: [{
+                                    label: 'Count',
+                                    data: [
+                                        {{ $product ?? 0 }}, 
+                                        {{ $order ?? 0 }}, 
+                                        {{ $therapist_count ?? 0 }}, 
+                                        {{ $clinic_count ?? 0 }}, 
+                                        {{ $appointment_count ?? 0 }}, 
+                                        {{ $course_count ?? 0 }}
+                                    ],
+                                    backgroundColor: [
+                                        '#02767F',
+                                        '#04b8c4',
+                                        '#28a745',
+                                        '#17a2b8',
+                                        '#ffc107',
+                                        '#dc3545'
+                                    ],
+                                    borderWidth: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        });
+                    }
                 </script>
                 @endpush
             @elseif (auth()->user()->hasRole('vendor'))

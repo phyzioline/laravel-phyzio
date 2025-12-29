@@ -194,8 +194,18 @@ class HomeController extends Controller
                 ->count();
             
             // Pending Module Verifications
-            $pendingModuleVerifications = \App\Models\TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
-            $pendingCompanyModuleVerifications = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
+            try {
+                $pendingModuleVerifications = \App\Models\TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
+            } catch (\Exception $e) {
+                $pendingModuleVerifications = 0;
+            }
+            
+            try {
+                $pendingCompanyModuleVerifications = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
+            } catch (\Exception $e) {
+                $pendingCompanyModuleVerifications = 0;
+            }
+            
             $totalPendingModules = $pendingModuleVerifications + $pendingCompanyModuleVerifications;
             
             $pendingApprovals = [

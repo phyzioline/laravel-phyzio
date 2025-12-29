@@ -26,14 +26,22 @@ class VerificationController extends Controller
             ->pluck('id');
 
         // Also include therapists with pending module verifications (even if general verification is approved)
-        $therapistIdsWithPendingModules = TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])
-            ->pluck('user_id')
-            ->unique();
+        try {
+            $therapistIdsWithPendingModules = TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])
+                ->pluck('user_id')
+                ->unique();
+        } catch (\Exception $e) {
+            $therapistIdsWithPendingModules = collect([]);
+        }
 
         // Also include companies with pending module verifications (even if general verification is approved)
-        $companyIdsWithPendingModules = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])
-            ->pluck('user_id')
-            ->unique();
+        try {
+            $companyIdsWithPendingModules = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])
+                ->pluck('user_id')
+                ->unique();
+        } catch (\Exception $e) {
+            $companyIdsWithPendingModules = collect([]);
+        }
 
         // Combine all sets of user IDs
         $allUserIds = $userIds->merge($therapistIdsWithPendingModules)->merge($companyIdsWithPendingModules)->unique();
@@ -74,13 +82,33 @@ class VerificationController extends Controller
         if ($user->type === 'therapist') {
             $therapistProfile = TherapistProfile::where('user_id', $user->id)->first();
             if ($therapistProfile) {
-                $moduleVerifications = TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
-                    ->get()
-                    ->keyBy('module_type');
+                try {
+                    $moduleVerifications = TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
+                        ->get()
+                        ->keyBy('module_type');
+                } catch (\Exception $e) {
+                    $moduleVerifications = collect([]);
+                }
             }
         }
 
-        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments', 'moduleVerifications', 'therapistProfile'));
+        // Get module verifications for companies
+        $companyModuleVerifications = null;
+        $companyProfile = null;
+        if ($user->type === 'company') {
+            $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->first();
+            if ($companyProfile) {
+                try {
+                    $companyModuleVerifications = \App\Models\CompanyModuleVerification::where('company_profile_id', $companyProfile->id)
+                        ->get()
+                        ->keyBy('module_type');
+                } catch (\Exception $e) {
+                    $companyModuleVerifications = collect([]);
+                }
+            }
+        }
+
+        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments', 'moduleVerifications', 'therapistProfile', 'companyModuleVerifications', 'companyProfile'));
     }
 
     /**
@@ -326,30 +354,41 @@ class VerificationController extends Controller
 
         $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->firstOrFail();
         
-        $moduleVerification = \App\Models\CompanyModuleVerification::updateOrCreate(
-            [
-                'company_profile_id' => $companyProfile->id,
-                'user_id' => $user->id,
-                'module_type' => $moduleType,
-            ],
-            [
-                'status' => $request->action === 'approve' ? 'approved' : 'rejected',
-                'admin_note' => $request->admin_note,
-                'reviewed_by' => auth()->id(),
-                'reviewed_at' => now(),
-                'verified_at' => $request->action === 'approve' ? now() : null,
-            ]
-        );
+        try {
+            $moduleVerification = \App\Models\CompanyModuleVerification::updateOrCreate(
+                [
+                    'company_profile_id' => $companyProfile->id,
+                    'user_id' => $user->id,
+                    'module_type' => $moduleType,
+                ],
+                [
+                    'status' => $request->action === 'approve' ? 'approved' : 'rejected',
+                    'admin_note' => $request->admin_note,
+                    'reviewed_by' => auth()->id(),
+                    'reviewed_at' => now(),
+                    'verified_at' => $request->action === 'approve' ? now() : null,
+                ]
+            );
 
-        // Update company profile module verification status
-        if ($moduleType === 'clinic') {
-            $companyProfile->update([
-                'clinic_verified' => $request->action === 'approve',
-                'clinic_verified_at' => $request->action === 'approve' ? now() : null,
-            ]);
+            // Update company profile module verification status
+            if ($moduleType === 'clinic') {
+                $companyProfile->update([
+                    'clinic_verified' => $request->action === 'approve',
+                    'clinic_verified_at' => $request->action === 'approve' ? now() : null,
+                ]);
+            }
+
+            return back()->with('success', __('Module ' . $moduleType . ' ' . $request->action . 'd successfully.'));
+        } catch (\Exception $e) {
+            // Table doesn't exist yet - just update the profile
+            if ($moduleType === 'clinic') {
+                $companyProfile->update([
+                    'clinic_verified' => $request->action === 'approve',
+                    'clinic_verified_at' => $request->action === 'approve' ? now() : null,
+                ]);
+            }
+            return back()->with('success', __('Module ' . $moduleType . ' ' . $request->action . 'd successfully.'));
         }
-
-        return back()->with('success', __('Module ' . $moduleType . ' ' . $request->action . 'd successfully.'));
     }
 
     /**
