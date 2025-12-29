@@ -245,7 +245,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6 order-lg-last">
                         <div class="service-image shadow-lg rounded overflow-hidden">
-                             <img src="{{ asset('web/assets/images/jobs_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/jobs_illustration.png') }}'" alt="Phyzioline Jobs" class="img-fluid w-100">
+                             <img src="{{ asset('web/assets/images/recruitment_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/recruitment_illustration.png') }}'" alt="Recruitment Companies" class="img-fluid w-100">
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -253,13 +253,13 @@
                             <div class="icon-wrapper mb-3">
                                 <i class="las la-briefcase" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
                             </div>
-                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('Careers') }}</h3>
-                            <h4 class="mb-3" style="color: #02767F;">{{ __('Find Your Dream') }} <br> {{ __('Job Opportunity') }}</h4>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('For Recruitment Companies') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('Find Top Talent') }} <br> {{ __('Apply for Available Jobs') }}</h4>
                             <p class="lead text-muted mb-4">
-                                {{ __('Connect with top clinics, hospitals, and recruitment agencies. Whether you are looking for a full-time position or freelance opportunities, Phyzioline Jobs is your gateway.') }}
+                                {{ __('Connect with top clinics and hospitals. Post your vacancies and find the perfect physiotherapist candidates for your opportunities.') }}
                             </p>
                             <a href="{{ route('web.jobs.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
-                                {{ __('Browse Jobs') }}
+                                {{ __('Start Hiring') }}
                             </a>
                         </div>
                     </div>
