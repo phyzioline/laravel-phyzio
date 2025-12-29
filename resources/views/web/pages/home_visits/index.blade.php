@@ -101,7 +101,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text bg-white border-0"><i class="las la-map-marker text-danger"></i></span>
                                                 </div>
-                                                <input type="text" name="address" class="form-control border-0" placeholder="Address (Area, Street, Building...)" required>
+                                                <input type="text" name="address" class="form-control border-0" placeholder="{{ __('Address (Area, Street, Building...)') }}" required>
                                             </div>
                                             <!-- Hidden Lat/Lng defaults -->
                                             <input type="hidden" name="lat" value="30.0444">
@@ -307,15 +307,44 @@
     transform: translateY(-5px);
 }
 
+/* Fix header overlap - Add padding for fixed header */
+body {
+    padding-top: 120px !important;
+}
+
+@media (max-width: 991px) {
+    body {
+        padding-top: 100px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 90px !important;
+    }
+}
+
 header,
 .header-section {
-    position: absolute;
+    position: fixed !important;
     top: 0;
     left: 0;
     width: 100%;
     background: transparent !important;
     box-shadow: none !important;
-    z-index: 9999;
+    z-index: 9999;
+}
+
+/* Ensure hero section accounts for fixed header */
+.hero-section {
+    margin-top: 0 !important;
+    padding-top: 100px !important;
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding-top: 80px !important;
+    }
 }
 </style>
 @section('scripts')
