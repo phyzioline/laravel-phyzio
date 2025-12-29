@@ -121,7 +121,19 @@
         <!-- Hero Section - Start -->
     <!-- hero-section - start
     ================================================== -->
-    <section id="hero-section" class="hero-section clearfix" style="background: linear-gradient(135deg, #02767F 0%, #004d57 100%); position: relative; overflow: hidden; padding-top: 180px; padding-bottom: 100px;">
+    <style>
+        .hero-section {
+            padding-top: 120px;
+            padding-bottom: 60px;
+        }
+        @media (min-width: 992px) {
+            .hero-section {
+                padding-top: 180px;
+                padding-bottom: 100px;
+            }
+        }
+    </style>
+    <section id="hero-section" class="hero-section clearfix" style="background: linear-gradient(135deg, #02767F 0%, #004d57 100%); position: relative; overflow: hidden;">
         
         <div class="container">
             <div class="row align-items-center">

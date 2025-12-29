@@ -317,233 +317,241 @@ body.has-hero .shop-hero-banner {
     padding-top: 220px !important;
     background-position: top center !important;
 }
-/* NEW HEADER FIX - Alignment Improved */
+/* =========================
+   DESKTOP ONLY ALIGNMENT RULES
+   ========================= */
+@media (min-width: 992px) {
 
-/* جعل كل الـ ROW Flex مضبوط */
-#header-section .row {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-}
+    /* NEW HEADER FIX - Alignment Improved */
 
-/* توزيع الأعمدة: 
-   اللوجو صغير – الروابط أكبر – الأيقونات آخر اليمين */
-#header-section .col-lg-2 {
-    flex: 0 0 auto !important;
-}
-#header-section .col-lg-7 {
-    flex: 1 1 auto !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-#header-section .col-lg-3 {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    justify-content: flex-end !important;
-}
+    /* جعل كل الـ ROW Flex مضبوط */
+    #header-section .row {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+    }
 
-/* تصغير المسافة بين عناصر المنيو */
-.main-menu ul {
-    gap: 20px !important;
-}
+    /* توزيع الأعمدة: 
+       اللوجو صغير – الروابط أكبر – الأيقونات آخر اليمين */
+    #header-section .col-lg-2 {
+        flex: 0 0 auto !important;
+    }
+    #header-section .col-lg-7 {
+        flex: 1 1 auto !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+    #header-section .col-lg-3 {
+        flex: 0 0 auto !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+    }
 
-/* الأيقونات تلزق أقصى اليمين */
-#header-section .btns-group ul {
-    gap: 18px !important;
-    justify-content: flex-end !important;
-}
+    /* تصغير المسافة بين عناصر المنيو */
+    .main-menu ul {
+        gap: 20px !important;
+    }
 
-/* شفاف للهوم فقط */
-body.has-hero #header-section {
-    background: transparent !important;
-}
+    /* الأيقونات تلزق أقصى اليمين */
+    .btns-group ul {
+        gap: 18px !important;
+        justify-content: flex-end !important;
+    }
 
-/* لون عند السّكرول فقط */
-#header-section.stuck {
-    background-color: #02767F !important;
+    /* شفاف للهوم فقط */
+    body.has-hero #header-section {
+        background: transparent !important;
+    }
+
+    /* لون عند السّكرول فقط */
+    #header-section.stuck {
+        background-color: #02767F !important;
+    }
 }
 
 /* ======================
- FINAL HEADER LAYOUT FIX
+ FINAL HEADER LAYOUT FIX (DESKTOP ONLY)
 ====================== */
+@media (min-width: 992px) {
 
-/* Force full-width alignment */
-#header-section .container {
-    max-width: 100% !important;
-    padding: 0 30px !important;
-    overflow: visible !important;
-}
+    /* Force full-width alignment */
+    #header-section .container {
+        max-width: 100% !important;
+        padding: 0 30px !important;
+        overflow: visible !important;
+    }
 
-/* Ensure columns don't shrink or wrap */
-#header-section .col-lg-2,
-#header-section .col-lg-7,
-#header-section .col-lg-3 {
-    flex-shrink: 0 !important;
-    overflow: visible !important;
-    white-space: nowrap !important;
-}
+    /* Ensure columns don't shrink or wrap */
+    #header-section .col-lg-2,
+    #header-section .col-lg-7,
+    #header-section .col-lg-3 {
+        flex-shrink: 0 !important;
+        overflow: visible !important;
+        white-space: nowrap !important;
+    }
 
-/* LOGO: stick fully left */
-#header-section .col-lg-2 {
-    display: flex !important;
-    justify-content: flex-start !important;
-    align-items: center !important;
-}
+    /* LOGO: stick fully left */
+    #header-section .col-lg-2 {
+        display: flex !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+    }
 
-/* MENU CENTERED - optimized alignment */
-#header-section .col-lg-7 {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    padding: 0 !important;
-}
+    /* MENU CENTERED - optimized alignment */
+    #header-section .col-lg-7 {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0 !important;
+    }
 
-/* Ensure menu container is properly aligned */
-#header-section .main-menu {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
+    /* Ensure menu container is properly aligned */
+    #header-section .main-menu {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
 
-/* ICONS: stick fully right - optimized alignment */
-#header-section .col-lg-3 {
-    display: flex !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
-    height: auto !important;
-    padding: 0 !important;
-}
+    /* ICONS: stick fully right - optimized alignment */
+    #header-section .col-lg-3 {
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0 !important;
+    }
 
-/* reduce spacing between menu items - optimized for clean layout */
-.main-menu ul {
-    gap: 8px !important;
-}
+    /* reduce spacing between menu items - optimized for clean layout */
+    .main-menu ul {
+        gap: 8px !important;
+    }
 
-/* Hero goes under header — remove big gap */
-body.has-hero .hero-banner,
-body.has-hero .slider-section,
-body.has-hero .shop-hero-banner {
-    margin-top: -140px !important;
-    padding-top: 260px !important;
-}
+    /* Hero goes under header — remove big gap */
+    body.has-hero .hero-banner,
+    body.has-hero .slider-section,
+    body.has-hero .shop-hero-banner {
+        margin-top: -140px !important;
+        padding-top: 260px !important;
+    }
 
 
-/* Increase Hero Section Height */
-#slider-section .item,
-.slider-section .item,
-.hero-banner {
-    min-height: 480px !important; /* زوّد الرقم لو عايز أكبر */
-    padding-top: 180px !important; /* يرفع الكلام لتحت شوية */
-}
+    /* Increase Hero Section Height */
+    #slider-section .item,
+    .slider-section .item,
+    .hero-banner {
+        min-height: 480px !important; /* زوّد الرقم لو عايز أكبر */
+        padding-top: 180px !important; /* يرفع الكلام لتحت شوية */
+    }
 
-/* Improve text visibility spacing */
-#slider-section .item h1,
-.hero-banner h1 {
-    font-size: 42px !important;
-    line-height: 1.25 !important;
-}
+    /* Improve text visibility spacing */
+    #slider-section .item h1,
+    .hero-banner h1 {
+        font-size: 42px !important;
+        line-height: 1.25 !important;
+    }
 
-#slider-section .item p,
-.hero-banner p {
-    font-size: 18px !important;
-    margin-top: 10px !important;
-}
-/* Make menu text smaller & cleaner - optimized for clean layout */
-#header-section .main-menu ul li {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto !important;
-    line-height: 1 !important;
-    display: flex !important;
-    align-items: center !important;
-}
+    #slider-section .item p,
+    .hero-banner p {
+        font-size: 18px !important;
+        margin-top: 10px !important;
+    }
+    /* Make menu text smaller & cleaner - optimized for clean layout */
+    #header-section .main-menu ul li {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        line-height: 1 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
 
-#header-section .main-menu ul li a {
-    font-size: 13px !important;
-    padding: 4px 8px !important;
-    font-weight: 600 !important;
-    line-height: 1.2 !important;
-    display: inline-block !important;
-    white-space: nowrap !important;
-    vertical-align: middle !important;
-    margin: 0 !important;
-}
+    #header-section .main-menu ul li a {
+        font-size: 13px !important;
+        padding: 4px 8px !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        vertical-align: middle !important;
+        margin: 0 !important;
+    }
 
-/* Fix spacing between items after text shrink - optimized spacing */
-.main-menu ul {
-    gap: 6px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    flex-wrap: nowrap !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto !important;
-}
+    /* Fix spacing between items after text shrink - optimized spacing */
+    .main-menu ul {
+        gap: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: nowrap !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+    }
 
-/* Prevent text wrapping in header menu items - Fix for laptop 100% scale */
-#header-section .main-menu ul li {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    vertical-align: middle !important;
-    height: auto !important;
-    margin: 0 !important;
-}
+    /* Prevent text wrapping in header menu items - Fix for laptop 100% scale */
+    #header-section .main-menu ul li {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        height: auto !important;
+        margin: 0 !important;
+    }
 
-#header-section .main-menu ul li a {
-    white-space: nowrap !important;
-    display: inline-block !important;
-    word-break: keep-all !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    vertical-align: middle !important;
-    line-height: 1.2 !important;
-}
+    #header-section .main-menu ul li a {
+        white-space: nowrap !important;
+        display: inline-block !important;
+        word-break: keep-all !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        vertical-align: middle !important;
+        line-height: 1.2 !important;
+    }
 
-/* Ensure menu stays in one row */
-#header-section .main-menu ul {
-    flex-wrap: nowrap !important;
-    overflow: visible !important;
-    white-space: nowrap !important;
-}
+    /* Ensure menu stays in one row */
+    #header-section .main-menu ul {
+        flex-wrap: nowrap !important;
+        overflow: visible !important;
+        white-space: nowrap !important;
+    }
 
-/* Prevent header row from wrapping */
-#header-section .row {
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
-    align-items: center !important;
-    margin: 0 !important;
-    height: auto !important;
-}
+    /* Prevent header row from wrapping */
+    #header-section .row {
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+        align-items: center !important;
+        margin: 0 !important;
+        height: auto !important;
+    }
 
-/* Ensure menu column is properly sized */
-#header-section .col-lg-7 {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: auto !important;
-    overflow: visible !important;
-}
+    /* Ensure menu column is properly sized */
+    #header-section .col-lg-7 {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
 
-/* Ensure buttons don't wrap */
-#header-section .btns-group ul {
-    flex-wrap: nowrap !important;
-    white-space: nowrap !important;
-}
+    /* Ensure buttons don't wrap */
+    #header-section .btns-group ul {
+        flex-wrap: nowrap !important;
+        white-space: nowrap !important;
+    }
 
-#header-section .btns-group ul li {
-    white-space: nowrap !important;
-    flex-shrink: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    vertical-align: middle !important;
-    height: auto !important;
+    #header-section .btns-group ul li {
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        height: auto !important;
+    }
 }
 
 /* FORCE MENU, LOGIN, LOGO IN SAME ROW (RIGHT → LEFT) */
