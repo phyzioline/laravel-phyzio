@@ -74,7 +74,12 @@ class VerificationController extends Controller
             ->orderBy('order')
             ->get();
 
-        $userDocuments = $user->documents()->get()->keyBy('document_type');
+        // Separate general documents (no module_type) from module-specific documents
+        $allDocuments = $user->documents()->get();
+        $userDocuments = $allDocuments->whereNull('module_type')->keyBy('document_type');
+        
+        // Group module documents by module_type
+        $moduleDocuments = $allDocuments->whereNotNull('module_type')->groupBy('module_type');
 
         // Get module verifications for therapists
         $moduleVerifications = null;
@@ -108,7 +113,7 @@ class VerificationController extends Controller
             }
         }
 
-        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments', 'moduleVerifications', 'therapistProfile', 'companyModuleVerifications', 'companyProfile'));
+        return view('dashboard.pages.verifications.show', compact('user', 'requiredDocuments', 'userDocuments', 'moduleDocuments', 'moduleVerifications', 'therapistProfile', 'companyModuleVerifications', 'companyProfile'));
     }
 
     /**

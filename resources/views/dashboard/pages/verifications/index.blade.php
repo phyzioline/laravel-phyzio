@@ -114,10 +114,19 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <small>{{ $approvedCount }}/{{ $docCount }} {{ __('approved') }}</small>
+                                        @php
+                                            $generalDocs = $user->documents()->whereNull('module_type')->count();
+                                            $moduleDocs = $user->documents()->whereNotNull('module_type')->count();
+                                        @endphp
+                                        <small>
+                                            <strong>{{ __('General:') }}</strong> {{ $approvedCount }}/{{ $docCount }} {{ __('approved') }}
+                                            @if($moduleDocs > 0)
+                                                <br><strong>{{ __('Module Docs:') }}</strong> {{ $moduleDocs }}
+                                            @endif
+                                        </small>
                                         @if(!empty($pendingModules))
                                             <br><small class="text-warning">
-                                                <i class="fas fa-clock"></i> {{ __('Modules pending:') }} {{ implode(', ', $pendingModules) }}
+                                                <i class="fas fa-clock"></i> {{ __('Pending Modules:') }} {{ implode(', ', $pendingModules) }}
                                             </small>
                                         @endif
                                     </td>

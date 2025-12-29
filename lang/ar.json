@@ -580,5 +580,17 @@
     "Treatment Plans": "خطط العلاج",
     "Exercise Lib": "مكتبة التمارين",
     "Roles & Permissions": "الأدوار والصلاحيات",
-    "General Settings": "الإعدادات العامة"
+    "General Settings": "الإعدادات العامة",
+    "Module-Specific Documents": "مستندات الوحدات المحددة",
+    "Documents uploaded for specific module access": "المستندات المرفوعة للوصول إلى وحدة محددة",
+    "Home Visit Access": "الوصول للزيارات المنزلية",
+    "Course/Instructor Access": "الوصول للدورات/المدرب",
+    "Clinic Access": "الوصول للعيادة",
+    "User": "المستخدم",
+    "General": "عام",
+    "Module Docs": "مستندات الوحدات",
+    "Pending Modules": "الوحدات المعلقة",
+    "No documents uploaded for this module yet.": "لم يتم رفع أي مستندات لهذه الوحدة بعد.",
+    "Uploaded": "تم الرفع",
+    "Document file not found.": "لم يتم العثور على ملف المستند."
 }

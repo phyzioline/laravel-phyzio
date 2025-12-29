@@ -124,6 +124,116 @@
             </div>
         </div>
 
+        <!-- Module-Specific Documents Review -->
+        @if(isset($moduleDocuments) && $moduleDocuments->isNotEmpty())
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-puzzle-piece mr-2"></i>{{ __('Module-Specific Documents') }}</h5>
+                <small class="text-white-50">{{ __('Documents uploaded for specific module access') }}</small>
+            </div>
+            <div class="card-body">
+                @php
+                    $moduleLabels = [
+                        'home_visit' => ['name' => __('Home Visit Access'), 'icon' => 'home', 'color' => 'primary'],
+                        'courses' => ['name' => __('Course/Instructor Access'), 'icon' => 'book', 'color' => 'success'],
+                        'clinic' => ['name' => __('Clinic Access'), 'icon' => 'hospital', 'color' => 'info'],
+                    ];
+                @endphp
+                
+                @foreach($moduleDocuments as $moduleType => $documents)
+                    @php
+                        $moduleInfo = $moduleLabels[$moduleType] ?? ['name' => ucfirst($moduleType), 'icon' => 'file', 'color' => 'secondary'];
+                    @endphp
+                    <div class="card mb-4 border-{{ $moduleInfo['color'] }}">
+                        <div class="card-header bg-{{ $moduleInfo['color'] }} text-white">
+                            <h6 class="mb-0">
+                                <i class="fas fa-{{ $moduleInfo['icon'] }} mr-2"></i>
+                                {{ $moduleInfo['name'] }} - {{ __('User') }}: <strong>{{ $user->name }}</strong>
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if($documents->isEmpty())
+                                <p class="text-muted mb-0">{{ __('No documents uploaded for this module yet.') }}</p>
+                            @else
+                                @foreach($documents as $doc)
+                                    @php
+                                        $status = $doc->status;
+                                        $statusColors = [
+                                            'approved' => 'success',
+                                            'rejected' => 'danger',
+                                            'under_review' => 'warning',
+                                            'uploaded' => 'info',
+                                            'missing' => 'secondary'
+                                        ];
+                                        $statusLabels = [
+                                            'approved' => __('Approved'),
+                                            'rejected' => __('Rejected'),
+                                            'under_review' => __('Under Review'),
+                                            'uploaded' => __('Uploaded'),
+                                            'missing' => __('Missing')
+                                        ];
+                                    @endphp
+                                    <div class="card mb-3 border-{{ $statusColors[$status] ?? 'secondary' }}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                                <div>
+                                                    <h6 class="mb-1">
+                                                        {{ ucfirst(str_replace('_', ' ', $doc->document_type)) }}
+                                                        <span class="badge bg-{{ $statusColors[$status] ?? 'secondary' }}">
+                                                            {{ $statusLabels[$status] ?? ucfirst($status) }}
+                                                        </span>
+                                                    </h6>
+                                                    <p class="text-muted small mb-0">
+                                                        <i class="fas fa-calendar"></i> 
+                                                        {{ __('Uploaded') }}: {{ $doc->created_at->format('Y-m-d H:i') }}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            @if($doc->file_path)
+                                                <div class="mb-3">
+                                                    <a href="{{ asset($doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i> {{ __('View Document') }}
+                                                    </a>
+                                                </div>
+
+                                                @if($doc->admin_note)
+                                                    <div class="alert alert-{{ $status === 'rejected' ? 'danger' : 'info' }} mb-3">
+                                                        <strong>{{ __('Admin Note:') }}</strong> {{ $doc->admin_note }}
+                                                    </div>
+                                                @endif
+
+                                                @if($status !== 'approved')
+                                                    <form action="{{ route('dashboard.verifications.review-document', $doc->id) }}" method="POST" class="mt-3">
+                                                        @csrf
+                                                        <div class="mb-2">
+                                                            <textarea name="admin_note" class="form-control form-control-sm" rows="2" 
+                                                                      placeholder="{{ __('Add a note (optional)') }}">{{ $doc->admin_note }}</textarea>
+                                                        </div>
+                                                        <div class="btn-group btn-group-sm">
+                                                            <button type="submit" name="action" value="approve" class="btn btn-success">
+                                                                <i class="fas fa-check"></i> {{ __('Approve') }}
+                                                            </button>
+                                                            <button type="submit" name="action" value="reject" class="btn btn-danger">
+                                                                <i class="fas fa-times"></i> {{ __('Reject') }}
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                @endif
+                                            @else
+                                                <p class="text-muted mb-0">{{ __('Document file not found.') }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         @if($user->type === 'therapist' && $therapistProfile)
         <!-- Module Verification Status -->
         <div class="card mb-4">
