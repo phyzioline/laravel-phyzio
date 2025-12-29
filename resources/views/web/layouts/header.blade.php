@@ -847,7 +847,6 @@ body.has-hero .shop-hero-banner {
                                       <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Order History') }}</a>
                                   </li>
                             @endif
-                            <li><a href="{{ route('help.index') }}" class="text-decoration-none">{{ __('Help Center') }}</a></li>
                             <li><a href="{{ '/' . app()->getLocale() }}#about" class="text-decoration-none">{{ __('About Us') }}</a></li>
                         </ul>
                     </nav>
@@ -966,6 +965,13 @@ body.has-hero .shop-hero-banner {
                                         </ul>
                                     </div>
                                 </div>
+                            </li>
+
+                            {{-- Help Center Icon --}}
+                            <li>
+                                <a href="{{ route('help.index') }}" class="btn-cart" title="{{ __('Help Center') }}">
+                                    <i class="las la-question-circle"></i>
+                                </a>
                             </li>
 
                             {{-- Login/Logout --}}

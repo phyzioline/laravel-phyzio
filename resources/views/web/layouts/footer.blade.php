@@ -42,7 +42,7 @@
         <div class="footer-widget">
           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Support') }}</h4>
            <ul class="list-unstyled">
-             <!--<li class="mb-2"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none;">Help Center</a></li>-->
+             <li class="mb-2"><a href="{{ route('help.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Help Center') }}</a></li>
              <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Track Your Order') }}</a></li>
              <li class="mb-2"><a href="{{ route('feedback.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Contact Us') }}</a></li>
              <li class="mb-2"><a href="{{ route('shipping_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shipping Policy') }}</a></li>
