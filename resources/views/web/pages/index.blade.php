@@ -118,30 +118,50 @@
     <main>
         <!-- slider-section - start
        ================================================== -->
-        <section id="slider-section" class="slider-section breadCumbNewPh clearfix">
-            <div class="item d-flex align-items-center" data-background="{{ asset('web/assets/images/hero-bg.png') }}"
-                style="height: 35vh; background-color: #02767F; background-size: cover; background-position: center;">
-                <div class="container">
+        <!-- Hero Section - Start -->
+        <section id="hero-section" class="hero-section position-relative d-flex align-items-center" 
+            style="min-height: 85vh; background: linear-gradient(135deg, #02767F 0%, #035e66 100%); overflow: hidden;">
+            
+            <!-- Animated Background Shapes -->
+            <div class="position-absolute w-100 h-100 top-0 left-0" style="z-index: 1;">
+                <div class="position-absolute rounded-circle bg-white opacity-10" style="top: -10%; right: -5%; width: 500px; height: 500px; opacity: 0.05;"></div>
+                <div class="position-absolute rounded-circle bg-white opacity-10" style="bottom: 10%; left: -10%; width: 300px; height: 300px; opacity: 0.05;"></div>
+            </div>
 
-                    <div class="d-flex align-items-center">
-                        <h1 class="hero-text text-white mb-2" style="font-size : 40px; text-align : left">{{ __('Physicaltherapy Software Solutions') }}</h1>
-
+            <div class="container position-relative" style="z-index: 2;">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 text-white" data-aos="fade-right">
+                        <span class="d-inline-block py-1 px-3 rounded-pill bg-white text-primary mb-3 font-weight-bold" style="color: #02767F !important;">
+                            {{ __('The #1 Physical Therapy Platform') }}
+                        </span>
+                        <h1 class="display-3 font-weight-bold mb-4" style="line-height: 1.2;">
+                            {{ __('Empowering The') }} <br>
+                            <span style="color: #4bd1db;">{{ __('Physiotherapy Community') }}</span>
+                        </h1>
+                        <p class="lead mb-5" style="opacity: 0.9; font-size: 1.25rem;">
+                            {{ __('From certified home visits and clinic management to continuous learning and career growth. Phyzioline is your complete professional ecosystem.') }}
+                        </p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="{{ route('view_register.' . app()->getLocale()) }}" class="btn btn-light btn-lg rounded-pill px-5 py-3 font-weight-bold shadow-lg mr-3" style="color: #02767F;">
+                                {{ __('Join Now') }}
+                            </a>
+                            <a href="#ecosystem" class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 font-weight-bold">
+                                {{ __('Explore Services') }}
+                            </a>
+                        </div>
                     </div>
-                    <div class="hero-size">
-                        <h5 class="hero-praph text-white">{{ __('All Physical Therapist Needs is Our Mission From PT to PT') }}</h5>
+                    <div class="col-lg-5 d-none d-lg-block" data-aos="fade-left">
+                        <img src="{{ asset('web/assets/images/hero-bg.png') }}" class="img-fluid rounded-xl shadow-none" style="transform: scale(1.1);" alt="Phyzioline App">
                     </div>
-
-
                 </div>
-
-
             </div>
         </section>
+        <!-- Hero Section - End -->
         <!-- slider-section - end
        ================================================== -->
 
         <!-- Ecosystem Section - Start -->
-        <section class="ecosystem-section py-5" style="background-color: #f8f9fa;">
+        <section id="ecosystem" class="ecosystem-section py-5" style="background-color: #f8f9fa;">
             <div class="container">
                 <div class="text-center mb-5">
                     <h2 class="font-weight-bold" style="color: #04b8c4;">{{ __('Our Ecosystem') }}</h2>
@@ -230,101 +250,115 @@
 
         <!-- shop-section - start
        ================================================== -->
-        <section class="shop-section sec-ptb-100 decoration-wrap clearfix">
+
+        <!-- shop-section - start
+        ================================================== -->
+        <section id="shop-section" class="shop-section sec-ptb-100 decoration-wrap clearfix">
             <div class="container">
-                <div class="section-title text-center">
-                    <h2 class="mb-3" style="color: #36415a">Product By Category</h2>
+                <div class="section-title text-center mb-5">
+                    <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 2px;">{{ __('Online Store') }}</span>
+                    <h2 class="display-4 font-weight-bold mb-3" style="color: #36415a">{{ __('Featured Medical Equipment') }}</h2>
+                    <p class="lead text-muted">{{ __('Browse our top-rated physiotherapy equipment and supplies.') }}</p>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <input type="text" id="searchInput" name="search" placeholder="Search" class="form-control searchInput mb-30">
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-6 mx-auto">
-                        <label for="categoryFilter" class="form-label fw-semibold" style="font-size: 18px; color: #36415a; display: block; margin-bottom: 10px;">
-                            <i class="las la-filter"></i> Filter by Category
-                        </label>
-                        <select id="categoryFilter" class="form-select category-dropdown" style="padding: 12px; font-size: 16px; border: 2px solid #02767F; border-radius: 8px; cursor: pointer;">
-                            <option value="">All Categories</option>
-                            @foreach ($categories as $category)
-                                <option value="tab-{{ $category->id }}">
-                                    {{ $category->{'name_' . app()->getLocale()} }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="tab-content">
-                    @foreach ($categories as $index => $category)
-                        <div class="tab-pane fade {{ $index == 0 ? 'show active' : '' }}" id="tab-{{ $category->id }}"
-                            role="tabpanel">
-                            <div class="row justify-content-center mb-70">
-                                @foreach ($products->where('category_id', $category->id) as $product)
-                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-item"
-                                        data-name="{{ Str::lower($product->{'product_name_' . app()->getLocale()}) }}">
-                                        <div class="product-grid text-center clearfix physio-product-card">
-                                            <div class="item-image physio-image-container">
-                                                <div class="swiper-container">
-                                                    <div class="swiper-wrapper">
-                                                        @foreach ($product->productImages as $img)
-                                                            <div class="swiper-slide">
-                                                                <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}"
-                                                                    class="image-wrap">
-                                                                    <img src="{{ asset($img->image) }}"
-                                                                        alt="{{ $product->{'product_name_' . app()->getLocale()} }}"
-                                                                        class="physio-product-img"
-                                                                        loading="lazy"
-                                                                        width="300"
-                                                                        height="300"
-                                                                        style="aspect-ratio: 1/1; object-fit: cover;" />
-                                                                </a>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="swiper-pagination"></div>
-                                                    <div class="swiper-button-next"></div>
-                                                    <div class="swiper-button-prev"></div>
+                <div class="row justify-content-center mb-5">
+                    @foreach ($products->take(8) as $product)
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 product-item mb-4">
+                            <div class="product-grid text-center clearfix physio-product-card h-100">
+                                <div class="item-image physio-image-container">
+                                    <div class="swiper-container">
+                                        <div class="swiper-wrapper">
+                                            @foreach ($product->productImages as $img)
+                                                <div class="swiper-slide">
+                                                    <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}"
+                                                        class="image-wrap">
+                                                        <img src="{{ asset($img->image) }}"
+                                                            alt="{{ $product->{'product_name_' . app()->getLocale()} }}"
+                                                            class="physio-product-img"
+                                                            loading="lazy"
+                                                            style="width: 100%; height: 100%; object-fit: cover;" />
+                                                    </a>
                                                 </div>
+                                            @endforeach
+                                        </div>
+                                        <!-- Add pagination/navigation if needed, or remove for cleaner look -->
+                                    </div>
 
-                                                <div class="post-label ul-li-right clearfix">
-                                                    <!--<ul class="clearfix">-->
-                                                    <!--    <li class="bg-skyblue">-19%</li>-->
-                                                    <!--    <li class="bg-skyblue">TOP</li>-->
-                                                    <!--</ul>-->
-                                                </div>
+                                    <div class="btns-group ul-li-center clearfix">
+                                        <ul class="clearfix">
+                                            <li>
+                                                <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}"
+                                                    data-toggle="tooltip" data-placement="top" title="{{ __('Add To Cart') }}">
+                                                    <i class="las la-shopping-basket" style="font-size:18px"></i>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button type="button" class="add-to-favorite border-0 bg-transparent" data-product-id="{{ $product->id }}"
+                                                    data-toggle="tooltip" data-placement="top" title="{{ __('Add To Favorite') }}">
+                                                    <i class="fa-heart favorite-icon {{ $product->favorite && $product->favorite->favorite_type ? 'fas' : 'far' }}"
+                                                    style="font-size:18px; color: {{ $product->favorite && $product->favorite->favorite_type ? 'red' : 'inherit' }};"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
 
-                                               <div class="btns-group ul-li-center clearfix">
-    <ul class="clearfix">
-        <li>
-            <button type="button" class="add-to-cart" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Add To Cart"
-                aria-label="Add {{ $product->{'product_name_' . app()->getLocale()} }} to cart">
-                <i class="las la-shopping-basket" style="font-size:18px" aria-hidden="true"></i>
-            </button>
-        </li>
-        <li>
-            <button type="button" class="add-to-favorite border-0 bg-transparent" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Add To Favorite"
-                aria-label="Add {{ $product->{'product_name_' . app()->getLocale()} }} to favorites">
-                <i class="fa-heart favorite-icon {{ $product->favorite && $product->favorite->favorite_type ? 'fas' : 'far' }}"
-                   style="font-size:18px; color: {{ $product->favorite && $product->favorite->favorite_type ? 'red' : 'inherit' }};"
-                   aria-hidden="true"></i>
-            </button>
-        </li>
-        <li>
-            <button type="button" class="buy-now-btn" data-product-id="{{ $product->id }}"
-                data-toggle="tooltip" data-placement="top" title="Buy Now"
-                aria-label="Buy {{ $product->{'product_name_' . app()->getLocale()} }} now">
-                <i class="las la-bolt" style="font-size:18px" aria-hidden="true"></i>
-            </button>
-        </li>
-    </ul>
-</div>
-<script>
+                                <div class="item-content physio-content-wrapper p-3">
+                                    <h3 class="item-title physio-product-title mb-2" style="min-height: 50px;">
+                                        <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}" class="text-dark">
+                                            {{Str::limit($product->{'product_name_' . app()->getLocale()}, 40)}}
+                                        </a>
+                                    </h3>
+                                    
+                                    <div class="vendor-badge mb-2">
+                                        <span class="badge badge-light text-muted border">{{ $product->sold_by_name }}</span>
+                                    </div>
+
+                                    <div class="price-order-wrapper d-flex justify-content-between align-items-center">
+                                        <span class="item-price physio-product-price font-weight-bold" style="color: #02767F; font-size: 1.1rem;">{{ $product->product_price }} {{ __('EGP') }}</span>
+                                        <button type="button" class="buy-now-btn btn btn-sm rounded-pill text-white" 
+                                                data-product-id="{{ $product->id }}"
+                                                style="background: linear-gradient(135deg, #02767F, #04b8c4);">
+                                            {{ __('Buy Now') }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="btn-wrap text-center clearfix">
+                    <a href="{{ route('show') }}" class="btn btn-outline-primary btn-lg rounded-pill px-5 font-weight-bold" style="border-width: 2px;">
+                        {{ __('View All Products') }}
+                    </a>
+                </div>
+            </div>
+
+            <span class="decoration-image pill-image-1">
+                <img src="{{ asset('web/assets/images/decoration/pill_2.png') }}" alt="decoration" />
+            </span>
+        </section>
+      
+
+
+        <!-- JavaScript للبحث داخل المنتجات -->
+        <!--<script>-->
+        <!--    document.addEventListener('DOMContentLoaded', function() {-->
+        <!--        const searchInput = document.getElementById('searchInput');-->
+        <!--        searchInput.addEventListener('keyup', function() {-->
+        <!--            const value = this.value.toLowerCase();-->
+        <!--            const activeTab = document.querySelector('.tab-pane.active');-->
+        <!--            const products = activeTab.querySelectorAll('.product-item');-->
+
+        <!--            products.forEach(product => {-->
+        <!--                const name = product.getAttribute('data-name');-->
+        <!--                product.style.display = name.includes(value) ? '' : 'none';-->
+        <!--            });-->
+        <!--        });-->
+        <!--    });-->
+        <!--</script>-->
+          <script>
     // Wait for jQuery to be available
     (function() {
         function initCartButtons() {
@@ -450,58 +484,6 @@
     })();
 </script>
 
-                                            </div>
-
-                                            <div class="item-content physio-content-wrapper">
-                                                <h3 class="item-title physio-product-title">
-                                                    <a href="{{ route('product.show.' . app()->getLocale(), $product->id) }}">
-                                                        {{ $product->{'product_name_' . app()->getLocale()} }}
-                                                    </a>
-                                                </h3>
-                                                
-                                                {{-- Vendor Badge --}}
-                                                <div class="vendor-badge mb-2" style="font-size: 11px; color: #666;">
-                                                    <i class="fa fa-store" style="color: #02767F; font-size: 10px; margin-right: 4px;"></i>
-                                                    <span style="color: #02767F; font-weight: 600;">{{ $product->sold_by_name }}</span>
-                                                </div>
-
-                                                <div class="price-order-wrapper d-flex justify-content-between align-items-center mb-3">
-                                                    <span class="item-price physio-product-price">{{ $product->product_price }} EGP</span>
-                                                    <button type="button" class="btn btn-order-now" data-product-id="{{ $product->id }}" 
-                                                            style="background: linear-gradient(135deg, #02767F, #04b8c4); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 13px; white-space: nowrap;">
-                                                        <i class="las la-shopping-cart"></i> اطلب الآن
-                                                    </button>
-                                                </div>
-                                                <div class="rating-star ul-li-center clearfix">
-                                                    <ul class="clearfix">
-                                                        <li class="active"><i class="las la-star"></i></li>
-                                                        <li class="active"><i class="las la-star"></i></li>
-                                                        <li class="active"><i class="las la-star"></i></li>
-                                                        <li class="active"><i class="las la-star"></i></li>
-                                                        <li><i class="las la-star"></i></li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endforeach
-
-                    <div class="btn-wrap text-center clearfix">
-                        <a href="{{ route('show') }}" class="btn physio-view-all-btn">VIEW ALL</a>
-                    </div>
-                </div>
-            </div>
-
-            <span class="decoration-image pill-image-1">
-                <img src="{{ asset('web/assets/images/decoration/pill_2.png') }}" alt="pill_image_not_found" />
-            </span>
-        </section>
-      
-
-
         <!-- JavaScript للبحث داخل المنتجات -->
         <!--<script>-->
         <!--    document.addEventListener('DOMContentLoaded', function() {-->
@@ -518,92 +500,6 @@
         <!--        });-->
         <!--    });-->
         <!--</script>-->
-          <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.querySelector(".searchInput");
-        const productItems = document.querySelectorAll(".product-item");
-        const tabPanes = document.querySelectorAll(".tab-pane");
-        const tabsNav = document.querySelector(".tabs-nav");
-
-        searchInput.addEventListener("keyup", function () {
-            const query = this.value.toLowerCase().trim();
-
-            // console.log("قيمة البحث:", query);
-
-           if (query.length > 0) {
-                // إظهار كل التبويبات
-                tabPanes.forEach((pane) => {
-                    pane.classList.add('show', 'active');
-                    pane.style.display = 'block'; // لو في CSS بيخفيهم
-                });
-
-                // إخفاء شريط التبويبات
-                if (tabsNav) {
-                    tabsNav.style.display = 'none';
-                }
-
-                // فلترة المنتجات
-                productItems.forEach((item) => {
-                    const name = item.dataset.name || "";
-                    if (name.includes(query)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            } else {
-                // رجوع للوضع الطبيعي
-                tabPanes.forEach((pane, index) => {
-                    if (index === 0) {
-                        pane.classList.add('show', 'active');
-                        pane.style.display = 'block';
-                    } else {
-                        pane.classList.remove('show', 'active');
-                        pane.style.display = 'none';
-                    }
-                });
-
-                productItems.forEach((item) => {
-                    item.style.display = 'block';
-                });
-
-                if (tabsNav) {
-                    tabsNav.style.display = 'flex';
-                }
-            }
-        });
-    });
-
-    // Category Dropdown Handler
-    document.addEventListener("DOMContentLoaded", function() {
-        const categoryFilter = document.getElementById('categoryFilter');
-        
-        if (categoryFilter) {
-            categoryFilter.addEventListener('change', function() {
-                const selectedTab = this.value;
-                const tabPanes = document.querySelectorAll('.tab-pane');
-                
-                // Hide all tab panes
-                tabPanes.forEach(function(pane) {
-                    pane.classList.remove('show', 'active');
-                });
-                
-                if (selectedTab === '') {
-                    // Show first tab if "All Categories" selected
-                    if (tabPanes.length > 0) {
-                        tabPanes[0].classList.add('show', 'active');
-                    }
-                } else {
-                    // Show selected tab
-                    const selectedPane = document.getElementById(selectedTab);
-                    if (selectedPane) {
-                        selectedPane.classList.add('show', 'active');
-                    }
-                }
-            });
-        }
-    });
-</script>
 
         <!-- Custom CSS for Physio Product Cards -->
         <style>
@@ -1305,288 +1201,120 @@
         <!-- shop-section - end
        ================================================== -->
 
-        <section id="privateCases" class="my-5 section-PrivateCases">
-            <div class="container bg-cases">
-                <div class="row justify-content-center d-flex align-items-center  ">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-offers">
-                        <img style="max-width: 100%;" src="{{ asset('web/assets/images/37452044_8502937 1.svg') }}"
-                            width="90%" alt="">
+        <!-- Services Sections -->
+        
+        <!-- Private Cases (Home Visits) -->
+        <section id="privateCases" class="py-5" style="background: white;">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <div class="position-relative">
+                            <img src="{{ asset('web/assets/images/37452044_8502937 1.svg') }}" class="img-fluid" alt="Home Visits">
+                        </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-offers">
-                        <h1 class="text-PrivateCases">Find a <br> Private Cases</h1>
+                    <div class="col-lg-6">
+                        <div class="pl-lg-5">
+                            <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 2px;">{{ __('For Patients') }}</span>
+                            <h2 class="display-4 font-weight-bold mb-4" style="color: #36415a;">
+                                {{ __('Expert Care,') }} <br>
+                                {{ __('At Your Doorstep') }}
+                            </h2>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Find specialized physiotherapists for private home sessions. We verify every practitioner to ensure you receive the safest and most effective care.') }}
+                            </p>
+                            <ul class="list-unstyled mb-5 text-muted">
+                                <li class="mb-2"><i class="las la-check-circle mr-2" style="color: #02767F;"></i> {{ __('Licensed & Verified Therapists') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle mr-2" style="color: #02767F;"></i> {{ __('Personalized Treatment Plans') }}</li>
+                                <li class="mb-2"><i class="las la-check-circle mr-2" style="color: #02767F;"></i> {{ __('Convenient Scheduling') }}</li>
+                            </ul>
+                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" style="background-color: #02767F; border-color: #02767F;">
+                                {{ __('Book a Visit') }}
+                            </a>
+                        </div>
                     </div>
-
                 </div>
-                <div class="d-flex justify-content-start title-offers mt-5 ">
-                    <span class="phrgraph-job">We offer specialized treatment for a variety of conditions. Our expert team
-                        is
-                        dedicated to providing the best therapies to improve your quality of life and restore your movement
-                        naturally. Get ready to return to activity with comfort and safety.</span>
-                </div>
-
             </div>
-            <section data-aos="fade-up" class="agency-list-banner" data-aos-duration="3000">
-                <div class="agency-list">
-                    <div class="slider">
-                        <div class="slide-track">
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section data-aos="fade-up" class="agency-list-banner2" data-aos-duration="3000">
-                <div class="agency-list">
-                    <div class="slider">
-                        <div class="slide-track">
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-
         </section>
 
-        <section id="System" class="section-container">
-            <div class="container bg-case">
-                <div class="row justify-content-center d-flex align-items-center p-2">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-offers">
-                        <h1 class="element-offers">{{ __('CLINIC MANAGEMENT SYSTEMS') }}</h1>
-                        <h4 class="element-offer">by Phyzioline</h4>
+        <!-- Clinic ERP -->
+        <section id="System" class="py-5" style="background: linear-gradient(135deg, #02767F 0%, #035e66 100%); color: white;">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-lg-6 mb-4 mb-lg-0 text-center">
+                         <img src="{{ asset('web/assets/images/Untitled-1سسس_3-removebg-preview.png') }}" class="img-fluid" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);" alt="Clinic Application">
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-offers">
-                        <img style="max-width: 100%;"
-                            src="{{ asset('web/assets/images/Untitled-1سسس_3-removebg-preview.png') }}" width="90%"
-                            alt="">
+                    <div class="col-lg-6">
+                        <span class="text-uppercase font-weight-bold" style="color: #4bd1db; letter-spacing: 2px;">{{ __('For Clinics') }}</span>
+                        <h2 class="display-4 font-weight-bold mb-4">
+                            {{ __('The Future of') }} <br>
+                            {{ __('Clinic Management') }}
+                        </h2>
+                        <p class="lead mb-4" style="opacity: 0.9;">
+                            {{ __('Streamline your practice with our Clinical ERP. From patient scheduling and electronic medical records to billing and analytics - all in one secure platform.') }}
+                        </p>
+                        <ul class="list-unstyled mb-5">
+                            <li class="mb-2"><i class="las la-check-circle mr-2"></i> {{ __('Smart Scheduling System') }}</li>
+                            <li class="mb-2"><i class="las la-check-circle mr-2"></i> {{ __('Electronic Health Records (EHR)') }}</li>
+                            <li class="mb-2"><i class="las la-check-circle mr-2"></i> {{ __('Financial Management & Billing') }}</li>
+                        </ul>
+                        <a href="{{ route('web.erp.index') }}" class="btn btn-light btn-lg rounded-pill px-5 shadow-lg" style="color: #02767F; font-weight: bold;">
+                            {{ __('Manage Your Clinic') }}
+                        </a>
                     </div>
                 </div>
-                <div style="width: 800px; max-width: 100%;" class="d-flex justify-content-start title-offers m-0">
-                    <span class="span-offers">
-                        {{ __('Empowering Physical Therapy Through Innovation Where Healing Meets Technology, and Possibilities are Redefined') }}
-                    </span>
-                </div>
-
             </div>
-            <button class="custom-button">{{ __('SOON THE OPENING') }}</button>
-
         </section>
 
-        <section id="jobs" class="section-PrivateCases">
-            <div class="container bg-cases">
-                <div class="row justify-content-center d-flex align-items-center  ">
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 img-offers">
-                        <img style="max-width: 100%;" src="{{ asset('web/assets/images/37452044_8502937 1.svg') }}"
-                            width="90%" alt="">
+        <!-- Jobs Section -->
+        <section id="jobs" class="py-5" style="background-color: #f8f9fa;">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <img src="{{ asset('web/assets/images/37452044_8502937 1.svg') }}" class="img-fluid" alt="Jobs">
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 text-offers">
-                        <h1 class="text-jobs">Physiotherapy JObS</h1>
-                        <h4 style="color: #02767F ;">by Phyzioline</h4>
+                    <div class="col-lg-6">
+                        <div class="pl-lg-5">
+                            <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 2px;">{{ __('Careers') }}</span>
+                            <h2 class="display-4 font-weight-bold mb-4" style="color: #36415a;">
+                                {{ __('Find Your Dream') }} <br>
+                                {{ __('Job Opportunity') }}
+                            </h2>
+                            <p class="lead text-muted mb-4">
+                                {{ __('Connect with top clinics, hospitals, and recruitment agencies. Whether you are looking for a full-time position or freelance opportunities, Phyzioline Jobs is your gateway.') }}
+                            </p>
+                            <a href="{{ route('web.jobs.index') }}" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                                {{ __('Browse Jobs') }}
+                            </a>
+                        </div>
                     </div>
-
                 </div>
-                <div class="d-flex justify-content-start title-offers mt-5 ">
-                    <span class="phrgraph-job">Soon, job opportunities in the field of physiotherapy will be open! If
-                        you're
-                        interested, you'll have the chance to work with specialists to provide treatments that help improve
-                        patients' movement and physical functions. Stay tuned for more details coming soon!</span>
-                </div>
-
             </div>
-            <section data-aos="fade-up" class="agency-list-banner" data-aos-duration="3000">
-                <div class="agency-list">
-                    <div class="slider">
-                        <div class="slide-track">
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <section data-aos="fade-up" class="agency-list-banner2" data-aos-duration="3000">
-                <div class="agency-list">
-                    <div class="slider">
-                        <div class="slide-track">
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-                            <div class="slide">
-                                <h3><i class="bi bi-asterisk"></i> Coming Soon | </h3>
-                            </div>
-
-
-                        </div>
-                    </div>
-                </div>
-            </section>
-
         </section>
 
         <!-- start Physiotherapy courses -->
 
-        <section id="courses" class="section-Physiotherapy">
-            <div class="container div-Physiotherapy">
-                <div class="element-img">
-                    <img style="max-width: 100%;"
-                        src="{{ asset('web/assets/images/8ce3145515c33b8e9c71fb534838b36c.png') }}" width="100%"
-                        alt="">
-                </div>
-                <div class="text-Physiotherapy">
-                    <h4 class="element-Physiotherapy">Physiotherapy<br>courses</h4>
-                    <h6 class="element-coures">by Phyzioline</h6>
-                    <div class="phrgraph-Physiotherapy">
-                        <p>Soon, we will be offering free and subsidized Physiotherapy courses!</p>
+        <!-- Courses Section -->
+        <section id="courses" class="py-5" style="background: white;">
+            <div class="container">
+                <div class="row align-items-center flex-row-reverse">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                         <img src="{{ asset('web/assets/images/8ce3145515c33b8e9c71fb534838b36c.png') }}" class="img-fluid" alt="Courses">
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="text-uppercase font-weight-bold" style="color: #02767F; letter-spacing: 2px;">{{ __('Education') }}</span>
+                        <h2 class="display-4 font-weight-bold mb-4" style="color: #36415a;">
+                            {{ __('Continuous') }} <br>
+                            {{ __('Learning Hub') }}
+                        </h2>
+                        <p class="lead text-muted mb-4">
+                            {{ __('Stay ahead in your career with accredited physiotherapy courses. Learn from global experts and gain new certifications directly through our platform.') }}
+                        </p>
+                        <a href="{{ route('web.courses.index') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" style="background-color: #02767F; border-color: #02767F;">
+                            {{ __('Start Learning') }}
+                        </a>
                     </div>
                 </div>
-                <div class="img-Physiotherapy">
-                    <img src="{{ asset('web/assets/images/Soon.svg') }}" alt="">
-                </div>
             </div>
-
         </section>
 
         <!-- end Physiotherapy courses -->
