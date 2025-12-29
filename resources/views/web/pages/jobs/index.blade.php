@@ -25,8 +25,8 @@
 <style>
     /* Professional Job Board Custom Styles */
     :root {
-        --primary-color: #00897b;
-        --secondary-color: #00695c;
+        --primary-color: #02767F;
+        --secondary-color: #10b8c4;
         --accent-color: #ff9800;
         --text-dark: #2d3748;
         --text-muted: #718096;
@@ -103,7 +103,7 @@
     }
 
     .badge-soft-primary {
-        background-color: rgba(0, 137, 123, 0.1);
+        background-color: rgba(2, 118, 127, 0.1);
         color: var(--primary-color);
     }
 
@@ -141,7 +141,7 @@
         background: white;
         padding: 25px 30px;
         border-radius: 16px;
-        box-shadow: 0 10px 30px rgba(0, 137, 123, 0.15);
+        box-shadow: 0 10px 30px rgba(2, 118, 127, 0.15);
         margin-top: -60px; /* Overlap hero */
         position: relative;
         z-index: 10;
@@ -150,7 +150,7 @@
     }
     
     .filter-bar:hover {
-        box-shadow: 0 15px 40px rgba(0, 137, 123, 0.2);
+        box-shadow: 0 15px 40px rgba(2, 118, 127, 0.2);
     }
     
     .filter-bar .form-control {
@@ -160,7 +160,7 @@
     
     .filter-bar .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(0, 137, 123, 0.1);
+        box-shadow: 0 0 0 0.2rem rgba(2, 118, 127, 0.1);
     }
     
     .hero-pattern {
@@ -208,7 +208,7 @@
     
     .benefit-card:hover {
         transform: translateY(-8px);
-        box-shadow: 0 12px 30px rgba(0, 137, 123, 0.15);
+        box-shadow: 0 12px 30px rgba(2, 118, 127, 0.15);
         border-color: var(--primary-color);
     }
     
@@ -271,7 +271,7 @@
     
     .search-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 137, 123, 0.3);
+        box-shadow: 0 8px 20px rgba(2, 118, 127, 0.3);
     }
 
 </style>
