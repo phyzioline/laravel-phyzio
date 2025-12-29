@@ -138,7 +138,7 @@
                             {{ __('From certified home visits and clinic management to continuous learning and career growth. Phyzioline is your complete professional ecosystem.') }}
                         </p>
                         <div class="btn-wrap">
-                            <a href="{{ route('register') }}" class="btn btn-light btn-lg rounded-pill px-5 font-weight-bold text-primary mr-3 shadow-lg" style="color: #02767F !important;">
+                            <a href="{{ route('view_register.' . app()->getLocale()) }}" class="btn btn-light btn-lg rounded-pill px-5 font-weight-bold text-primary mr-3 shadow-lg" style="color: #02767F !important;">
                                 {{ __('Join Now') }}
                             </a>
                             <a href="#services-section" class="btn btn-outline-light btn-lg rounded-pill px-5 font-weight-bold">
