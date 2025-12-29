@@ -227,13 +227,13 @@
                             <div class="icon-wrapper mb-3">
                                 <i class="las la-graduation-cap" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
                             </div>
-                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('Education') }}</h3>
-                            <h4 class="mb-3" style="color: #02767F;">{{ __('Continuous') }} <br> {{ __('Learning Hub') }}</h4>
+                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('For Course Providers') }}: {{ __('Manage Your Academy') }}</h3>
+                            <h4 class="mb-3" style="color: #02767F;">{{ __('Empower Your') }} <br> {{ __('Educational Institution') }}</h4>
                             <p class="lead text-muted mb-4">
-                                {{ __('Stay ahead in your career with accredited physiotherapy courses. Learn from global experts and gain new certifications directly through our platform.') }}
+                                {{ __('Leverage our comprehensive Learning Management System to create courses, manage students, track progress, and issue certifications—all in one place.') }}
                             </p>
                             <a href="{{ route('web.courses.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
-                                {{ __('Start Learning') }}
+                                {{ __('Partner With Us') }}
                             </a>
                         </div>
                     </div>
