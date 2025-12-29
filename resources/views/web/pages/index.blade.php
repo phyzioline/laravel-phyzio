@@ -198,39 +198,7 @@
                 </div>
             </div>
 
-            <!-- Clinic Management -->
-            <div class="service-wrapper mb-5" data-aos="fade-up">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="service-image shadow-lg rounded overflow-hidden">
-                            <!-- Assuming we might have an illustration, otherwise using placeholder/structure -->
-                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px; background: #f8f9fa;">
-                                <i class="las la-clinic-medical" style="font-size: 100px; color: #cbd5e0;"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="service-content p-4">
-                            <div class="icon-wrapper mb-3">
-                                <i class="las la-laptop-medical" style="font-size: 40px; color: #02767F; background: #e0f7fa; padding: 15px; border-radius: 50%;"></i>
-                            </div>
-                            <h3 class="font-weight-bold mb-3" style="color: #36415a">{{ __('For Clinics') }}: {{ __('Clinic ERP') }}</h3>
-                            <h4 class="mb-3" style="color: #02767F;">{{ __('The Future of') }} <br> {{ __('Clinic Management') }}</h4>
-                            <p class="lead text-muted mb-4">
-                                {{ __('Streamline your practice with our Clinical ERP. From patient scheduling and electronic medical records to billing and analytics - all in one secure platform.') }}
-                            </p>
-                            <ul class="list-unstyled mb-4 text-muted">
-                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Smart Scheduling System') }}</li>
-                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Electronic Health Records (EHR)') }}</li>
-                                <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Financial Management & Billing') }}</li>
-                            </ul>
-                            <a href="{{ route('web.erp.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
-                                {{ __('Manage Your Clinic') }}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Jobs Section (with new illustration) -->
             <div class="service-wrapper mb-5" data-aos="fade-up">
