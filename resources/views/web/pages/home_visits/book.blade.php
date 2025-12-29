@@ -85,17 +85,28 @@
                                 
                                 <!-- Step 3: Patient Details -->
                                 <h5 class="font-weight-bold mb-3">3. {{ __('Patient Details') }}</h5>
+                                @if(!auth()->check())
+                                    <div class="alert alert-info mb-3">
+                                        <i class="las la-info-circle"></i> {{ __('You can book without creating an account. Your information will be saved securely.') }}
+                                    </div>
+                                @endif
                                 <div class="form-group mb-3">
-                                    <label>{{ __('Patient Name') }}</label>
-                                    <input type="text" name="patient_name" class="form-control" value="{{ auth()->user()->name ?? '' }}" required>
+                                    <label>{{ __('Patient Name') }} <span class="text-danger">*</span></label>
+                                    <input type="text" name="patient_name" class="form-control" value="{{ auth()->user()->name ?? old('patient_name') }}" {{ !auth()->check() ? 'required' : '' }}>
                                 </div>
+                                @if(!auth()->check())
+                                    <div class="form-group mb-3">
+                                        <label>{{ __('Email Address') }} <span class="text-danger">*</span></label>
+                                        <input type="email" name="patient_email" class="form-control" value="{{ old('patient_email') }}" required>
+                                    </div>
+                                @endif
                                 <div class="form-group mb-3">
-                                    <label>{{ __('Phone Number') }}</label>
-                                    <input type="tel" name="patient_phone" class="form-control" value="{{ auth()->user()->phone ?? '' }}" required>
+                                    <label>{{ __('Phone Number') }} <span class="text-danger">*</span></label>
+                                    <input type="tel" name="patient_phone" class="form-control" value="{{ auth()->user()->phone ?? old('patient_phone') }}" required>
                                 </div>
                                 <div class="form-group mb-4">
                                     <label>{{ __('Medical Notes / Complaint') }} ({{ __('Optional') }})</label>
-                                    <textarea name="patient_notes" class="form-control" rows="3" placeholder="{{ __('Briefly describe the condition...') }}"></textarea>
+                                    <textarea name="patient_notes" class="form-control" rows="3" placeholder="{{ __('Briefly describe the condition...') }}">{{ old('patient_notes') }}</textarea>
                                 </div>
 
                                 <!-- Summary -->

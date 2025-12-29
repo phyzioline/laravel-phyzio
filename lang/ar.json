@@ -725,5 +725,17 @@
     "Become an Instructor": "كن مدرباً",
     "Browse All Courses": "تصفح جميع الدورات",
     "Top rated courses by our community": "أفضل الدورات تقييماً من مجتمعنا",
-    "View All": "عرض الكل"
+    "View All": "عرض الكل",
+    "You can book without creating an account. Your information will be saved securely.": "يمكنك الحجز دون إنشاء حساب. سيتم حفظ معلوماتك بأمان.",
+    "Email Address": "عنوان البريد الإلكتروني",
+    "Select Payment Method": "اختر طريقة الدفع",
+    "Pay with Card": "الدفع بالبطاقة",
+    "Cash on Visit": "الدفع نقداً عند الزيارة",
+    "Pay directly to therapist": "ادفع مباشرة للمعالج",
+    "Pay": "ادفع",
+    "Complete Payment": "إتمام الدفع",
+    "Visit ID": "رقم الزيارة",
+    "Therapist": "المعالج",
+    "Date & Time": "التاريخ والوقت",
+    "Total Amount": "المبلغ الإجمالي"
 }

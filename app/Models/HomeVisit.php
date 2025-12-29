@@ -33,7 +33,11 @@ class HomeVisit extends Model
         'patient_notes',
         'therapist_notes',
         'cancellation_reason',
-        'payment_transaction_id'
+        'payment_transaction_id',
+        'guest_name',
+        'guest_email',
+        'guest_phone',
+        'is_guest_booking'
     ];
 
     protected $casts = [
@@ -50,6 +54,39 @@ class HomeVisit extends Model
     public function patient()
     {
         return $this->belongsTo(User::class, 'patient_id');
+    }
+
+    /**
+     * Get patient name (from user or guest)
+     */
+    public function getPatientNameAttribute()
+    {
+        if ($this->is_guest_booking) {
+            return $this->guest_name;
+        }
+        return $this->patient ? $this->patient->name : null;
+    }
+
+    /**
+     * Get patient email (from user or guest)
+     */
+    public function getPatientEmailAttribute()
+    {
+        if ($this->is_guest_booking) {
+            return $this->guest_email;
+        }
+        return $this->patient ? $this->patient->email : null;
+    }
+
+    /**
+     * Get patient phone (from user or guest)
+     */
+    public function getPatientPhoneAttribute()
+    {
+        if ($this->is_guest_booking) {
+            return $this->guest_phone;
+        }
+        return $this->patient ? $this->patient->phone : null;
     }
 
     public function therapist()

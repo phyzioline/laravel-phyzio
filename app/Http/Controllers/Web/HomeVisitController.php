@@ -72,30 +72,50 @@ class HomeVisitController extends Controller
 
     public function book($id)
     {
-        // Ensure user is logged in
-        if (!auth()->check()) {
-            return redirect()->route('view_login')->with('error', 'Please login to book a home visit');
-        }
-
+        // Allow both logged-in and guest users to book
         $therapist = \App\Models\TherapistProfile::with('user')->findOrFail($id);
         return view('web.pages.home_visits.book', compact('therapist'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        // Validation rules - different for guests vs logged-in users
+        $rules = [
             'therapist_id' => 'required|exists:therapist_profiles,id',
             'appointment_date' => 'required|date',
             'appointment_time' => 'required',
             'location_address' => 'required|string',
-            'patient_phone' => 'required|string',
-        ]);
+        ];
+
+        if (auth()->check()) {
+            // Logged-in user - phone is optional (can use account phone)
+            $rules['patient_phone'] = 'nullable|string';
+        } else {
+            // Guest user - require name, email, and phone
+            $rules['patient_name'] = 'required|string|max:255';
+            $rules['patient_email'] = 'required|email|max:255';
+            $rules['patient_phone'] = 'required|string|max:20';
+        }
+
+        $request->validate($rules);
 
         // Get Therapist User ID
         $therapistProfile = \App\Models\TherapistProfile::findOrFail($request->therapist_id);
 
         $visit = new \App\Models\HomeVisit();
-        $visit->patient_id = auth()->id();
+        
+        // Set patient_id if logged in, otherwise null for guest
+        if (auth()->check()) {
+            $visit->patient_id = auth()->id();
+            $visit->is_guest_booking = false;
+        } else {
+            $visit->patient_id = null;
+            $visit->is_guest_booking = true;
+            $visit->guest_name = $request->patient_name;
+            $visit->guest_email = $request->patient_email;
+            $visit->guest_phone = $request->patient_phone;
+        }
+        
         $visit->therapist_id = $therapistProfile->user_id;
         $visit->scheduled_at = $request->appointment_date . ' ' . $request->appointment_time;
         $visit->address = $request->location_address;
@@ -134,7 +154,15 @@ class HomeVisitController extends Controller
         // Record payment in payments table with currency conversion
         $currencySvc = new \App\Services\CurrencyService();
         $baseCurrency = config('app.currency', 'EGP');
-        $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country_code ?? null);
+        
+        // For guest bookings, use default currency or detect from phone/email if possible
+        if ($user) {
+            $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country_code ?? null);
+        } else {
+            // Guest booking - use default currency (EGP)
+            $userCurrency = $baseCurrency;
+        }
+        
         $exchangeRate = $currencySvc->getRate($baseCurrency, $userCurrency);
         $convertedAmount = $currencySvc->convertFromTo($visit->total_amount, $baseCurrency, $userCurrency);
 
