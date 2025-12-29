@@ -70,14 +70,8 @@ class CourseController extends Controller
                                  ->take(5)
                                  ->get();
                                  
-        // Categories (Mock or Fetch if model exists)
-        $categories = collect([
-            (object)['id' => 1, 'name' => 'Orthopedics'],
-            (object)['id' => 2, 'name' => 'Neurology'],
-            (object)['id' => 3, 'name' => 'Pediatrics'],
-            (object)['id' => 4, 'name' => 'Manual Therapy'],
-            (object)['id' => 5, 'name' => 'Sports Medicine'],
-        ]);
+        // Get real categories from database
+        $categories = \App\Models\Category::where('status', 'active')->get();
 
         return view('web.courses.index', compact('courses', 'featuredCourses', 'categories'));
     }

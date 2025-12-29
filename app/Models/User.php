@@ -96,6 +96,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get clinic appointments where this user is the doctor/therapist
+     */
+    public function appointmentsAsDoctor()
+    {
+        return $this->hasMany(ClinicAppointment::class, 'doctor_id');
+    }
+
+    /**
+     * Get weekly programs where this user is the therapist
+     */
+    public function therapistPrograms()
+    {
+        return $this->hasMany(WeeklyProgram::class, 'therapist_id');
+    }
+
+    /**
      * Get all earnings transactions for this user.
      */
     public function earningsTransactions()

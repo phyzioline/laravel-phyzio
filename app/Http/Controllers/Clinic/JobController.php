@@ -66,8 +66,8 @@ class JobController extends BaseClinicController
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'type' => 'required|in:job,training',
-            'location' => 'nullable|string',
+            'type' => 'required|in:job,part-time,contract,training',
+            'location' => 'required|string',
             'salary_type' => 'required|string',
             'salary_range' => 'nullable|string',
             'specialty' => 'nullable|array',
@@ -75,37 +75,50 @@ class JobController extends BaseClinicController
             'equipment' => 'nullable|array',
             'experience_level' => 'required|string',
             'urgency_level' => 'required|string',
-            'openings_count' => 'integer|min:1',
+            'openings_count' => 'nullable|integer|min:1',
             // Requirements
             'min_years_experience' => 'nullable|integer',
             'gender_preference' => 'nullable|string',
             'license_required' => 'nullable|boolean',
+        ], [
+            'title.required' => 'Job title is required.',
+            'description.required' => 'Job description is required.',
+            'type.required' => 'Job type is required.',
+            'location.required' => 'Location is required.',
+            'salary_type.required' => 'Salary type is required.',
+            'experience_level.required' => 'Experience level is required.',
+            'urgency_level.required' => 'Urgency level is required.',
         ]);
 
-        $job = Job::create([
-            'clinic_id' => $clinic->id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'type' => $request->type,
-            'location' => $request->location,
-            'salary_type' => $request->salary_type,
-            'salary_range' => $request->salary_range,
-            'specialty' => $request->specialty,
-            'techniques' => $request->techniques,
-            'equipment' => $request->equipment,
-            'experience_level' => $request->experience_level,
-            'urgency_level' => $request->urgency_level,
-            'openings_count' => $request->openings_count ?? 1,
-            'posted_by_type' => Auth::user()->type === 'clinic' ? 'clinic' : 'company',
-        ]);
+        try {
+            $job = Job::create([
+                'clinic_id' => $clinic->id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'type' => $request->type,
+                'location' => $request->location,
+                'salary_type' => $request->salary_type,
+                'salary_range' => $request->salary_range,
+                'specialty' => $request->specialty,
+                'techniques' => $request->techniques,
+                'equipment' => $request->equipment,
+                'experience_level' => $request->experience_level,
+                'urgency_level' => $request->urgency_level,
+                'openings_count' => $request->openings_count ?? 1,
+                'posted_by_type' => Auth::user()->type === 'clinic' ? 'clinic' : 'company',
+            ]);
 
-        $job->requirements()->create([
-            'min_years_experience' => $request->min_years_experience ?? 0,
-            'gender_preference' => $request->gender_preference,
-            'license_required' => $request->has('license_required'),
-        ]);
+            $job->requirements()->create([
+                'min_years_experience' => $request->min_years_experience ?? 0,
+                'gender_preference' => $request->gender_preference,
+                'license_required' => $request->has('license_required'),
+            ]);
 
-        return redirect()->route('clinic.jobs.index')->with('success', 'Job posted successfully!');
+            return redirect()->route('clinic.jobs.index')->with('success', 'Job posted successfully!');
+        } catch (\Exception $e) {
+            \Log::error('Job creation error: ' . $e->getMessage());
+            return back()->withInput()->with('error', 'Failed to create job. Please try again.');
+        }
     }
 
     public function destroy($id)

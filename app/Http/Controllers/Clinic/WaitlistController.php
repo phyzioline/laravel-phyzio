@@ -55,11 +55,30 @@ class WaitlistController extends BaseClinicController
 
         // Get filter options
         $patients = Patient::where('clinic_id', $clinic->id)->get();
-        $doctors = \App\Models\User::where('type', 'therapist')
-            ->whereHas('clinics', function($q) use ($clinic) {
-                $q->where('clinics.id', $clinic->id);
-            })
-            ->get();
+        
+        // Get doctors/therapists who have appointments or programs with this clinic
+        // First, get therapist IDs who have appointments or programs at this clinic
+        $therapistIds = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->whereNotNull('doctor_id')
+            ->distinct()
+            ->pluck('doctor_id')
+            ->merge(
+                \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+                    ->whereNotNull('therapist_id')
+                    ->distinct()
+                    ->pluck('therapist_id')
+            )
+            ->unique()
+            ->toArray();
+        
+        // Get therapists - if we have IDs, filter by them, otherwise show all therapists
+        $doctorsQuery = \App\Models\User::where('type', 'therapist');
+        
+        if (!empty($therapistIds)) {
+            $doctorsQuery->whereIn('id', $therapistIds);
+        }
+        
+        $doctors = $doctorsQuery->get();
 
         // Statistics
         $stats = [
@@ -94,11 +113,30 @@ class WaitlistController extends BaseClinicController
         $patient = $patientId ? Patient::find($patientId) : null;
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();
-        $doctors = \App\Models\User::where('type', 'therapist')
-            ->whereHas('clinics', function($q) use ($clinic) {
-                $q->where('clinics.id', $clinic->id);
-            })
-            ->get();
+        
+        // Get doctors/therapists who have appointments or programs with this clinic
+        // First, get therapist IDs who have appointments or programs at this clinic
+        $therapistIds = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->whereNotNull('doctor_id')
+            ->distinct()
+            ->pluck('doctor_id')
+            ->merge(
+                \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+                    ->whereNotNull('therapist_id')
+                    ->distinct()
+                    ->pluck('therapist_id')
+            )
+            ->unique()
+            ->toArray();
+        
+        // Get therapists - if we have IDs, filter by them, otherwise show all therapists
+        $doctorsQuery = \App\Models\User::where('type', 'therapist');
+        
+        if (!empty($therapistIds)) {
+            $doctorsQuery->whereIn('id', $therapistIds);
+        }
+        
+        $doctors = $doctorsQuery->get();
 
         return view('web.clinic.waitlist.create', compact(
             'clinic',

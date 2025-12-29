@@ -37,16 +37,10 @@ class AnalyticsController extends BaseClinicController
             $monthEnd = now()->subMonths($i)->endOfMonth();
             $monthlyLabels[] = $monthStart->format('M');
             
-            // Get revenue from payments or invoices
-            if (\Schema::hasTable('payments')) {
-                $revenue = DB::table('payments')
-                    ->where('clinic_id', $clinic->id)
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
-                    ->where('status', 'paid')
-                    ->sum('amount');
-            } else {
-                $revenue = 0;
-            }
+            // Get revenue from WeeklyPrograms (primary source - has clinic_id and paid_amount)
+            $revenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+                ->whereBetween('created_at', [$monthStart, $monthEnd])
+                ->sum('paid_amount') ?? 0;
             
             $monthlyRevenue[] = $revenue ?? 0;
         }
@@ -112,22 +106,9 @@ class AnalyticsController extends BaseClinicController
             ->where('status', 'active')
             ->sum('paid_amount');
         
-        // Total revenue (from payments, invoices, or programs)
-        $totalRevenue = 0;
-        if (\Schema::hasTable('payments')) {
-            $totalRevenue = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->sum('amount');
-        } elseif (\Schema::hasTable('invoices')) {
-            $totalRevenue = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->sum('amount');
-        }
-        
-        // Add program revenue
-        $totalRevenue += $programRevenue;
+        // Total revenue from WeeklyPrograms (primary source)
+        $totalRevenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+            ->sum('paid_amount') ?? 0;
         
         // Average appointment value
         $avgAppointmentValue = $completedAppointments > 0 

@@ -3,59 +3,172 @@
 @section('title', 'Phyzioline Academy - Browse Courses')
 
 @section('content')
-<div class="bg-light py-5">
-    <div class="container">
-        <!-- Header & Search -->
-        <div class="row mb-5 align-items-center">
-            <div class="col-lg-6">
-                <h1 class="font-weight-bold" style="color: #00897b;">{{ __('Start Your Learning Journey') }}</h1>
-                <p class="lead text-muted">{{ __('Explore hundreds of expert-led courses in physical therapy.') }}</p>
+<main>
+    <!-- Hero Section -->
+    <section class="hero-section-courses py-5 position-relative" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); padding-top: 180px !important; padding-bottom: 100px !important;">
+        <div class="container text-center text-white pt-5 pb-4">
+            <div class="hero-badge mb-3">
+                <span class="badge badge-light px-3 py-2" style="font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(10px);">
+                    <i class="las la-graduation-cap mr-1"></i> {{ __('Professional Development') }}
+                </span>
             </div>
-            <div class="col-lg-6">
-                <form action="{{ route('web.courses.index') }}" method="GET">
-                    <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
-                        <input type="text" name="search" class="form-control border-0 pl-4" placeholder="{{ __('Search for courses, topic, or instructor...') }}" value="{{ request('search') }}">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary px-4" type="submit" style="background-color: #00897b; border-color: #00897b;">
-                                <i class="las la-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+            <h1 class="font-weight-bold display-4 mb-4 animate__animated animate__fadeInDown">
+                {{ __('Advance Your Physiotherapy Career') }}
+            </h1>
+            <p class="lead mx-auto mb-5 opacity-90 animate__animated animate__fadeInUp" style="max-width: 700px; font-size: 1.25rem;">
+                {{ __('Learn from world-class experts. Video courses, certifications, and practical workshops to elevate your practice.') }}
+            </p>
+            
+            <!-- Trust Indicators -->
+            <div class="d-flex justify-content-center flex-wrap mb-5 animate__animated animate__fadeInUp animate__delay-1s">
+                <div class="stat-item mx-3 mb-2">
+                    <h4 class="font-weight-bold text-white mb-0">{{ $courses->total() ?? 0 }}+</h4>
+                    <div class="stat-label text-white-50 small">{{ __('Expert Courses') }}</div>
+                </div>
+                <div class="stat-item mx-3 mb-2">
+                    <h4 class="font-weight-bold text-white mb-0">100+</h4>
+                    <div class="stat-label text-white-50 small">{{ __('Certified Instructors') }}</div>
+                </div>
+                <div class="stat-item mx-3 mb-2">
+                    <h4 class="font-weight-bold text-white mb-0">10K+</h4>
+                    <div class="stat-label text-white-50 small">{{ __('Students Enrolled') }}</div>
+                </div>
+                <div class="stat-item mx-3 mb-2">
+                    <h4 class="font-weight-bold text-white mb-0">4.8★</h4>
+                    <div class="stat-label text-white-50 small">{{ __('Average Rating') }}</div>
+                </div>
             </div>
         </div>
+        
+        <!-- Enhanced Search Bar -->
+        <div class="container search-bar-container animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <form action="{{ route('web.courses.index') }}" method="GET" class="search-form p-3 p-md-4 rounded-lg shadow-lg">
+                        <div class="input-group input-group-lg">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-white border-0"><i class="las la-search text-primary"></i></span>
+                            </div>
+                            <input type="text" name="search" class="form-control border-0" 
+                                   placeholder="{{ __('Search for courses, topic, or instructor...') }}" 
+                                   value="{{ request('search') }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill font-weight-bold shadow-sm search-button">
+                                    {{ __('Search Courses') }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <!-- Featured Carousel (Only if not searching) -->
-        @if(!request()->has('search'))
+    <!-- Benefits Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <h2 class="font-weight-bold text-center mb-5" style="color: #02767F;">{{ __('Why Choose Phyzioline Academy?') }}</h2>
+            <div class="row text-center">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-certificate la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Certified Courses') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Earn recognized certificates upon completion') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-user-tie la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Expert Instructors') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Learn from industry-leading professionals') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-video la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Video Content') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('High-quality video lessons and demonstrations') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-sm shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-clock la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Lifetime Access') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Learn at your own pace, anytime, anywhere') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="bg-light py-5">
+        <div class="container">
+
+        <!-- Featured Courses Section (Only if not searching) -->
+        @if(!request()->has('search') && $featuredCourses->count() > 0)
             <div class="mb-5">
-                <h4 class="font-weight-bold mb-3">{{ __('Featured Courses') }}</h4>
-                <!-- Simple Row for now, replace with owl-carousel if JS available -->
-                <div class="row flex-nowrap overflow-auto pb-3" style="scroll-behavior: smooth;">
-                    @foreach($featuredCourses as $feat)
-                        <div class="col-lg-4 col-md-6 mb-3" style="min-width: 300px;">
-                            <div class="card border-0 shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="font-weight-bold mb-2" style="color: #02767F;">{{ __('Featured Courses') }}</h3>
+                        <p class="text-muted mb-0">{{ __('Top rated courses by our community') }}</p>
+                    </div>
+                    <a href="{{ route('web.courses.index') }}" class="font-weight-bold text-primary">
+                        {{ __('View All') }} <i class="las la-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="row">
+                    @foreach($featuredCourses->take(3) as $feat)
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card border-0 shadow-sm h-100 course-card-hover">
                                 <div class="position-relative">
-                                    <img src="{{ $feat->thumbnail ? Storage::url($feat->thumbnail) : 'https://via.placeholder.com/600x400?text=Course' }}" class="card-img-top" alt="{{ $feat->title }}" style="height: 180px; object-fit: cover;">
+                                    <img src="{{ $feat->thumbnail ? Storage::url($feat->thumbnail) : 'https://via.placeholder.com/600x400?text=Course' }}" 
+                                         class="card-img-top" alt="{{ $feat->title }}" 
+                                         style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;">
                                     @if($feat->discount_price)
-                                        <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px;">{{ __('Sale') }}</span>
+                                        <span class="badge badge-danger position-absolute" style="top: 10px; right: 10px; font-size: 0.85rem;">
+                                            {{ __('Sale') }}
+                                        </span>
                                     @endif
                                 </div>
                                 <div class="card-body">
-                                    <span class="badge badge-light text-primary mb-2">{{ $feat->level }}</span>
-                                    <h5 class="card-title font-weight-bold">
-                                        <a href="{{ route('web.courses.show', $feat->id) }}" class="text-dark text-decoration-none">{{ $feat->title }}</a>
+                                    <span class="badge badge-light text-primary mb-2" style="background-color: rgba(2, 118, 127, 0.1); color: #02767F;">
+                                        {{ ucfirst($feat->level ?? 'All Levels') }}
+                                    </span>
+                                    <h5 class="card-title font-weight-bold mb-2" style="min-height: 50px;">
+                                        <a href="{{ route('web.courses.show', $feat->id) }}" class="text-dark text-decoration-none">
+                                            {{ Str::limit($feat->title, 60) }}
+                                        </a>
                                     </h5>
-                                    <p class="text-muted small mb-2"><i class="las la-chalkboard-teacher"></i> {{ $feat->instructor->name ?? 'Instructor' }}</p>
+                                    <p class="text-muted small mb-3">
+                                        <i class="las la-chalkboard-teacher"></i> {{ $feat->instructor->name ?? __('Instructor') }}
+                                    </p>
                                     
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <span class="text-warning small">
-                                            <i class="las la-star"></i> 4.8 (120)
-                                        </span>
-                                        <h5 class="font-weight-bold mb-0 text-primary">
+                                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                                        <div class="text-warning small">
+                                            <i class="las la-star"></i> 4.8 <span class="text-muted">(120)</span>
+                                        </div>
+                                        <h5 class="font-weight-bold mb-0" style="color: #02767F;">
                                             @if($feat->discount_price)
                                                 {{ $feat->discount_price }} <small class="text-muted"><del>{{ $feat->price }}</del></small>
                                             @elseif($feat->price > 0)
-                                                {{ $feat->price }} EGP
+                                                {{ $feat->price }} {{ __('EGP') }}
                                             @else
                                                 {{ __('Free') }}
                                             @endif
@@ -86,7 +199,7 @@
                                 @foreach($categories as $cat)
                                     <div class="custom-control custom-radio mb-1">
                                         <input type="radio" id="cat{{ $cat->id }}" name="category" value="{{ $cat->id }}" class="custom-control-input" onchange="this.form.submit()" {{ request('category') == $cat->id ? 'checked' : '' }}>
-                                        <label class="custom-control-label small" for="cat{{ $cat->id }}">{{ $cat->name }}</label>
+                                        <label class="custom-control-label small" for="cat{{ $cat->id }}">{{ $cat->{'name_' . app()->getLocale()} ?? $cat->name_en }}</label>
                                     </div>
                                 @endforeach
                             </div>
@@ -183,18 +296,154 @@
     </div>
 </div>
 
+    <!-- CTA Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%);">
+        <div class="container text-center text-white">
+            <h2 class="font-weight-bold mb-3">{{ __('Ready to Start Your Learning Journey?') }}</h2>
+            <p class="lead mb-4 opacity-90">{{ __('Join thousands of therapists advancing their careers with our expert-led courses.') }}</p>
+            <a href="{{ route('instructor.courses.create') }}" class="btn btn-light btn-lg px-5 rounded-pill font-weight-bold shadow-lg mr-3">
+                {{ __('Become an Instructor') }}
+            </a>
+            <a href="{{ route('web.courses.index') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill font-weight-bold">
+                {{ __('Browse All Courses') }}
+            </a>
+        </div>
+    </section>
+</main>
+
 <style>
+    /* Hero Section Styling */
+    .hero-section-courses {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section-courses::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    /* Search Bar Styling */
+    .search-bar-container {
+        margin-top: -40px;
+        position: relative;
+        z-index: 10;
+    }
+
+    .search-form {
+        background: white;
+        border: 1px solid rgba(2, 118, 127, 0.1);
+    }
+
+    .search-button {
+        background-color: #02767F !important;
+        border-color: #02767F !important;
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        background-color: #10b8c4 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(2, 118, 127, 0.3) !important;
+    }
+
+    /* Benefit Cards */
+    .benefit-icon-circle {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #02767F, #10b8c4);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: white;
+        transition: transform 0.3s ease;
+    }
+
+    .benefit-card:hover .benefit-icon-circle {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .benefit-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(2, 118, 127, 0.1);
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(2, 118, 127, 0.15) !important;
+        border-color: #02767F;
+    }
+
+    /* Course Cards */
+    .course-card-hover {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(2, 118, 127, 0.1);
+    }
+
+    .course-card-hover:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(2, 118, 127, 0.15) !important;
+        border-color: #02767F;
+    }
+
     .hover-shadow:hover {
         transform: translateY(-5px);
-        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+        box-shadow: 0 1rem 3rem rgba(2, 118, 127, 0.2) !important;
     }
+    
     .transition-all {
         transition: all 0.3s ease;
     }
-    /* Fix header overlap specifically for courses page */
-     body .bg-light.py-5 {
-    margin-top: 150px !important;
+
+    /* Fix header overlap */
+    body {
+        padding-top: 120px !important;
     }
- 
+
+    @media (max-width: 991px) {
+        body {
+            padding-top: 100px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        body {
+            padding-top: 90px !important;
+        }
+    }
+
+    header,
+    .header-section {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: transparent !important;
+        box-shadow: none !important;
+        z-index: 9999;
+    }
+
+    .hero-section-courses {
+        margin-top: 0 !important;
+    }
 </style>
 @endsection
