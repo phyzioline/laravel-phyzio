@@ -470,16 +470,43 @@ body.has-hero .shop-hero-banner {
     display: flex !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: 15px;
+    gap: 10px !important;
+    width: 100%;
 }
 
-/* Make menu icon visible always */
+/* Ensure logo link is clickable and works properly */
+.header-top-controls .brand-link {
+    display: block !important;
+    flex-shrink: 0 !important;
+    z-index: 10 !important;
+    position: relative !important;
+    text-decoration: none !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.header-top-controls .brand-link:hover {
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
+}
+
+.header-top-controls .brand-link img {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Make menu icon visible always - reduced size for better spacing */
 .mobile-menu-btn {
     display: block !important;
-    font-size: 26px;
+    font-size: 20px !important;
     color: #fff !important;
     background: none;
     border: none;
+    padding: 4px 8px !important;
+    cursor: pointer;
+    flex-shrink: 0 !important;
+    z-index: 5 !important;
+    position: relative !important;
 }
 
 /* Fix Login Button Visibility */
@@ -512,23 +539,24 @@ body.has-hero .shop-hero-banner {
     margin-left: auto !important;
 }
 
-/* Track Your Order Button (Mobile) */
+/* Track Your Order Button (Mobile) - reduced size for better spacing */
 .btn-track-order-mobile {
     display: flex !important;
     align-items: center;
     justify-content: center;
-    padding: 10px 16px;
+    padding: 6px 12px !important;
     background: rgba(255, 255, 255, 0.25) !important;
     border: 2px solid rgba(255, 255, 255, 0.4) !important;
-    border-radius: 25px;
+    border-radius: 20px !important;
     color: #fff !important;
     text-decoration: none;
-    font-size: 13px;
+    font-size: 11px !important;
     font-weight: 700;
-    margin-left: 10px;
+    margin-left: 5px !important;
     transition: all 0.3s ease;
     white-space: nowrap;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0 !important;
 }
 
 .btn-track-order-mobile:hover {
@@ -663,13 +691,13 @@ body.has-hero .shop-hero-banner {
         <!-- LOGIN BUTTON REMOVED (Duplicate) -->
         
         <!-- LOGO -->
-        <a href="{{ '/' . app()->getLocale() }}" class="brand-link" style="margin-left: auto;">
+        <a href="{{ '/' . app()->getLocale() }}" class="brand-link" style="margin-left: auto; display: block; text-decoration: none;">
             <img src="{{ asset('web/assets/images/main_logo_white.png') }}"
                  alt="Phyzioline Logo"
                  width="150"
                  height="45"
                  loading="eager"
-                 style="max-height: 45px; object-fit: contain;">
+                 style="max-height: 45px; object-fit: contain; display: block;">
         </a>
 
     </div>
