@@ -8,7 +8,7 @@ use App\Models\Job;
 
 class JobController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Job::with('clinic', 'requirements')
             ->active()
@@ -18,6 +18,25 @@ class JobController extends Controller
                   ->where('profile_visibility', 'visible');
             });
         
+        // Search filter
+        if ($request->has('search') && $request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('requirements', 'like', "%{$search}%");
+            });
+        }
+        
+        // Location filter
+        if ($request->has('location') && $request->filled('location')) {
+            $location = $request->location;
+            $query->where(function($q) use ($location) {
+                $q->where('location', 'like', "%{$location}%")
+                  ->orWhere('city', 'like', "%{$location}%");
+            });
+        }
+        
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
             $allJobs = $query->get()->map(function($job) use ($service) {
@@ -25,8 +44,8 @@ class JobController extends Controller
                 return $job;
             })->sortByDesc('match_score');
 
-            // Manual Pagination
-            $page = request()->get('page', 1);
+            // Manual Pagination with query string
+            $page = $request->get('page', 1);
             $perPage = 10;
             $items = $allJobs->forPage($page, $perPage);
             $jobs = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -34,13 +53,16 @@ class JobController extends Controller
                 $allJobs->count(), 
                 $perPage, 
                 $page, 
-                ['path' => \Illuminate\Pagination\Paginator::resolveCurrentPath()]
+                [
+                    'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+                    'query' => $request->query()
+                ]
             );
 
             return view('web.pages.jobs.index', compact('jobs'));
         }
 
-        $jobs = $query->latest()->paginate(10);
+        $jobs = $query->latest()->paginate(10)->withQueryString();
         return view('web.pages.jobs.index', compact('jobs'));
     }
 

@@ -30,12 +30,41 @@
             <div class="row align-items-start">
                 <!-- Left: Title & Context -->
                 <div class="col-lg-5 text-white mb-5 mb-lg-0 pt-lg-5">
-                    <h1 class="font-weight-bold mb-4 display-4">{{ __('Home Physical Therapy') }}</h1>
-                    <p class="lead mb-5 opacity-90">{{ __('Expert physiotherapists at your doorstep. Urgent requests or scheduled appointments.') }}</p>
+                    <div class="hero-badge mb-3">
+                        <span class="badge badge-light px-3 py-2" style="font-size: 0.9rem; background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(10px);">
+                            <i class="las la-star mr-1"></i> {{ __('Trusted by 10,000+ Patients') }}
+                        </span>
+                    </div>
+                    <h1 class="font-weight-bold mb-4 display-4" style="line-height: 1.2;">{{ __('Home Physical Therapy') }}</h1>
+                    <p class="lead mb-4 opacity-90" style="font-size: 1.3rem; line-height: 1.6;">
+                        {{ __('Expert physiotherapists at your doorstep. Urgent requests or scheduled appointments.') }}
+                    </p>
+                    
+                    <!-- Trust Stats -->
+                    <div class="row mb-4">
+                        <div class="col-6 col-md-4 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number font-weight-bold" style="font-size: 2rem;">500+</div>
+                                <div class="stat-label opacity-75 small">{{ __('Verified Therapists') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number font-weight-bold" style="font-size: 2rem;">24/7</div>
+                                <div class="stat-label opacity-75 small">{{ __('Available') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 mb-3">
+                            <div class="stat-item">
+                                <div class="stat-number font-weight-bold" style="font-size: 2rem;">4.8★</div>
+                                <div class="stat-label opacity-75 small">{{ __('Average Rating') }}</div>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="d-none d-lg-block">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px;">
+                        <div class="d-flex align-items-center mb-3 p-3 rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow-lg" style="width: 60px; height: 60px;">
                                 <i class="las la-check-circle la-2x"></i>
                             </div>
                             <div>
@@ -43,8 +72,8 @@
                                 <small class="opacity-75">{{ __('Verified professionals') }}</small>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow" style="width: 50px; height: 50px;">
+                        <div class="d-flex align-items-center p-3 rounded" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);">
+                            <div class="icon-box bg-white text-primary rounded-circle mr-3 d-flex align-items-center justify-content-center shadow-lg" style="width: 60px; height: 60px;">
                                 <i class="las la-shield-alt la-2x"></i>
                             </div>
                             <div>
@@ -169,6 +198,62 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-weight-bold text-dark mb-3">{{ __('Why Choose Home Physical Therapy?') }}</h2>
+                <p class="text-muted lead">{{ __('Experience the convenience of professional care at home') }}</p>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-home la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Comfort of Home') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Receive treatment in the comfort of your own home') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-clock la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Flexible Scheduling') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Book appointments that fit your schedule') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-user-md la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Expert Care') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Licensed and experienced therapists') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-dollar-sign la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Transparent Pricing') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('No hidden fees, clear pricing upfront') }}</p>
                     </div>
                 </div>
             </div>
@@ -386,6 +471,136 @@ header,
 .complain-option.bg-primary {
     border-color: #02767F !important;
     box-shadow: 0 4px 12px rgba(0, 137, 123, 0.4) !important;
+}
+
+/* Hero Enhancements */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+}
+
+.hero-badge {
+    animation: fadeInDown 0.8s ease;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Benefit Cards */
+.benefit-card {
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+}
+
+.benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 137, 123, 0.15) !important;
+    border-color: #02767F;
+}
+
+.benefit-icon-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #02767F, #10b8c4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 137, 123, 0.2);
+    transition: all 0.3s ease;
+}
+
+.benefit-card:hover .benefit-icon-circle {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 12px 30px rgba(0, 137, 123, 0.3);
+}
+
+.benefit-icon-wrapper {
+    position: relative;
+}
+
+/* Enhanced Form Card */
+.card.shadow-2xl {
+    box-shadow: 0 20px 60px rgba(0, 137, 123, 0.2) !important;
+    border: none;
+    animation: slideInUp 0.6s ease;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Enhanced Request Button */
+.btn-primary[style*="background-color: #02767F"] {
+    background: linear-gradient(135deg, #02767F, #10b8c4) !important;
+    border: none !important;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.btn-primary[style*="background-color: #02767F"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 137, 123, 0.4) !important;
+}
+
+.btn-primary[style*="background-color: #02767F"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary[style*="background-color: #02767F"]:hover::before {
+    left: 100%;
 }
 </style>
 @section('scripts')
