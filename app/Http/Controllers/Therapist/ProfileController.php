@@ -92,10 +92,9 @@ class ProfileController extends Controller
             // Update user image
             $user->update(['image' => $imagePath]);
             
-            // Update therapist profile with both profile_photo and profile_image for compatibility
+            // Update therapist profile with profile_photo
             $profile->update([
-                'profile_photo' => $imagePath,
-                'profile_image' => $imagePath
+                'profile_photo' => $imagePath
             ]);
         }
 

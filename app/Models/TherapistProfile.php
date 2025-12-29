@@ -37,8 +37,7 @@ class TherapistProfile extends Model
         'home_visit_verified_at',
         'courses_verified_at',
         'clinic_verified_at',
-        'profile_photo',
-        'profile_image'
+        'profile_photo'
     ];
 
     protected $casts = [
