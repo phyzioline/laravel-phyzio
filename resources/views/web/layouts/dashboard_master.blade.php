@@ -553,6 +553,13 @@
             </div>
 
             <div class="user-wrapper">
+                {{-- Translation Button --}}
+                <a href="{{ route('dashboard.locale.switch', ['locale' => app()->getLocale() == 'en' ? 'ar' : 'en']) }}" 
+                   class="btn btn-sm btn-light mr-2 d-flex align-items-center" 
+                   style="font-size: 13px; font-weight: 700; text-decoration: none;">
+                    <i class="las la-globe mr-1"></i> {{ app()->getLocale() == 'en' ? 'AR' : 'EN' }}
+                </a>
+                
                 <div class="mr-3 text-right d-none d-md-block">
                     <h6 class="mb-0">{{ Auth::user()->name }}</h6>
                     <small class="text-muted">{{ ucfirst(Auth::user()->type) }}</small>
