@@ -967,4 +967,60 @@ class HelpCenterController extends Controller
             'categories' => $kb // For sidebar navigation
         ]);
     }
+    /**
+     * Search the Knowledge Base
+     */
+    public function search(\Illuminate\Http\Request $request)
+    {
+        $query = $request->input('q');
+        $kb = $this->getKnowledgeBase();
+        $results = [];
+
+        if ($query) {
+            $keywords = explode(' ', strtolower($query));
+
+            foreach ($kb as $catSlug => $category) {
+                if (isset($category['articles'])) {
+                    foreach ($category['articles'] as $artSlug => $article) {
+                        $score = 0;
+                        $titleLower = strtolower($article['title']);
+                        $contentLower = strtolower(strip_tags($article['content']));
+
+                        foreach ($keywords as $word) {
+                            if (empty($word) || strlen($word) < 2) continue; // Skip single chars
+                            
+                            if (str_contains($titleLower, $word)) {
+                                $score += 10;
+                            }
+                            if (str_contains($contentLower, $word)) {
+                                $score += 1;
+                            }
+                        }
+
+                        if ($score > 0) {
+                            $results[] = [
+                                'title' => $article['title'],
+                                'excerpt' => \Illuminate\Support\Str::limit(strip_tags($article['content']), 150),
+                                'category_title' => $category['title'],
+                                'category_slug' => $catSlug,
+                                'article_slug' => $artSlug,
+                                'score' => $score
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sort by score descending
+        usort($results, function ($a, $b) {
+            return $b['score'] <=> $a['score'];
+        });
+
+        return view('web.help.search', [
+            'query' => $query,
+            'results' => $results,
+            'categories' => $kb
+        ]);
+    }
 }

@@ -54,6 +54,27 @@
                 <button class="btn btn-outline-success btn-sm mr-2 px-3 rounded-pill"><i class="las la-thumbs-up mr-1"></i> {{ __('Yes') }}</button>
                 <button class="btn btn-outline-danger btn-sm px-3 rounded-pill"><i class="las la-thumbs-down mr-1"></i> {{ __('No') }}</button>
             </div>
+
+            <div class="mt-5 p-4 rounded bg-light border border-light">
+                <div class="d-flex align-items-start">
+                    <div class="mr-3 text-primary">
+                        <i class="las la-headset la-3x" style="color: #02767F;"></i>
+                    </div>
+                    <div>
+                        <h5 class="font-weight-bold mb-1" style="color: #36415a;">{{ __('Still need help?') }}</h5>
+                        <p class="text-muted small mb-2">{{ __('Our support team is available to assist you.') }}</p>
+                        
+                        <div class="row small text-muted">
+                            <div class="col-md-6 mb-2">
+                                <i class="las la-envelope mr-1"></i> {{ __('Email') }}: <strong class="text-dark">support@phyzioline.com</strong>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <i class="las la-clock mr-1"></i> {{ __('Hours') }}: <strong class="text-dark">{{ __('Sun - Thu, 09:00 AM - 05:00 PM') }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

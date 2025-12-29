@@ -176,6 +176,7 @@ foreach ($supportedLocales as $locale) {
         // Help Center Routes
         Route::controller(App\Http\Controllers\Web\HelpCenterController::class)->prefix('help')->name('help.')->group(function () {
             Route::get('/', 'index')->name('index');
+            Route::get('/search', 'search')->name('search');
             Route::get('/{category}', 'category')->name('category');
             Route::get('/{category}/{article}', 'article')->name('article');
         });

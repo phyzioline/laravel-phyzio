@@ -7,12 +7,12 @@
         <div class="container text-center text-white">
             <h1 class="font-weight-bold mb-3">{{ __('How can we help you?') }}</h1>
             <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <form action="#" method="GET"> <!-- Search functionality can be added later -->
-                        <div class="input-group input-group-lg shadow-lg" style="border-radius: 50px; overflow: hidden;">
-                            <input type="text" class="form-control border-0 px-4" placeholder="{{ __('Search the Knowledge Base...') }}" aria-label="Search">
+                <div class="col-lg-6">
+                    <form action="{{ route('help.search') }}" method="GET">
+                        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
+                            <input type="text" name="q" class="form-control border-0 px-4" placeholder="{{ __('Search for answers...') }}" value="{{ request('q') }}">
                             <div class="input-group-append">
-                                <button class="btn btn-light text-primary font-weight-bold px-4" type="button">
+                                <button class="btn btn-light px-4 border-0" type="submit" style="color: #02767F;">
                                     <i class="las la-search"></i>
                                 </button>
                             </div>
