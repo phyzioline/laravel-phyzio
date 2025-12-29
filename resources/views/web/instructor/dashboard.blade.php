@@ -22,21 +22,29 @@
             <div>
                 <h3 class="font-weight-bold mb-0">{{ $totalCourses }}</h3>
                 <small class="text-muted">{{ __('Active Courses') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> 3 {{ __('new this month') }}</div>
+                @if($newCoursesThisMonth > 0)
+                    <div class="text-success small mt-1"><i class="las la-arrow-up"></i> {{ $newCoursesThisMonth }} {{ __('new this month') }}</div>
+                @else
+                    <div class="text-muted small mt-1">{{ __('No new courses this month') }}</div>
+                @endif
             </div>
         </div>
     </div>
 
-    <!-- Today's Enrollments -->
+    <!-- New Enrollments -->
     <div class="col-xl-3 col-md-6">
         <div class="stat-card">
             <div class="icon-box icon-green">
                 <i class="las la-calendar-check"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">18</h3>
+                <h3 class="font-weight-bold mb-0">{{ $newEnrollments }}</h3>
                 <small class="text-muted">{{ __('New Enrollments') }}</small>
-                <div class="text-info small mt-1"><i class="las la-circle"></i> 2 {{ __('pending') }}</div>
+                @if($pendingEnrollments > 0)
+                    <div class="text-info small mt-1"><i class="las la-circle"></i> {{ $pendingEnrollments }} {{ __('pending') }}</div>
+                @else
+                    <div class="text-muted small mt-1">{{ __('This month') }}</div>
+                @endif
             </div>
         </div>
     </div>
@@ -50,7 +58,14 @@
             <div>
                 <h3 class="font-weight-bold mb-0">{{ number_format($activeStudents) }}</h3>
                 <small class="text-muted">{{ __('Total Students') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> 12% {{ __('from last month') }}</div>
+                @if($studentsChange != 0)
+                    <div class="text-{{ $studentsChange > 0 ? 'success' : 'danger' }} small mt-1">
+                        <i class="las la-arrow-{{ $studentsChange > 0 ? 'up' : 'down' }}"></i> 
+                        {{ abs($studentsChange) }}% {{ __('from last month') }}
+                    </div>
+                @else
+                    <div class="text-muted small mt-1">{{ __('No change from last month') }}</div>
+                @endif
             </div>
         </div>
     </div>
@@ -64,7 +79,14 @@
             <div>
                 <h3 class="font-weight-bold mb-0">${{ number_format($totalRevenue) }}</h3>
                 <small class="text-muted">{{ __('Monthly Revenue') }}</small>
-                <div class="text-success small mt-1"><i class="las la-arrow-up"></i> 8% {{ __('from last month') }}</div>
+                @if($revenueChange != 0)
+                    <div class="text-{{ $revenueChange > 0 ? 'success' : 'danger' }} small mt-1">
+                        <i class="las la-arrow-{{ $revenueChange > 0 ? 'up' : 'down' }}"></i> 
+                        {{ abs($revenueChange) }}% {{ __('from last month') }}
+                    </div>
+                @else
+                    <div class="text-muted small mt-1">{{ __('No change from last month') }}</div>
+                @endif
             </div>
         </div>
     </div>
@@ -113,27 +135,25 @@
              <div class="card-body">
                 <h5 class="card-title font-weight-bold mb-4">{{ __('Top Courses') }}</h5>
                 
-                <div class="mb-3 p-3 bg-light rounded d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-white p-2 rounded mr-3 text-primary"><i class="las la-bone"></i></div>
-                        <div>
-                            <h6 class="mb-0 font-weight-bold">Orthopedics 101</h6>
-                            <small class="text-muted">45 Students</small>
+                @forelse($topCourses as $course)
+                    <div class="mb-3 p-3 bg-light rounded d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-white p-2 rounded mr-3 text-primary">
+                                <i class="las la-book"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 font-weight-bold">{{ Str::limit($course->title, 25) }}</h6>
+                                <small class="text-muted">{{ $course->enrollments_count }} {{ __('Students') }}</small>
+                            </div>
                         </div>
+                        <span class="badge badge-success bg-success text-white px-2 py-1">{{ __('Active') }}</span>
                     </div>
-                    <span class="badge badge-success bg-success text-white px-2 py-1">{{ __('Active') }}</span>
-                </div>
-
-                <div class="mb-3 p-3 bg-light rounded d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                         <div class="bg-white p-2 rounded mr-3 text-warning"><i class="las la-brain"></i></div>
-                        <div>
-                            <h6 class="mb-0 font-weight-bold">Neurology Basics</h6>
-                            <small class="text-muted">32 Students</small>
-                        </div>
+                @empty
+                    <div class="text-center py-4">
+                        <i class="las la-book-open fa-2x text-muted mb-2"></i>
+                        <p class="text-muted small">{{ __('No courses yet') }}</p>
                     </div>
-                     <span class="badge badge-warning text-white px-2 py-1">{{ __('Selling Fast') }}</span>
-                </div>
+                @endforelse
              </div>
         </div>
     </div>
@@ -147,10 +167,10 @@
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: @json($chartLabels ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
             datasets: [{
                 label: 'Scheduled',
-                data: [42, 48, 35, 58, 45, 32, 25],
+                data: @json($chartData['scheduled'] ?? [0, 0, 0, 0, 0, 0, 0]),
                 borderColor: '#00897b',
                 backgroundColor: 'rgba(0, 137, 123, 0.1)',
                 borderWidth: 2,
@@ -159,7 +179,7 @@
             },
             {
                 label: 'Completed',
-                data: [45, 52, 38, 65, 48, 35, 28],
+                data: @json($chartData['completed'] ?? [0, 0, 0, 0, 0, 0, 0]),
                 borderColor: '#43a047',
                 borderWidth: 2,
                 tension: 0.4,

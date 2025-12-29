@@ -83,7 +83,7 @@ class OrderService
                 $user = $order->user;
                 $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country ?? null);
                 $rate = $currencySvc->getRate($baseCurrency, $userCurrency);
-                $convertedAmount = $currencySvc->convert($order->total, $baseCurrency, $userCurrency);
+                $convertedAmount = $currencySvc->convertFromTo($order->total, $baseCurrency, $userCurrency);
 
                 $payment = \App\Models\Payment::create([
                     'paymentable_type' => \App\Models\Order::class,

@@ -42,7 +42,7 @@
                                 <select name="specialty" id="specialty" class="form-control" required>
                                     <option value="">{{ __('Select Specialty') }}</option>
                                     @foreach(['orthopedic', 'pediatric', 'neurological', 'sports', 'geriatric', 'womens_health', 'cardiorespiratory', 'home_care'] as $spec)
-                                        <option value="{{ $spec }}" {{ $specialty == $spec ? 'selected' : '' }}>
+                                        <option value="{{ $spec }}" {{ (isset($specialty) && $specialty == $spec) ? 'selected' : '' }}>
                                             {{ ucfirst(str_replace('_', ' ', $spec)) }}
                                         </option>
                                     @endforeach
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'home_care' => null,
         ];
         // Set template for current specialty if available
-        if ($specialty && isset($specialtyTemplates[$specialty]) && $template) {
+        if (isset($specialty) && $specialty && isset($specialtyTemplates[$specialty]) && $template) {
             $specialtyTemplates[$specialty] = $template;
         }
     @endphp
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initialize if specialty is pre-selected
-    @if($specialty && $defaults)
+    @if(isset($specialty) && $specialty && isset($defaults) && $defaults)
         applyTemplate(@json($template), @json($defaults));
     @endif
     

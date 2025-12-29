@@ -360,7 +360,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="">
+                    <a href="{{ route('instructor.students.index') }}" class="{{ request()->routeIs('instructor.students.*') ? 'active' : '' }}">
                         <span class="las la-users"></span>
                         <span>{{ __('Students') }}</span>
                     </a>

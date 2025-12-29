@@ -39,11 +39,11 @@
                     </div>
                 @endif
                 
-                <form method="POST" action="{{ route('clinic.departments.store') }}">
+                <form method="POST" action="{{ route('clinic.departments.store') }}" id="departmentForm">
                     @csrf
                     <div class="form-group">
                         <label>Physical Therapy Specialty <span class="text-danger">*</span></label>
-                        <select name="specialty" class="form-control @error('specialty') is-invalid @enderror" required {{ !$clinic ? 'disabled' : '' }}>
+                        <select name="specialty" id="specialtySelect" class="form-control @error('specialty') is-invalid @enderror" required style="cursor: pointer;">
                             <option value="">Select Specialty</option>
                             @foreach(\App\Models\ClinicSpecialty::getAvailableSpecialties() as $key => $name)
                                 <option value="{{ $key }}" {{ old('specialty') == $key ? 'selected' : '' }}>
@@ -63,7 +63,7 @@
 
                     <div class="text-right mt-4">
                         <a href="{{ route('clinic.departments.index') }}" class="btn btn-light mr-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary px-4" {{ !$clinic ? 'disabled' : '' }}>
+                        <button type="submit" class="btn btn-primary px-4" id="submitBtn">
                             <i class="las la-plus"></i> Add Department
                         </button>
                     </div>
@@ -72,4 +72,47 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('departmentForm');
+    const specialtySelect = document.getElementById('specialtySelect');
+    const submitBtn = document.getElementById('submitBtn');
+    const clinicExists = {{ $clinic ? 'true' : 'false' }};
+    
+    // Disable submit button if clinic doesn't exist
+    if (!clinicExists) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.6';
+        submitBtn.style.cursor = 'not-allowed';
+    }
+    
+    // Ensure select is always clickable
+    specialtySelect.style.pointerEvents = 'auto';
+    specialtySelect.style.cursor = 'pointer';
+    
+    // Form validation
+    form.addEventListener('submit', function(e) {
+        if (!clinicExists) {
+            e.preventDefault();
+            alert('Please set up your clinic first before adding departments.');
+            return false;
+        }
+        
+        if (!specialtySelect.value) {
+            e.preventDefault();
+            specialtySelect.classList.add('is-invalid');
+            alert('Please select a specialty.');
+            return false;
+        }
+    });
+    
+    // Remove invalid class on change
+    specialtySelect.addEventListener('change', function() {
+        this.classList.remove('is-invalid');
+    });
+});
+</script>
+@endpush
 @endsection

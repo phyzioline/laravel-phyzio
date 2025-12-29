@@ -99,7 +99,23 @@ class WeeklyProgramController extends BaseClinicController
         if (!$clinic) {
             $patients = collect();
             $episodes = collect();
-            return view('web.clinic.programs.create', compact('patients', 'episodes', 'clinic'));
+            $therapists = collect();
+            $specialty = $request->get('specialty', null);
+            $patientId = $request->get('patient_id');
+            $pricingPreview = null;
+            $template = null;
+            $defaults = null;
+            return view('web.clinic.programs.create', compact(
+                'patients', 
+                'episodes', 
+                'clinic',
+                'therapists',
+                'specialty',
+                'patientId',
+                'pricingPreview',
+                'template',
+                'defaults'
+            ));
         }
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();

@@ -65,33 +65,52 @@ class PatientController extends BaseClinicController
         $clinic = $this->getUserClinic();
         
         if (!$clinic) {
-            return back()->with('error', 'Clinic not found. Please contact support.');
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Clinic not found. Please contact support.');
         }
 
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'nullable|email',
-            'dob' => 'nullable|date',
-            'gender' => 'nullable|in:male,female',
-        ]);
+        try {
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'email' => 'nullable|email|max:255',
+                'dob' => 'nullable|date',
+                'gender' => 'nullable|in:male,female',
+                'address' => 'nullable|string|max:500',
+                'medical_history' => 'nullable|string',
+                'insurance_provider' => 'nullable|string|max:255',
+                'insurance_number' => 'nullable|string|max:255',
+            ]);
 
-        $patient = new Patient();
-        $patient->clinic_id = $clinic->id; // CRITICAL: Set clinic_id
-        $patient->first_name = $request->first_name;
-        $patient->last_name = $request->last_name;
-        $patient->phone = $request->phone;
-        $patient->email = $request->email;
-        $patient->date_of_birth = $request->dob;
-        $patient->gender = $request->gender;
-        $patient->address = $request->address;
-        $patient->medical_history = $request->medical_history;
-        $patient->insurance_provider = $request->insurance_provider;
-        $patient->insurance_number = $request->insurance_number;
-        $patient->save();
+            $patient = Patient::create([
+                'clinic_id' => $clinic->id,
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'],
+                'email' => $validated['email'] ?? null,
+                'date_of_birth' => $validated['dob'] ?? null,
+                'gender' => $validated['gender'] ?? null,
+                'address' => $validated['address'] ?? null,
+                'medical_history' => $validated['medical_history'] ?? null,
+                'insurance_provider' => $validated['insurance_provider'] ?? null,
+                'insurance_number' => $validated['insurance_number'] ?? null,
+            ]);
 
-        return redirect()->route('clinic.patients.show', $patient->id)->with('success', 'Patient registered successfully.');
+            return redirect()->route('clinic.patients.show', $patient->id)
+                ->with('success', 'Patient registered successfully.');
+                
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        } catch (\Exception $e) {
+            \Log::error('Patient registration error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to register patient. Please try again.');
+        }
     }
 
     /**

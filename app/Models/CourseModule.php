@@ -27,6 +27,6 @@ class CourseModule extends Model
 
     public function units()
     {
-        return $this->hasMany(CourseUnit::class)->orderBy('order');
+        return $this->hasMany(CourseUnit::class, 'module_id')->orderBy('order');
     }
 }

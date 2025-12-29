@@ -29,7 +29,7 @@ class CourseController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::where('status', 'active')->get();
         $skills = Skill::all(); // Load all skills for selection
         return view('instructor.courses.create', compact('categories', 'skills'));
     }

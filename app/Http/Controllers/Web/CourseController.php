@@ -117,7 +117,7 @@ class CourseController extends Controller
         $baseCurrency = config('app.currency', 'EGP');
         $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country ?? null);
         $rate = $currencySvc->getRate($baseCurrency, $userCurrency);
-        $converted = $currencySvc->convert($course->price ?? 0, $baseCurrency, $userCurrency);
+        $converted = $currencySvc->convertFromTo($course->price ?? 0, $baseCurrency, $userCurrency);
 
         // Create enrollment
         $enrollment = \App\Models\Enrollment::create([

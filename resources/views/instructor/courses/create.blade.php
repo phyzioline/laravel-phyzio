@@ -89,12 +89,21 @@
                             </div>
 
                             <div class="form-group mb-3">
-                                <label>Category</label>
-                                <select name="category_id" class="form-control" required>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                <label>Category <span class="text-danger">*</span></label>
+                                <select name="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
+                                    <option value="">{{ __('Select Category') }}</option>
+                                    @foreach($categories->where('status', 'active') as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                            {{ $category->{'name_' . app()->getLocale()} ?? $category->name_en }}
+                                        </option>
                                     @endforeach
                                 </select>
+                                @error('category_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                @if($categories->where('status', 'active')->isEmpty())
+                                    <small class="text-warning">{{ __('No active categories available. Please contact administrator.') }}</small>
+                                @endif
                             </div>
 
                             <div class="form-group mb-3">

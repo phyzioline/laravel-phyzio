@@ -136,7 +136,7 @@ class HomeVisitController extends Controller
         $baseCurrency = config('app.currency', 'EGP');
         $userCurrency = $user->currency ?? $currencySvc->currencyForCountry($user->country_code ?? null);
         $exchangeRate = $currencySvc->getRate($baseCurrency, $userCurrency);
-        $convertedAmount = $currencySvc->convert($visit->total_amount, $baseCurrency, $userCurrency);
+        $convertedAmount = $currencySvc->convertFromTo($visit->total_amount, $baseCurrency, $userCurrency);
 
         \App\Models\Payment::create([
             'paymentable_type' => \App\Models\HomeVisit::class,

@@ -148,6 +148,10 @@ foreach ($supportedLocales as $locale) {
             // Modules & Units
             Route::post('/courses/{course}/modules', [App\Http\Controllers\Instructor\CourseController::class, 'storeModule'])->name('courses.modules.store');
             Route::post('/courses/{course}/modules/{module}/units', [App\Http\Controllers\Instructor\CourseController::class, 'storeUnit'])->name('courses.modules.units.store');
+            
+            // Students
+            Route::get('/students', [App\Http\Controllers\Instructor\StudentController::class, 'index'])->name('students.index');
+            Route::get('/students/{student}', [App\Http\Controllers\Instructor\StudentController::class, 'show'])->name('students.show');
         });
 
         // --- Home Visit System Routes ---

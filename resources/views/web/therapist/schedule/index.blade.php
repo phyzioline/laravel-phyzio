@@ -126,31 +126,41 @@
           @csrf
           @method('PUT')
           <div class="modal-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <!-- Days Selection -->
             <div class="mb-3">
-                <label class="form-label font-weight-bold">Select Days</label>
+                <label class="form-label font-weight-bold">Select Days <span class="text-danger">*</span></label>
                 <div class="row">
                     @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
                     <div class="col-6">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="days[]" value="{{ $day }}" id="day_{{ $day }}">
+                            <input class="form-check-input day-checkbox" type="checkbox" name="days[]" value="{{ $day }}" id="day_{{ $day }}">
                             <label class="form-check-label text-capitalize" for="day_{{ $day }}">
-                                {{ $day }}
+                                {{ ucfirst($day) }}
                             </label>
                         </div>
                     </div>
                     @endforeach
                 </div>
+                <small class="text-danger" id="days-error" style="display: none;">Please select at least one day.</small>
             </div>
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Start Time</label>
-                    <input type="time" name="start_time" class="form-control" required>
+                    <label class="form-label">Start Time <span class="text-danger">*</span></label>
+                    <input type="time" name="start_time" class="form-control" value="09:00" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                     <label class="form-label">End Time</label>
-                     <input type="time" name="end_time" class="form-control" required>
+                     <label class="form-label">End Time <span class="text-danger">*</span></label>
+                     <input type="time" name="end_time" class="form-control" value="17:00" required>
                 </div>
             </div>
             
@@ -197,6 +207,10 @@
             // Remove any blocking overlays
             $('.overlay').hide();
             $('body').removeClass('toggled');
+            // Reset form and errors
+            $('#addSlotModal form')[0].reset();
+            $('#days-error').hide();
+            $('.form-control').removeClass('is-invalid');
         });
         
         // Ensure modal content is clickable
@@ -208,6 +222,56 @@
         // Fix backdrop click
         $('.modal-backdrop').on('click', function() {
             addSlotModal.hide();
+        });
+        
+        // Client-side form validation
+        $('#addSlotModal form').on('submit', function(e) {
+            var daysChecked = $('.day-checkbox:checked').length;
+            var startTime = $('input[name="start_time"]').val();
+            var endTime = $('input[name="end_time"]').val();
+            var isValid = true;
+            
+            // Validate days
+            if (daysChecked === 0) {
+                $('#days-error').show();
+                isValid = false;
+            } else {
+                $('#days-error').hide();
+            }
+            
+            // Validate times
+            if (!startTime) {
+                $('input[name="start_time"]').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('input[name="start_time"]').removeClass('is-invalid');
+            }
+            
+            if (!endTime) {
+                $('input[name="end_time"]').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('input[name="end_time"]').removeClass('is-invalid');
+            }
+            
+            // Validate end time is after start time
+            if (startTime && endTime && startTime >= endTime) {
+                alert('End time must be after start time.');
+                $('input[name="end_time"]').addClass('is-invalid');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        
+        // Remove error on day selection
+        $('.day-checkbox').on('change', function() {
+            if ($('.day-checkbox:checked').length > 0) {
+                $('#days-error').hide();
+            }
         });
     });
 </script>

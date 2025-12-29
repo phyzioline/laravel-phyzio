@@ -84,16 +84,27 @@
                                         <!-- Condition -->
                                         <h6 class="text-primary font-weight-bold mb-3"><i class="las la-stethoscope"></i> {{ __('Condition Type') }}</h6>
                                         <div class="row no-gutters mb-3">
-                                            @foreach(['Orthopedic' => 'bone', 'Neurological' => 'brain', 'Post-Surgery' => 'procedure', 'Elderly' => 'blind', 'Pediatric' => 'baby', 'Sports' => 'running'] as $label => $icon)
+                                            @php
+                                                $conditions = [
+                                                    'Orthopedic' => ['icon' => 'bone', 'key' => 'Orthopedic'],
+                                                    'Neurological' => ['icon' => 'brain', 'key' => 'Neurological'],
+                                                    'Post-Surgery' => ['icon' => 'procedure', 'key' => 'Post-Surgery'],
+                                                    'Elderly' => ['icon' => 'blind', 'key' => 'Elderly'],
+                                                    'Pediatric' => ['icon' => 'baby', 'key' => 'Pediatric'],
+                                                    'Sports' => ['icon' => 'running', 'key' => 'Sports']
+                                                ];
+                                            @endphp
+                                            @foreach($conditions as $label => $data)
                                                 <div class="col-4 col-md-4 p-1">
-                                                    <label class="btn btn-outline-white bg-white text-dark btn-block border p-2 shadow-sm complain-option mb-0 h-100 d-flex flex-column align-items-center justify-content-center">
+                                                    <label class="btn btn-outline-white bg-white text-dark btn-block border p-2 shadow-sm complain-option mb-0 h-100 d-flex flex-column align-items-center justify-content-center" style="cursor: pointer; transition: all 0.3s ease;">
                                                         <input type="radio" name="complain_type" value="{{ $label }}" class="d-none" required>
-                                                        <i class="las la-{{ $icon }} la-2x mb-1 text-primary"></i>
-                                                        <small class="font-weight-bold" style="font-size: 0.75rem; line-height: 1.1;">{{ __($label) }}</small>
+                                                        <i class="las la-{{ $data['icon'] }} la-2x mb-1 text-primary"></i>
+                                                        <small class="font-weight-bold" style="font-size: 0.75rem; line-height: 1.1;">{{ __($data['key']) }}</small>
                                                     </label>
                                                 </div>
-                                                @endforeach
+                                            @endforeach
                                         </div>
+                                        <small class="text-danger" id="complain_type_error" style="display: none;">{{ __('Please select a condition type') }}</small>
 
                                         <!-- Address -->
                                         <div class="form-group mb-3">
@@ -219,12 +230,17 @@
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
                                     <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="d-inline-block">
                                         @php
-                                            $imageUrl = $therapist->user->image 
-                                                ? asset($therapist->user->image) 
+                                            // Use profile_photo_url accessor if available, otherwise check therapist profile_photo, then default
+                                            $imageUrl = ($therapist->user && $therapist->user->profile_photo_url) 
+                                                ? $therapist->user->profile_photo_url
                                                 : ($therapist->profile_photo 
-                                                    ? asset($therapist->profile_photo) 
+                                                    ? (str_starts_with($therapist->profile_photo, 'storage/') 
+                                                        ? asset($therapist->profile_photo) 
+                                                        : asset('storage/' . $therapist->profile_photo))
                                                     : ($therapist->profile_image 
-                                                        ? asset($therapist->profile_image) 
+                                                        ? (str_starts_with($therapist->profile_image, 'storage/') 
+                                                            ? asset($therapist->profile_image) 
+                                                            : asset('storage/' . $therapist->profile_image))
                                                         : asset('web/assets/images/default-user.png')));
                                         @endphp
                                         <img src="{{ $imageUrl }}" 
@@ -233,7 +249,7 @@
                                              onmouseover="this.style.transform='scale(1.05)'"
                                              onmouseout="this.style.transform='scale(1)'"
                                              onerror="this.src='{{ asset('web/assets/images/default-user.png') }}'"
-                                             alt="{{ $therapist->user->name }} {{ __('Profile Photo') }}">
+                                             alt="{{ $therapist->user->name ?? 'Therapist' }} {{ __('Profile Photo') }}">
                                     </a>
                                 </div>
                                 <div class="col-md-6">
@@ -346,6 +362,31 @@ header,
         padding-top: 80px !important;
     }
 }
+
+/* Condition Type Buttons */
+.complain-option {
+    cursor: pointer !important;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    transition: all 0.3s ease !important;
+    pointer-events: auto !important;
+}
+
+.complain-option:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+.complain-option input[type="radio"] {
+    pointer-events: none;
+}
+
+.complain-option.bg-primary {
+    border-color: #02767F !important;
+    box-shadow: 0 4px 12px rgba(0, 137, 123, 0.4) !important;
+}
 </style>
 @section('scripts')
 <script>
@@ -355,22 +396,77 @@ header,
         $(this).tab('show')
     });
 
-    // Option Selection
+    // Option Selection - Make condition type buttons clickable
+    document.querySelectorAll('.complain-option').forEach(label => {
+        // Add click handler to label
+        label.addEventListener('click', function(e) {
+            e.preventDefault();
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+        
+        // Add hover effect
+        label.addEventListener('mouseenter', function() {
+            if (!this.querySelector('input[type="radio"]').checked) {
+                this.style.transform = 'scale(1.05)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            }
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            if (!this.querySelector('input[type="radio"]').checked) {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '';
+            }
+        });
+    });
+    
+    // Handle radio change
     document.querySelectorAll('input[name="complain_type"]').forEach(input => {
         input.addEventListener('change', function() {
+            // Hide error message
+            document.getElementById('complain_type_error').style.display = 'none';
+            
+            // Reset all options
             document.querySelectorAll('.complain-option').forEach(l => {
-                l.classList.remove('bg-primary', 'text-white'); 
-                l.classList.add('bg-white', 'text-dark');
-                l.querySelector('i').classList.add('text-primary');
-                l.querySelector('i').classList.remove('text-white');
+                l.classList.remove('bg-primary', 'text-white', 'border-primary'); 
+                l.classList.add('bg-white', 'text-dark', 'border');
+                const icon = l.querySelector('i');
+                if (icon) {
+                    icon.classList.add('text-primary');
+                    icon.classList.remove('text-white');
+                }
+                l.style.transform = 'scale(1)';
+                l.style.boxShadow = '';
             });
             
+            // Highlight selected option
             const label = this.closest('label');
-            label.classList.remove('bg-white', 'text-dark');
-            label.classList.add('bg-primary', 'text-white');
-            label.querySelector('i').classList.remove('text-primary');
-            label.querySelector('i').classList.add('text-white');
+            if (label) {
+                label.classList.remove('bg-white', 'text-dark', 'border');
+                label.classList.add('bg-primary', 'text-white', 'border-primary');
+                const icon = label.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-primary');
+                    icon.classList.add('text-white');
+                }
+                label.style.transform = 'scale(1.05)';
+                label.style.boxShadow = '0 4px 12px rgba(0, 137, 123, 0.4)';
+            }
         });
+    });
+    
+    // Form validation
+    document.getElementById('visitForm')?.addEventListener('submit', function(e) {
+        const selectedCondition = document.querySelector('input[name="complain_type"]:checked');
+        if (!selectedCondition) {
+            e.preventDefault();
+            document.getElementById('complain_type_error').style.display = 'block';
+            return false;
+        }
     });
 
     // Schedule Toggle

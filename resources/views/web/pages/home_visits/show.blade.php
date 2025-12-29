@@ -116,18 +116,23 @@
             <div class="row align-items-center">
                 <div class="col-md-3 col-12 text-center mb-4 mb-md-0">
                     @php
-                        $imageUrl = $therapist->user->image 
-                            ? asset($therapist->user->image) 
+                        // Use profile_photo_url accessor if available, otherwise check therapist profile_photo, then default
+                        $imageUrl = ($therapist->user && $therapist->user->profile_photo_url) 
+                            ? $therapist->user->profile_photo_url
                             : ($therapist->profile_photo 
-                                ? asset($therapist->profile_photo) 
+                                ? (str_starts_with($therapist->profile_photo, 'storage/') 
+                                    ? asset($therapist->profile_photo) 
+                                    : asset('storage/' . $therapist->profile_photo))
                                 : ($therapist->profile_image 
-                                    ? asset($therapist->profile_image) 
+                                    ? (str_starts_with($therapist->profile_image, 'storage/') 
+                                        ? asset($therapist->profile_image) 
+                                        : asset('storage/' . $therapist->profile_image))
                                     : asset('web/assets/images/default-user.png')));
                     @endphp
                     <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="therapist-photo-box">
                         <img src="{{ $imageUrl }}" 
                              onerror="this.src='{{ asset('web/assets/images/default-user.png') }}'"
-                             alt="{{ $therapist->user->name }} {{ __('Profile Photo') }}">
+                             alt="{{ $therapist->user->name ?? 'Therapist' }} {{ __('Profile Photo') }}">
                     </a>
                 </div>
                 <div class="col-md-6 col-12 profile-details">

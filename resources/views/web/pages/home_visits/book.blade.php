@@ -14,19 +14,24 @@
                             <!-- Therapist Summary -->
                             <div class="d-flex align-items-center mb-4 p-3 bg-light rounded">
                                 @php
-                                    $imageUrl = $therapist->user->image 
-                                        ? asset($therapist->user->image) 
+                                    // Use profile_photo_url accessor if available, otherwise check therapist profile_photo, then default
+                                    $imageUrl = ($therapist->user && $therapist->user->profile_photo_url) 
+                                        ? $therapist->user->profile_photo_url
                                         : ($therapist->profile_photo 
-                                            ? asset($therapist->profile_photo) 
+                                            ? (str_starts_with($therapist->profile_photo, 'storage/') 
+                                                ? asset($therapist->profile_photo) 
+                                                : asset('storage/' . $therapist->profile_photo))
                                             : ($therapist->profile_image 
-                                                ? asset($therapist->profile_image) 
+                                                ? (str_starts_with($therapist->profile_image, 'storage/') 
+                                                    ? asset($therapist->profile_image) 
+                                                    : asset('storage/' . $therapist->profile_image))
                                                 : asset('web/assets/images/default-user.png')));
                                 @endphp
                                 <img src="{{ $imageUrl }}" 
                                      class="rounded-circle mr-3 shadow-sm" 
                                      style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #02767F;"
                                      onerror="this.src='{{ asset('web/assets/images/default-user.png') }}'"
-                                     alt="{{ $therapist->user->name }} {{ __('Profile Photo') }}">
+                                     alt="{{ $therapist->user->name ?? 'Therapist' }} {{ __('Profile Photo') }}">
                                 <div>
                                     <h5 class="font-weight-bold mb-1">{{ $therapist->user->name }}</h5>
                                     <p class="text-muted mb-0">{{ $therapist->specialization }}</p>

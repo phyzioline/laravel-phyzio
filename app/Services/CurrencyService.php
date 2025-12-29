@@ -72,4 +72,83 @@ class CurrencyService
 
         return number_format($converted, 2) . ' ' . $config['symbol'];
     }
+
+    /**
+     * Get currency code for a given country code
+     */
+    public function currencyForCountry($countryCode)
+    {
+        if (!$countryCode) {
+            return config('currency.default', 'EGP');
+        }
+
+        $map = [
+            'EG' => 'EGP',
+            'US' => 'USD',
+            'SA' => 'SAR',
+            'AE' => 'AED',
+            'KW' => 'KWD',
+            'GB' => 'GBP',
+            'EU' => 'EUR',
+            'CA' => 'CAD',
+            'AU' => 'AUD',
+        ];
+
+        $countryCode = strtoupper($countryCode);
+        return $map[$countryCode] ?? config('currency.default', 'EGP');
+    }
+
+    /**
+     * Get exchange rate between two currencies
+     */
+    public function getRate($fromCurrency, $toCurrency)
+    {
+        // If same currency, rate is 1
+        if ($fromCurrency === $toCurrency) {
+            return 1.0;
+        }
+
+        // Base currency is EGP (rate = 1)
+        // To convert FROM EGP to another currency, use that currency's rate
+        if ($fromCurrency === 'EGP' || $fromCurrency === config('currency.default', 'EGP')) {
+            $toConfig = $this->currencies[$toCurrency] ?? null;
+            if ($toConfig && isset($toConfig['rate'])) {
+                return $toConfig['rate'];
+            }
+        }
+
+        // To convert TO EGP from another currency, use inverse of that currency's rate
+        if ($toCurrency === 'EGP' || $toCurrency === config('currency.default', 'EGP')) {
+            $fromConfig = $this->currencies[$fromCurrency] ?? null;
+            if ($fromConfig && isset($fromConfig['rate'])) {
+                return 1 / $fromConfig['rate'];
+            }
+        }
+
+        // For conversions between two non-EGP currencies
+        $fromConfig = $this->currencies[$fromCurrency] ?? null;
+        $toConfig = $this->currencies[$toCurrency] ?? null;
+
+        if ($fromConfig && $toConfig && isset($fromConfig['rate']) && isset($toConfig['rate'])) {
+            // Convert fromCurrency -> EGP -> toCurrency
+            // Rate = (1 / fromRate) * toRate = toRate / fromRate
+            return $toConfig['rate'] / $fromConfig['rate'];
+        }
+
+        // Fallback: return 1 if we can't determine the rate
+        return 1.0;
+    }
+
+    /**
+     * Convert amount from one currency to another
+     */
+    public function convertFromTo($amount, $fromCurrency, $toCurrency)
+    {
+        if ($fromCurrency === $toCurrency) {
+            return $amount;
+        }
+
+        $rate = $this->getRate($fromCurrency, $toCurrency);
+        return $amount * $rate;
+    }
 }
