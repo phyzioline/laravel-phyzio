@@ -83,7 +83,7 @@ class CourseController extends Controller
         // Check if user is enrolled
         $isEnrolled = false;
         if(auth()->check()) {
-            $isEnrolled = $course->enrollments()->where('student_id', auth()->id())->exists();
+            $isEnrolled = $course->enrollments()->where('user_id', auth()->id())->exists();
         }
 
         return view('web.courses.show', compact('course', 'isEnrolled'));
