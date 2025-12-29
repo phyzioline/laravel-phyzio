@@ -185,28 +185,52 @@ class HomeController extends Controller
 
             // Pending Approvals
             $pendingTherapists = \App\Models\TherapistProfile::where('status', 'pending')->count();
-            $pendingClinics = \App\Models\ClinicProfile::where('status', 'pending')->count();
-            $pendingCourses = \App\Models\Course::where('status', 'pending')->count();
+            $pendingClinics = \App\Models\Clinic::where('is_active', false)->where('is_deleted', false)->count();
+            $pendingCourses = \App\Models\Course::where('status', 'review')->count();
+            
+            // Pending User Verifications (companies, vendors, therapists with documents)
+            $pendingVerifications = User::whereIn('type', ['vendor', 'company', 'therapist'])
+                ->whereIn('verification_status', ['pending', 'under_review'])
+                ->count();
+            
+            // Pending Module Verifications
+            $pendingModuleVerifications = \App\Models\TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
+            $pendingCompanyModuleVerifications = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])->count();
+            $totalPendingModules = $pendingModuleVerifications + $pendingCompanyModuleVerifications;
             
             $pendingApprovals = [
+                [
+                    'title' => 'User Verifications',
+                    'count' => $pendingVerifications,
+                    'link' => route('dashboard.verifications.index', ['status' => 'pending']),
+                    'icon' => 'fa-shield-check',
+                    'color' => 'primary'
+                ],
+                [
+                    'title' => 'Module Verifications',
+                    'count' => $totalPendingModules,
+                    'link' => route('dashboard.verifications.index'),
+                    'icon' => 'fa-puzzle-piece',
+                    'color' => 'warning'
+                ],
                 [
                     'title' => 'Therapist Profiles',
                     'count' => $pendingTherapists,
                     'link' => route('dashboard.therapist_profiles.index'),
                     'icon' => 'fa-user-md',
-                    'color' => 'warning'
+                    'color' => 'info'
                 ],
                 [
                     'title' => 'Clinic Profiles',
                     'count' => $pendingClinics,
-                    'link' => route('dashboard.clinic_profiles.index'),
+                    'link' => route('dashboard.clinic_profiles.index', ['status' => 'pending']),
                     'icon' => 'fa-clinic-medical',
-                    'color' => 'info'
+                    'color' => 'success'
                 ],
                 [
                     'title' => 'Courses',
                     'count' => $pendingCourses,
-                    'link' => route('dashboard.courses.index'),
+                    'link' => route('dashboard.courses.index', ['status' => 'pending']),
                     'icon' => 'fa-graduation-cap',
                     'color' => 'danger'
                 ]

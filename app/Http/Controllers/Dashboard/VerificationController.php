@@ -30,8 +30,13 @@ class VerificationController extends Controller
             ->pluck('user_id')
             ->unique();
 
-        // Combine both sets of user IDs
-        $allUserIds = $userIds->merge($therapistIdsWithPendingModules)->unique();
+        // Also include companies with pending module verifications (even if general verification is approved)
+        $companyIdsWithPendingModules = \App\Models\CompanyModuleVerification::whereIn('status', ['pending', 'under_review'])
+            ->pluck('user_id')
+            ->unique();
+
+        // Combine all sets of user IDs
+        $allUserIds = $userIds->merge($therapistIdsWithPendingModules)->merge($companyIdsWithPendingModules)->unique();
 
         $query = User::whereIn('id', $allUserIds);
 
@@ -297,6 +302,50 @@ class VerificationController extends Controller
             $therapistProfile->update([
                 $fieldMap[$moduleType] => $request->action === 'approve',
                 $dateFieldMap[$moduleType] => $request->action === 'approve' ? now() : null,
+            ]);
+        }
+
+        return back()->with('success', __('Module ' . $moduleType . ' ' . $request->action . 'd successfully.'));
+    }
+
+    /**
+     * Approve or reject a company module
+     */
+    public function reviewCompanyModule(Request $request, $userId, $moduleType)
+    {
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+            'admin_note' => 'nullable|string|max:1000',
+        ]);
+
+        $user = User::findOrFail($userId);
+        
+        if ($user->type !== 'company') {
+            return back()->with('error', 'Only companies can have module verifications.');
+        }
+
+        $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->firstOrFail();
+        
+        $moduleVerification = \App\Models\CompanyModuleVerification::updateOrCreate(
+            [
+                'company_profile_id' => $companyProfile->id,
+                'user_id' => $user->id,
+                'module_type' => $moduleType,
+            ],
+            [
+                'status' => $request->action === 'approve' ? 'approved' : 'rejected',
+                'admin_note' => $request->admin_note,
+                'reviewed_by' => auth()->id(),
+                'reviewed_at' => now(),
+                'verified_at' => $request->action === 'approve' ? now() : null,
+            ]
+        );
+
+        // Update company profile module verification status
+        if ($moduleType === 'clinic') {
+            $companyProfile->update([
+                'clinic_verified' => $request->action === 'approve',
+                'clinic_verified_at' => $request->action === 'approve' ? now() : null,
             ]);
         }
 

@@ -6,6 +6,7 @@ use App\Mail\OTPEmail;
 use App\Mail\CompanyWelcomeEmail;
 use App\Models\User;
 use App\Models\CompanyProfile;
+use App\Models\UserDocument;
 use App\Traits\HasImage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +30,7 @@ class RegisterService
     {
         // Process all files FIRST before email (to prevent temp file cleanup)
         try {
-            $this->handleFileUploads($data);
+            $uploadedFiles = $this->handleFileUploads($data);
         } catch (\Exception $e) {
             // Log the error for debugging
             \Illuminate\Support\Facades\Log::error('Registration File Upload Error: ' . $e->getMessage());
@@ -52,6 +53,7 @@ class RegisterService
             'image' => $data['image'] ?? asset('default/default.png'),
             'code' => $code,
             'expire_at' => $expire_at->toDateTimeString(),
+            'uploaded_files' => $uploadedFiles ?? [], // Store uploaded document files
         ]);
 
         // Send OTP email
@@ -98,6 +100,10 @@ class RegisterService
         unset($registrationData['code']);
         unset($registrationData['expire_at']);
 
+        // Get uploaded files from session before creating user
+        $uploadedFiles = $registrationData['uploaded_files'] ?? [];
+        unset($registrationData['uploaded_files']);
+
         // Create user in database
         $user = $this->model->create($registrationData);
         
@@ -125,6 +131,23 @@ class RegisterService
                 'company_name' => $user->name,
                 'status' => 'active',
             ]);
+
+            // Save company registration documents as UserDocument records
+            if (!empty($uploadedFiles)) {
+                foreach ($uploadedFiles as $documentType => $filePath) {
+                    UserDocument::create([
+                        'user_id' => $user->id,
+                        'document_type' => $documentType,
+                        'file_path' => $filePath,
+                        'status' => 'uploaded', // Will be reviewed by admin
+                    ]);
+                }
+
+                // Update verification status to 'under_review' when documents are uploaded
+                if ($user->verification_status === 'pending') {
+                    $user->update(['verification_status' => 'under_review']);
+                }
+            }
 
             // Send welcome email
             Mail::to($user->email)->send(new CompanyWelcomeEmail($user));
@@ -206,20 +229,35 @@ class RegisterService
 
     private function handleFileUploads(&$data)
     {
-        // Only handle profile image during registration
-        // Documents will be uploaded later in verification center
+        $uploadedFiles = [];
+        
+        // Handle profile image during registration
         if (isset($data['image'])) {
             $data['image'] = $this->saveImage($data['image'], 'user');
         } else {
             $data['image'] = asset('default/default.png');
         }
         
-        // Remove document fields from data (they're no longer in the form)
+        // Handle company documents during registration
+        if (isset($data['type']) && $data['type'] === 'company') {
+            if (isset($data['commercial_register'])) {
+                $filePath = $this->saveImage($data['commercial_register'], 'documents');
+                $uploadedFiles['commercial_register'] = $filePath;
+            }
+            if (isset($data['tax_card'])) {
+                $filePath = $this->saveImage($data['tax_card'], 'documents');
+                $uploadedFiles['tax_card'] = $filePath;
+            }
+        }
+        
+        // Remove document fields from data (they're stored separately)
         unset($data['account_statement']);
         unset($data['commercial_register']);
         unset($data['tax_card']);
         unset($data['card_image']);
         unset($data['license_document']);
         unset($data['id_document']);
+        
+        return $uploadedFiles;
     }
 }

@@ -60,12 +60,22 @@
                                     $docCount = $user->documents()->count();
                                     $approvedCount = $user->documents()->where('status', 'approved')->count();
                                     
-                                    // Check for pending module verifications (for therapists)
+                                    // Check for pending module verifications (for therapists and companies)
                                     $pendingModules = [];
                                     if ($user->type === 'therapist') {
                                         $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
                                         if ($therapistProfile) {
                                             $moduleVerifications = \App\Models\TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
+                                                ->whereIn('status', ['pending', 'under_review'])
+                                                ->get();
+                                            foreach ($moduleVerifications as $mv) {
+                                                $pendingModules[] = ucfirst(str_replace('_', ' ', $mv->module_type));
+                                            }
+                                        }
+                                    } elseif ($user->type === 'company') {
+                                        $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->first();
+                                        if ($companyProfile) {
+                                            $moduleVerifications = \App\Models\CompanyModuleVerification::where('company_profile_id', $companyProfile->id)
                                                 ->whereIn('status', ['pending', 'under_review'])
                                                 ->get();
                                             foreach ($moduleVerifications as $mv) {

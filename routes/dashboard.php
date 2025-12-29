@@ -50,6 +50,7 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::post('/verifications/documents/{documentId}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewDocument'])->name('verifications.review-document');
             Route::post('/verifications/users/{userId}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewUser'])->name('verifications.review-user');
             Route::post('/verifications/users/{userId}/modules/{moduleType}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewModule'])->name('verifications.review-module');
+            Route::post('/verifications/users/{userId}/company-modules/{moduleType}/review', [\App\Http\Controllers\Dashboard\VerificationController::class, 'reviewCompanyModule'])->name('verifications.review-company-module');
             Route::resource('categories', CategoryController::class);
             Route::resource('sub_categories', SubCategoryController::class);
             Route::resource('tags', TagController::class);

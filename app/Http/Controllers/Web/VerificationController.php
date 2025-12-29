@@ -69,12 +69,26 @@ class VerificationController extends Controller
             }
         }
 
+        // Get module verification status for companies
+        $companyModuleVerifications = null;
+        $companyProfile = null;
+        if ($user->type === 'company') {
+            $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->first();
+            if ($companyProfile) {
+                $companyModuleVerifications = \App\Models\CompanyModuleVerification::where('company_profile_id', $companyProfile->id)
+                    ->get()
+                    ->keyBy('module_type');
+            }
+        }
+
         return view('web.auth.verification-center', [
             'requiredDocuments' => $requiredDocuments,
             'userDocuments' => $userDocuments,
             'progress' => $progress,
             'therapistProfile' => $therapistProfile,
             'moduleVerifications' => $moduleVerifications,
+            'companyProfile' => $companyProfile,
+            'companyModuleVerifications' => $companyModuleVerifications,
         ]);
     }
 
@@ -128,6 +142,23 @@ class VerificationController extends Controller
                         'therapist_profile_id' => $therapistProfile->id,
                         'user_id' => $user->id,
                         'module_type' => $moduleType,
+                    ],
+                    [
+                        'status' => 'under_review', // Set to under_review when documents are uploaded
+                    ]
+                );
+            }
+        }
+
+        // If this is a clinic document for a company, create/update company module verification request
+        if ($moduleType === 'clinic' && $user->type === 'company') {
+            $companyProfile = \App\Models\CompanyProfile::where('user_id', $user->id)->first();
+            if ($companyProfile) {
+                \App\Models\CompanyModuleVerification::updateOrCreate(
+                    [
+                        'company_profile_id' => $companyProfile->id,
+                        'user_id' => $user->id,
+                        'module_type' => 'clinic',
                     ],
                     [
                         'status' => 'under_review', // Set to under_review when documents are uploaded

@@ -177,6 +177,23 @@
               </li>
               @endcan
 
+              <!-- Verifications & Approvals -->
+              @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('super-admin'))
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-shield-check"></i></div>
+                      <div class="menu-title">{{ __("Verifications") }}</div>
+                  </a>
+                  <ul>
+                      <li><a href="{{ route('dashboard.verifications.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("User Verifications") }}</a></li>
+                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Verifications") }}</a></li>
+                      <li><a href="{{ route('dashboard.verifications.index', ['status' => 'under_review']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Under Review") }}</a></li>
+                      <li><a href="{{ route('dashboard.clinic_profiles.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Clinics") }}</a></li>
+                      <li><a href="{{ route('dashboard.courses.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Courses") }}</a></li>
+                  </ul>
+              </li>
+              @endif
+
               <!-- Ecosystem Management -->
               @if(auth()->user()->can('therapist_profiles-index') || auth()->user()->can('appointments-index') || auth()->user()->can('clinic_profiles-index') || auth()->user()->can('courses-index') || auth()->user()->can('jobs-index') || auth()->user()->can('data_points-index'))
               <li>

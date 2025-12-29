@@ -53,7 +53,9 @@ class RegisterRequest extends FormRequest
             'country' => 'required|string|max:2', // Country code (EG, SA, etc.)
             'image' => 'nullable|image|max:10240',
             'type' => 'required|in:vendor,buyer,therapist,company',
-            // Documents removed - will be uploaded in verification center
+            // Company documents
+            'commercial_register' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'tax_card' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',
         ];
     }
 }

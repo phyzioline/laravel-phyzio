@@ -190,6 +190,71 @@
         </div>
         @endif
 
+        @if($user->type === 'company' && $companyProfile)
+        <!-- Company Module Verification Status -->
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-puzzle-piece mr-2"></i>{{ __('Clinic Access Verification') }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @php
+                        $moduleType = 'clinic';
+                        $moduleVerification = $companyModuleVerifications ? $companyModuleVerifications->get($moduleType) : null;
+                        $isVerified = $companyProfile->canAccessClinic();
+                        $status = $moduleVerification ? $moduleVerification->status : 'pending';
+                    @endphp
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-{{ $isVerified ? 'success' : ($status === 'rejected' ? 'danger' : ($status === 'under_review' ? 'warning' : 'secondary')) }}">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="fas fa-hospital mr-2"></i>
+                                    {{ __('Clinic Access') }}
+                                </h6>
+                                <p class="mb-2">
+                                    @if($isVerified)
+                                        <span class="badge bg-success"><i class="fas fa-check"></i> {{ __('Verified') }}</span>
+                                    @elseif($status === 'under_review')
+                                        <span class="badge bg-warning"><i class="fas fa-clock"></i> {{ __('Under Review') }}</span>
+                                    @elseif($status === 'rejected')
+                                        <span class="badge bg-danger"><i class="fas fa-times"></i> {{ __('Rejected') }}</span>
+                                    @else
+                                        <span class="badge bg-secondary"><i class="fas fa-hourglass-half"></i> {{ __('Not Applied') }}</span>
+                                    @endif
+                                </p>
+                                @if($moduleVerification && $moduleVerification->admin_note)
+                                    <p class="text-muted small mb-2">{{ $moduleVerification->admin_note }}</p>
+                                @endif
+                                @if($moduleVerification && $moduleVerification->verified_at)
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-calendar"></i> {{ __('Verified') }}: {{ $moduleVerification->verified_at->format('Y-m-d') }}
+                                    </p>
+                                @endif
+                                @if(!$isVerified)
+                                    <form action="{{ route('dashboard.verifications.review-company-module', [$user->id, $moduleType]) }}" method="POST" class="mt-2">
+                                        @csrf
+                                        <div class="mb-2">
+                                            <textarea name="admin_note" class="form-control form-control-sm" rows="2" 
+                                                      placeholder="{{ __('Add a note (optional)') }}">{{ $moduleVerification ? $moduleVerification->admin_note : '' }}</textarea>
+                                        </div>
+                                        <div class="btn-group btn-group-sm w-100">
+                                            <button type="submit" name="action" value="approve" class="btn btn-success">
+                                                <i class="fas fa-check"></i> {{ __('Approve') }}
+                                            </button>
+                                            <button type="submit" name="action" value="reject" class="btn btn-danger">
+                                                <i class="fas fa-times"></i> {{ __('Reject') }}
+                                            </button>
+                                        </div>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Quick Actions -->
         <div class="card">
             <div class="card-header bg-primary text-white">
