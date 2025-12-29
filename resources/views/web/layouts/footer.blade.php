@@ -27,12 +27,12 @@
       <!-- Services -->
       <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
         <div class="footer-widget">
-          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Services</h4>
+          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Services') }}</h4>
           <ul class="list-unstyled">
-             <li class="mb-2"><a href="{{ route('web.home_visits.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Home Visits</a></li>
-             <li class="mb-2"><a href="{{ route('web.jobs.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Find Jobs</a></li>
-             <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Courses</a></li>
-             <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Products</a></li>
+             <li class="mb-2"><a href="{{ route('web.home_visits.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Home Visits') }}</a></li>
+             <li class="mb-2"><a href="{{ route('web.jobs.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Find Jobs') }}</a></li>
+             <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Courses') }}</a></li>
+             <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Products') }}</a></li>
           </ul>
         </div>
       </div>
@@ -40,15 +40,15 @@
       <!-- Support -->
       <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
         <div class="footer-widget">
-          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Support</h4>
+          <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Support') }}</h4>
            <ul class="list-unstyled">
              <!--<li class="mb-2"><a href="#" style="color: rgba(255,255,255,0.8); text-decoration: none;">Help Center</a></li>-->
-             <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Track Order</a></li>
-             <li class="mb-2"><a href="{{ route('feedback.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Contact Support</a></li>
-             <li class="mb-2"><a href="{{ route('shipping_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shipping Policy</a></li>
-              <li class="mb-2"><a href="{{ route('privacy_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Privacy Policy</a></li>
-              <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Terms & Conditions</a></li>
-               <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}#returns" style="color: rgba(255,255,255,0.8); text-decoration: none;">Returns & Refunds</a></li>
+             <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Track Your Order') }}</a></li>
+             <li class="mb-2"><a href="{{ route('feedback.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Contact Us') }}</a></li>
+             <li class="mb-2"><a href="{{ route('shipping_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shipping Policy') }}</a></li>
+              <li class="mb-2"><a href="{{ route('privacy_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Privacy Policy') }}</a></li>
+              <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Terms & Conditions') }}</a></li>
+               <li class="mb-2"><a href="{{ route('tearms_condition.index.' . app()->getLocale()) }}#returns" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Returns & Refunds') }}</a></li>
           </ul>
         </div>
       </div>
@@ -56,18 +56,18 @@
       <!-- Account & Connect -->
       <div class="col-lg-3 col-md-6 col-sm-12 mb-5">
         <div class="footer-widget">
-           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">Account</h4>
+           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Account') }}</h4>
             <ul class="list-unstyled mb-5">
                 @if(Auth::check())
-                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">My Account</a></li>
-                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Order History</a></li>
+                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('My Account') }}</a></li>
+                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Order History') }}</a></li>
                 @else
-                 <li class="mb-2"><a href="{{ route('view_login.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Login / Register</a></li>
+                 <li class="mb-2"><a href="{{ route('view_login.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Login') }} / {{ __('Register') }}</a></li>
                 @endif
-                 <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">Shop</a></li>
+                 <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shop') }}</a></li>
             </ul>
 
-            <h5 class="widget-title mb-3" style="font-weight: 700; font-size: 16px; color: white;">Connect With Us</h5>
+            <h5 class="widget-title mb-3" style="font-weight: 700; font-size: 16px; color: white;">{{ __('Connect With Us') }}</h5>
             <div class="social-links d-flex gap-3 mb-3">
                  <a href="https://www.facebook.com/share/g/1BHkoMrDjk" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-facebook-f"></i></a>
                  <a href="{{ $setting->twitter ?? '#' }}" target="_blank" style="color: white; font-size: 20px;"><i class="lab la-twitter"></i></a>

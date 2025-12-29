@@ -514,5 +514,17 @@
     "Welcome!": "مرحباً!",
     "Please select your clinic's primary specialty to activate the right tools, assessment forms, and treatment templates for your practice.": "يرجى اختيار التخصص الأساسي لعيادتك لتفعيل الأدوات المناسبة، نماذج التقييم، وقوالب العلاج لممارستك.",
     "This selection will customize your dashboard, reservation forms, payment calculations, and weekly program templates. You can add more specialties later from settings.": "سيخصص هذا الاختيار لوحة التحكم، نماذج الحجز، حسابات الدفع، وقوالب البرامج الأسبوعية. يمكنك إضافة المزيد من التخصصات لاحقاً من الإعدادات.",
-    "Select Specialty Now": "اختر التخصص الآن"
+    "Select Specialty Now": "اختر التخصص الآن",
+    "Jobs": "الوظائف",
+    "Feed": "الأخبار",
+    "Track Your Order": "تتبع طلبك",
+    "Find Jobs": "البحث عن وظائف",
+    "Products": "المنتجات",
+    "Support": "الدعم",
+    "Account": "الحساب",
+    "Connect With Us": "تواصل معنا",
+    "Returns & Refunds": "الإرجاع والاسترداد",
+    "Terms & Conditions": "الشروط والأحكام",
+    "Privacy Policy": "سياسة الخصوصية",
+    "Shipping Policy": "سياسة الشحن"
 }
