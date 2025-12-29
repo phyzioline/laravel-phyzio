@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Storage;
 
 class AdController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!auth()->user()->hasRole('admin') && !auth()->user()->hasRole('super-admin')) {
+                abort(403, 'Unauthorized. This section is restricted to administrators only.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $ads = Ad::latest()->paginate(10);

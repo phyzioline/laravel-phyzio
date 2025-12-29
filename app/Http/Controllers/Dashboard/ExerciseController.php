@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 
 class ExerciseController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!auth()->user()->hasRole('admin') && !auth()->user()->hasRole('super-admin')) {
+                abort(403, 'Unauthorized. This section is restricted to administrators only.');
+            }
+            return $next($request);
+        });
+    }
+
     public function index()
     {
         $exercises = Exercise::latest()->paginate(10);

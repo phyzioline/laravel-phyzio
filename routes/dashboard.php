@@ -70,17 +70,24 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::resource('jobs', \App\Http\Controllers\Dashboard\JobController::class);
             Route::resource('data_points', \App\Http\Controllers\Dashboard\DataPointController::class);
 
-            // External Integrated Modules
-            Route::get('ads/settings', [AdController::class, 'settings'])->name('ads.settings');
-            Route::post('ads/account/{id}/toggle', [AdController::class, 'toggleTracking'])->name('ads.toggle');
-            Route::resource('ads', AdController::class);
-            
-            Route::get('crm/dashboard', [CrmController::class, 'dashboard'])->name('crm.dashboard');
-            Route::get('crm/contacts', [CrmController::class, 'contacts'])->name('crm.contacts');
-            Route::resource('crm', CrmController::class);
-            
-            Route::resource('plans', TreatmentPlanController::class);
-            Route::resource('exercises', ExerciseController::class);
+            // External Integrated Modules (Admin Only)
+            Route::middleware(function ($request, $next) {
+                if (!auth()->user()->hasRole('admin') && !auth()->user()->hasRole('super-admin')) {
+                    abort(403, 'Unauthorized. This section is restricted to administrators only.');
+                }
+                return $next($request);
+            })->group(function () {
+                Route::get('ads/settings', [AdController::class, 'settings'])->name('ads.settings');
+                Route::post('ads/account/{id}/toggle', [AdController::class, 'toggleTracking'])->name('ads.toggle');
+                Route::resource('ads', AdController::class);
+                
+                Route::get('crm/dashboard', [CrmController::class, 'dashboard'])->name('crm.dashboard');
+                Route::get('crm/contacts', [CrmController::class, 'contacts'])->name('crm.contacts');
+                Route::resource('crm', CrmController::class);
+                
+                Route::resource('plans', TreatmentPlanController::class);
+                Route::resource('exercises', ExerciseController::class);
+            });
 
             // Financial Management
             Route::get('/payments', [\App\Http\Controllers\Dashboard\PaymentController::class, 'index'])->name('payments.index');
