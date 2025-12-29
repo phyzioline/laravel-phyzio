@@ -60,7 +60,12 @@
                     </a>
                 @else
                     <div class="alert alert-warning mt-3">
-                        <i class="las la-exclamation-triangle"></i> {{ __('Please set up your clinic first.') }}
+                        <i class="las la-exclamation-triangle"></i> 
+                        <strong>{{ __('Clinic Setup Required') }}</strong><br>
+                        {{ __('Please set up your clinic first by completing your profile.') }}
+                        <a href="{{ route('clinic.profile.index') }}" class="btn btn-sm btn-primary mt-2">
+                            <i class="las la-cog"></i> {{ __('Go to Profile Setup') }}
+                        </a>
                     </div>
                 @endif
             </div>
