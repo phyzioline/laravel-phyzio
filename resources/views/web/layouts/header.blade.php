@@ -232,12 +232,43 @@ body.has-hero #header-section {
 }
 
 /* Fix Buttons Alignment - optimized for clean layout */
+#header-section .btns-group {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+}
+
 #header-section .btns-group ul {
     display: flex !important;
     flex-wrap: nowrap !important;
     gap: 10px !important;
     align-items: center !important;
     justify-content: flex-end !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    list-style: none !important;
+}
+
+/* Ensure all button items are aligned on same line */
+#header-section .btns-group ul li {
+    display: flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Align buttons vertically with menu */
+#header-section .btns-group ul li button,
+#header-section .btns-group ul li .btn-cart {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+    padding: 4px 6px !important;
 }
 
 /* Header Icons - Always white */
@@ -365,6 +396,17 @@ body.has-hero #header-section {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    padding: 0 !important;
+}
+
+/* Ensure menu container is properly aligned */
+#header-section .main-menu {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* ICONS: stick fully right - optimized alignment */
@@ -372,6 +414,8 @@ body.has-hero #header-section {
     display: flex !important;
     justify-content: flex-end !important;
     align-items: center !important;
+    height: auto !important;
+    padding: 0 !important;
 }
 
 /* reduce spacing between menu items - optimized for clean layout */
@@ -409,28 +453,47 @@ body.has-hero .shop-hero-banner {
     margin-top: 10px !important;
 }
 /* Make menu text smaller & cleaner - optimized for clean layout */
+#header-section .main-menu ul li {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    line-height: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
 #header-section .main-menu ul li a {
     font-size: 13px !important;
-    padding: 6px 10px !important;
+    padding: 4px 8px !important;
     font-weight: 600 !important;
-    line-height: 1.4 !important;
+    line-height: 1.2 !important;
     display: inline-block !important;
     white-space: nowrap !important;
+    vertical-align: middle !important;
+    margin: 0 !important;
 }
 
 /* Fix spacing between items after text shrink - optimized spacing */
 .main-menu ul {
-    gap: 8px !important;
+    gap: 6px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     flex-wrap: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
 }
 
 /* Prevent text wrapping in header menu items - Fix for laptop 100% scale */
 #header-section .main-menu ul li {
     white-space: nowrap !important;
     flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    margin: 0 !important;
 }
 
 #header-section .main-menu ul li a {
@@ -439,6 +502,8 @@ body.has-hero .shop-hero-banner {
     word-break: keep-all !important;
     overflow: visible !important;
     text-overflow: clip !important;
+    vertical-align: middle !important;
+    line-height: 1.2 !important;
 }
 
 /* Ensure menu stays in one row */
@@ -452,6 +517,18 @@ body.has-hero .shop-hero-banner {
 #header-section .row {
     flex-wrap: nowrap !important;
     white-space: nowrap !important;
+    align-items: center !important;
+    margin: 0 !important;
+    height: auto !important;
+}
+
+/* Ensure menu column is properly sized */
+#header-section .col-lg-7 {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: auto !important;
+    overflow: visible !important;
 }
 
 /* Ensure buttons don't wrap */
@@ -463,6 +540,10 @@ body.has-hero .shop-hero-banner {
 #header-section .btns-group ul li {
     white-space: nowrap !important;
     flex-shrink: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    vertical-align: middle !important;
+    height: auto !important;
 }
 
 /* FORCE MENU, LOGIN, LOGO IN SAME ROW (RIGHT → LEFT) */
@@ -623,17 +704,49 @@ body.has-hero .shop-hero-banner {
         display: flex !important;
     }
     
-    /* Make sure buttons stay aligned with consistent spacing */
+    /* Make sure buttons stay aligned with consistent spacing - single line */
     #header-section .btns-group ul {
-        gap: 10px !important;
+        gap: 8px !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
         display: flex !important;
+        height: auto !important;
+    }
+    
+    /* Ensure all icons/buttons are on same vertical line */
+    #header-section .btns-group ul li {
+        display: flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        height: auto !important;
+    }
+    
+    #header-section .btns-group ul li button,
+    #header-section .btns-group ul li .btn-cart {
+        display: flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+        line-height: 1 !important;
+        padding: 3px 6px !important;
     }
     
     /* Ensure all header elements are vertically centered */
     #header-section .content-wrap {
         align-items: center !important;
+        padding: 8px 0 !important;
+    }
+    
+    /* Better vertical alignment for menu items */
+    #header-section .main-menu ul li {
+        display: flex !important;
+        align-items: center !important;
+        vertical-align: middle !important;
+    }
+    
+    #header-section .main-menu ul li a {
+        vertical-align: middle !important;
+        line-height: 1.2 !important;
+        padding: 3px 8px !important;
     }
     
     /* Better column distribution */
