@@ -149,6 +149,18 @@ class HomeController extends Controller
                 ];
             });
             
+            // Sales trend data for last 30 days
+            $salesTrendData = \App\Models\Order::where('created_at', '>=', now()->subDays(30))
+                ->where('payment_status', 'paid')
+                ->selectRaw('DATE(created_at) as date, SUM(total) as total')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get()
+                ->mapWithKeys(function ($item) {
+                    return [\Carbon\Carbon::parse($item->date)->format('M d') => (float)$item->total];
+                })
+                ->toArray();
+
             // Recent appointments
             $recentAppointments = \App\Models\HomeVisit::with('patient', 'therapist')->latest()->take(5)->get()->map(function($appt) {
                 return [
@@ -256,12 +268,17 @@ class HomeController extends Controller
             $lowStockProducts = Product::where('amount', '<', 5)->count();
         }
 
+        // Initialize salesTrendData if not set (for vendor view)
+        if (!isset($salesTrendData)) {
+            $salesTrendData = [];
+        }
+
         return view('dashboard.pages.home', compact(
             'user', 'vendor', 'buyer', 'product', 'order', 'order_card','order_cash',
             'category', 'sub_category', 'tag','order__card_only','order__cash_only',
             'product_only', 'order_only',
             'therapist_count', 'clinic_count', 'appointment_count', 'course_count',
-            'recentActivity', 'pendingApprovals', 'totalRevenue', 'todayAppointments', 'lowStockProducts',
+            'recentActivity', 'pendingApprovals', 'totalRevenue', 'todayAppointments', 'lowStockProducts', 'salesTrendData',
             'revenue_only', 'pending_payments', 'completed_orders', 'monthly_sales_data', 'top_products', 'recent_orders'
         ));
     }

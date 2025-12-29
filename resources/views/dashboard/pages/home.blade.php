@@ -589,17 +589,8 @@
                     // Sales Trend Chart (Last 30 Days)
                     const salesTrendCtx = document.getElementById('salesTrendChart');
                     if (salesTrendCtx) {
-                        const last30Days = [];
-                        const salesData = @json(\App\Models\Order::where('created_at', '>=', now()->subDays(30))
-                            ->where('payment_status', 'paid')
-                            ->selectRaw('DATE(created_at) as date, SUM(total) as total')
-                            ->groupBy('date')
-                            ->orderBy('date')
-                            ->pluck('total', 'date')
-                            ->mapWithKeys(function ($total, $date) {
-                                return [\Carbon\Carbon::parse($date)->format('M d') => (float)$total];
-                            })
-                            ->toArray());
+                        // Get sales data from server (processed in controller)
+                        const salesDataRaw = @json($salesTrendData ?? []);
                         
                         // Generate all 30 days labels
                         const labels = [];
@@ -610,7 +601,7 @@
                         }
                         
                         // Map sales data to labels (fill missing days with 0)
-                        const data = labels.map(label => salesData[label] || 0);
+                        const data = labels.map(label => salesDataRaw[label] || 0);
                         
                         new Chart(salesTrendCtx.getContext('2d'), {
                             type: 'line',
