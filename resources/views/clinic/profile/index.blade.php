@@ -1,5 +1,9 @@
 @extends('web.layouts.dashboard_master')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', 'Clinic Profile')
 @section('header_title', 'Profile & Settings')
 
@@ -122,7 +126,28 @@
                                 <label>{{ __('Commercial Register') }} <small class="text-muted">({{ __('Quick Upload') }})</small></label>
                                 @if($user->commercial_register)
                                     <div class="mb-2">
-                                        <a href="{{ asset('storage/' . $user->commercial_register) }}" target="_blank" class="text-primary">
+                                        @php
+                                            $docPath = $user->commercial_register;
+                                            // Handle different path formats
+                                            if (strpos($docPath, 'http') === 0) {
+                                                // Already a full URL
+                                                $docUrl = $docPath;
+                                            } elseif (strpos($docPath, 'storage/') === 0) {
+                                                // Path starts with storage/, use asset
+                                                $docUrl = asset($docPath);
+                                            } elseif (strpos($docPath, 'documents/') === 0 || strpos($docPath, '/') === false) {
+                                                // Path is in documents folder or just filename, use Storage::url
+                                                // If just filename, prepend documents/
+                                                if (strpos($docPath, '/') === false) {
+                                                    $docPath = 'documents/' . $docPath;
+                                                }
+                                                $docUrl = Storage::url($docPath);
+                                            } else {
+                                                // Relative path, use Storage::url
+                                                $docUrl = Storage::url($docPath);
+                                            }
+                                        @endphp
+                                        <a href="{{ $docUrl }}" target="_blank" class="text-primary">
                                             <i class="bx bx-file"></i> {{ __('View Current Document') }}
                                         </a>
                                     </div>
@@ -139,7 +164,28 @@
                                 <label>{{ __('Tax Card') }} <small class="text-muted">({{ __('Quick Upload') }})</small></label>
                                 @if($user->tax_card)
                                     <div class="mb-2">
-                                        <a href="{{ asset('storage/' . $user->tax_card) }}" target="_blank" class="text-primary">
+                                        @php
+                                            $docPath = $user->tax_card;
+                                            // Handle different path formats
+                                            if (strpos($docPath, 'http') === 0) {
+                                                // Already a full URL
+                                                $docUrl = $docPath;
+                                            } elseif (strpos($docPath, 'storage/') === 0) {
+                                                // Path starts with storage/, use asset
+                                                $docUrl = asset($docPath);
+                                            } elseif (strpos($docPath, 'documents/') === 0 || strpos($docPath, '/') === false) {
+                                                // Path is in documents folder or just filename, use Storage::url
+                                                // If just filename, prepend documents/
+                                                if (strpos($docPath, '/') === false) {
+                                                    $docPath = 'documents/' . $docPath;
+                                                }
+                                                $docUrl = Storage::url($docPath);
+                                            } else {
+                                                // Relative path, use Storage::url
+                                                $docUrl = Storage::url($docPath);
+                                            }
+                                        @endphp
+                                        <a href="{{ $docUrl }}" target="_blank" class="text-primary">
                                             <i class="bx bx-file"></i> {{ __('View Current Document') }}
                                         </a>
                                     </div>

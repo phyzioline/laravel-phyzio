@@ -41,17 +41,17 @@ class DepartmentController extends BaseClinicController
             
             $displayName = ClinicSpecialty::SPECIALTIES[$specialtyValue] ?? ucfirst(str_replace('_', ' ', $specialtyValue));
             
-            // Get head doctor for this specialty
+            // Get head doctor for this specialty (query through therapist_profiles relationship)
             $headDoctor = User::where('type', 'therapist')
-                ->where(function($q) use ($specialtyValue) {
+                ->whereHas('therapistProfile', function($q) use ($specialtyValue) {
                     $q->where('specialization', $specialtyValue)
                       ->orWhere('specialization', 'like', '%' . $specialtyValue . '%');
                 })
                 ->first();
             
-            // Count doctors in this specialty
+            // Count doctors in this specialty (query through therapist_profiles relationship)
             $doctorsCount = User::where('type', 'therapist')
-                ->where(function($q) use ($specialtyValue) {
+                ->whereHas('therapistProfile', function($q) use ($specialtyValue) {
                     $q->where('specialization', $specialtyValue)
                       ->orWhere('specialization', 'like', '%' . $specialtyValue . '%');
                 })
