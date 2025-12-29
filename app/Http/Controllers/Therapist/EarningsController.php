@@ -26,59 +26,90 @@ class EarningsController extends Controller
         // Get payout history
         $payoutHistory = $this->payoutService->getTherapistPayouts($user->id);
 
-        // 1. Home Visits Earnings
-        $appointmentEarningsQuery = \App\Models\HomeVisit::where('therapist_id', $user->id)
-            ->where('status', 'completed');
+        // Get earnings transactions by source
+        $earningsQuery = \App\Models\EarningsTransaction::where('user_id', $user->id);
         
-        $totalAppointmentEarnings = $appointmentEarningsQuery->sum('total_amount');
-        $monthlyAppointmentEarnings = (clone $appointmentEarningsQuery)
-            ->whereMonth('completed_at', now()->month)
-            ->whereYear('completed_at', now()->year)
-            ->sum('total_amount');
-            
-        // 2. Course Earnings
-        $courseIds = \App\Models\Course::where('instructor_id', $user->id)->pluck('id');
-        $enrollmentEarningsQuery = \App\Models\Enrollment::whereIn('course_id', $courseIds);
-
-        $totalCourseEarnings = $enrollmentEarningsQuery->sum('paid_amount');
-        $monthlyCourseEarnings = (clone $enrollmentEarningsQuery)
+        // 1. Home Visits Earnings
+        $homeVisitEarnings = (clone $earningsQuery)->bySource('home_visit');
+        $totalHomeVisitEarnings = $homeVisitEarnings->sum('net_earnings');
+        $monthlyHomeVisitEarnings = (clone $homeVisitEarnings)
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
-            ->sum('paid_amount');
+            ->sum('net_earnings');
+        $homeVisitAvailable = (clone $homeVisitEarnings)->byStatus('available')->sum('net_earnings');
+        $homeVisitPending = (clone $homeVisitEarnings)->byStatus('pending')->sum('net_earnings');
+            
+        // 2. Course Earnings
+        $courseEarnings = (clone $earningsQuery)->bySource('course');
+        $totalCourseEarnings = $courseEarnings->sum('net_earnings');
+        $monthlyCourseEarnings = (clone $courseEarnings)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('net_earnings');
+        $courseAvailable = (clone $courseEarnings)->byStatus('available')->sum('net_earnings');
+        $coursePending = (clone $courseEarnings)->byStatus('pending')->sum('net_earnings');
+
+        // 3. Clinic Earnings (if therapist works at clinic)
+        $clinicEarnings = (clone $earningsQuery)->bySource('clinic');
+        $totalClinicEarnings = $clinicEarnings->sum('net_earnings');
+        $monthlyClinicEarnings = (clone $clinicEarnings)
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->sum('net_earnings');
+        $clinicAvailable = (clone $clinicEarnings)->byStatus('available')->sum('net_earnings');
+        $clinicPending = (clone $clinicEarnings)->byStatus('pending')->sum('net_earnings');
 
         // Totals
-        $totalEarnings = $totalAppointmentEarnings + $totalCourseEarnings;
-        $monthlyEarnings = $monthlyAppointmentEarnings + $monthlyCourseEarnings;
+        $totalEarnings = $totalHomeVisitEarnings + $totalCourseEarnings + $totalClinicEarnings;
+        $monthlyEarnings = $monthlyHomeVisitEarnings + $monthlyCourseEarnings + $monthlyClinicEarnings;
 
         // Pending Payouts (from wallet)
         $pendingPayouts = $walletSummary['pending_balance'] + $walletSummary['available_balance'];
 
-        // Recent Transactions
-        $appointments = \App\Models\HomeVisit::where('therapist_id', $user->id)
-            ->latest('scheduled_at')
-            ->take(5)
+        // Recent Transactions from all sources
+        $recentTransactions = \App\Models\EarningsTransaction::where('user_id', $user->id)
+            ->latest()
+            ->take(10)
             ->get()
-            ->map(function($appt) {
+            ->map(function($trx) {
+                $sourceName = match($trx->source) {
+                    'home_visit' => __('Home Visit'),
+                    'course' => __('Course'),
+                    'clinic' => __('Clinic'),
+                    default => __('Other')
+                };
+                
                 return (object)[
-                    'id' => '#VST-' . $appt->id,
-                    'date' => $appt->scheduled_at ? $appt->scheduled_at->format('M d, Y') : 'N/A',
-                    'patient' => optional($appt->patient)->name ?? 'Guest',
-                    'service' => 'Home Visit',
-                    'amount' => $appt->total_amount,
-                    'status' => $appt->status
+                    'id' => '#EARN-' . $trx->id,
+                    'date' => $trx->created_at->format('M d, Y'),
+                    'source' => $sourceName,
+                    'amount' => $trx->net_earnings,
+                    'status' => ucfirst($trx->status),
+                    'source_type' => $trx->source
                 ];
             });
-            
-        $transactions = $appointments;
 
         return view('web.therapist.earnings.index', compact(
             'totalEarnings', 
             'monthlyEarnings', 
             'pendingPayouts', 
-            'transactions',
             'walletSummary',
             'payoutHistory',
-            'profile'
+            'profile',
+            // Separated earnings by source
+            'totalHomeVisitEarnings',
+            'monthlyHomeVisitEarnings',
+            'homeVisitAvailable',
+            'homeVisitPending',
+            'totalCourseEarnings',
+            'monthlyCourseEarnings',
+            'courseAvailable',
+            'coursePending',
+            'totalClinicEarnings',
+            'monthlyClinicEarnings',
+            'clinicAvailable',
+            'clinicPending',
+            'recentTransactions'
         ));
     }
 

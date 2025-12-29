@@ -686,5 +686,22 @@
     "Average Rating": "التقييم المتوسط",
     "Years Experience": "سنوات الخبرة",
     "Response Time": "وقت الاستجابة",
-    "Within 2 hours": "خلال ساعتين"
+    "Within 2 hours": "خلال ساعتين",
+    "Course created successfully! Please wait for review.": "تم إنشاء الدورة بنجاح! يرجى الانتظار للمراجعة.",
+    "Earnings by Source": "الأرباح حسب المصدر",
+    "Home Visits": "الزيارات المنزلية",
+    "Courses": "الدورات",
+    "Clinic": "العيادة",
+    "Pending": "قيد الانتظار",
+    "All Earnings by Source": "جميع الأرباح حسب المصدر",
+    "All Sources": "جميع المصادر",
+    "All Statuses": "جميع الحالات",
+    "On Hold": "مجمدة",
+    "Paid": "مدفوعة",
+    "All Users": "جميع المستخدمين",
+    "Filter": "تصفية",
+    "Platform Fee": "رسوم المنصة",
+    "Net Earnings": "صافي الأرباح",
+    "View": "عرض",
+    "No transactions found": "لم يتم العثور على معاملات"
 }

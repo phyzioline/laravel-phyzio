@@ -4,18 +4,18 @@
 <style>
     /* Fix header overlap - Add padding for fixed header */
     body {
-        padding-top: 120px !important;
+        padding-top: 150px !important;
     }
     
     @media (max-width: 991px) {
         body {
-            padding-top: 100px !important;
+            padding-top: 130px !important;
         }
     }
     
     @media (max-width: 768px) {
         body {
-            padding-top: 90px !important;
+            padding-top: 120px !important;
         }
     }
     
@@ -28,13 +28,13 @@
     /* Profile section styling */
     .profile-header-section {
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        padding: 40px 0;
+        padding: 50px 0;
         margin-top: 0;
     }
     
     @media (max-width: 768px) {
         .profile-header-section {
-            padding: 30px 0;
+            padding: 40px 0;
         }
     }
     

@@ -95,6 +95,14 @@ class User extends Authenticatable
         return $this->hasMany(HomeVisit::class, 'therapist_id');
     }
 
+    /**
+     * Get all earnings transactions for this user.
+     */
+    public function earningsTransactions()
+    {
+        return $this->hasMany(EarningsTransaction::class);
+    }
+
     public function certificates()
     {
         return $this->hasMany(Certificate::class);

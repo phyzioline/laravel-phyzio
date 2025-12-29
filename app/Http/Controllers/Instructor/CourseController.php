@@ -129,7 +129,7 @@ class CourseController extends Controller
             if ($request->status === 'published') {
                 // Instructor wants to publish, but needs admin approval first
                 $course->update(['status' => 'review']);
-                return back()->with('success', 'Course submitted for review. It will be published after admin approval.');
+                return redirect()->route('instructor.dashboard')->with('success', __('Course created successfully! Please wait for review.'));
             } else {
                 $course->update(['status' => $request->status]);
             }

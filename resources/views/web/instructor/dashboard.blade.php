@@ -161,16 +161,24 @@
 @endsection
 
 @push('scripts')
+@php
+    $defaultLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    $defaultScheduled = [0, 0, 0, 0, 0, 0, 0];
+    $defaultCompleted = [0, 0, 0, 0, 0, 0, 0];
+    $chartLabelsData = $chartLabels ?? $defaultLabels;
+    $scheduledData = $chartData['scheduled'] ?? $defaultScheduled;
+    $completedData = $chartData['completed'] ?? $defaultCompleted;
+@endphp
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     var ctx = document.getElementById('enrollmentChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: @json($chartLabels ?? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
+            labels: @json($chartLabelsData),
             datasets: [{
                 label: 'Scheduled',
-                data: @json($chartData['scheduled'] ?? [0, 0, 0, 0, 0, 0, 0]),
+                data: @json($scheduledData),
                 borderColor: '#00897b',
                 backgroundColor: 'rgba(0, 137, 123, 0.1)',
                 borderWidth: 2,
@@ -179,7 +187,7 @@
             },
             {
                 label: 'Completed',
-                data: @json($chartData['completed'] ?? [0, 0, 0, 0, 0, 0, 0]),
+                data: @json($completedData),
                 borderColor: '#43a047',
                 borderWidth: 2,
                 tension: 0.4,

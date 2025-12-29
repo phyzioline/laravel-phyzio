@@ -87,6 +87,10 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::get('/payments/{id}', [\App\Http\Controllers\Dashboard\PaymentController::class, 'showVendorPayment'])->name('payments.show');
             Route::post('/payments/{id}/status', [\App\Http\Controllers\Dashboard\PaymentController::class, 'updateStatus'])->name('payments.update-status');
             Route::get('/payments/{id}/detail', [\App\Http\Controllers\Dashboard\PaymentController::class, 'detail'])->name('payments.detail');
+            
+            // Earnings Management (All Sources)
+            Route::get('/earnings', [\App\Http\Controllers\Dashboard\EarningsController::class, 'index'])->name('earnings.index');
+            Route::get('/earnings/{earningsTransaction}', [\App\Http\Controllers\Dashboard\EarningsController::class, 'show'])->name('earnings.show');
 
             // Inventory Management
             Route::prefix('inventory')->as('inventory.')->group(function () {

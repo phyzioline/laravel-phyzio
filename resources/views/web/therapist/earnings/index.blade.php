@@ -113,6 +113,107 @@
         </div>
     </div>
 
+    <!-- Earnings by Source -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0 font-weight-bold">{{ __('Earnings by Source') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Home Visits Earnings -->
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100" style="border-left: 4px solid #02767F !important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="las la-home text-primary mr-2" style="font-size: 1.5rem;"></i>
+                                    <h6 class="mb-0 font-weight-bold">{{ __('Home Visits') }}</h6>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="text-muted small">{{ __('Total Earnings') }}</div>
+                                    <div class="h5 font-weight-bold text-dark">${{ number_format($totalHomeVisitEarnings ?? 0, 2) }}</div>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('This Month') }}</div>
+                                        <div class="font-weight-bold text-success">${{ number_format($monthlyHomeVisitEarnings ?? 0, 2) }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('Available') }}</div>
+                                        <div class="font-weight-bold text-info">${{ number_format($homeVisitAvailable ?? 0, 2) }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-warning">
+                                        <i class="las la-clock"></i> {{ __('Pending') }}: ${{ number_format($homeVisitPending ?? 0, 2) }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Earnings -->
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100" style="border-left: 4px solid #10b8c4 !important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="las la-book text-info mr-2" style="font-size: 1.5rem;"></i>
+                                    <h6 class="mb-0 font-weight-bold">{{ __('Courses') }}</h6>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="text-muted small">{{ __('Total Earnings') }}</div>
+                                    <div class="h5 font-weight-bold text-dark">${{ number_format($totalCourseEarnings ?? 0, 2) }}</div>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('This Month') }}</div>
+                                        <div class="font-weight-bold text-success">${{ number_format($monthlyCourseEarnings ?? 0, 2) }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('Available') }}</div>
+                                        <div class="font-weight-bold text-info">${{ number_format($courseAvailable ?? 0, 2) }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-warning">
+                                        <i class="las la-clock"></i> {{ __('Pending') }}: ${{ number_format($coursePending ?? 0, 2) }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clinic Earnings -->
+                        <div class="col-md-4 mb-3">
+                            <div class="border rounded p-3 h-100" style="border-left: 4px solid #ff9800 !important;">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="las la-hospital text-warning mr-2" style="font-size: 1.5rem;"></i>
+                                    <h6 class="mb-0 font-weight-bold">{{ __('Clinic') }}</h6>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="text-muted small">{{ __('Total Earnings') }}</div>
+                                    <div class="h5 font-weight-bold text-dark">${{ number_format($totalClinicEarnings ?? 0, 2) }}</div>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('This Month') }}</div>
+                                        <div class="font-weight-bold text-success">${{ number_format($monthlyClinicEarnings ?? 0, 2) }}</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="text-muted small">{{ __('Available') }}</div>
+                                        <div class="font-weight-bold text-info">${{ number_format($clinicAvailable ?? 0, 2) }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-warning">
+                                        <i class="las la-clock"></i> {{ __('Pending') }}: ${{ number_format($clinicPending ?? 0, 2) }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts & Tables Row -->
      <div class="row">
         <!-- Chart (Placeholder as implementation of charts requires JS libs) -->
@@ -149,15 +250,16 @@
                     <div class="table-responsive">
                          <table class="table table-hover mb-0">
                              <tbody>
-                                @forelse($transactions as $trx)
+                                @forelse($recentTransactions as $trx)
                                  <tr>
                                      <td class="pl-4">
-                                         <div class="font-weight-bold text-dark">{{ $trx->patient }}</div>
+                                         <div class="font-weight-bold text-dark">{{ $trx->source }}</div>
                                          <div class="small text-muted">{{ $trx->date }}</div>
+                                         <div class="small text-muted">{{ $trx->id }}</div>
                                      </td>
                                      <td class="text-right pr-4">
-                                          <div class="font-weight-bold {{ $trx->status == 'Completed' ? 'text-success' : 'text-warning' }}">+${{ number_format($trx->amount, 0) }}</div>
-                                         <div class="small text-muted badge {{ $trx->status == 'Completed' ? 'badge-light-success' : 'badge-light-warning' }}">{{ $trx->status }}</div>
+                                          <div class="font-weight-bold {{ $trx->status == 'Available' ? 'text-success' : ($trx->status == 'Pending' ? 'text-warning' : 'text-muted') }}">+${{ number_format($trx->amount, 2) }}</div>
+                                         <div class="small text-muted badge {{ $trx->status == 'Available' ? 'badge-light-success' : ($trx->status == 'Pending' ? 'badge-light-warning' : 'badge-light-secondary') }}">{{ $trx->status }}</div>
                                      </td>
                                  </tr>
                                 @empty

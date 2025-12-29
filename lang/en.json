@@ -595,5 +595,22 @@
     "Average Rating": "Average Rating",
     "Years Experience": "Years Experience",
     "Response Time": "Response Time",
-    "Within 2 hours": "Within 2 hours"
+    "Within 2 hours": "Within 2 hours",
+    "Course created successfully! Please wait for review.": "Course created successfully! Please wait for review.",
+    "Earnings by Source": "Earnings by Source",
+    "Home Visits": "Home Visits",
+    "Courses": "Courses",
+    "Clinic": "Clinic",
+    "Pending": "Pending",
+    "All Earnings by Source": "All Earnings by Source",
+    "All Sources": "All Sources",
+    "All Statuses": "All Statuses",
+    "On Hold": "On Hold",
+    "Paid": "Paid",
+    "All Users": "All Users",
+    "Filter": "Filter",
+    "Platform Fee": "Platform Fee",
+    "Net Earnings": "Net Earnings",
+    "View": "View",
+    "No transactions found": "No transactions found"
 }

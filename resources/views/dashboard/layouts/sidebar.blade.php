@@ -92,6 +92,7 @@
                   <ul style="font-size: 0.9em;">
                       @can('financials-index')
                       <li><a href="{{ route('dashboard.payments.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Earnings & Payouts") }}</a></li>
+                      <li><a href="{{ route('dashboard.earnings.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Earnings by Source") }}</a></li>
                       @endcan
                       @if(auth()->user()->type === 'vendor')
                       <li><a href="{{ route('dashboard.vendor.wallet') }}"><i class="bi bi-arrow-right-short"></i>{{ __("My Wallet") }}</a></li>
