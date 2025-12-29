@@ -173,6 +173,13 @@ foreach ($supportedLocales as $locale) {
         // Route::post('/therapist/visits/{visit}/status', [App\Http\Controllers\Therapist\VisitManagementController::class, 'updateStatus'])->name('therapist.visits.status');
         // Route::post('/therapist/visits/{visit}/complete', [App\Http\Controllers\Therapist\VisitManagementController::class, 'complete'])->name('therapist.visits.complete');
 
+        // Help Center Routes
+        Route::controller(App\Http\Controllers\Web\HelpCenterController::class)->prefix('help')->name('help.')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/{category}', 'category')->name('category');
+            Route::get('/{category}/{article}', 'article')->name('article');
+        });
+
         // Feed Routes (Public)
         Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name('feed.index');
         Route::post('/feed', [App\Http\Controllers\Web\FeedController::class, 'store'])->name('feed.store'); // New
