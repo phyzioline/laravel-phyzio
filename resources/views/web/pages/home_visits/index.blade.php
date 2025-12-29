@@ -309,9 +309,10 @@
                 <!-- Results -->
                 <div class="col-lg-9">
                     @forelse($therapists as $therapist)
-                    <div class="card border-0 shadow-sm mb-4 hover-card">
+                    <div class="card border-0 shadow-sm mb-4 hover-card" style="border-radius: 12px; overflow: hidden;">
                         <div class="card-body p-4">
-                            <div class="row">
+                            <div class="row align-items-center">
+                                <!-- Profile Photo - Square with Rounded Corners -->
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
                                     <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="d-inline-block">
                                         @php
@@ -329,55 +330,92 @@
                                                         : asset('web/assets/images/default-user.png')));
                                         @endphp
                                         <img src="{{ $imageUrl }}" 
-                                             class="rounded-circle img-fluid mb-2" 
-                                             style="width: 250px; height: 250px; object-fit: cover; border: 5px solid #02767F; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: transform 0.3s ease;"
-                                             onmouseover="this.style.transform='scale(1.05)'"
-                                             onmouseout="this.style.transform='scale(1)'"
+                                             class="img-fluid therapist-photo-square" 
+                                             style="width: 200px; height: 200px; object-fit: cover; border-radius: 12px; border: 4px solid #02767F; box-shadow: 0 8px 16px rgba(2,118,127,0.2); transition: all 0.3s ease;"
+                                             onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 24px rgba(2,118,127,0.3)'"
+                                             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 16px rgba(2,118,127,0.2)'"
                                              onerror="this.src='{{ asset('web/assets/images/default-user.png') }}'"
                                              alt="{{ $therapist->user->name ?? 'Therapist' }} {{ __('Profile Photo') }}">
                                     </a>
                                 </div>
+                                
+                                <!-- Therapist Info -->
                                 <div class="col-md-6">
-                                    <h4 class="font-weight-bold mb-1">
-                                        <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="text-dark text-decoration-none">
-                                            {{ $therapist->user->name }}
-                                        </a>
-                                    </h4>
-                                    <p class="text-muted mb-2">{{ $therapist->specialization }}</p>
+                                    <div class="d-flex align-items-start justify-content-between mb-2">
+                                        <div>
+                                            <h4 class="font-weight-bold mb-1" style="color: #02767F;">
+                                                <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="text-decoration-none" style="color: #02767F;">
+                                                    {{ $therapist->user->name }}
+                                                </a>
+                                            </h4>
+                                            <p class="text-muted mb-2 small" style="font-size: 0.95rem;">
+                                                <i class="las la-user-md" style="color: #02767F;"></i> 
+                                                <strong>{{ $therapist->specialization }}</strong>
+                                            </p>
+                                        </div>
+                                        <!-- Availability Badge -->
+                                        <span class="badge badge-success px-3 py-2" style="background-color: #10b8c4; border-radius: 20px;">
+                                            <i class="las la-check-circle"></i> {{ __('Available') }}
+                                        </span>
+                                    </div>
                                     
+                                    <!-- Rating -->
                                     <div class="mb-2">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <i class="las la-star {{ $i <= $therapist->rating ? 'text-warning' : 'text-muted' }}"></i>
-                                        @endfor
-                                        <span class="text-muted small">({{ $therapist->total_reviews }} {{ __('reviews') }})</span>
+                                        <div class="d-flex align-items-center">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="las la-star {{ $i <= ($therapist->rating ?? 0) ? 'text-warning' : 'text-muted' }}" style="font-size: 1.1rem;"></i>
+                                            @endfor
+                                            <span class="text-muted small ml-2">
+                                                <strong>{{ number_format($therapist->rating ?? 0, 1) }}</strong> 
+                                                ({{ $therapist->total_reviews ?? 0 }} {{ __('reviews') }})
+                                            </span>
+                                        </div>
                                     </div>
                                     
-                                    <p class="mb-2 text-muted" style="font-size: 14px;">
-                                        <i class="las la-briefcase text-primary scale-110 mr-1"></i> 
-                                        <strong>{{ $therapist->years_experience }}+ {{ __('Years Exp.') }}</strong>
-                                    </p>
+                                    <!-- Details with Icons -->
+                                    <div class="mb-2">
+                                        <p class="mb-1 text-muted small" style="font-size: 0.9rem;">
+                                            <i class="las la-briefcase" style="color: #02767F; width: 20px;"></i> 
+                                            <strong>{{ $therapist->years_experience ?? 0 }}+</strong> {{ __('Years Experience') }}
+                                        </p>
+                                        <p class="mb-1 text-muted small" style="font-size: 0.9rem;">
+                                            <i class="las la-map-marker-alt" style="color: #02767F; width: 20px;"></i> 
+                                            <strong>{{ __('Available in') }}:</strong> 
+                                            {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 2)) }}
+                                            @if(count($therapist->available_areas ?? []) > 2)
+                                                <span class="text-primary">+{{ count($therapist->available_areas) - 2 }} {{ __('more') }}</span>
+                                            @endif
+                                        </p>
+                                        <p class="mb-1 text-muted small" style="font-size: 0.9rem;">
+                                            <i class="las la-clock" style="color: #10b8c4; width: 20px;"></i> 
+                                            <strong>{{ __('Response Time') }}:</strong> {{ __('Within 2 hours') }}
+                                        </p>
+                                    </div>
                                     
-                                    <p class="mb-2 small text-muted">
-                                        <i class="las la-map-marker text-primary"></i> 
-                                        {{ __('Available in') }}: {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 3)) }}
-                                        {{ count($therapist->available_areas ?? []) > 3 ? '+'.(count($therapist->available_areas)-3).' '.__('more') : '' }}
+                                    <!-- Bio Preview -->
+                                    @if($therapist->bio)
+                                    <p class="mb-0 small text-muted" style="font-size: 0.85rem; line-height: 1.5;">
+                                        {{ Str::limit($therapist->bio, 120) }}
                                     </p>
-                                    
-                                    <p class="mb-0 small">
-                                        {{ Str::limit($therapist->bio, 100) }}
-                                    </p>
+                                    @endif
                                 </div>
-                                <div class="col-md-3 text-center border-left">
-                                    <div class="mb-3">
-                                        <span class="d-block text-muted small">{{ __('Home Visit Fees') }}</span>
-                                        <span class="h4 font-weight-bold text-primary">{{ $therapist->home_visit_rate }} {{ __('EGP') }}</span>
+                                
+                                <!-- Pricing & Actions -->
+                                <div class="col-md-3 text-center">
+                                    <div class="pricing-box p-3 mb-3" style="background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%); border-radius: 10px; color: white;">
+                                        <span class="d-block text-white-50 small mb-1" style="font-size: 0.85rem;">{{ __('Home Visit Fees') }}</span>
+                                        <span class="h3 font-weight-bold text-white mb-0">{{ number_format($therapist->home_visit_rate ?? 0, 2) }} {{ __('EGP') }}</span>
                                     </div>
                                     
-                                    <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold mb-2 shadow-lg" style="background-color: #02767F; border-bottom: 3px solid #FFD700; transition: all 0.3s ease;">
-                                        {{ __('Book Now') }}
+                                    <a href="{{ url('/home_visits/book/'.$therapist->id) }}" 
+                                       class="btn btn-block text-white font-weight-bold mb-2 shadow-lg therapist-book-btn" 
+                                       style="background-color: #02767F; border: none; border-radius: 8px; padding: 12px; font-size: 1rem; transition: all 0.3s ease;">
+                                        <i class="las la-calendar-check mr-1"></i> {{ __('Book Now') }}
                                     </a>
-                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="btn btn-block btn-outline-info btn-sm font-weight-bold" style="color: #02767F; border-color: #02767F;">
-                                        {{ __('View Profile') }}
+                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" 
+                                       class="btn btn-block btn-outline-primary font-weight-bold" 
+                                       style="color: #02767F; border-color: #02767F; border-radius: 8px; padding: 10px; transition: all 0.3s ease;">
+                                        <i class="las la-user-circle mr-1"></i> {{ __('View Profile') }}
                                     </a>
                                 </div>
                             </div>
@@ -402,10 +440,54 @@
 
 <style>
 .hover-card {
-    transition: transform 0.2s;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(2,118,127,0.1) !important;
 }
 .hover-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(2,118,127,0.15) !important;
+    border-color: rgba(2,118,127,0.3) !important;
+}
+
+/* Therapist Photo Square with Rounded Corners */
+.therapist-photo-square {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Book Button Hover Effect */
+.therapist-book-btn:hover {
+    background-color: #10b8c4 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(2,118,127,0.3) !important;
+}
+
+.therapist-book-btn:active {
+    transform: translateY(0);
+}
+
+/* Pricing Box Hover */
+.pricing-box {
+    transition: all 0.3s ease;
+}
+
+.hover-card:hover .pricing-box {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Availability Badge */
+.badge-success {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
 }
 
 /* Fix header overlap - Add padding for fixed header */
