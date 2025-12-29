@@ -218,12 +218,22 @@
                             <div class="row">
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
                                     <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="d-inline-block">
-                                        <img src="{{ $therapist->user->image ? asset($therapist->user->image) : asset('web/assets/images/default-user.png') }}" 
+                                        @php
+                                            $imageUrl = $therapist->user->image 
+                                                ? asset($therapist->user->image) 
+                                                : ($therapist->profile_photo 
+                                                    ? asset($therapist->profile_photo) 
+                                                    : ($therapist->profile_image 
+                                                        ? asset($therapist->profile_image) 
+                                                        : asset('web/assets/images/default-user.png')));
+                                        @endphp
+                                        <img src="{{ $imageUrl }}" 
                                              class="rounded-circle img-fluid mb-2" 
-                                             style="width: 180px; height: 180px; object-fit: cover; border: 4px solid #02767F; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease;"
+                                             style="width: 250px; height: 250px; object-fit: cover; border: 5px solid #02767F; box-shadow: 0 6px 12px rgba(0,0,0,0.15); transition: transform 0.3s ease;"
                                              onmouseover="this.style.transform='scale(1.05)'"
                                              onmouseout="this.style.transform='scale(1)'"
-                                             alt="{{ $therapist->user->name }} Profile Photo">
+                                             onerror="this.src='{{ asset('web/assets/images/default-user.png') }}'"
+                                             alt="{{ $therapist->user->name }} {{ __('Profile Photo') }}">
                                     </a>
                                 </div>
                                 <div class="col-md-6">

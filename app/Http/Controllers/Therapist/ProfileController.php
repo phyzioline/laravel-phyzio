@@ -57,7 +57,7 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_image')) {
             // Validate image
             $request->validate([
-                'profile_image' => 'image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
+                'profile_image' => 'image|mimes:jpeg,png,jpg,gif,webp|max:5120', // 5MB max
             ]);
             
             // Delete old image if exists
@@ -73,27 +73,50 @@ class ProfileController extends Controller
                 }
             }
             
+            // Delete old profile photo if exists
+            if ($profile->profile_photo) {
+                $oldProfilePhotoPath = public_path($profile->profile_photo);
+                if (file_exists($oldProfilePhotoPath)) {
+                    @unlink($oldProfilePhotoPath);
+                }
+                $oldProfilePhotoStorage = storage_path('app/public/' . str_replace('storage/', '', $profile->profile_photo));
+                if (file_exists($oldProfilePhotoStorage)) {
+                    @unlink($oldProfilePhotoStorage);
+                }
+            }
+            
             // Store new image
-            $path = $request->file('profile_image')->store('profiles', 'public');
+            $path = $request->file('profile_image')->store('therapists/photos', 'public');
             $imagePath = 'storage/' . $path;
             
             // Update user image
             $user->update(['image' => $imagePath]);
             
-            // Also update therapist profile if it has an image field
-            $profile->update(['profile_image' => $imagePath]);
+            // Update therapist profile with both profile_photo and profile_image for compatibility
+            $profile->update([
+                'profile_photo' => $imagePath,
+                'profile_image' => $imagePath
+            ]);
         }
 
         // Update profile data (preserve existing status if set)
-        $profile->update($data);
-        
-        // Note: We don't change verification_status, profile_visibility, or status here
-        // These should be managed by admin verification process
-        // However, if profile was just created and user is already verified, ensure status is set
-        if (!$profile->status && $user->verification_status === 'approved' && $user->profile_visibility === 'visible') {
-            $profile->update(['status' => 'approved']);
+        try {
+            $profile->update($data);
+            
+            // Note: We don't change verification_status, profile_visibility, or status here
+            // These should be managed by admin verification process
+            // However, if profile was just created and user is already verified, ensure status is set
+            if (!$profile->status && $user->verification_status === 'approved' && $user->profile_visibility === 'visible') {
+                $profile->update(['status' => 'approved']);
+            }
+            
+            // Refresh the profile to ensure all data is loaded
+            $profile->refresh();
+            
+            return redirect()->back()->with('success', __('Profile updated successfully.'));
+        } catch (\Exception $e) {
+            \Log::error('Profile update error: ' . $e->getMessage());
+            return redirect()->back()->with('error', __('Failed to update profile. Please try again.'));
         }
-
-        return redirect()->back()->with('success', 'Profile updated successfully.');
     }
 }
