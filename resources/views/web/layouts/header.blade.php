@@ -231,11 +231,13 @@ body.has-hero #header-section {
     justify-content: flex-end !important;
 }
 
-/* Fix Buttons Alignment */
+/* Fix Buttons Alignment - optimized for clean layout */
 #header-section .btns-group ul {
     display: flex !important;
     flex-wrap: nowrap !important;
-    gap: 15px;
+    gap: 10px !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
 }
 
 /* Header Icons - Always white */
@@ -339,29 +341,42 @@ body.has-hero #header-section {
 #header-section .container {
     max-width: 100% !important;
     padding: 0 30px !important;
+    overflow: visible !important;
+}
+
+/* Ensure columns don't shrink or wrap */
+#header-section .col-lg-2,
+#header-section .col-lg-7,
+#header-section .col-lg-3 {
+    flex-shrink: 0 !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
 }
 
 /* LOGO: stick fully left */
 #header-section .col-lg-2 {
     display: flex !important;
     justify-content: flex-start !important;
+    align-items: center !important;
 }
 
-/* MENU CENTERED */
+/* MENU CENTERED - optimized alignment */
 #header-section .col-lg-7 {
     display: flex !important;
     justify-content: center !important;
+    align-items: center !important;
 }
 
-/* ICONS: stick fully right */
+/* ICONS: stick fully right - optimized alignment */
 #header-section .col-lg-3 {
     display: flex !important;
     justify-content: flex-end !important;
+    align-items: center !important;
 }
 
-/* reduce spacing between menu items */
+/* reduce spacing between menu items - optimized for clean layout */
 .main-menu ul {
-    gap: 18px !important;
+    gap: 8px !important;
 }
 
 /* Hero goes under header — remove big gap */
@@ -393,31 +408,62 @@ body.has-hero .shop-hero-banner {
     font-size: 18px !important;
     margin-top: 10px !important;
 }
-/* Make menu text smaller & cleaner */
+/* Make menu text smaller & cleaner - optimized for clean layout */
 #header-section .main-menu ul li a {
-    font-size: 13px !important; /* ممكن نخليها 12px لو عايز أصغر */
-    padding: 4px 6px !important;
+    font-size: 13px !important;
+    padding: 6px 10px !important;
     font-weight: 600 !important;
+    line-height: 1.4 !important;
+    display: inline-block !important;
+    white-space: nowrap !important;
 }
 
-/* Fix spacing between items after text shrink */
+/* Fix spacing between items after text shrink - optimized spacing */
 .main-menu ul {
-    gap: 14px !important;
+    gap: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: nowrap !important;
 }
 
+/* Prevent text wrapping in header menu items - Fix for laptop 100% scale */
+#header-section .main-menu ul li {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
 
-/* Make menu text smaller & cleaner */
 #header-section .main-menu ul li a {
-    font-size: 13px !important; /* ممكن نخليها 12px لو عايز أصغر */
-    padding: 4px 6px !important;
-    font-weight: 600 !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+    word-break: keep-all !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 
-/* Fix spacing between items after text shrink */
-.main-menu ul {
-    gap: 14px !important;
+/* Ensure menu stays in one row */
+#header-section .main-menu ul {
+    flex-wrap: nowrap !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
 }
 
+/* Prevent header row from wrapping */
+#header-section .row {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+}
+
+/* Ensure buttons don't wrap */
+#header-section .btns-group ul {
+    flex-wrap: nowrap !important;
+    white-space: nowrap !important;
+}
+
+#header-section .btns-group ul li {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+}
 
 /* FORCE MENU, LOGIN, LOGO IN SAME ROW (RIGHT → LEFT) */
 .header-top-controls {
@@ -518,6 +564,64 @@ body.has-hero .shop-hero-banner {
 @media (min-width: 992px) {
     .btn-track-order-mobile {
         display: none !important;
+    }
+}
+
+/* Fix header text alignment for laptop screens at 100% zoom */
+@media (min-width: 992px) and (max-width: 1920px) {
+    /* Ensure menu items stay in place */
+    #header-section .main-menu ul li a {
+        white-space: nowrap !important;
+        display: inline-block !important;
+        word-break: keep-all !important;
+        overflow: visible !important;
+        line-height: 1.4 !important;
+        padding: 6px 10px !important;
+    }
+    
+    /* Prevent any wrapping in header */
+    #header-section .row {
+        flex-wrap: nowrap !important;
+        overflow: visible !important;
+        align-items: center !important;
+    }
+    
+    /* Ensure proper spacing without breaking - optimized for clean layout */
+    #header-section .main-menu ul {
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+    
+    /* Make sure buttons stay aligned with consistent spacing */
+    #header-section .btns-group ul {
+        gap: 10px !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        display: flex !important;
+    }
+    
+    /* Ensure all header elements are vertically centered */
+    #header-section .content-wrap {
+        align-items: center !important;
+    }
+    
+    /* Better column distribution */
+    #header-section .col-lg-2 {
+        flex: 0 0 15% !important;
+        max-width: 15% !important;
+    }
+    
+    #header-section .col-lg-7 {
+        flex: 0 0 55% !important;
+        max-width: 55% !important;
+    }
+    
+    #header-section .col-lg-3 {
+        flex: 0 0 30% !important;
+        max-width: 30% !important;
     }
 }
 

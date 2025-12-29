@@ -25,14 +25,14 @@
               </a>
               <div class="dropdown-menu dropdown-notify dropdown-menu-end shadow" style="width: 320px; max-height: 400px; overflow-y: auto;">
                 <div class="notify-header d-flex align-items-center justify-content-between border-bottom px-3 py-2">
-                   <h6 class="mb-0">Notifications</h6>
+                   <h6 class="mb-0">{{ __('Notifications') }}</h6>
                 </div>
                 <div class="notify-body">
                    @forelse(auth()->user()->unreadNotifications as $notification)
                        <a class="dropdown-item border-bottom py-2" href="javascript:;">
                            <div class="d-flex align-items-center gap-2">
                                <div class="flex-grow-1">
-                                  <p class="mb-0 small text-secondary">{{ $notification->data['message'] ?? 'New Notification' }}</p>
+                                  <p class="mb-0 small text-secondary">{{ $notification->data['message'] ?? __('New Notification') }}</p>
                                   <p class="mb-0 small text-muted" style="font-size: 10px;">{{ $notification->created_at->diffForHumans() }}</p>
                                 </div>
                            </div>
@@ -40,7 +40,7 @@
                    @empty
                        <div class="text-center p-3 text-secondary">
                            <i class="material-icons-outlined fs-3">notifications_off</i>
-                           <p class="mb-0">No new notifications</p>
+                           <p class="mb-0">{{ __('No new notifications') }}</p>
                        </div>
                    @endforelse
                 </div>
@@ -61,10 +61,10 @@
             </a>
 
             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('therapist.dashboard') }}"><i
-                class="material-icons-outlined">dashboard</i>Dashboard</a>
+                class="material-icons-outlined">dashboard</i>{{ __('Dashboard') }}</a>
             <hr class="dropdown-divider">
             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('logout') }}"><i
-                class="material-icons-outlined">power_settings_new</i>Logout</a>
+                class="material-icons-outlined">power_settings_new</i>{{ __('Logout') }}</a>
           </div>
         </li>
       </ul>

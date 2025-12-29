@@ -20,7 +20,7 @@
         <div class="col-md-12">
             <div class="card border-primary shadow-lg">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Active Home Visit: {{ $activeVisit->patient->name ?? 'Patient' }}</h4>
+                    <h4 class="mb-0">{{ __('Active Home Visit') }}: {{ $activeVisit->patient->name ?? __('Patient') }}</h4>
                     <span class="badge badge-light text-primary p-2">{{ strtoupper($activeVisit->status) }}</span>
                 </div>
                 <div class="card-body">
@@ -28,22 +28,22 @@
                         <div class="col-md-6">
                             <p><i class="las la-map-marker"></i> {{ $activeVisit->address }}</p>
                             <a href="https://maps.google.com/?q={{ $activeVisit->location_lat }},{{ $activeVisit->location_lng }}" target="_blank" class="btn btn-outline-primary">
-                                <i class="las la-directions"></i> Open Navigation
+                                <i class="las la-directions"></i> {{ __('Open Navigation') }}
                             </a>
                         </div>
                         <div class="col-md-6 text-center border-left">
                             @if($activeVisit->status == 'accepted')
                                 <form action="{{ route('therapist.home_visits.status', $activeVisit->id) }}" method="POST">
                                     @csrf <input type="hidden" name="status" value="on_way">
-                                    <button class="btn btn-warning btn-lg btn-block">Start Trip <i class="las la-car"></i></button>
+                                    <button class="btn btn-warning btn-lg btn-block">{{ __('Start Trip') }} <i class="las la-car"></i></button>
                                 </form>
                             @elseif($activeVisit->status == 'on_way')
                                 <form action="{{ route('therapist.home_visits.status', $activeVisit->id) }}" method="POST">
                                     @csrf <input type="hidden" name="status" value="in_session">
-                                    <button class="btn btn-success btn-lg btn-block">Arrived <i class="las la-check-circle"></i></button>
+                                    <button class="btn btn-success btn-lg btn-block">{{ __('Arrived') }} <i class="las la-check-circle"></i></button>
                                 </form>
                             @elseif($activeVisit->status == 'in_session')
-                                <button class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#completeVisitModal">Complete Session <i class="las la-file-medical"></i></button>
+                                <button class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#completeVisitModal">{{ __('Complete Session') }} <i class="las la-file-medical"></i></button>
                             @endif
                         </div>
                     </div>
@@ -172,7 +172,7 @@
                                 @empty
                                 <tr>
                                     <td colspan="6" class="text-center py-4">
-                                         <div class="text-gray-500">No upcoming home visits found.</div>
+                                         <div class="text-gray-500">{{ __('No upcoming home visits found.') }}</div>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -204,7 +204,7 @@
                                     </td>
                                 </tr>
                                 @empty
-                                     <tr><td colspan="4" class="text-center">No past home visits.</td></tr>
+                                     <tr><td colspan="4" class="text-center">{{ __('No past home visits.') }}</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -226,10 +226,10 @@
                                 <tr>
                                     <td>{{ $appointment->patient->name ?? 'Unknown' }}</td>
                                     <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}</td>
-                                    <td>{{ $appointment->notes ?? 'No reason provided' }}</td>
+                                    <td>{{ $appointment->notes ?? __('No reason provided') }}</td>
                                 </tr>
                                 @empty
-                                     <tr><td colspan="3" class="text-center">No cancelled home visits.</td></tr>
+                                     <tr><td colspan="3" class="text-center">{{ __('No cancelled home visits.') }}</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -241,11 +241,11 @@
                         <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                             <thead class="bg-light text-dark">
                                 <tr>
-                                    <th>Urgency</th>
-                                    <th>Condition</th>
-                                    <th>Location</th>
-                                    <th>Time</th>
-                                    <th>Action</th>
+                                    <th>{{ __('Urgency') }}</th>
+                                    <th>{{ __('Condition') }}</th>
+                                    <th>{{ __('Location') }}</th>
+                                    <th>{{ __('Time') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -253,9 +253,9 @@
                                 <tr>
                                     <td>
                                         @if($visit->urgency == 'urgent')
-                                            <span class="badge badge-danger">URGENT</span>
+                                            <span class="badge badge-danger">{{ __('URGENT') }}</span>
                                         @else
-                                            <span class="badge badge-primary">Scheduled</span>
+                                            <span class="badge badge-primary">{{ __('Scheduled') }}</span>
                                         @endif
                                     </td>
                                     <td>{{ $visit->complain_type }}</td>
@@ -264,12 +264,12 @@
                                     <td>
                                         <form action="{{ route('therapist.home_visits.accept', $visit->id) }}" method="POST">
                                             @csrf
-                                            <button class="btn btn-sm btn-primary">Accept Visit</button>
+                                            <button class="btn btn-sm btn-primary">{{ __('Accept Visit') }}</button>
                                         </form>
                                     </td>
                                 </tr>
                                 @empty
-                                    <tr><td colspan="5" class="text-center">No new visit requests nearby.</td></tr>
+                                    <tr><td colspan="5" class="text-center">{{ __('No new visit requests nearby.') }}</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -288,32 +288,32 @@
             <form action="{{ route('therapist.home_visits.complete', $activeVisit->id) }}" method="POST">
                 @csrf
                 <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title">Complete Visit & Clinical Notes</h5>
+                    <h5 class="modal-title">{{ __('Complete Visit & Clinical Notes') }}</h5>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Chief Complaint</label>
+                        <label>{{ __('Chief Complaint') }}</label>
                         <input type="text" name="chief_complaint" class="form-control" required>
                     </div>
                     <div class="form-group">
-                        <label>Assessment Findings</label>
+                        <label>{{ __('Assessment Findings') }}</label>
                         <textarea name="assessment_findings[]" class="form-control" rows="2"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Treatment Performed</label>
+                        <label>{{ __('Treatment Performed') }}</label>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" name="treatment_performed[]" value="Manual Therapy" class="custom-control-input" id="tx_manual">
-                            <label class="custom-control-label" for="tx_manual">Manual Therapy</label>
+                            <label class="custom-control-label" for="tx_manual">{{ __('Manual Therapy') }}</label>
                         </div>
                          <div class="custom-control custom-checkbox">
                             <input type="checkbox" name="treatment_performed[]" value="TherEx" class="custom-control-input" id="tx_ex">
-                            <label class="custom-control-label" for="tx_ex">Therapeutic Exercise</label>
+                            <label class="custom-control-label" for="tx_ex">{{ __('Therapeutic Exercise') }}</label>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-info">Submit & Finish</button>
+                    <button type="submit" class="btn btn-info">{{ __('Submit & Finish') }}</button>
                 </div>
             </form>
         </div>
