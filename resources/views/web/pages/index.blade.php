@@ -172,7 +172,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-6 order-lg-last">
                         <div class="service-image shadow-lg rounded overflow-hidden">
-                            <img src="{{ asset('web/assets/images/home_visit_illustration.jpg') }}" onerror="this.src='https://via.placeholder.com/600x400?text=Home+Visits'" alt="Home Visits" class="img-fluid w-100">
+                            <img src="{{ asset('web/assets/images/home_visit_illustration.webp') }}" onerror="this.src='{{ asset('web/assets/images/home_visit_illustration.png') }}'" alt="Home Visits" class="img-fluid w-100">
                         </div>
                     </div>
                     <div class="col-lg-6">
