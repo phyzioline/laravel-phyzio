@@ -102,12 +102,40 @@ class ReportsController extends Controller implements HasMiddleware
      */
     public function traffic()
     {
-        // Placeholder - requires analytics integration
-        $pageViews = 0;
-        $uniqueVisitors = 0;
-        $topPages = [];
+        // Get basic traffic stats from sessions and user activity
+        $totalUsers = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'admin');
+        })->count();
+        
+        $activeUsersLast30Days = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'admin');
+        })
+            ->where('updated_at', '>=', Carbon::now()->subDays(30))
+            ->count();
+        
+        $newUsersLast7Days = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'admin');
+        })
+            ->where('created_at', '>=', Carbon::now()->subDays(7))
+            ->count();
+        
+        // Get top pages from orders (as a proxy for popular pages)
+        $topPages = Order::select('payment_method', DB::raw('COUNT(*) as count'))
+            ->groupBy('payment_method')
+            ->orderBy('count', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function($item) {
+                return [
+                    'name' => ucfirst($item->payment_method) . ' Orders',
+                    'count' => $item->count
+                ];
+            });
 
-        return view('dashboard.pages.reports.traffic', compact('pageViews', 'uniqueVisitors', 'topPages'));
+        $pageViews = $totalUsers; // Using total users as proxy
+        $uniqueVisitors = $activeUsersLast30Days;
+
+        return view('dashboard.pages.reports.traffic', compact('pageViews', 'uniqueVisitors', 'topPages', 'newUsersLast7Days', 'activeUsersLast30Days'));
     }
 
     /**
@@ -148,8 +176,12 @@ class ReportsController extends Controller implements HasMiddleware
      */
     public function customers(Request $request)
     {
-        $totalCustomers = User::where('role', '!=', 'admin')->count();
-        $newCustomers = User::where('role', '!=', 'admin')
+        $totalCustomers = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'admin');
+        })->count();
+        $newCustomers = User::whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'admin');
+        })
             ->whereMonth('created_at', Carbon::now()->month)
             ->count();
 

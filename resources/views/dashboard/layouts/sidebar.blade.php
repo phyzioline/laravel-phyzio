@@ -47,19 +47,19 @@
                   </a>
                   <ul>
                       @can('products-index')
-                          <li><a href="{{ route('dashboard.products.index') }}"><i class="bi bi-arrow-right-short"></i>All Products</a></li>
+                          <li><a href="{{ route('dashboard.products.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Products") }}</a></li>
                       @endcan
                       @can('products-create')
-                          <li><a href="{{ route('dashboard.products.create') }}"><i class="bi bi-arrow-right-short"></i>Add Product</a></li>
+                          <li><a href="{{ route('dashboard.products.create') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Add Product") }}</a></li>
                       @endcan
                       @can('categories-index')
-                          <li><a href="{{ route('dashboard.categories.index') }}"><i class="bi bi-arrow-right-short"></i>Categories</a></li>
+                          <li><a href="{{ route('dashboard.categories.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Categories") }}</a></li>
                       @endcan
                       @can('sub_categories-index')
-                          <li><a href="{{ route('dashboard.sub_categories.index') }}"><i class="bi bi-arrow-right-short"></i>Sub Categories</a></li>
+                          <li><a href="{{ route('dashboard.sub_categories.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Sub Categories") }}</a></li>
                       @endcan
                       @can('tags-index')
-                          <li><a href="{{ route('dashboard.tags.index') }}"><i class="bi bi-arrow-right-short"></i>Tags</a></li>
+                          <li><a href="{{ route('dashboard.tags.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Tags") }}</a></li>
                       @endcan
                   </ul>
               </li>
@@ -73,11 +73,11 @@
                       <div class="menu-title">{{ __("Orders") }}</div>
                   </a>
                   <ul>
-                      <li><a href="{{ route('dashboard.orders.index') }}"><i class="bi bi-arrow-right-short"></i>Manage Orders</a></li>
-                      <li><a href="{{ route('dashboard.orders.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>Pending Orders</a></li>
-                      <li><a href="{{ route('dashboard.orders.index', ['status' => 'completed']) }}"><i class="bi bi-arrow-right-short"></i>Shipped Orders</a></li>
-                      <li><a href="{{ route('dashboard.order_cash') }}"><i class="bi bi-arrow-right-short"></i>Cash Orders</a></li>
-                      <li><a href="{{ route('dashboard.reports.orders') }}"><i class="bi bi-arrow-right-short"></i>Order Reports</a></li>
+                      <li><a href="{{ route('dashboard.orders.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Manage Orders") }}</a></li>
+                      <li><a href="{{ route('dashboard.orders.index', ['status' => 'pending']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Pending Orders") }}</a></li>
+                      <li><a href="{{ route('dashboard.orders.index', ['status' => 'completed']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Shipped Orders") }}</a></li>
+                      <li><a href="{{ route('dashboard.order_cash') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Cash Orders") }}</a></li>
+                      <li><a href="{{ route('dashboard.reports.orders') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Order Reports") }}</a></li>
                   </ul>
               </li>
               @endcan
@@ -141,11 +141,9 @@
                       <div class="menu-title">{{ __("Business Reports") }}</div>
                   </a>
                   <ul>
-                      <li><a href="{{ route('dashboard.reports.sales-dashboard') }}"><i class="bi bi-arrow-right-short"></i>Sales Dashboard</a></li>
-                      <li><a href="{{ route('dashboard.reports.sales') }}"><i class="bi bi-arrow-right-short"></i>Sales Reports</a></li>
-                      <li><a href="{{ route('dashboard.reports.traffic') }}"><i class="bi bi-arrow-right-short"></i>Traffic Reports</a></li>
-                      <li><a href="{{ route('dashboard.reports.product-performance') }}"><i class="bi bi-arrow-right-short"></i>Product Performance</a></li>
-                      <li><a href="{{ route('dashboard.reports.customers') }}"><i class="bi bi-arrow-right-short"></i>Customer Analytics</a></li>
+                      <li><a href="{{ route('dashboard.reports.sales-dashboard') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Sales Dashboard") }}</a></li>
+                      <li><a href="{{ route('dashboard.reports.sales') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Sales Reports") }}</a></li>
+                      <li><a href="{{ route('dashboard.reports.product-performance') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Product Performance") }}</a></li>
                   </ul>
               </li>
               @endcan
@@ -202,6 +200,8 @@
                           <ul>
                               <li><a href="{{ route('dashboard.users.index') }}"><i class="bi bi-circle"></i>{{ __("Manage Users") }}</a></li>
                               <li><a href="{{ route('dashboard.reports.customer-insights') }}"><i class="bi bi-circle"></i>{{ __("Customer Insights") }}</a></li>
+                              <li><a href="{{ route('dashboard.reports.customers') }}"><i class="bi bi-circle"></i>{{ __("Customer Analytics") }}</a></li>
+                              <li><a href="{{ route('dashboard.reports.traffic') }}"><i class="bi bi-circle"></i>{{ __("Traffic Reports") }}</a></li>
                           </ul>
                       </li>
                       @endcan
@@ -229,16 +229,16 @@
                           <li><a href="{{ route('dashboard.roles.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __('Roles & Permissions') }}</a></li>
                       @endcan
                       @can('setting-update')
-                          <li><a href="{{ route('dashboard.settings.show') }}"><i class="bi bi-arrow-right-short"></i>General Settings</a></li>
+                          <li><a href="{{ route('dashboard.settings.show') }}"><i class="bi bi-arrow-right-short"></i>{{ __("General Settings") }}</a></li>
                       @endcan
                       @can('shipping_policy-update')
-                          <li><a href="{{ route('dashboard.shipping_policy.show') }}"><i class="bi bi-arrow-right-short"></i>Shipping Policy</a></li>
+                          <li><a href="{{ route('dashboard.shipping_policy.show') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Shipping Policy") }}</a></li>
                       @endcan
                       @can('tearms_conditions-update')
-                          <li><a href="{{ route('dashboard.tearms_conditions.show') }}"><i class="bi bi-arrow-right-short"></i>Terms & Conditions</a></li>
+                          <li><a href="{{ route('dashboard.tearms_conditions.show') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Terms & Conditions") }}</a></li>
                       @endcan
                       @can('privacy_policy-update')
-                          <li><a href="{{ route('dashboard.privacy_policies.show') }}"><i class="bi bi-arrow-right-short"></i>Privacy Policy</a></li>
+                          <li><a href="{{ route('dashboard.privacy_policies.show') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Privacy Policy") }}</a></li>
                       @endcan
                   </ul>
               </li>
