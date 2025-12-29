@@ -20,8 +20,20 @@ class VerificationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::whereIn('type', ['vendor', 'company', 'therapist'])
-            ->where('verification_status', '!=', 'approved');
+        // Get users with pending general verifications
+        $userIds = User::whereIn('type', ['vendor', 'company', 'therapist'])
+            ->where('verification_status', '!=', 'approved')
+            ->pluck('id');
+
+        // Also include therapists with pending module verifications (even if general verification is approved)
+        $therapistIdsWithPendingModules = TherapistModuleVerification::whereIn('status', ['pending', 'under_review'])
+            ->pluck('user_id')
+            ->unique();
+
+        // Combine both sets of user IDs
+        $allUserIds = $userIds->merge($therapistIdsWithPendingModules)->unique();
+
+        $query = User::whereIn('id', $allUserIds);
 
         // Filter by status
         if ($request->has('status') && $request->status) {

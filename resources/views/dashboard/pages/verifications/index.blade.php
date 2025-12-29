@@ -59,10 +59,31 @@
                                     $progress = $user->getVerificationProgress();
                                     $docCount = $user->documents()->count();
                                     $approvedCount = $user->documents()->where('status', 'approved')->count();
+                                    
+                                    // Check for pending module verifications (for therapists)
+                                    $pendingModules = [];
+                                    if ($user->type === 'therapist') {
+                                        $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+                                        if ($therapistProfile) {
+                                            $moduleVerifications = \App\Models\TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
+                                                ->whereIn('status', ['pending', 'under_review'])
+                                                ->get();
+                                            foreach ($moduleVerifications as $mv) {
+                                                $pendingModules[] = ucfirst(str_replace('_', ' ', $mv->module_type));
+                                            }
+                                        }
+                                    }
                                 @endphp
-                                <tr>
+                                <tr class="{{ !empty($pendingModules) ? 'table-warning' : '' }}">
                                     <td>{{ $user->id }}</td>
-                                    <td>{{ $user->name }}</td>
+                                    <td>
+                                        {{ $user->name }}
+                                        @if(!empty($pendingModules))
+                                            <span class="badge bg-warning ms-2" title="{{ __('Pending Module Verifications') }}">
+                                                <i class="fas fa-exclamation-triangle"></i> {{ count($pendingModules) }}
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td>{{ $user->email }}</td>
                                     <td>
                                         <span class="badge bg-info">{{ ucfirst($user->type) }}</span>
@@ -80,6 +101,11 @@
                                     </td>
                                     <td>
                                         <small>{{ $approvedCount }}/{{ $docCount }} {{ __('approved') }}</small>
+                                        @if(!empty($pendingModules))
+                                            <br><small class="text-warning">
+                                                <i class="fas fa-clock"></i> {{ __('Modules pending:') }} {{ implode(', ', $pendingModules) }}
+                                            </small>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="progress" style="height: 20px;">

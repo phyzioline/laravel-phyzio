@@ -52,13 +52,29 @@ class VerificationController extends Controller
         $user = Auth::user();
 
         $requiredDocuments = $user->getRequiredDocuments();
-        $userDocuments = $user->documents()->get()->keyBy('document_type');
+        $userDocuments = $user->documents()->get()->keyBy(function($doc) {
+            return $doc->document_type . '_' . ($doc->module_type ?? 'general');
+        });
         $progress = $user->getVerificationProgress();
+
+        // Get module verification status for therapists
+        $moduleVerifications = null;
+        $therapistProfile = null;
+        if ($user->type === 'therapist') {
+            $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+            if ($therapistProfile) {
+                $moduleVerifications = \App\Models\TherapistModuleVerification::where('therapist_profile_id', $therapistProfile->id)
+                    ->get()
+                    ->keyBy('module_type');
+            }
+        }
 
         return view('web.auth.verification-center', [
             'requiredDocuments' => $requiredDocuments,
             'userDocuments' => $userDocuments,
             'progress' => $progress,
+            'therapistProfile' => $therapistProfile,
+            'moduleVerifications' => $moduleVerifications,
         ]);
     }
 
@@ -70,10 +86,12 @@ class VerificationController extends Controller
         $request->validate([
             'document_type' => 'required|string',
             'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'module_type' => 'nullable|string|in:home_visit,courses,clinic',
         ]);
 
         $user = Auth::user();
         $documentType = $request->input('document_type');
+        $moduleType = $request->input('module_type');
 
         // Verify document type is required for this user
         $requiredDoc = DB::table('required_documents')
@@ -93,6 +111,7 @@ class VerificationController extends Controller
             [
                 'user_id' => $user->id,
                 'document_type' => $documentType,
+                'module_type' => $moduleType, // Store module type if provided
             ],
             [
                 'file_path' => $filePath,
@@ -100,13 +119,35 @@ class VerificationController extends Controller
             ]
         );
 
+        // If this is a module-specific document, create/update module verification request
+        if ($moduleType && $user->type === 'therapist') {
+            $therapistProfile = \App\Models\TherapistProfile::where('user_id', $user->id)->first();
+            if ($therapistProfile) {
+                \App\Models\TherapistModuleVerification::updateOrCreate(
+                    [
+                        'therapist_profile_id' => $therapistProfile->id,
+                        'user_id' => $user->id,
+                        'module_type' => $moduleType,
+                    ],
+                    [
+                        'status' => 'under_review', // Set to under_review when documents are uploaded
+                    ]
+                );
+            }
+        }
+
         // Update user verification status to 'under_review' when documents are uploaded
         // This applies to: pending, rejected, or null status
         if (in_array($user->verification_status, ['pending', 'rejected', null])) {
             $user->update(['verification_status' => 'under_review']);
         }
 
-        return back()->with('success', __('Document uploaded successfully. It will be reviewed by our team.'));
+        $moduleName = $moduleType ? ucfirst(str_replace('_', ' ', $moduleType)) : '';
+        $message = $moduleName 
+            ? __('Document uploaded successfully for :module access. It will be reviewed by our team.', ['module' => $moduleName])
+            : __('Document uploaded successfully. It will be reviewed by our team.');
+
+        return back()->with('success', $message);
     }
 
     /**

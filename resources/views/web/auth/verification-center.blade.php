@@ -200,6 +200,142 @@
                         @endforeach
                     @endif
 
+                    @if(Auth::user()->type === 'therapist' && $therapistProfile)
+                    <!-- Module-Specific Documents for Therapists -->
+                    <div class="mt-5 mb-4">
+                        <h3 class="mb-4">{{ __('Module Access Documents') }}</h3>
+                        <p class="text-muted mb-4">{{ __('Upload documents to gain access to specific modules. Each module requires separate approval.') }}</p>
+                    </div>
+
+                    @foreach(['clinic' => ['name' => 'Clinic Access', 'icon' => 'hospital', 'description' => 'Upload clinic-related documents to access clinic features'], 'courses' => ['name' => 'Instructor/Course Access', 'icon' => 'book', 'description' => 'Upload instructor documents to create and publish courses'], 'home_visit' => ['name' => 'Home Visit Access', 'icon' => 'home', 'description' => 'Upload documents to provide home visit services']] as $moduleType => $moduleInfo)
+                        @php
+                            $moduleVerification = $moduleVerifications ? $moduleVerifications->get($moduleType) : null;
+                            $isVerified = $therapistProfile->canAccessModule($moduleType);
+                            $moduleStatus = $moduleVerification ? $moduleVerification->status : 'pending';
+                            
+                            // Get module-specific documents
+                            $moduleDocuments = Auth::user()->documents()->where('module_type', $moduleType)->get();
+                        @endphp
+                        <div class="card mb-4 border-{{ $isVerified ? 'success' : ($moduleStatus === 'rejected' ? 'danger' : ($moduleStatus === 'under_review' ? 'warning' : 'secondary')) }}">
+                            <div class="card-header bg-{{ $isVerified ? 'success' : ($moduleStatus === 'rejected' ? 'danger' : ($moduleStatus === 'under_review' ? 'warning' : 'light')) }} text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0">
+                                            <i class="fas fa-{{ $moduleInfo['icon'] }} mr-2"></i>
+                                            {{ $moduleInfo['name'] }}
+                                        </h5>
+                                        <small>{{ $moduleInfo['description'] }}</small>
+                                    </div>
+                                    <div>
+                                        @if($isVerified)
+                                            <span class="badge badge-success badge-lg">
+                                                <i class="fas fa-check-circle"></i> {{ __('Approved') }}
+                                            </span>
+                                        @elseif($moduleStatus === 'under_review')
+                                            <span class="badge badge-warning badge-lg">
+                                                <i class="fas fa-clock"></i> {{ __('Under Review') }}
+                                            </span>
+                                        @elseif($moduleStatus === 'rejected')
+                                            <span class="badge badge-danger badge-lg">
+                                                <i class="fas fa-times-circle"></i> {{ __('Rejected') }}
+                                            </span>
+                                        @else
+                                            <span class="badge badge-secondary badge-lg">
+                                                <i class="fas fa-hourglass-half"></i> {{ __('Not Applied') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                @if($moduleVerification && $moduleVerification->admin_note)
+                                    <div class="alert alert-{{ $moduleStatus === 'rejected' ? 'danger' : 'info' }}">
+                                        <strong>{{ __('Admin Note:') }}</strong> {{ $moduleVerification->admin_note }}
+                                    </div>
+                                @endif
+
+                                @if($moduleDocuments->count() > 0)
+                                    <div class="mb-3">
+                                        <strong>{{ __('Uploaded Documents:') }}</strong>
+                                        <ul class="list-group mt-2">
+                                            @foreach($moduleDocuments as $doc)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <i class="fas fa-file-pdf text-danger mr-2"></i>
+                                                        <a href="{{ asset($doc->file_path) }}" target="_blank" class="text-primary">
+                                                            {{ ucfirst(str_replace('_', ' ', $doc->document_type)) }}
+                                                        </a>
+                                                        <span class="badge badge-{{ $doc->status === 'approved' ? 'success' : ($doc->status === 'rejected' ? 'danger' : ($doc->status === 'under_review' ? 'warning' : 'info')) }} ml-2">
+                                                            {{ ucfirst($doc->status) }}
+                                                        </span>
+                                                    </div>
+                                                    @if($doc->status !== 'approved')
+                                                        <form action="{{ route('verification.delete-document', $doc->id) }}" 
+                                                              method="POST" 
+                                                              class="d-inline"
+                                                              onsubmit="return confirm('{{ __('Are you sure you want to delete this document?') }}');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if(!$isVerified)
+                                    <div class="mt-3">
+                                        <h6 class="mb-2">{{ __('Upload Documents for :module Access', ['module' => $moduleInfo['name']]) }}</h6>
+                                        <form action="{{ route('verification.upload-document') }}" 
+                                              method="POST" 
+                                              enctype="multipart/form-data">
+                                            @csrf
+                                            <input type="hidden" name="module_type" value="{{ $moduleType }}">
+                                            
+                                            <div class="form-group">
+                                                <label>{{ __('Document Type') }}</label>
+                                                <select name="document_type" class="form-control" required>
+                                                    <option value="">{{ __('Select document type') }}</option>
+                                                    @if($moduleType === 'clinic')
+                                                        <option value="clinic_license">{{ __('Clinic License') }}</option>
+                                                        <option value="clinic_registration">{{ __('Clinic Registration') }}</option>
+                                                        <option value="commercial_register">{{ __('Commercial Register') }}</option>
+                                                        <option value="tax_card">{{ __('Tax Card') }}</option>
+                                                    @elseif($moduleType === 'courses')
+                                                        <option value="instructor_certificate">{{ __('Instructor Certificate') }}</option>
+                                                        <option value="teaching_license">{{ __('Teaching License') }}</option>
+                                                        <option value="education_degree">{{ __('Education Degree') }}</option>
+                                                    @elseif($moduleType === 'home_visit')
+                                                        <option value="home_visit_license">{{ __('Home Visit License') }}</option>
+                                                        <option value="professional_certificate">{{ __('Professional Certificate') }}</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                            
+                                            <div class="upload-area" onclick="document.getElementById('module_file_{{ $moduleType }}').click()">
+                                                <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                                                <p class="mb-0">{{ __('Click to upload document') }}</p>
+                                                <small class="text-muted">{{ __('PDF, JPG, PNG (Max 10MB)') }}</small>
+                                            </div>
+                                            <input type="file" 
+                                                   id="module_file_{{ $moduleType }}" 
+                                                   name="document" 
+                                                   accept=".pdf,.jpg,.jpeg,.png" 
+                                                   style="display: none;"
+                                                   onchange="this.form.submit()"
+                                                   required>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                    @endif
+
                     <div class="text-center mt-4">
                         @php
                             $user = Auth::user();
