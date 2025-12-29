@@ -31,7 +31,7 @@
         </div>
         <div>
              <!-- Toggle Modal -->
-             <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#addSlotModal">
+             <button class="btn btn-primary shadow-sm" type="button" id="openAvailabilityModal">
                 <i class="las la-plus"></i> {{ __('Add Availability') }}
              </button>
         </div>
@@ -159,8 +159,8 @@
                     <input type="time" name="start_time" class="form-control" value="09:00" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                     <label class="form-label">End Time <span class="text-danger">*</span></label>
-                     <input type="time" name="end_time" class="form-control" value="17:00" required>
+                    <label class="form-label">End Time <span class="text-danger">*</span></label>
+                    <input type="time" name="end_time" class="form-control" value="17:00" required>
                 </div>
             </div>
             
@@ -195,15 +195,54 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // Ensure modal is properly initialized
-        var addSlotModal = new bootstrap.Modal(document.getElementById('addSlotModal'), {
-            backdrop: true,
-            keyboard: true,
-            focus: true
+        // Get modal element
+        var modalElement = document.getElementById('addSlotModal');
+        var addSlotModal = null;
+        
+        // Initialize Bootstrap modal
+        if (typeof bootstrap !== 'undefined') {
+            addSlotModal = new bootstrap.Modal(modalElement, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+        } else if (typeof $.fn.modal !== 'undefined') {
+            // Fallback to jQuery Bootstrap modal (Bootstrap 4)
+            $(modalElement).modal({
+                backdrop: true,
+                keyboard: true,
+                show: false
+            });
+        }
+        
+        // Handle button click to open modal
+        $('#openAvailabilityModal').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Remove any blocking overlays
+            $('.overlay').hide();
+            $('body').removeClass('toggled');
+            
+            // Reset form and errors
+            $('#addSlotModal form')[0].reset();
+            $('#days-error').hide();
+            $('.form-control').removeClass('is-invalid');
+            
+            // Show modal
+            if (addSlotModal) {
+                addSlotModal.show();
+            } else if (typeof $.fn.modal !== 'undefined') {
+                $(modalElement).modal('show');
+            } else {
+                // Fallback: show modal manually
+                $(modalElement).addClass('show').css('display', 'block');
+                $('body').append('<div class="modal-backdrop fade show"></div>');
+            }
         });
         
-        // Handle modal open
-        $('#addSlotModal').on('show.bs.modal', function () {
+        // Handle modal open event
+        $(modalElement).on('show.bs.modal', function () {
             // Remove any blocking overlays
             $('.overlay').hide();
             $('body').removeClass('toggled');
@@ -214,14 +253,21 @@
         });
         
         // Ensure modal content is clickable
-        $('#addSlotModal').on('shown.bs.modal', function () {
+        $(modalElement).on('shown.bs.modal', function () {
             $(this).css('pointer-events', 'auto');
             $('.modal-content', this).css('pointer-events', 'auto');
         });
         
-        // Fix backdrop click
-        $('.modal-backdrop').on('click', function() {
-            addSlotModal.hide();
+        // Handle close button
+        $(modalElement).find('.btn-close, [data-bs-dismiss="modal"], button[type="button"].btn-secondary').on('click', function() {
+            if (addSlotModal) {
+                addSlotModal.hide();
+            } else if (typeof $.fn.modal !== 'undefined') {
+                $(modalElement).modal('hide');
+            } else {
+                $(modalElement).removeClass('show').css('display', 'none');
+                $('.modal-backdrop').remove();
+            }
         });
         
         // Client-side form validation
@@ -263,6 +309,7 @@
             
             if (!isValid) {
                 e.preventDefault();
+                e.stopPropagation();
                 return false;
             }
         });
