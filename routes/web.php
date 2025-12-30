@@ -82,17 +82,17 @@ foreach ($supportedLocales as $locale) {
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name("web.shop.category.{$locale}");
           
           // Product tracking for metrics
-          Route::post('/products/{id}/track-click', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackClick'])->name('web.products.track-click');
-          Route::post('/products/{id}/track-add-to-cart', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackAddToCart'])->name('web.products.track-add-to-cart');
+          Route::post('/products/{id}/track-click', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackClick'])->name("web.products.track-click.{$locale}");
+          Route::post('/products/{id}/track-add-to-cart', [\App\Http\Controllers\Web\ProductTrackingController::class, 'trackAddToCart'])->name("web.products.track-add-to-cart.{$locale}");
         
-        Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name('web.jobs.index');
-        Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name('web.jobs.show');
-        Route::post('/jobs/{id}/apply', [App\Http\Controllers\Web\JobController::class, 'apply'])->name('web.jobs.apply');
+        Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name("web.jobs.index.{$locale}");
+        Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name("web.jobs.show.{$locale}");
+        Route::post('/jobs/{id}/apply', [App\Http\Controllers\Web\JobController::class, 'apply'])->name("web.jobs.apply.{$locale}");
 
         // Data Hub
-        Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name('web.datahub.index');
-        Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name('web.datahub.dashboard');
-        Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name('web.datahub.licensing');
+        Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name("web.datahub.index.{$locale}");
+        Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name("web.datahub.dashboard.{$locale}");
+        Route::get('/data-hub/licensing', [App\Http\Controllers\Web\DataHubController::class, 'licensing'])->name("web.datahub.licensing.{$locale}");
 
 
         // Cart routes - available to guests and authenticated users

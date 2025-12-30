@@ -72,7 +72,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <a href="{{ route('web.jobs.index') }}" class="text-muted font-weight-bold mb-3 d-inline-block hover-primary">
+                <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="text-muted font-weight-bold mb-3 d-inline-block hover-primary">
                     <i class="las la-arrow-left"></i> Back to Jobs
                 </a>
                 <h1 class="font-weight-bold text-dark display-5 mb-3">{{ $job->title }}</h1>
@@ -145,7 +145,7 @@
                                             Match Score {{ round($matchScore) }}%. Review skills before applying.
                                         </div>
                                     @endif
-                                    <form action="{{ route('web.jobs.apply', $job->id) }}" method="POST">
+                                    <form action="{{ route('web.jobs.apply.' . app()->getLocale(), $job->id) }}" method="POST">
                                         @csrf
                                         <div class="form-group">
                                             <textarea name="cover_letter" class="form-control bg-light border-0" placeholder="Optional Cover Letter..." rows="3"></textarea>
@@ -158,7 +158,7 @@
                             @else
                                  <div class="text-center p-3 bg-light rounded">
                                      <p class="mb-2 text-muted">Login as a therapist to apply.</p>
-                                     <a href="{{ route('web.jobs.index') }}" class="btn btn-outline-primary btn-sm rounded-pill">Browse More</a>
+                                     <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="btn btn-outline-primary btn-sm rounded-pill">Browse More</a>
                                  </div>
                             @endif
                         @else

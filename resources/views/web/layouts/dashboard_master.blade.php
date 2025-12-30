@@ -579,7 +579,7 @@
 
                 <!-- 7. Profile & Settings -->
                 <li>
-                    <a href="{{ route('company.profile.index') ?? route('company.dashboard') }}" class="{{ request()->routeIs('company.profile.*') ? 'active' : '' }}">
+                    <a href="{{ route('company.dashboard') }}" class="{{ request()->routeIs('company.dashboard') ? 'active' : '' }}">
                         <span class="las la-cog"></span>
                         <span>{{ __('Profile & Settings') }}</span>
                     </a>

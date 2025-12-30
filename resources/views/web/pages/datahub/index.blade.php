@@ -43,7 +43,7 @@
                         <p class="card-text text-muted mb-4">
                             {{ __('Explore interactive data on therapists, rehabilitation centers, and educational institutions across 100+ countries.') }}
                         </p>
-                        <a href="{{ route('web.datahub.dashboard') }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
+                        <a href="{{ route('web.datahub.dashboard.' . app()->getLocale()) }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
                             {{ __('Explore Dashboard') }}
                         </a>
                     </div>
@@ -61,7 +61,7 @@
                         <p class="card-text text-muted mb-4">
                             {{ __('Navigate the requirements for practicing physical therapy in renewed countries. Check equivalence and licensing steps.') }}
                         </p>
-                        <a href="{{ route('web.datahub.licensing') }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
+                        <a href="{{ route('web.datahub.licensing.' . app()->getLocale()) }}" class="btn btn-lg btn-teal text-white px-5 rounded-pill" style="background-color: #0d9488; border-color: #0d9488;">
                             {{ __('Start Guide') }}
                         </a>
                     </div>

@@ -339,7 +339,7 @@
     <!-- Enhanced Search Bar -->
     <div class="row mb-5">
         <div class="col-lg-11 mx-auto">
-            <form action="{{ route('web.jobs.index') }}" method="GET" class="filter-bar d-flex flex-wrap align-items-center justify-content-between">
+            <form action="{{ route('web.jobs.index.' . app()->getLocale()) }}" method="GET" class="filter-bar d-flex flex-wrap align-items-center justify-content-between">
                 <div class="flex-grow-1 mr-3 mb-2 mb-md-0">
                     <div class="input-group input-group-lg">
                         <div class="input-group-prepend">
@@ -392,7 +392,7 @@
                             <div class="d-flex align-items-start justify-content-between mb-2">
                                 <div class="flex-grow-1">
                                     <h5 class="mb-1">
-                                        <a href="{{ route('web.jobs.show', $job->id) }}" class="job-title-link">{{ $job->title }}</a>
+                                        <a href="{{ route('web.jobs.show.' . app()->getLocale(), $job->id) }}" class="job-title-link">{{ $job->title }}</a>
                                     </h5>
                                     <div class="mb-2">
                                         <span class="font-weight-semibold text-dark" style="font-size: 0.95rem;">
@@ -469,7 +469,7 @@
                         {{ __('We couldn\'t find any active job listings matching your criteria.') }}
                     </p>
                     <div class="d-flex flex-wrap justify-content-center gap-3">
-                        <a href="{{ route('web.jobs.index') }}" class="btn btn-outline-primary px-4 rounded-pill">
+                        <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="btn btn-outline-primary px-4 rounded-pill">
                             <i class="las la-redo mr-2"></i>{{ __('View All Jobs') }}
                         </a>
                         @auth

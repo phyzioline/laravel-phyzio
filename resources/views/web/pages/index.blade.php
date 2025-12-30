@@ -258,7 +258,7 @@
                             <p class="lead text-muted mb-4">
                                 {{ __('Connect with top clinics and hospitals. Post your vacancies and find the perfect physiotherapist candidates for your opportunities.') }}
                             </p>
-                            <a href="{{ route('web.jobs.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                            <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
                                 {{ __('Start Hiring') }}
                             </a>
                         </div>
@@ -1327,7 +1327,7 @@
                             <p class="lead text-muted mb-4">
                                 {{ __('Connect with top clinics, hospitals, and recruitment agencies. Whether you are looking for a full-time position or freelance opportunities, Phyzioline Jobs is your gateway.') }}
                             </p>
-                            <a href="{{ route('web.jobs.index') }}" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                            <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="btn btn-outline-primary btn-lg rounded-pill px-5">
                                 {{ __('Browse Jobs') }}
                             </a>
                         </div>
