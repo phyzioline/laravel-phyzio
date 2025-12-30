@@ -101,6 +101,65 @@ class HomeVisitController extends Controller
 
         // Get Therapist User ID
         $therapistProfile = \App\Models\TherapistProfile::findOrFail($request->therapist_id);
+        $requestedDateTime = \Carbon\Carbon::parse($request->appointment_date . ' ' . $request->appointment_time);
+
+        // ========================================
+        // CRITICAL: Check Therapist Availability
+        // ========================================
+        
+        // 1. Check if therapist has any conflicting visits at this time
+        $conflictingVisit = \App\Models\HomeVisit::where('therapist_id', $therapistProfile->user_id)
+            ->where(function($q) use ($requestedDateTime) {
+                // Check for visits scheduled within 2-hour window (default visit duration)
+                $endTime = $requestedDateTime->copy()->addHours(2);
+                $q->whereBetween('scheduled_at', [$requestedDateTime->copy()->subHours(2), $requestedDateTime])
+                  ->orWhereBetween('scheduled_at', [$requestedDateTime, $endTime]);
+            })
+            ->whereIn('status', ['pending', 'confirmed', 'in_progress', 'accepted', 'on_way', 'in_session'])
+            ->first();
+
+        if ($conflictingVisit) {
+            return back()->withErrors([
+                'appointment_time' => __('This therapist is not available at the selected time. Please choose another time or therapist.')
+            ])->withInput();
+        }
+
+        // 2. Check therapist schedule (if schedule model exists and has data)
+        $therapistSchedule = \App\Models\TherapistSchedule::where('therapist_id', $therapistProfile->user_id)
+            ->where('day_of_week', $requestedDateTime->dayOfWeek)
+            ->first();
+
+        if ($therapistSchedule) {
+            $requestedTime = $requestedDateTime->format('H:i:s');
+            
+            // Check if requested time falls within therapist's working hours
+            if ($requestedTime < $therapistSchedule->start_time || $requestedTime > $therapistSchedule->end_time) {
+                return back()->withErrors([
+                    'appointment_time' => __('This therapist is not available at this time. Working hours: :start - :end', [
+                        'start' => \Carbon\Carbon::parse($therapistSchedule->start_time)->format('g:i A'),
+                        'end' => \Carbon\Carbon::parse($therapistSchedule->end_time)->format('g:i A')
+                    ])
+                ])->withInput();
+            }
+        }
+
+        // 3. Check if appointment is in the past
+        if ($requestedDateTime->isPast()) {
+            return back()->withErrors([
+                'appointment_date' => __('Cannot book appointments in the past.')
+            ])->withInput();
+        }
+
+        // 4. Check if appointment is too soon (require at least 2 hours notice)
+        if ($requestedDateTime->diffInHours(now()) < 2) {
+            return back()->withErrors([
+                'appointment_date' => __('Please book at least 2 hours in advance.')
+            ])->withInput();
+        }
+
+        // ========================================
+        // End Availability Checking
+        // ========================================
 
         $visit = new \App\Models\HomeVisit();
         
@@ -181,24 +240,9 @@ class HomeVisitController extends Controller
             'exchanged_at' => now(),
         ]);
 
-        // Add earnings to therapist wallet when payment is processed
-        if ($visit->status === 'completed' && $visit->total_amount > 0) {
-            // Calculate platform fee (15% default)
-            $defaultCommissionRate = 15.00;
-            $platformFee = ($visit->total_amount * $defaultCommissionRate) / 100;
-            $therapistEarnings = $visit->total_amount - $platformFee;
-            
-            $payoutService = app(\App\Services\TherapistPayoutService::class);
-            $payoutService->addEarnings(
-                $visit->therapist_id, 
-                $visit->total_amount, 
-                14, 
-                'home_visit',
-                \App\Models\HomeVisit::class,
-                $visit->id,
-                $platformFee
-            );
-        }
+        // NOTE: Earnings will be added when visit is marked as 'completed'
+        // See Therapist/HomeVisitController::complete() method
+        // This ensures therapist only gets paid after service delivery
 
         return redirect()->route('web.home_visits.success', $id);
     }

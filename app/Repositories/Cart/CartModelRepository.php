@@ -148,4 +148,58 @@ class CartModelRepository implements CartRepository
             
         return view('web.pages.cart', compact('total'));
     }
+
+    /**
+     * Merge guest cart items to user cart when logging in.
+     * 
+     * @param int $userId The user ID to merge cart to
+     * @param string $cookieId The guest cart cookie ID
+     * @return void
+     */
+    public function mergeGuestCartToUser($userId, $cookieId)
+    {
+        if (!$userId || !$cookieId) {
+            return;
+        }
+
+        // Get all guest cart items
+        $guestCartItems = Cart::where('cookie_id', $cookieId)
+            ->whereNull('user_id')
+            ->with('product')
+            ->get();
+
+        if ($guestCartItems->isEmpty()) {
+            return;
+        }
+
+        foreach ($guestCartItems as $guestItem) {
+            // Check if user already has this product in cart
+            $existingItem = Cart::where('user_id', $userId)
+                ->where('product_id', $guestItem->product_id)
+                ->first();
+
+            if ($existingItem) {
+                // Merge quantities (check stock limit)
+                $product = $guestItem->product;
+                $newQuantity = $existingItem->quantity + $guestItem->quantity;
+                $availableStock = $product->amount ?? 0;
+
+                if ($newQuantity > $availableStock) {
+                    // Cap at available stock
+                    $newQuantity = $availableStock;
+                }
+
+                $existingItem->update(['quantity' => $newQuantity]);
+                
+                // Delete guest item after merge
+                $guestItem->delete();
+            } else {
+                // Transfer guest item to user
+                $guestItem->update([
+                    'user_id' => $userId,
+                    'cookie_id' => null
+                ]);
+            }
+        }
+    }
 }

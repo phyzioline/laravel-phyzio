@@ -77,6 +77,44 @@ class Clinic extends Model
     }
 
     /**
+     * Get all clinic staff members.
+     */
+    public function staff()
+    {
+        return $this->hasMany(ClinicStaff::class);
+    }
+
+    /**
+     * Get only active staff members.
+     */
+    public function activeStaff()
+    {
+        return $this->hasMany(ClinicStaff::class)->where('is_active', true);
+    }
+
+    /**
+     * Get staff members via many-to-many relationship.
+     */
+    public function staffMembers()
+    {
+        return $this->belongsToMany(User::class, 'clinic_staff')
+            ->withPivot(['role', 'is_active', 'hired_date', 'terminated_date'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get therapists assigned to this clinic.
+     */
+    public function therapists()
+    {
+        return $this->belongsToMany(User::class, 'clinic_staff')
+            ->wherePivot('role', 'therapist')
+            ->wherePivot('is_active', true)
+            ->withPivot(['hired_date'])
+            ->withTimestamps();
+    }
+
+    /**
      * Check if clinic has selected specialty
      */
     public function hasSelectedSpecialty(): bool

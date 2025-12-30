@@ -17,4 +17,6 @@ interface CartRepository
     public function flush();
 
     public function total();
+
+    public function mergeGuestCartToUser($userId, $cookieId);
 }

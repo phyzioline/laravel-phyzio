@@ -125,6 +125,24 @@ class User extends Authenticatable
     }
 
     /**
+     * Get clinic staff records for this user (therapist/doctor assigned to clinics).
+     */
+    public function clinicStaff()
+    {
+        return $this->hasMany(ClinicStaff::class);
+    }
+
+    /**
+     * Get clinics where this user is a staff member.
+     */
+    public function clinicsAsStaff()
+    {
+        return $this->belongsToMany(Clinic::class, 'clinic_staff')
+            ->withPivot(['role', 'is_active', 'hired_date', 'terminated_date'])
+            ->withTimestamps();
+    }
+
+    /**
      * Get user documents
      */
     public function documents()

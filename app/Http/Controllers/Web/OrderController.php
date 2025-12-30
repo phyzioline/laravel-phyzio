@@ -76,6 +76,61 @@ class OrderController extends Controller
         $data = $request->all();
 
         if ($data) {
+            // ========================================
+            // SECURITY: Verify Paymob HMAC Signature
+            // ========================================
+            $hmacSecret = config('paymob.hmac_secret', env('PAYMOB_HMAC_SECRET'));
+            
+            if ($hmacSecret) {
+                // Keys to concatenate for HMAC (order matters!)
+                $hmacKeys = [
+                    'amount_cents',
+                    'created_at',
+                    'currency',
+                    'error_occured',
+                    'has_parent_transaction',
+                    'id',
+                    'integration_id',
+                    'is_3d_secure',
+                    'is_auth',
+                    'is_capture',
+                    'is_refunded',
+                    'is_standalone_payment',
+                    'is_voided',
+                    'order',
+                    'owner',
+                    'pending',
+                    'source_data_pan',
+                    'source_data_sub_type',
+                    'source_data_type',
+                    'success',
+                ];
+
+                // Concatenate values
+                $concatenated = '';
+                foreach ($hmacKeys as $key) {
+                    $concatenated .= $data[$key] ?? '';
+                }
+
+                // Calculate HMAC
+                $computedHmac = hash_hmac('sha512', $concatenated, $hmacSecret);
+
+                // Verify signature
+                if (!isset($data['hmac']) || $computedHmac !== $data['hmac']) {
+                    \Log::warning('Payment callback HMAC verification failed', [
+                        'order_id' => $data['order'] ?? 'unknown',
+                        'ip' => $request->ip(),
+                        'computed' => $computedHmac,
+                        'received' => $data['hmac'] ?? 'missing'
+                    ]);
+                    
+                    abort(403, 'Invalid payment signature - possible fraud attempt');
+                }
+            }
+            // ========================================
+            // End HMAC Verification
+            // ========================================
+
             $order = Order::where('payment_id', $data['order'])->first();
 
             if (! $order) {
@@ -92,6 +147,10 @@ class OrderController extends Controller
                     'total'          => $balance,
                     'status'       => 'completed',
                 ]);
+
+                // Confirm stock reservation
+                $stockService = app(\App\Services\StockReservationService::class);
+                $stockService->confirmReservation($order);
                 
                 // Calculate Vendor Payments (Now Paid)
                 $this->orderService->calculateVendorPayments($order);

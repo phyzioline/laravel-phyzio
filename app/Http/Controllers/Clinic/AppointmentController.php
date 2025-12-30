@@ -14,6 +14,7 @@ use App\Services\Clinic\AppointmentOverlapService;
 use App\Services\Clinic\BillingAutomationService;
 use App\Services\Clinic\EquipmentAllocationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -88,7 +89,20 @@ class AppointmentController extends BaseClinicController
         }
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();
-        $therapists = User::where('type', 'therapist')->get();
+        
+        // CRITICAL FIX: Only get therapists assigned to THIS clinic
+        // Check if clinic_staff table exists, otherwise fallback to global query
+        if (Schema::hasTable('clinic_staff')) {
+            $therapists = User::where('type', 'therapist')
+                ->whereHas('clinicStaff', function($q) use ($clinic) {
+                    $q->where('clinic_id', $clinic->id)
+                      ->where('is_active', true);
+                })
+                ->get();
+        } else {
+            // Fallback: all therapists (for backwards compatibility until migration runs)
+            $therapists = User::where('type', 'therapist')->get();
+        }
         
         // Get specialty for form fields
         $specialty = $request->get('specialty', $clinic->primary_specialty);

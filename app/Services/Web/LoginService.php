@@ -35,6 +35,13 @@ class LoginService
             return redirect()->back();
         }
 
+        // Merge guest cart to user cart
+        $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+        if ($cookieId) {
+            $cartRepository = app(\App\Repositories\Cart\CartRepository::class);
+            $cartRepository->mergeGuestCartToUser($user->id, $cookieId);
+        }
+
         // Check status for vendor, company, and therapist
         if (in_array($user->type, ['vendor', 'company', 'therapist']) && $user->status == 'inactive') {
             Auth::logout();

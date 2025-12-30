@@ -292,6 +292,7 @@ class OrderService
                     'payment_method' => 'card',
                     'phone' => $data['phone'],
                     'payment_status' => 'pending',
+                    'status' => 'pending_payment', // NEW: pending_payment status for reservation
                 ]
             );
         }
@@ -328,20 +329,12 @@ class OrderService
             'integration_id' => $integrationId,
         ]);
 
+        // Create order items
         foreach ($cartItems as $item) {
             // Validate stock availability before creating order item
             if (!$item->product) {
                 \Illuminate\Support\Facades\Log::warning('Product not found for cart item', ['cart_item_id' => $item->id]);
                 continue;
-            }
-            
-            $availableStock = $item->product->amount ?? 0;
-            $requestedQuantity = $item->quantity;
-            
-            // Check if enough stock is available
-            if ($availableStock < $requestedQuantity) {
-                $productName = $item->product->{'product_name_' . app()->getLocale()} ?? $item->product->product_name_en ?? 'Product';
-                throw new \Exception("Insufficient stock for {$productName}. Available: {$availableStock}, Requested: {$requestedQuantity}");
             }
             
             // Get engineer info from cart options
@@ -359,9 +352,34 @@ class OrderService
                     'engineer_price' => $engineerPrice,
                 ]
             );
-            
-            // Note: Stock will be decremented after successful payment in callback
         }
+
+        // ========================================
+        // CRITICAL: Reserve Stock (NEW)
+        // ========================================
+        $stockService = app(\App\Services\StockReservationService::class);
+        $reservationSuccess = $stockService->reserveStockForOrder($order);
+        
+        if (!$reservationSuccess) {
+            // Stock reservation failed - cancel order and return error
+            $order->update([
+                'status' => 'cancelled',
+                'payment_status' => 'failed'
+            ]);
+            
+            return response()->json([
+                'status'  => false,
+                'message' => __('One or more items are out of stock. Please update your cart.'),
+            ], 400);
+        }
+        
+        Log::info('Stock reserved for order', [
+            'order_id' => $order->id,
+            'payment_id' => $paymobOrderId
+        ]);
+        // ========================================
+        // End Stock Reservation
+        // ========================================
 
         // Send notification to all admins
         $admins = \App\Models\User::role('admin')->get();
