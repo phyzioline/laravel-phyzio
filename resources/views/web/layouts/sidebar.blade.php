@@ -176,7 +176,7 @@
                 <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.jobs.index.*') ? 'active' : '' }}"><a href="{{ route('web.jobs.index.' . app()->getLocale()) }}">{{ __('Jobs') }}</a></li>
-                <li class="menu-item-box {{ Route::is('feed.index') ? 'active' : '' }}"><a href="{{ route('feed.index') }}">{{ __('Feed') }}</a></li>
+                <li class="menu-item-box {{ Route::is('feed.index.*') ? 'active' : '' }}"><a href="{{ route('feed.index.' . app()->getLocale()) }}">{{ __('Feed') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.datahub.index.*') ? 'active' : '' }}"><a href="{{ route('web.datahub.index.' . app()->getLocale()) }}">{{ __('Data Hub') }}</a></li>
                 
                 <li class="menu-item-box {{ Route::is('history_order.index') ? 'active' : '' }}">

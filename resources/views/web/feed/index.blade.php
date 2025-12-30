@@ -55,7 +55,7 @@
                                 <i class="las la-user-edit la-lg"></i>
                             </div>
                             <div class="w-100">
-                                <form action="{{ route('feed.store') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group mb-2">
                                         <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="Share your medical insights, cases, or questions..." style="resize: none;"></textarea>
@@ -167,7 +167,7 @@
 @push('scripts')
 <script>
     function toggleLike(id) {
-        $.post('/feed/' + id + '/like', {
+        $.post('{{ route("feed.like." . app()->getLocale(), ":id") }}'.replace(':id', id), {
             _token: '{{ csrf_token() }}'
         })
         .done(function(data) {
