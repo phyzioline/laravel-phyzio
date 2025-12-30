@@ -43,7 +43,7 @@
                     </div>
                 @endif
                 
-                <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" id="courseCreateForm">
+                <form action="{{ route('instructor.courses.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data" id="courseCreateForm">
                     @csrf
                     
                     <div class="row">

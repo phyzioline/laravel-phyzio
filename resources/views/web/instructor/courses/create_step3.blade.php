@@ -36,7 +36,7 @@
                 <h5 class="mb-0 font-weight-bold">{{ __('Step 3: Pricing & Policy') }}</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('instructor.courses.update', ['course' => $course->id, 'step' => 3]) }}" method="POST">
+                <form action="{{ route('instructor.courses.update.' . app()->getLocale(), ['course' => $course->id, 'step' => 3]) }}" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between border-top pt-3">
-                        <a href="{{ route('instructor.courses.edit', ['course' => $course->id, 'step' => 2]) }}" class="btn btn-light px-4 btn-lg">
+                        <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 2]) }}" class="btn btn-light px-4 btn-lg">
                             <i class="las la-arrow-left mr-2"></i> {{ __('Back') }}
                         </a>
                         <button type="submit" class="btn btn-primary px-4 btn-lg">

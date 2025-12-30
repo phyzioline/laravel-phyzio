@@ -43,7 +43,7 @@
                                             class="align-middle">
                                             <td>
                                                 <div class="product-info d-flex align-items-center">
-                                                    <form action="{{ route('carts.destroy', $item->id) }}" method="POST"
+                                                    <form action="{{ route('carts.destroy.' . app()->getLocale(), $item->id) }}" method="POST"
                                                         class="remove-form me-3">
                                                         @csrf
                                                         @method('DELETE')
@@ -156,7 +156,7 @@
                         </div>
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="d-flex justify-content-end">
-                                <a href="{{ route('carts.flush') }}" class="btn btn-outline-danger" 
+                                <a href="{{ route('carts.flush.' . app()->getLocale()) }}" class="btn btn-outline-danger" 
                                    onclick="return confirm('Are you sure you want to empty your cart?')">
                                     <i class="las la-trash me-2"></i>Empty Cart
                                 </a>
@@ -489,7 +489,7 @@
 
                 function updateTotal() {
                     $.ajax({
-                        url: '{{ route('carts.total') }}',
+                        url: '{{ route('carts.total.' . app()->getLocale()) }}',
                         method: 'GET',
                         success: function(res) {
                             $('#cart-total').text(res.total + ' EGP');

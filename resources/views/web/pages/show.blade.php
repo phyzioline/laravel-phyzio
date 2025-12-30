@@ -673,7 +673,7 @@ header,
                     var btn = $(this);
 
                     $.ajax({
-                        url: '{{ route('carts.store') }}',
+                        url: '{{ route('carts.store.' . app()->getLocale()) }}',
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -705,7 +705,7 @@ header,
                     var productId = $(this).data('product-id');
 
                     $.ajax({
-                        url: '{{ route('carts.store') }}',
+                        url: '{{ route('carts.store.' . app()->getLocale()) }}',
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',

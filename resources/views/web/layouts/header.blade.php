@@ -944,7 +944,7 @@ body.has-hero .shop-hero-banner {
                                                             <span class="item-title">{{ $cart->product->{'product_name_' . app()->getLocale()} }}</span>
                                                             <span class="item-price">{{ number_format($cart->product->product_price, 2) }} EGP</span>
                                                         </div>
-                                                        <form action="{{ route('carts.destroy', $cart->id) }}" method="POST" class="remove-cart-form">
+                                                        <form action="{{ route('carts.destroy.' . app()->getLocale(), $cart->id) }}" method="POST" class="remove-cart-form">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="remove-btn">
@@ -960,7 +960,7 @@ body.has-hero .shop-hero-banner {
                                     <div class="btns-group ul-li clearfix">
                                         <ul class="clearfix">
                                             <li>
-                                                <a href="{{ route('carts.index') }}" class="btn bg-default-black w-100">{{ __('View Cart') }}</a>
+                                                <a href="{{ route('carts.index.' . app()->getLocale()) }}" class="btn bg-default-black w-100">{{ __('View Cart') }}</a>
                                             </li>
                                         </ul>
                                     </div>

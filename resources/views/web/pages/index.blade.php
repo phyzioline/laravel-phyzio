@@ -419,7 +419,7 @@
             var productId = $(this).data('product-id');
 
             $.ajax({
-                url: '{{ route('carts.store') }}',
+                url: '{{ route('carts.store.' . app()->getLocale()) }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -475,7 +475,7 @@
             var productId = $(this).data('product-id');
 
             $.ajax({
-                url: '{{ route('carts.store') }}',
+                url: '{{ route('carts.store.' . app()->getLocale()) }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -485,7 +485,7 @@
                 success: function (response) {
                     toastr.success('تمت إضافة المنتج إلى السلة');
                     // Redirect to cart or checkout page
-                    window.location.href = '{{ route('carts.index') }}';
+                    window.location.href = '{{ route('carts.index.' . app()->getLocale()) }}';
                 },
                 error: function () {
                     toastr.error('حدث خطأ أثناء الإضافة للسلة');
@@ -499,7 +499,7 @@
             var productId = $(this).data('product-id');
 
             $.ajax({
-                url: '{{ route('carts.store') }}',
+                url: '{{ route('carts.store.' . app()->getLocale()) }}',
                 type: 'POST',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -509,7 +509,7 @@
                 success: function (response) {
                     toastr.success('تمت إضافة المنتج إلى السلة');
                     // Redirect to cart page
-                    window.location.href = '{{ route('carts.index') }}';
+                    window.location.href = '{{ route('carts.index.' . app()->getLocale()) }}';
                 },
                 error: function () {
                     toastr.error('حدث خطأ أثناء الإضافة للسلة');

@@ -67,7 +67,7 @@
                                                 </h4>
                                                 <span class="item-price">${{ $cart->product->product_price }}</span>
                                             </div>
-                                            <form action="{{ route('carts.destroy', $cart->id) }}" method="POST"
+                                            <form action="{{ route('carts.destroy.' . app()->getLocale(), $cart->id) }}" method="POST"
                                                 class="remove-cart-form">
                                                 @csrf
                                                 @method('DELETE')
@@ -84,7 +84,7 @@
                         <div class="btns-group ul-li clearfix">
                             <ul class="clearfix">
                                 <li>
-                                    <a href="{{ route('carts.index') }}" class="btn bg-default-black">View Cart</a>
+                                    <a href="{{ route('carts.index.' . app()->getLocale()) }}" class="btn bg-default-black">View Cart</a>
                                 </li>
                             </ul>
                         </div>

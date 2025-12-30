@@ -13,7 +13,7 @@
                         <a class="nav-link active" href="#">1. Course Basics</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('instructor.courses.edit', ['course' => $course->id, 'step' => 'curriculum']) }}">2. Curriculum & Cases</a>
+                        <a class="nav-link" href="{{ route('instructor.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 'curriculum']) }}">2. Curriculum & Cases</a>
                     </li>
                     <li class="nav-item">
                          <a class="nav-link disabled" href="#">3. Publish</a>
@@ -21,7 +21,7 @@
                 </ul>
             </div>
             <div class="card-body p-4">
-                <form action="{{ route('instructor.courses.update', $course->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('instructor.courses.update.' . app()->getLocale(), $course->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     

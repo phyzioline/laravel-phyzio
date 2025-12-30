@@ -187,7 +187,7 @@
                         <div class="physio-btns-group ul-li mb-30">
     <ul class="clearfix">
         <li>
-            <form action="{{ route('carts.store') }}" method="post" id="addToCartForm">
+            <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="post" id="addToCartForm">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="quantity" id="cartQuantity" value="1">
@@ -196,7 +196,7 @@
             </form>
         </li>
         <li>
-            <form action="{{ route('carts.store') }}" method="post" id="orderNowForm">
+            <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="post" id="orderNowForm">
                 @csrf
                 <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <input type="hidden" name="quantity" id="orderNowQuantity" value="1">
@@ -473,7 +473,7 @@
                                     </h6>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="fw-bold text-primary">{{ number_format($relatedProduct->product_price, 2) }} EGP</span>
-                                        <form action="{{ route('carts.store') }}" method="POST" class="d-inline">
+                                        <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="POST" class="d-inline">
                                             @csrf
                                             <input type="hidden" name="product_id" value="{{ $relatedProduct->id }}">
                                             <input type="hidden" name="quantity" value="1">
@@ -622,7 +622,7 @@
 
                         <div class="btns-group ul-li mb-30">
                             <ul class="clearfix">
-                                <form action="{{ route('carts.store') }}" method="post">
+                                <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="post">
                                     @csrf
                                     <input type="hidden" name="product_id" value="{{ $product->id }}">
                                     <input type="hidden" name="quantity" value="1">
@@ -679,7 +679,7 @@
                         var productId = $(this).data('product-id');
 
                         $.ajax({
-                            url: '{{ route('carts.store') }}',
+                            url: '{{ route('carts.store.' . app()->getLocale()) }}',
                             type: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
@@ -735,7 +735,7 @@
                         var productId = $(this).data('product-id');
 
                         $.ajax({
-                            url: '{{ route('carts.store') }}',
+                            url: '{{ route('carts.store.' . app()->getLocale()) }}',
                             type: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',

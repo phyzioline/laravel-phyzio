@@ -38,7 +38,7 @@
 
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-5">
-                        <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data" id="courseForm">
+                        <form action="{{ route('instructor.courses.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data" id="courseForm">
                             @csrf
                             
                             @if($errors->any())

@@ -201,7 +201,7 @@
                     <i class="las la-calendar-alt mr-2"></i> {{ __('Set Availability') }}
                 </a>
                 @if(auth()->user()->hasRole('instructor') || auth()->user()->type == 'therapist')
-                <a href="{{ route('instructor.courses.create') }}" class="btn btn-outline-secondary btn-block mb-2">
+                <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}" class="btn btn-outline-secondary btn-block mb-2">
                     <i class="las la-plus-circle mr-2"></i> {{ __('Create New Course') }}
                 </a>
                 @endif

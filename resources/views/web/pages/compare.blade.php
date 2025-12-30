@@ -279,7 +279,7 @@
                                     <td>
                                         <div class="compare-actions">
                                             @if($item->product)
-                                                <form action="{{ route('carts.store') }}" method="POST" style="display: inline;">
+                                                <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="POST" style="display: inline;">
                                                     @csrf
                                                     <input type="hidden" name="product_id" value="{{ $item->product->id }}">
                                                     <input type="hidden" name="quantity" value="1">

@@ -6,7 +6,7 @@
         <h4>Create New Course</h4>
     </div>
     <div class="card-body">
-        <form action="{{ route('instructor.courses.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('instructor.courses.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
             @csrf
             
             <div class="row">
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <button type="submit" class="btn btn-primary">Create Course</button>
-            <a href="{{ route('instructor.courses.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('instructor.courses.index.' . app()->getLocale()) }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

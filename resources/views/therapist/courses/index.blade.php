@@ -4,7 +4,7 @@
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h4>My Courses</h4>
-        <a href="{{ route('instructor.courses.create') }}" class="btn btn-primary">Create New Course</a>
+        <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}" class="btn btn-primary">Create New Course</a>
     </div>
     <div class="card-body">
         @if(session('message'))
@@ -36,8 +36,8 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('instructor.courses.edit', $course->id) }}" class="btn btn-sm btn-info">Edit</a>
-                                <form action="{{ route('instructor.courses.destroy', $course->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), $course->id) }}" class="btn btn-sm btn-info">Edit</a>
+                                <form action="{{ route('instructor.courses.destroy.' . app()->getLocale(), $course->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-danger">Delete</button>

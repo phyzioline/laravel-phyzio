@@ -437,7 +437,7 @@
                                         </td>
                                         <td><span class="item-price">{{ $favorit->product->product_price }}</span></td>
                                         <td>
-                                            <form action="{{ route('carts.store') }}" method="POST">
+                                            <form action="{{ route('carts.store.' . app()->getLocale()) }}" method="POST">
                                                 @csrf
                                                 <input type="hidden" name="product_id" value="{{ $favorit->product->id }}">
                                                 <input type="hidden" name="quantity" value="1">
