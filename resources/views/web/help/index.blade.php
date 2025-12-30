@@ -11,7 +11,7 @@
 <div class="row">
     @foreach ($categories as $key => $category)
     <div class="col-md-6 col-lg-4 mb-4">
-        <a href="{{ route('help.category', $key) }}" class="text-decoration-none">
+        <a href="{{ route('help.' . app()->getLocale() . '.category', $key) }}" class="text-decoration-none">
             <div class="card h-100 shadow-sm border-0 hover-lift text-center p-4">
                 <div class="card-body">
                     <div class="icon-wrapper mb-3">

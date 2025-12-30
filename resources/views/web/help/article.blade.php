@@ -2,7 +2,7 @@
 
 @php
     $breadcrumbs = [
-        ['title' => $category['title'], 'url' => route('help.category', $category['slug'])],
+        ['title' => $category['title'], 'url' => route('help.' . app()->getLocale() . '.category', $category['slug'])],
         ['title' => $article['title'], 'url' => '#']
     ];
 @endphp
@@ -16,7 +16,7 @@
                 <div class="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
                     @foreach ($category['articles'] as $key => $item)
                         <a class="nav-link {{ $key === request()->article ? 'active' : '' }} mb-1" 
-                           href="{{ route('help.article', ['category' => $category['slug'], 'article' => $key]) }}"
+                           href="{{ route('help.' . app()->getLocale() . '.article', ['category' => $category['slug'], 'article' => $key]) }}"
                            style="{{ $key === request()->article ? 'background-color: #02767F;' : 'color: #36415a;' }}">
                             {{ $item['title'] }}
                         </a>
@@ -30,7 +30,7 @@
                     @foreach($categories as $catKey => $cat)
                         @if($catKey !== $category['slug'])
                         <li class="mb-2">
-                            <a href="{{ route('help.category', $catKey) }}" class="text-muted text-decoration-none">
+                            <a href="{{ route('help.' . app()->getLocale() . '.category', $catKey) }}" class="text-muted text-decoration-none">
                                 <i class="{{ $cat['icon'] }} mr-1"></i> {{ $cat['title'] }}
                             </a>
                         </li>

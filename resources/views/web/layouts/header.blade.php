@@ -969,7 +969,7 @@ body.has-hero .shop-hero-banner {
 
                             {{-- Help Center Icon --}}
                             <li>
-                                <a href="{{ route('help.index') }}" class="btn-cart" title="{{ __('Help Center') }}">
+                                <a href="{{ route('help.' . app()->getLocale() . '.index') }}" class="btn-cart" title="{{ __('Help Center') }}">
                                     <i class="las la-question-circle"></i>
                                 </a>
                             </li>

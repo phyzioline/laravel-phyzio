@@ -8,7 +8,7 @@
             <h1 class="font-weight-bold mb-3">{{ __('How can we help you?') }}</h1>
             <div class="row justify-content-center">
                 <div class="col-lg-6">
-                    <form action="{{ route('help.search') }}" method="GET">
+                    <form action="{{ route('help.' . app()->getLocale() . '.search') }}" method="GET">
                         <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
                             <input type="text" name="q" class="form-control border-0 px-4" placeholder="{{ __('Search for answers...') }}" value="{{ request('q') }}">
                             <div class="input-group-append">
@@ -27,7 +27,7 @@
         @if(isset($breadcrumbs))
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-transparent p-0">
-                <li class="breadcrumb-item"><a href="{{ route('help.index') }}">{{ __('Help Center') }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('help.' . app()->getLocale() . '.index') }}">{{ __('Help Center') }}</a></li>
                 @foreach($breadcrumbs as $crumb)
                     @if($loop->last)
                         <li class="breadcrumb-item active" aria-current="page">{{ $crumb['title'] }}</li>

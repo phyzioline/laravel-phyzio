@@ -2,7 +2,7 @@
 
 @php
     $breadcrumbs = [
-        ['title' => $category['title'], 'url' => route('help.category', $category['slug'])]
+        ['title' => $category['title'], 'url' => route('help.' . app()->getLocale() . '.category', $category['slug'])]
     ];
 @endphp
 
@@ -13,7 +13,7 @@
             <div class="card-body">
                 <h5 class="font-weight-bold mb-3">{{ __('Categories') }}</h5>
                 <ul class="list-unstyled">
-                    <li class="mb-2"><a href="{{ route('help.index') }}" class="text-muted"><i class="las la-angle-left mr-2"></i> {{ __('Back to Home') }}</a></li>
+                    <li class="mb-2"><a href="{{ route('help.' . app()->getLocale() . '.index') }}" class="text-muted"><i class="las la-angle-left mr-2"></i> {{ __('Back to Home') }}</a></li>
                 </ul>
             </div>
         </div>
@@ -30,7 +30,7 @@
 
         <div class="list-group shadow-sm">
             @foreach ($category['articles'] as $key => $article)
-                <a href="{{ route('help.article', ['category' => $category['slug'], 'article' => $key]) }}" class="list-group-item list-group-item-action p-4 border-left-0 border-right-0 d-flex justify-content-between align-items-center">
+                <a href="{{ route('help.' . app()->getLocale() . '.article', ['category' => $category['slug'], 'article' => $key]) }}" class="list-group-item list-group-item-action p-4 border-left-0 border-right-0 d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="font-weight-bold text-dark mb-1">{{ $article['title'] }}</h5>
                         <p class="mb-0 text-muted small">{{ __('Click to read more') }}</p>
