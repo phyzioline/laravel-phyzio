@@ -76,7 +76,7 @@ class ReturnManagementController extends Controller
 
         // Notify customer
         if ($return->orderItem->order->user) {
-            // Send notification
+            $return->orderItem->order->user->notify(new \App\Notifications\ReturnStatusUpdated($return, 'approved'));
         }
 
         return back()->with('success', 'Return request approved. Proceed with refund processing.');
@@ -107,10 +107,11 @@ class ReturnManagementController extends Controller
 
         // Notify customer
         if ($return->orderItem->order->user) {
-            // Send rejection notification
+            $return->orderItem->order->user->notify(new \App\Notifications\ReturnStatusUpdated($return, 'rejected'));
         }
 
         return back()->with('success', 'Return request rejected');
+    }
     }
 
     /**

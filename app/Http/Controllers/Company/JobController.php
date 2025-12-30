@@ -253,6 +253,11 @@ class JobController extends Controller
             'status' => $request->status,
         ]);
 
+        // Notify therapist
+        if ($application->therapist) {
+             $application->therapist->notify(new \App\Notifications\JobStatusUpdated($application, $request->status));
+        }
+
         return back()->with('success', 'Application status updated successfully!');
     }
 
@@ -278,9 +283,17 @@ class JobController extends Controller
             'status' => 'required|in:pending,reviewed,interviewed,hired,rejected',
         ]);
 
-        JobApplication::whereIn('id', $request->application_ids)
+        $applications = JobApplication::whereIn('id', $request->application_ids)
             ->where('job_id', $job->id)
-            ->update(['status' => $request->status]);
+            ->get();
+
+        foreach ($applications as $app) {
+            $app->update(['status' => $request->status]);
+            // Notify each therapist
+            if ($app->therapist) {
+                $app->therapist->notify(new \App\Notifications\JobStatusUpdated($app, $request->status));
+            }
+        }
 
         return back()->with('success', count($request->application_ids) . ' application(s) updated successfully!');
     }
@@ -328,6 +341,11 @@ class JobController extends Controller
 
         // Update application status to interviewed
         $application->update(['status' => 'interviewed']);
+
+        // Notify therapist
+        if ($application->therapist) {
+             $application->therapist->notify(new \App\Notifications\JobStatusUpdated($application, 'interview_scheduled'));
+        }
 
         return back()->with('success', 'Interview scheduled successfully!');
     }

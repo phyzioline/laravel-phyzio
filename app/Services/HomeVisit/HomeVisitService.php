@@ -69,6 +69,11 @@ class HomeVisitService
         // Mark therapist as busy?
         TherapistGeoStatus::where('user_id', $therapist->id)->update(['current_visit_id' => $visit->id]);
 
+        // Notify patient
+        if ($visit->patient) {
+            $visit->patient->notify(new \App\Notifications\VisitStatusUpdated($visit, 'accepted'));
+        }
+
         return $visit;
     }
 
@@ -78,6 +83,12 @@ class HomeVisitService
     public function startTrip(HomeVisit $visit)
     {
         $visit->update(['status' => 'on_way']);
+        
+        // Notify patient
+        if ($visit->patient) {
+            $visit->patient->notify(new \App\Notifications\VisitStatusUpdated($visit, 'on_way'));
+        }
+        
         return $visit;
     }
 
@@ -90,6 +101,12 @@ class HomeVisitService
             'status' => 'in_session', 
             'arrived_at' => Carbon::now()
         ]);
+        
+        // Notify patient
+        if ($visit->patient) {
+            $visit->patient->notify(new \App\Notifications\VisitStatusUpdated($visit, 'arrived'));
+        }
+        
         return $visit;
     }
 
@@ -141,6 +158,11 @@ class HomeVisitService
             // 5. Update Trust Score (Job System Integration)
             $visit->therapist->increment('total_visits_completed');
             // $visit->therapist->updateTrustScore(); // Placeholder
+            
+            // Notify patient
+            if ($visit->patient) {
+                $visit->patient->notify(new \App\Notifications\VisitStatusUpdated($visit, 'completed'));
+            }
 
             return $visit;
         });
