@@ -48,33 +48,54 @@
                                 
                                 <!-- Step 1: Date & Time -->
                                 <h5 class="font-weight-bold mb-3">1. {{ __('Select Date & Time') }}</h5>
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>{{ __('Date') }}</label>
-                                            <input type="date" name="appointment_date" class="form-control" required min="{{ date('Y-m-d') }}">
+                                
+                                @if(empty($availableSlots))
+                                    <div class="alert alert-warning">
+                                        <i class="las la-exclamation-triangle"></i> 
+                                        {{ __('This therapist has not set their availability schedule yet. Please contact them directly or try another therapist.') }}
+                                    </div>
+                                @else
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>{{ __('Date') }}</label>
+                                                <input type="date" 
+                                                       name="appointment_date" 
+                                                       id="appointment_date" 
+                                                       class="form-control" 
+                                                       required 
+                                                       min="{{ date('Y-m-d') }}"
+                                                       max="{{ date('Y-m-d', strtotime('+30 days')) }}">
+                                                <small class="text-muted">{{ __('Only dates with available slots are selectable') }}</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>{{ __('Time') }}</label>
+                                                <select name="appointment_time" id="appointment_time" class="form-control" required disabled>
+                                                    <option value="">{{ __('Select a date first') }}</option>
+                                                </select>
+                                                <small class="text-muted" id="time_help">{{ __('Available times will appear after selecting a date') }}</small>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label>{{ __('Time') }}</label>
-                                            <select name="appointment_time" class="form-control" required>
-                                                <option value="">{{ __('Select Time') }}</option>
-                                                <option value="10:00">10:00 {{ __('AM') }}</option>
-                                                <option value="11:00">11:00 {{ __('AM') }}</option>
-                                                <option value="12:00">12:00 {{ __('PM') }}</option>
-                                                <option value="13:00">01:00 {{ __('PM') }}</option>
-                                                <option value="14:00">02:00 {{ __('PM') }}</option>
-                                                <option value="15:00">03:00 {{ __('PM') }}</option>
-                                                <option value="16:00">04:00 {{ __('PM') }}</option>
-                                                <option value="17:00">05:00 {{ __('PM') }}</option>
-                                                <option value="18:00">06:00 {{ __('PM') }}</option>
-                                                <option value="19:00">07:00 {{ __('PM') }}</option>
-                                                <option value="20:00">08:00 {{ __('PM') }}</option>
-                                            </select>
+                                    
+                                    @if($schedules && $schedules->isNotEmpty())
+                                        <div class="alert alert-info mb-4">
+                                            <strong><i class="las la-info-circle"></i> {{ __('Therapist Availability') }}:</strong>
+                                            <ul class="mb-0 mt-2">
+                                                @foreach($schedules as $day => $scheduleList)
+                                                    @php
+                                                        $schedule = $scheduleList->first();
+                                                        $startTime = \Carbon\Carbon::parse($schedule->start_time)->format('g:i A');
+                                                        $endTime = \Carbon\Carbon::parse($schedule->end_time)->format('g:i A');
+                                                    @endphp
+                                                    <li>{{ ucfirst($day) }}: {{ $startTime }} - {{ $endTime }}</li>
+                                                @endforeach
+                                            </ul>
                                         </div>
-                                    </div>
-                                </div>
+                                    @endif
+                                @endif
 
                                 <!-- Step 2: Location -->
                                 <h5 class="font-weight-bold mb-3">2. {{ __('Location Details') }}</h5>
@@ -126,7 +147,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-block text-white font-weight-bold py-3" style="background-color: #ea3d2f; font-size: 1.1rem;">
+                                <button type="submit" class="btn btn-block text-white font-weight-bold py-3" style="background-color: #ea3d2f; font-size: 1.1rem;" {{ empty($availableSlots) ? 'disabled' : '' }}>
                                     {{ __('Confirm Booking') }}
                                 </button>
                             </form>
@@ -137,4 +158,65 @@
         </div>
     </section>
 </main>
+
+@push('scripts')
+<script>
+    // Available slots data from server
+    const availableSlots = @json($availableSlots ?? []);
+    
+    // Get available dates (for date picker validation)
+    const availableDates = Object.keys(availableSlots);
+    
+    // Date input handler
+    document.getElementById('appointment_date')?.addEventListener('change', function() {
+        const selectedDate = this.value;
+        const timeSelect = document.getElementById('appointment_time');
+        const timeHelp = document.getElementById('time_help');
+        
+        // Clear previous options
+        timeSelect.innerHTML = '<option value="">{{ __('Select Time') }}</option>';
+        
+        if (availableSlots[selectedDate] && availableSlots[selectedDate].length > 0) {
+            // Enable time select
+            timeSelect.disabled = false;
+            timeHelp.textContent = '{{ __('Available times for selected date') }}';
+            
+            // Populate time options
+            availableSlots[selectedDate].forEach(function(slot) {
+                const option = document.createElement('option');
+                option.value = slot.time_24;
+                option.textContent = slot.display;
+                timeSelect.appendChild(option);
+            });
+        } else {
+            // No slots available for this date
+            timeSelect.disabled = true;
+            timeSelect.innerHTML = '<option value="">{{ __('No available times for this date') }}</option>';
+            timeHelp.textContent = '{{ __('Please select a different date') }}';
+            timeHelp.classList.add('text-danger');
+        }
+    });
+    
+    // Restrict date picker to available dates only
+    document.getElementById('appointment_date')?.addEventListener('focus', function() {
+        // Set min date to today
+        this.setAttribute('min', new Date().toISOString().split('T')[0]);
+        // Set max date to 30 days from now
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + 30);
+        this.setAttribute('max', maxDate.toISOString().split('T')[0]);
+    });
+    
+    // Validate date on input
+    document.getElementById('appointment_date')?.addEventListener('input', function() {
+        const selectedDate = this.value;
+        if (selectedDate && !availableSlots[selectedDate]) {
+            // Date selected but no slots available
+            this.setCustomValidity('{{ __('No available slots for this date. Please select another date.') }}');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+</script>
+@endpush
 @endsection

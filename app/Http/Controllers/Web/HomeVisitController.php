@@ -74,7 +74,99 @@ class HomeVisitController extends Controller
     {
         // Allow both logged-in and guest users to book
         $therapist = \App\Models\TherapistProfile::with('user')->findOrFail($id);
-        return view('web.pages.home_visits.book', compact('therapist'));
+        
+        // Load therapist availability schedule
+        $schedules = \App\Models\TherapistSchedule::where('therapist_id', $therapist->user_id)
+            ->where('is_active', true)
+            ->get()
+            ->groupBy('day_of_week');
+        
+        // Load existing bookings (to exclude booked slots)
+        $existingBookings = \App\Models\HomeVisit::where('therapist_id', $therapist->user_id)
+            ->where('status', '!=', 'cancelled')
+            ->where('status', '!=', 'rejected')
+            ->where('scheduled_at', '>=', now())
+            ->get()
+            ->map(function($visit) {
+                return [
+                    'date' => $visit->scheduled_at->format('Y-m-d'),
+                    'time' => $visit->scheduled_at->format('H:i:s'),
+                ];
+            });
+        
+        // Generate available time slots for the next 30 days
+        $availableSlots = $this->generateAvailableSlots($therapist->user_id, $schedules, $existingBookings);
+        
+        // Flatten schedules for view (grouped by day)
+        $schedulesFlat = \App\Models\TherapistSchedule::where('therapist_id', $therapist->user_id)
+            ->where('is_active', true)
+            ->get()
+            ->groupBy('day_of_week');
+        
+        return view('web.pages.home_visits.book', compact('therapist', 'schedules', 'availableSlots', 'existingBookings'));
+    }
+    
+    /**
+     * Generate available time slots based on therapist schedule and existing bookings.
+     */
+    protected function generateAvailableSlots($therapistId, $schedules, $existingBookings)
+    {
+        $slots = [];
+        $startDate = now();
+        $endDate = now()->addDays(30);
+        
+        // Group existing bookings by date for quick lookup
+        $bookedSlotsByDate = $existingBookings->groupBy('date');
+        
+        for ($date = $startDate->copy(); $date <= $endDate; $date->addDay()) {
+            $dayName = strtolower($date->format('l')); // 'sunday', 'monday', etc.
+            
+            // Check if therapist works on this day
+            if (!isset($schedules[$dayName]) || $schedules[$dayName]->isEmpty()) {
+                continue; // Skip days therapist doesn't work
+            }
+            
+            // Get schedule for this day
+            $daySchedule = $schedules[$dayName]->first();
+            $startTime = \Carbon\Carbon::parse($daySchedule->start_time);
+            $endTime = \Carbon\Carbon::parse($daySchedule->end_time);
+            $slotDuration = $daySchedule->slot_duration ?? 30; // Default 30 minutes
+            
+            // Generate time slots for this day
+            $currentTime = $startTime->copy();
+            $dateString = $date->format('Y-m-d');
+            $bookedSlots = $bookedSlotsByDate->get($dateString, collect());
+            
+            while ($currentTime->copy()->addMinutes($slotDuration) <= $endTime) {
+                $timeString = $currentTime->format('H:i:s');
+                
+                // Check if this slot is already booked
+                $isBooked = $bookedSlots->contains(function($booking) use ($timeString, $slotDuration) {
+                    $bookingTime = \Carbon\Carbon::parse($booking['time']);
+                    $slotStart = \Carbon\Carbon::parse($timeString);
+                    $slotEnd = $slotStart->copy()->addMinutes($slotDuration);
+                    
+                    // Check if booking overlaps with this slot
+                    return $bookingTime >= $slotStart && $bookingTime < $slotEnd;
+                });
+                
+                // Check if slot is in the past or too soon (less than 2 hours)
+                $slotDateTime = $date->copy()->setTimeFromTimeString($timeString);
+                $isValid = !$slotDateTime->isPast() && $slotDateTime->diffInHours(now()) >= 2;
+                
+                if (!$isBooked && $isValid) {
+                    $slots[$dateString][] = [
+                        'time' => $currentTime->format('H:i'),
+                        'time_24' => $currentTime->format('H:i:s'),
+                        'display' => $currentTime->format('g:i A'),
+                    ];
+                }
+                
+                $currentTime->addMinutes($slotDuration);
+            }
+        }
+        
+        return $slots;
     }
 
     public function store(Request $request)

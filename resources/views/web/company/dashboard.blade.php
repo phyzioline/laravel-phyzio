@@ -4,6 +4,27 @@
 @section('header_title', 'Company Dashboard')
 
 @section('content')
+
+@if(Auth::user()->status !== 'active' || Auth::user()->verification_status !== 'approved')
+<div class="row">
+    <div class="col-12">
+        <div class="alert alert-warning border-left-warning shadow-sm mb-4" role="alert">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h4 class="alert-heading h5"><i class="las la-exclamation-triangle"></i> {{ __('Account Verification Required') }}</h4>
+                    <p class="mb-0">
+                        {{ __('Your account is currently') }} <strong>{{ ucfirst(Auth::user()->verification_status ?? 'pending') }}</strong>. 
+                        {{ __('You must complete the verification process to post jobs and search for candidates.') }}
+                    </p>
+                </div>
+                <a href="{{ route('verification.verification-center.' . app()->getLocale()) }}" class="btn btn-warning btn-sm font-weight-bold text-dark">
+                    <i class="las la-file-upload"></i> {{ __('Complete Verification') }}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 <div class="row">
     <!-- Statistics Cards -->
     <div class="col-lg-3 col-md-6 mb-4">

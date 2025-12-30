@@ -383,7 +383,7 @@
                                     
                                     <h4 class="mb-3">Write a Review</h4>
                                     @auth
-                                        <form action="{{ route('product.reviews.store.' . app()->getLocale(), $product->id) }}" method="POST">
+                                        <form action="{{ route('web.products.reviews.store.' . app()->getLocale(), $product->id) }}" method="POST">
                                             @csrf
                                             <div class="mb-3">
                                                 <label class="form-label">Rating</label>
