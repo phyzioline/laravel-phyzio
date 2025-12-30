@@ -224,9 +224,9 @@
                     @if($isEnrolled)
                          <a href="#" class="btn btn-success btn-block btn-lg mb-3 shadow-sm">{{ __('Go to Course') }}</a>
                     @else
-                         <form action="#" method="POST">
+                         <form action="{{ route('web.courses.purchase', $course->id) }}" method="POST">
                              @csrf
-                             <button type="submit" class="btn btn-primary btn-block btn-lg mb-3 shadow-sm" style="background-color: #00897b; border-color: #00897b;">
+                             <button type="submit" class="btn btn-primary btn-block btn-lg mb-3 shadow-sm" style="background-color: #02767F; border-color: #02767F;">
                                  {{ $course->price > 0 ? __('Buy Now') : __('Enroll for Free') }}
                              </button>
                          </form>
