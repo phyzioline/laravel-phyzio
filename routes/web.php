@@ -96,8 +96,14 @@ foreach ($supportedLocales as $locale) {
 
 
         // Cart routes - available to guests and authenticated users
-        Route::resources([
-            'carts' => CartController::class ,
+        Route::resource('carts', CartController::class)->names([
+            'index' => "carts.index.{$locale}",
+            'create' => "carts.create.{$locale}",
+            'store' => "carts.store.{$locale}",
+            'show' => "carts.show.{$locale}",
+            'edit' => "carts.edit.{$locale}",
+            'update' => "carts.update.{$locale}",
+            'destroy' => "carts.destroy.{$locale}",
         ]);
         
         // Order route - available to guests and authenticated users (guest checkout supported)
@@ -107,65 +113,65 @@ foreach ($supportedLocales as $locale) {
     Route::group(['middleware' => ['auth']], function () use ($locale) {
 
         // Verification Routes
-        Route::get('/verification/complete-account', [App\Http\Controllers\Web\VerificationController::class, 'completeAccount'])->name('verification.complete-account');
-        Route::get('/verification/center', [App\Http\Controllers\Web\VerificationController::class, 'verificationCenter'])->name('verification.verification-center');
-        Route::post('/verification/upload-document', [App\Http\Controllers\Web\VerificationController::class, 'uploadDocument'])->name('verification.upload-document');
-        Route::delete('/verification/documents/{documentId}', [App\Http\Controllers\Web\VerificationController::class, 'deleteDocument'])->name('verification.delete-document');
+        Route::get('/verification/complete-account', [App\Http\Controllers\Web\VerificationController::class, 'completeAccount'])->name("verification.complete-account.{$locale}");
+        Route::get('/verification/center', [App\Http\Controllers\Web\VerificationController::class, 'verificationCenter'])->name("verification.verification-center.{$locale}");
+        Route::post('/verification/upload-document', [App\Http\Controllers\Web\VerificationController::class, 'uploadDocument'])->name("verification.upload-document.{$locale}");
+        Route::delete('/verification/documents/{documentId}', [App\Http\Controllers\Web\VerificationController::class, 'deleteDocument'])->name("verification.delete-document.{$locale}");
 
-        Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name('web.products.reviews.store');
+        Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name("web.products.reviews.store.{$locale}");
 
         // Generic Profile Routes (Vendor, Buyer, Patient)
-        Route::get('/profile', [App\Http\Controllers\Web\ProfileController::class, 'index'])->name('web.profile.index');
-        Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name('web.profile.update');
+        Route::get('/profile', [App\Http\Controllers\Web\ProfileController::class, 'index'])->name("web.profile.index.{$locale}");
+        Route::put('/profile', [App\Http\Controllers\Web\ProfileController::class, 'update'])->name("web.profile.update.{$locale}");
 
         // Vendor Dashboard Routes (Amazon-style multi-vendor)
-        Route::prefix('vendor')->name('vendor.')->middleware(App\Http\Middleware\VendorMiddleware::class)->group(function () {
-            Route::get('/dashboard', [App\Http\Controllers\Vendor\VendorDashboardController::class, 'index'])->name('dashboard');
-            Route::get('/orders', [App\Http\Controllers\Vendor\VendorOrderController::class, 'index'])->name('orders.index');
-            Route::get('/orders/{id}', [App\Http\Controllers\Vendor\VendorOrderController::class, 'show'])->name('orders.show');
-            Route::get('/shipments', [App\Http\Controllers\Vendor\VendorShippingController::class, 'index'])->name('shipments.index');
-            Route::get('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'show'])->name('shipments.show');
-            Route::post('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'update'])->name('shipments.update');
-            Route::get('/wallet', [App\Http\Controllers\Vendor\VendorWalletController::class, 'index'])->name('wallet');
-            Route::post('/wallet/payout', [App\Http\Controllers\Vendor\VendorWalletController::class, 'requestPayout'])->name('wallet.payout');
+        Route::prefix('vendor')->name("vendor.{$locale}.")->middleware(App\Http\Middleware\VendorMiddleware::class)->group(function () use ($locale) {
+            Route::get('/dashboard', [App\Http\Controllers\Vendor\VendorDashboardController::class, 'index'])->name("dashboard.{$locale}");
+            Route::get('/orders', [App\Http\Controllers\Vendor\VendorOrderController::class, 'index'])->name("orders.index.{$locale}");
+            Route::get('/orders/{id}', [App\Http\Controllers\Vendor\VendorOrderController::class, 'show'])->name("orders.show.{$locale}");
+            Route::get('/shipments', [App\Http\Controllers\Vendor\VendorShippingController::class, 'index'])->name("shipments.index.{$locale}");
+            Route::get('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'show'])->name("shipments.show.{$locale}");
+            Route::post('/shipments/{id}', [App\Http\Controllers\Vendor\VendorShippingController::class, 'update'])->name("shipments.update.{$locale}");
+            Route::get('/wallet', [App\Http\Controllers\Vendor\VendorWalletController::class, 'index'])->name("wallet.{$locale}");
+            Route::post('/wallet/payout', [App\Http\Controllers\Vendor\VendorWalletController::class, 'requestPayout'])->name("wallet.payout.{$locale}");
         });
 
         // Instructor Routes
-        Route::prefix('instructor')->name('instructor.')->group(function () {
-            Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name('dashboard');
+        Route::prefix('instructor')->name("instructor.{$locale}.")->group(function () use ($locale) {
+            Route::get('/dashboard', [App\Http\Controllers\Instructor\DashboardController::class, 'index'])->name("dashboard.{$locale}");
             
             // Course Wizard Routes (Specific routes first)
-            Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])->name('courses.create');
-            Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name('courses.store');
+            Route::get('/courses/create', [App\Http\Controllers\Instructor\CourseController::class, 'create'])->name("courses.create.{$locale}");
+            Route::post('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'store'])->name("courses.store.{$locale}");
 
             // Course Management (Wildcard routes last)
-            Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name('courses.index');
-            Route::get('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'show'])->name('courses.show');
-            Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name('courses.edit');
-            Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name('courses.update');
-            Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name('courses.destroy');
+            Route::get('/courses', [App\Http\Controllers\Instructor\CourseController::class, 'index'])->name("courses.index.{$locale}");
+            Route::get('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'show'])->name("courses.show.{$locale}");
+            Route::get('/courses/{course}/edit', [App\Http\Controllers\Instructor\CourseController::class, 'edit'])->name("courses.edit.{$locale}");
+            Route::put('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'update'])->name("courses.update.{$locale}");
+            Route::delete('/courses/{course}', [App\Http\Controllers\Instructor\CourseController::class, 'destroy'])->name("courses.destroy.{$locale}");
             
             // Modules & Units
-            Route::post('/courses/{course}/modules', [App\Http\Controllers\Instructor\CourseController::class, 'storeModule'])->name('courses.modules.store');
-            Route::post('/courses/{course}/modules/{module}/units', [App\Http\Controllers\Instructor\CourseController::class, 'storeUnit'])->name('courses.modules.units.store');
+            Route::post('/courses/{course}/modules', [App\Http\Controllers\Instructor\CourseController::class, 'storeModule'])->name("courses.modules.store.{$locale}");
+            Route::post('/courses/{course}/modules/{module}/units', [App\Http\Controllers\Instructor\CourseController::class, 'storeUnit'])->name("courses.modules.units.store.{$locale}");
             
             // Students
-            Route::get('/students', [App\Http\Controllers\Instructor\StudentController::class, 'index'])->name('students.index');
-            Route::get('/students/{student}', [App\Http\Controllers\Instructor\StudentController::class, 'show'])->name('students.show');
+            Route::get('/students', [App\Http\Controllers\Instructor\StudentController::class, 'index'])->name("students.index.{$locale}");
+            Route::get('/students/{student}', [App\Http\Controllers\Instructor\StudentController::class, 'show'])->name("students.show.{$locale}");
         });
 
         // --- Home Visit System Routes ---
         
         // Patient Flow
-        Route::get('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name('patient.home_visits.create');
-        Route::post('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name('patient.home_visits.store');
-        Route::get('/home_visits/status/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name('patient.home_visits.show');
+        Route::get('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'create'])->name("patient.home_visits.create.{$locale}");
+        Route::post('/home_visits/request', [App\Http\Controllers\Web\PatientVisitController::class, 'store'])->name("patient.home_visits.store.{$locale}");
+        Route::get('/home_visits/status/{id}', [App\Http\Controllers\Web\PatientVisitController::class, 'show'])->name("patient.home_visits.show.{$locale}");
         
         // Patient Self-Scheduling
-        Route::get('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'index'])->name('patient.self-schedule.index');
-        Route::get('/self-schedule/available-slots', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'getAvailableSlots'])->name('patient.self-schedule.slots');
-        Route::post('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'store'])->name('patient.self-schedule.store');
-        Route::post('/self-schedule/intake-form', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'submitIntakeForm'])->name('patient.self-schedule.submitIntake');
+        Route::get('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'index'])->name("patient.self-schedule.index.{$locale}");
+        Route::get('/self-schedule/available-slots', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'getAvailableSlots'])->name("patient.self-schedule.slots.{$locale}");
+        Route::post('/self-schedule', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'store'])->name("patient.self-schedule.store.{$locale}");
+        Route::post('/self-schedule/intake-form', [App\Http\Controllers\Patient\SelfSchedulingController::class, 'submitIntakeForm'])->name("patient.self-schedule.submitIntake.{$locale}");
 
         // Therapist Flow (Legacy - Consolidated into therapist.php)
         // Route::get('/therapist/visits', [App\Http\Controllers\Therapist\VisitManagementController::class, 'index'])->name('therapist.visits.index');
@@ -174,43 +180,51 @@ foreach ($supportedLocales as $locale) {
         // Route::post('/therapist/visits/{visit}/complete', [App\Http\Controllers\Therapist\VisitManagementController::class, 'complete'])->name('therapist.visits.complete');
 
         // Help Center Routes
-        Route::controller(App\Http\Controllers\Web\HelpCenterController::class)->prefix('help')->name('help.')->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/search', 'search')->name('search');
-            Route::get('/{category}', 'category')->name('category');
-            Route::get('/{category}/{article}', 'article')->name('article');
+        Route::controller(App\Http\Controllers\Web\HelpCenterController::class)->prefix('help')->name("help.{$locale}.")->group(function () {
+            Route::get('/', 'index')->name("index");
+            Route::get('/search', 'search')->name("search");
+            Route::get('/{category}', 'category')->name("category");
+            Route::get('/{category}/{article}', 'article')->name("article");
         });
 
         // Feed Routes (Public)
-        Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name('feed.index');
-        Route::post('/feed', [App\Http\Controllers\Web\FeedController::class, 'store'])->name('feed.store'); // New
-        Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name('feed.interact');
-        Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name('feed.like');
+        Route::get('/feed', [App\Http\Controllers\Web\FeedController::class, 'index'])->name("feed.index.{$locale}");
+        Route::post('/feed', [App\Http\Controllers\Web\FeedController::class, 'store'])->name("feed.store.{$locale}"); // New
+        Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name("feed.interact.{$locale}");
+        Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name("feed.like.{$locale}");
 
         // Admin Feed Management
-        Route::prefix('admin')->name('admin.')->group(function(){
-            Route::resource('feed', App\Http\Controllers\Admin\FeedController::class);
+        Route::prefix('admin')->name("admin.{$locale}.")->group(function() use ($locale){
+            Route::resource('feed', App\Http\Controllers\Admin\FeedController::class)->names([
+                'index' => "admin.feed.index.{$locale}",
+                'create' => "admin.feed.create.{$locale}",
+                'store' => "admin.feed.store.{$locale}",
+                'show' => "admin.feed.show.{$locale}",
+                'edit' => "admin.feed.edit.{$locale}",
+                'update' => "admin.feed.update.{$locale}",
+                'destroy' => "admin.feed.destroy.{$locale}",
+            ]);
         });
 
         // Clinic ERP Routes - MOVED TO OUTSIDE LOCALE GROUP (see line 286)
         // These routes are now defined outside the locale group to avoid conflicts
         
-          Route::get('complecet_info_view',[LoginController::class, 'complecet_info_view'])->name('complecet_info_view');
-        Route::post('complecet_info',[LoginController::class, 'complecet_info'])->name('complecet_info');
+          Route::get('complecet_info_view',[LoginController::class, 'complecet_info_view'])->name("complecet_info_view.{$locale}");
+        Route::post('complecet_info',[LoginController::class, 'complecet_info'])->name("complecet_info.{$locale}");
 
-        Route::put('update_cart/{id}', [CartController::class, 'update_carts']);
-        Route::get('total',[CartController::class, 'total'])->name('carts.total');
-        Route::get('flush',[CartController::class, 'flush'])->name('carts.flush');
-        Route::get('favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-        Route::post('favorites', [FavoriteController::class, 'store'])->name('favorites.store');
-        Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name('favorites.delete');
-        Route::get('compare', [App\Http\Controllers\Web\CompareController::class, 'index'])->name('compare.index');
-        Route::post('compare', [App\Http\Controllers\Web\CompareController::class, 'store'])->name('compare.store');
-        Route::delete('/compare/{id}', [App\Http\Controllers\Web\CompareController::class, 'destroy'])->name('compare.delete');
-        Route::get('history_order',[HistoryOrderController::class, 'index'])->name('history_order.index');
+        Route::put('update_cart/{id}', [CartController::class, 'update_carts'])->name("carts.update_cart.{$locale}");
+        Route::get('total',[CartController::class, 'total'])->name("carts.total.{$locale}");
+        Route::get('flush',[CartController::class, 'flush'])->name("carts.flush.{$locale}");
+        Route::get('favorites', [FavoriteController::class, 'index'])->name("favorites.index.{$locale}");
+        Route::post('favorites', [FavoriteController::class, 'store'])->name("favorites.store.{$locale}");
+        Route::delete('/favorites/{id}', [FavoriteController::class, 'destroy'])->name("favorites.delete.{$locale}");
+        Route::get('compare', [App\Http\Controllers\Web\CompareController::class, 'index'])->name("compare.index.{$locale}");
+        Route::post('compare', [App\Http\Controllers\Web\CompareController::class, 'store'])->name("compare.store.{$locale}");
+        Route::delete('/compare/{id}', [App\Http\Controllers\Web\CompareController::class, 'destroy'])->name("compare.delete.{$locale}");
+        Route::get('history_order',[HistoryOrderController::class, 'index'])->name("history_order.index.{$locale}");
 
             // logout
-            Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+            Route::get('logout', [LoginController::class, 'logout'])->name("logout.{$locale}");
             
              // Generic Dashboard Redirect - Redirects to non-localized dashboard routes
             Route::get('/dashboard', function () {
