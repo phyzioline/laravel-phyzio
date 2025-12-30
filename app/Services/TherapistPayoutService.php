@@ -124,56 +124,99 @@ class TherapistPayoutService
 
     /**
      * Add earnings to wallet (when visit is completed and paid, or course is purchased).
+     * Also creates EarningsTransaction record for tracking.
      * 
      * @param int $therapistId
-     * @param float $amount
+     * @param float $amount Gross amount (before platform fee)
      * @param int $holdDays Number of days to hold in pending (default 14)
-     * @param string $source Source of earnings: 'home_visit' or 'course'
+     * @param string $source Source of earnings: 'home_visit', 'course', or 'clinic'
+     * @param string|null $sourceType Model class name (e.g., 'App\Models\HomeVisit')
+     * @param int|null $sourceId ID of the source record
+     * @param float|null $platformFee Platform commission (if null, calculates 15%)
      * @return TherapistWallet
      */
-    public function addEarnings($therapistId, $amount, $holdDays = 14, $source = 'home_visit')
+    public function addEarnings($therapistId, $amount, $holdDays = 14, $source = 'home_visit', $sourceType = null, $sourceId = null, $platformFee = null)
     {
         $wallet = $this->getTherapistWallet($therapistId);
         
+        // Calculate platform fee if not provided (default 15%)
+        if ($platformFee === null) {
+            $platformFee = ($amount * 15) / 100;
+        }
+        
+        $netEarnings = $amount - $platformFee;
+        $holdUntil = $holdDays > 0 ? Carbon::now()->addDays($holdDays) : null;
+        
+        // Create EarningsTransaction record
+        $transaction = \App\Models\EarningsTransaction::create([
+            'user_id' => $therapistId,
+            'source' => $source,
+            'source_type' => $sourceType ?? $this->getSourceType($source),
+            'source_id' => $sourceId ?? 0,
+            'amount' => $amount,
+            'platform_fee' => $platformFee,
+            'net_earnings' => $netEarnings,
+            'status' => $holdDays > 0 ? 'pending' : 'available',
+            'hold_until' => $holdUntil,
+        ]);
+        
         if ($holdDays > 0) {
             // Add to pending (will be released after hold period)
-            $wallet->addPending($amount);
-            Log::info("Added earnings to therapist {$therapistId} wallet: {$amount} from {$source} (pending for {$holdDays} days)");
+            $wallet->addPending($netEarnings);
+            Log::info("Added earnings to therapist {$therapistId} wallet: {$netEarnings} from {$source} (pending for {$holdDays} days). Transaction ID: {$transaction->id}");
         } else {
             // Add directly to available
-            $wallet->available_balance += $amount;
-            $wallet->total_earned += $amount;
+            $wallet->available_balance += $netEarnings;
+            $wallet->total_earned += $netEarnings;
             $wallet->save();
-            Log::info("Added earnings to therapist {$therapistId} wallet: {$amount} from {$source} (available immediately)");
+            Log::info("Added earnings to therapist {$therapistId} wallet: {$netEarnings} from {$source} (available immediately). Transaction ID: {$transaction->id}");
         }
         
         return $wallet;
+    }
+    
+    /**
+     * Get source type class name based on source string.
+     */
+    protected function getSourceType($source)
+    {
+        $map = [
+            'home_visit' => \App\Models\HomeVisit::class,
+            'course' => \App\Models\Enrollment::class,
+            'clinic' => \App\Models\WeeklyProgram::class,
+        ];
+        
+        return $map[$source] ?? 'App\Models\User';
     }
 
     /**
      * Process settlement - move pending balance to available after hold period.
      * This should be called by a daily cron job.
+     * Now uses EarningsTransaction records for accurate settlement tracking.
      */
     public function processSettlements()
     {
-        // Get all wallets with pending balance
-        $wallets = TherapistWallet::where('pending_balance', '>', 0)->get();
-        $processed = 0;
-
-        foreach ($wallets as $wallet) {
-            // For now, we'll release all pending after 14 days
-            // In a real system, you'd track when each amount was added
-            // For simplicity, we'll move all pending to available
-            if ($wallet->pending_balance > 0) {
-                $amount = $wallet->pending_balance;
-                if ($wallet->releasePending($amount)) {
-                    $processed++;
-                    Log::info("Settled {$amount} for therapist {$wallet->therapist_id}");
-                }
+        // Use EarningsSettlementService to process settlements
+        $settlementService = app(\App\Services\EarningsSettlementService::class);
+        $result = $settlementService->processSettlements();
+        
+        // Update wallet balances based on settled transactions
+        $settledTransactions = \App\Models\EarningsTransaction::where('status', 'available')
+            ->whereNotNull('settled_at')
+            ->whereDate('settled_at', Carbon::today())
+            ->get();
+        
+        foreach ($settledTransactions as $transaction) {
+            $wallet = $this->getTherapistWallet($transaction->user_id);
+            
+            // Move from pending to available in wallet
+            if ($wallet->pending_balance >= $transaction->net_earnings) {
+                $wallet->releasePending($transaction->net_earnings);
+                Log::info("Updated wallet for therapist {$transaction->user_id} after settlement of transaction #{$transaction->id}");
             }
         }
-
-        return $processed;
+        
+        return $result['settled_count'];
     }
 }
 

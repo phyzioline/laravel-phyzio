@@ -183,8 +183,21 @@ class HomeVisitController extends Controller
 
         // Add earnings to therapist wallet when payment is processed
         if ($visit->status === 'completed' && $visit->total_amount > 0) {
+            // Calculate platform fee (15% default)
+            $defaultCommissionRate = 15.00;
+            $platformFee = ($visit->total_amount * $defaultCommissionRate) / 100;
+            $therapistEarnings = $visit->total_amount - $platformFee;
+            
             $payoutService = app(\App\Services\TherapistPayoutService::class);
-            $payoutService->addEarnings($visit->therapist_id, $visit->total_amount, 14, 'home_visit'); // 14-day hold
+            $payoutService->addEarnings(
+                $visit->therapist_id, 
+                $visit->total_amount, 
+                14, 
+                'home_visit',
+                \App\Models\HomeVisit::class,
+                $visit->id,
+                $platformFee
+            );
         }
 
         return redirect()->route('web.home_visits.success', $id);

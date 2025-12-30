@@ -16,3 +16,11 @@ Schedule::command('payouts:process-auto')
     ->timezone('UTC')
     ->withoutOverlapping()
     ->runInBackground();
+
+// Schedule earnings settlements (daily at 1 AM)
+Schedule::command('earnings:settle')
+    ->daily()
+    ->at('01:00')
+    ->timezone('UTC')
+    ->withoutOverlapping()
+    ->runInBackground();

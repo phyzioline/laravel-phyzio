@@ -147,9 +147,18 @@ class CourseController extends Controller
             $commissionAmount = ($subtotal * $defaultCommissionRate) / 100;
             $instructorEarnings = $subtotal - $commissionAmount;
 
-            // Add to therapist wallet (14-day hold period)
+            // Add to therapist wallet (14-day hold period) and create EarningsTransaction
+            // Note: addEarnings expects gross amount, it will calculate net earnings internally
             $payoutService = app(\App\Services\TherapistPayoutService::class);
-            $payoutService->addEarnings($course->instructor_id, $instructorEarnings, 14, 'course');
+            $payoutService->addEarnings(
+                $course->instructor_id, 
+                $subtotal, // Gross amount before commission
+                14, 
+                'course',
+                \App\Models\Enrollment::class,
+                $enrollment->id,
+                $commissionAmount // Platform fee
+            );
         }
 
         // Also create vendor payment entry for tracking (if instructor is also a vendor)

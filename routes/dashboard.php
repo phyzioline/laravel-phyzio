@@ -91,6 +91,10 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             // Earnings Management (All Sources)
             Route::get('/earnings', [\App\Http\Controllers\Dashboard\EarningsController::class, 'index'])->name('earnings.index');
             Route::get('/earnings/{earningsTransaction}', [\App\Http\Controllers\Dashboard\EarningsController::class, 'show'])->name('earnings.show');
+            Route::post('/earnings/process-settlements', [\App\Http\Controllers\Dashboard\EarningsController::class, 'processSettlements'])->name('earnings.process-settlements');
+            Route::post('/earnings/{earningsTransaction}/settle', [\App\Http\Controllers\Dashboard\EarningsController::class, 'manualSettle'])->name('earnings.manual-settle');
+            Route::post('/earnings/{earningsTransaction}/hold', [\App\Http\Controllers\Dashboard\EarningsController::class, 'putOnHold'])->name('earnings.put-on-hold');
+            Route::post('/earnings/{earningsTransaction}/release', [\App\Http\Controllers\Dashboard\EarningsController::class, 'releaseFromHold'])->name('earnings.release-from-hold');
 
             // Inventory Management
             Route::prefix('inventory')->as('inventory.')->group(function () {

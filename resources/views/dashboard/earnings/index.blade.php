@@ -81,6 +81,65 @@
             </div>
         </div>
 
+        <!-- Payment Cycle Management Section -->
+        @if(isset($settlementStats))
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 font-weight-bold">{{ __('Payment Cycle Management') }}</h5>
+                        <form action="{{ route('dashboard.financials.earnings.process-settlements') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-arrow-repeat"></i> {{ __('Process Settlements Now') }}
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <h6 class="text-muted small mb-1">{{ __('Ready to Settle Today') }}</h6>
+                                    <h4 class="text-primary mb-0">{{ $settlementStats['ready_today'] }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <h6 class="text-muted small mb-1">{{ __('Settling This Week') }}</h6>
+                                    <h4 class="text-info mb-0">{{ $settlementStats['settling_this_week'] }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <h6 class="text-muted small mb-1">{{ __('Total Pending') }}</h6>
+                                    <h4 class="text-warning mb-0">${{ number_format($settlementStats['total_pending'], 2) }}</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <div class="p-3 bg-light rounded">
+                                    <h6 class="text-muted small mb-1">{{ __('Next Settlement') }}</h6>
+                                    <h6 class="text-success mb-0">
+                                        @if($settlementStats['next_settlement_date'])
+                                            {{ \Carbon\Carbon::parse($settlementStats['next_settlement_date'])->format('M d, Y') }}
+                                        @else
+                                            {{ __('No pending settlements') }}
+                                        @endif
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i> 
+                                {{ __('Settlements are processed automatically daily at 1:00 AM UTC. You can also process them manually using the button above.') }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Earnings by Source -->
         <div class="row mb-4">
             <div class="col-md-4">
@@ -187,11 +246,64 @@
                                         {{ ucfirst($transaction->status) }}
                                     </span>
                                 </td>
-                                <td>{{ $transaction->created_at->format('M d, Y') }}</td>
                                 <td>
-                                    <a href="{{ route('dashboard.earnings.show', $transaction) }}" class="btn btn-sm btn-outline-primary">
-                                        {{ __('View') }}
-                                    </a>
+                                    {{ $transaction->created_at->format('M d, Y') }}
+                                    @if($transaction->hold_until)
+                                        <br><small class="text-muted">{{ __('Hold until') }}: {{ $transaction->hold_until->format('M d, Y') }}</small>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('dashboard.earnings.show', $transaction) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if($transaction->status === 'pending')
+                                            <form action="{{ route('dashboard.financials.earnings.manual-settle', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to manually settle this transaction?') }}');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-success" title="{{ __('Settle Now') }}">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#holdModal{{ $transaction->id }}" title="{{ __('Put on Hold') }}">
+                                                <i class="bi bi-pause-circle"></i>
+                                            </button>
+                                        @endif
+                                        @if($transaction->status === 'on_hold')
+                                            <form action="{{ route('dashboard.financials.earnings.release-from-hold', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to release this transaction from hold?') }}');">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-outline-info" title="{{ __('Release from Hold') }}">
+                                                    <i class="bi bi-play-circle"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                    
+                                    <!-- Hold Modal -->
+                                    @if($transaction->status === 'pending')
+                                    <div class="modal fade" id="holdModal{{ $transaction->id }}" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form action="{{ route('dashboard.financials.earnings.put-on-hold', $transaction) }}" method="POST">
+                                                    @csrf
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">{{ __('Put Transaction on Hold') }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">{{ __('Reason') }} <span class="text-danger">*</span></label>
+                                                            <textarea name="reason" class="form-control" rows="3" required placeholder="{{ __('Enter reason for putting this transaction on hold...') }}"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+                                                        <button type="submit" class="btn btn-warning">{{ __('Put on Hold') }}</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </td>
                             </tr>
                             @empty
