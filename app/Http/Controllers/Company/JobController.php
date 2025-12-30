@@ -73,23 +73,29 @@ class JobController extends Controller
             return redirect()->route('dashboard.home')->with('error', 'Access denied.');
         }
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'type' => 'required|in:job,training',
-            'location' => 'nullable|string',
-            'salary_type' => 'required|string',
-            'salary_range' => 'nullable|string',
-            'specialty' => 'nullable|array',
-            'techniques' => 'nullable|array',
-            'equipment' => 'nullable|array',
-            'experience_level' => 'required|string',
-            'urgency_level' => 'required|string',
-            'openings_count' => 'integer|min:1',
-            'min_years_experience' => 'nullable|integer',
-            'gender_preference' => 'nullable|string',
-            'license_required' => 'nullable|boolean',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'type' => 'required|in:job,training',
+                'location' => 'nullable|string',
+                'salary_type' => 'required|string',
+                'salary_range' => 'nullable|string',
+                'specialty' => 'nullable|array',
+                'techniques' => 'nullable|array',
+                'equipment' => 'nullable|array',
+                'experience_level' => 'required|string',
+                'urgency_level' => 'required|string',
+                'openings_count' => 'integer|min:1',
+                'min_years_experience' => 'nullable|integer',
+                'gender_preference' => 'nullable|string',
+                'license_required' => 'nullable|boolean',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        }
 
         $job = Job::create([
             'clinic_id' => $user->id,

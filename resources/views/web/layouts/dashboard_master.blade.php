@@ -527,6 +527,65 @@
                 </li>
             @endif
 
+            <!-- Company Recruitment Dashboard (For Recruitment Companies) -->
+            @if(auth()->user()->type === 'company' && !request()->routeIs('clinic.*'))
+                <!-- 1. Dashboard -->
+                <li>
+                    <a href="{{ route('company.dashboard') }}" class="{{ request()->routeIs('company.dashboard') ? 'active' : '' }}">
+                        <span class="las la-chart-pie"></span>
+                        <span>{{ __('Dashboard') }}</span>
+                    </a>
+                </li>
+
+                <!-- 2. Post New Job -->
+                <li>
+                    <a href="{{ route('company.jobs.create') }}" class="{{ request()->routeIs('company.jobs.create') ? 'active' : '' }}">
+                        <span class="las la-plus-circle"></span>
+                        <span>{{ __('Post New Job') }}</span>
+                    </a>
+                </li>
+
+                <!-- 3. My Jobs -->
+                <li>
+                    <a href="{{ route('company.jobs.index') }}" class="{{ request()->routeIs('company.jobs.index') ? 'active' : '' }}">
+                        <span class="las la-briefcase"></span>
+                        <span>{{ __('My Jobs') }}</span>
+                    </a>
+                </li>
+
+                <!-- 4. Applicants -->
+                <li>
+                    <a href="{{ route('company.jobs.index') }}#applicants" class="{{ request()->routeIs('company.jobs.applicants') || request()->routeIs('company.jobs.*applicants*') ? 'active' : '' }}">
+                        <span class="las la-user-friends"></span>
+                        <span>{{ __('Applicants') }}</span>
+                    </a>
+                </li>
+
+                <!-- 5. Job Templates -->
+                <li>
+                    <a href="{{ route('company.jobs.templates') }}" class="{{ request()->routeIs('company.jobs.templates') ? 'active' : '' }}">
+                        <span class="las la-file-alt"></span>
+                        <span>{{ __('Job Templates') }}</span>
+                    </a>
+                </li>
+
+                <!-- 6. Analytics -->
+                <li>
+                    <a href="{{ route('company.jobs.analytics') }}" class="{{ request()->routeIs('company.jobs.analytics') ? 'active' : '' }}">
+                        <span class="las la-chart-bar"></span>
+                        <span>{{ __('Analytics') }}</span>
+                    </a>
+                </li>
+
+                <!-- 7. Profile & Settings -->
+                <li>
+                    <a href="{{ route('company.profile.index') ?? route('company.dashboard') }}" class="{{ request()->routeIs('company.profile.*') ? 'active' : '' }}">
+                        <span class="las la-cog"></span>
+                        <span>{{ __('Profile & Settings') }}</span>
+                    </a>
+                </li>
+            @endif
+
             <!-- Common Footer Links -->
             <li>
                 <a href="{{ '/' . app()->getLocale() }}">
