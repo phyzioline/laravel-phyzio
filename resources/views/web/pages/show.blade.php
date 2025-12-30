@@ -760,7 +760,7 @@ header,
                     var btn = $(this);
 
                     $.ajax({
-                        url: '{{ route('compare.store') }}',
+                        url: '{{ route('compare.store.' . app()->getLocale()) }}',
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
@@ -770,7 +770,7 @@ header,
                             if (response.action === 'added') {
                                 btn.addClass('active');
                                 toastr.success(response.message);
-                                window.location.href = '{{ route('compare.index') }}';
+                                window.location.href = '{{ route('compare.index.' . app()->getLocale()) }}';
                             } else {
                                 btn.removeClass('active');
                                 toastr.info(response.message);

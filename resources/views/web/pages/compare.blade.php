@@ -195,7 +195,7 @@
                                 <th>Product</th>
                                 @foreach($compareItems as $item)
                                     <th style="text-align: center;">
-                                        <form action="{{ route('compare.delete', $item->id) }}" method="POST" style="display: inline;">
+                                        <form action="{{ route('compare.delete.' . app()->getLocale(), $item->id) }}" method="POST" style="display: inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" style="float: right; margin-bottom: 10px;">
