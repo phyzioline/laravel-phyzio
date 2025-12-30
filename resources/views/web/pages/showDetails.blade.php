@@ -702,7 +702,7 @@
                         var productId = button.data('product-id');
 
                         $.ajax({
-                            url: '{{ route('favorites.store') }}',
+                            url: '{{ route('favorites.store.' . app()->getLocale()) }}',
                             type: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',

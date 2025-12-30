@@ -893,7 +893,7 @@ body.has-hero .shop-hero-banner {
                             {{-- Wishlist --}}
                             <li>
                                 <button type="button">
-                                    <a class="wishlist-link" href="{{ route('favorites.index') }}" data-placement="top" title="{{ __('To Wishlist') }}" aria-label="{{ __('View Wishlist') }}">
+                                    <a class="wishlist-link" href="{{ route('favorites.index.' . app()->getLocale()) }}" data-placement="top" title="{{ __('To Wishlist') }}" aria-label="{{ __('View Wishlist') }}">
                                         <i class="la la-heart" aria-hidden="true"></i>
                                     </a>
                                 </button>
@@ -990,7 +990,7 @@ body.has-hero .shop-hero-banner {
                                         <a class="dropdown-item" href="{{ route('history_order.index') }}">
                                             <i class="las la-shipping-fast mr-2"></i> {{ __('Track Your Order') }}
                                         </a>
-                                        <a class="dropdown-item" href="{{ route('favorites.index') }}">
+                                        <a class="dropdown-item" href="{{ route('favorites.index.' . app()->getLocale()) }}">
                                             <i class="la la-heart mr-2"></i> {{ __('My Wishlist') }}
                                         </a>
                                         <div class="dropdown-divider"></div>

@@ -413,7 +413,7 @@
                                             <div class="product-info ul-li">
                                                 <ul class="clearfix">
                                                     <li>
-                                                        <form action="{{ route('favorites.delete', $favorit->id) }}"
+                                                        <form action="{{ route('favorites.delete.' . app()->getLocale(), $favorit->id) }}"
                                                             method="POST" class="remove-favorite-form">
                                                             @csrf
                                                             @method('DELETE')

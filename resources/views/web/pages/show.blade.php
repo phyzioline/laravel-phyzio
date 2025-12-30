@@ -730,7 +730,7 @@ header,
                     var icon = btn.find('i');
 
                     $.ajax({
-                        url: '{{ route('favorites.store') }}',
+                        url: '{{ route('favorites.store.' . app()->getLocale()) }}',
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',
