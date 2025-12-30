@@ -107,7 +107,7 @@
                                 
                                 <!-- Tab 1: Direct Request (from visits/create) -->
                                 <div class="tab-pane fade show active" id="pills-request" role="tabpanel">
-                                    <form action="{{ route('patient.home_visits.store') }}" method="POST" id="visitForm">
+                                    <form action="{{ route('patient.home_visits.store.' . app()->getLocale()) }}" method="POST" id="visitForm">
                                         @csrf
                                         
                                         <!-- Condition -->

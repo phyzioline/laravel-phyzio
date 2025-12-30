@@ -21,27 +21,78 @@ class CartController extends Controller
         // Load product images for all cart items
         $items->load('product.productImages');
         
-        // Calculate total for authenticated or guest
-        $userId = auth()->check() ? auth()->id() : null;
-        $cookieId = \Illuminate\Support\Facades\Cookie::get('cart_id');
+        // Calculate total using stored cart prices (not current product prices)
+        // This ensures price consistency even if product price changes
+        $subtotal = 0;
+        $priceChangedItems = [];
         
-        $subtotal = Cart::join('products', 'products.id', '=', 'carts.product_id')
-            ->when($userId, function($q) use ($userId) {
-                $q->where('carts.user_id', $userId);
-            }, function($q) use ($cookieId) {
-                $q->where('carts.cookie_id', $cookieId)->whereNull('carts.user_id');
-            })
-            ->selectRaw('SUM(products.product_price * carts.quantity) as total')
-            ->value('total') ?? 0;
+        foreach ($items as $item) {
+            if ($item->product) {
+                // Use stored cart price if available, otherwise use current product price
+                $cartPrice = $item->price ? (float)$item->price : (float)$item->product->product_price;
+                $currentPrice = (float)$item->product->product_price;
+                
+                // Check if price has changed
+                if (abs($cartPrice - $currentPrice) > 0.01) { // Allow 0.01 tolerance for floating point
+                    $priceChangedItems[] = [
+                        'product' => $item->product,
+                        'cart_price' => $cartPrice,
+                        'current_price' => $currentPrice,
+                        'difference' => $currentPrice - $cartPrice,
+                    ];
+                    // Update cart with new price
+                    $item->update([
+                        'price' => $currentPrice,
+                        'total' => $currentPrice * $item->quantity
+                    ]);
+                    $cartPrice = $currentPrice;
+                }
+                
+                $subtotal += $cartPrice * $item->quantity;
+            }
+        }
         
-        // Calculate shipping cost (base cost + per item cost)
-        $shippingBaseCost = config('shipping.base_cost', 30);
-        $shippingPerItem = 5; // Additional cost per item
-        $shippingCost = $shippingBaseCost + ($items->count() * $shippingPerItem);
+        // Calculate shipping cost using enhanced calculation
+        // Try to use ShippingManagementService if available, otherwise fallback to simple calculation
+        $shippingCost = 0;
+        
+        try {
+            $shippingService = app(\App\Services\ShippingManagementService::class);
+            
+            // Get user's city/governorate if available
+            $userCity = auth()->check() && auth()->user()->city 
+                ? auth()->user()->city 
+                : 'Cairo'; // Default
+            
+            // Calculate total weight (default 500g per item if product weight not available)
+            $totalWeight = 0;
+            foreach ($items as $item) {
+                $itemWeight = $item->product->weight ?? 500; // grams, default 500g
+                $totalWeight += $itemWeight * $item->quantity;
+            }
+            
+            // Estimate shipping cost (from vendor location to customer)
+            // For now, use default vendor location (can be enhanced to get actual vendor locations)
+            $vendorCity = 'Cairo'; // Default vendor location
+            $shippingCost = $shippingService->estimateShippingCost(
+                $vendorCity,
+                $userCity,
+                $totalWeight / 1000, // Convert to kg
+                'standard' // shipping method
+            );
+        } catch (\Exception $e) {
+            // Fallback to simple calculation if service unavailable
+            \Log::warning('Shipping service unavailable, using fallback calculation', [
+                'error' => $e->getMessage()
+            ]);
+            $shippingBaseCost = config('shipping.base_cost', 30);
+            $shippingPerItem = 5; // Additional cost per item
+            $shippingCost = $shippingBaseCost + ($items->count() * $shippingPerItem);
+        }
         
         $total = $subtotal + $shippingCost;
             
-        return view('web.pages.cart', compact('items', 'subtotal', 'shippingCost', 'total'));
+        return view('web.pages.cart', compact('items', 'subtotal', 'shippingCost', 'total', 'priceChangedItems'));
     }
 
 

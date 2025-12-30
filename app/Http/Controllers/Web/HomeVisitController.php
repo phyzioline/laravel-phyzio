@@ -106,28 +106,39 @@ class HomeVisitController extends Controller
         // ========================================
         // CRITICAL: Check Therapist Availability
         // ========================================
-        
-        // 1. Check if therapist has any conflicting visits at this time
-        $conflictingVisit = \App\Models\HomeVisit::where('therapist_id', $therapistProfile->user_id)
-            ->where(function($q) use ($requestedDateTime) {
-                // Check for visits scheduled within 2-hour window (default visit duration)
-                $endTime = $requestedDateTime->copy()->addHours(2);
-                $q->whereBetween('scheduled_at', [$requestedDateTime->copy()->subHours(2), $requestedDateTime])
-                  ->orWhereBetween('scheduled_at', [$requestedDateTime, $endTime]);
+        // 1. Check for overlapping bookings
+        $hasConflict = \App\Models\HomeVisit::where('therapist_id', $therapistProfile->user_id)
+            ->where('status', '!=', 'cancelled')
+            ->where('status', '!=', 'rejected')
+            ->where(function ($query) use ($requestedDateTime) {
+                // Check if new appointment overlaps with existing ones (assuming 1 hour duration)
+                $start = $requestedDateTime;
+                $end = $requestedDateTime->copy()->addHour();
+                
+                $query->whereBetween('appointment_time', [$start->format('H:i:s'), $end->format('H:i:s')])
+                      ->where('appointment_date', $start->toDateString());
             })
-            ->whereIn('status', ['pending', 'confirmed', 'in_progress', 'accepted', 'on_way', 'in_session'])
-            ->first();
+            ->exists();
 
-        if ($conflictingVisit) {
+        if ($hasConflict) {
             return back()->withErrors([
-                'appointment_time' => __('This therapist is not available at the selected time. Please choose another time or therapist.')
+                'appointment_time' => __('This therapist is already booked at this time.')
             ])->withInput();
         }
 
-        // 2. Check therapist schedule (if schedule model exists and has data)
+        // 2. Check therapist schedule
+        $dayName = strtolower($requestedDateTime->format('l')); // 'sunday', 'monday', etc.
+        
         $therapistSchedule = \App\Models\TherapistSchedule::where('therapist_id', $therapistProfile->user_id)
-            ->where('day_of_week', $requestedDateTime->dayOfWeek)
+            ->where('day_of_week', $dayName)
+            ->where('is_active', true)
             ->first();
+
+        if (!$therapistSchedule) {
+             return back()->withErrors([
+                'appointment_date' => __('Therapist does not work on ' . ucfirst($dayName) . 's')
+            ])->withInput();
+        }
 
         if ($therapistSchedule) {
             $requestedTime = $requestedDateTime->format('H:i:s');

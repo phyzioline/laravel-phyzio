@@ -89,12 +89,18 @@ class StockReservationService
                 }
 
                 $quantity = $item->quantity;
+                $previousStock = $product->amount;
 
                 // Decrement actual stock
                 $product->decrement('amount', $quantity);
                 
                 // Release the reservation
                 $product->decrement('amount_reserved', $quantity);
+
+                // Check for low stock and send alert
+                $product->refresh(); // Get updated stock level
+                $alertService = app(\App\Services\InventoryAlertService::class);
+                $alertService->checkAndAlert($product, $previousStock);
 
                 Log::info('Stock reservation confirmed', [
                     'product_id' => $product->id,

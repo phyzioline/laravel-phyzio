@@ -78,6 +78,24 @@ class Product extends Model
             $vendorId = $product->user_id ?? auth()->id() ?? 1; // Fallback to 1 if no user
             $product->sku = 'V' . $vendorId . '-P' . $latestId . '-' . strtoupper(\Illuminate\Support\Str::random(3));
         });
+
+        // Check for low stock alerts when stock is updated
+        static::updating(function ($product) {
+            // Only check if amount (stock) is being changed
+            if ($product->isDirty('amount')) {
+                $previousStock = $product->getOriginal('amount');
+                $newStock = $product->amount;
+                
+                // If stock decreased, check for alerts
+                if ($newStock < $previousStock) {
+                    // Use a queued job to avoid blocking the update
+                    \Illuminate\Support\Facades\Queue::push(function () use ($product, $previousStock) {
+                        $alertService = app(\App\Services\InventoryAlertService::class);
+                        $alertService->checkAndAlert($product->fresh(), $previousStock);
+                    });
+                }
+            }
+        });
     }
 
     public function getImageUrlAttribute()

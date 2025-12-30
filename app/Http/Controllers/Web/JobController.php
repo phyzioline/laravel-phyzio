@@ -110,6 +110,15 @@ class JobController extends Controller
             return back()->with('error', 'You have already applied for this job.');
         }
 
+        // Check active application limit (Max 10)
+        $activeApplicationsCount = \App\Models\JobApplication::where('therapist_id', auth()->id())
+            ->whereIn('status', ['pending', 'shortlisted', 'interview_scheduled'])
+            ->count();
+
+        if ($activeApplicationsCount >= 10) {
+            return back()->with('error', 'You have reached the limit of 10 active job applications. Please withdraw from an existing application or wait for a decision.');
+        }
+
         // Calculate score
         $service = new \App\Services\MatchingService();
         $matchData = $service->calculateScore($job, auth()->user());

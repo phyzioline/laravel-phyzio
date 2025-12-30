@@ -61,15 +61,26 @@ class OrderService
         $order = $this->show($id);
         $shouldCreatePayment = false;
 
-        if ($data['status'] == 'completed') {
-            $order->update(['payment_status' => 'paid']);
-            $shouldCreatePayment = true;
-        } elseif ($data['status'] == 'cancelled') {
-            $order->update(['payment_status' => 'faild']);
+        // Use state machine to validate and transition status
+        if (isset($data['status'])) {
+            $stateMachine = app(\App\Services\OrderStatusStateMachine::class);
+            
+            try {
+                $stateMachine->transition($order, $data['status']);
+                
+                // Refresh order to get updated status
+                $order->refresh();
+                
+                if ($data['status'] == 'completed') {
+                    $shouldCreatePayment = true;
+                }
+            } catch (\Exception $e) {
+                throw new \Exception($e->getMessage());
+            }
+        } else {
+            // Update other fields without status change
+            $order->update($data);
         }
-
-        // Apply status update
-        $order->update($data);
 
         // Create a Payment record (one per order) when marking completed/paid
         if ($shouldCreatePayment) {

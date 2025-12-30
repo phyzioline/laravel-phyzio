@@ -96,7 +96,10 @@ class OrderService
             $availableStock = $item->product->amount ?? 0;
             $requestedQuantity = $item->quantity;
             
-            // Check if enough stock is available
+            // Check if enough stock is available (considering reserved stock)
+            $stockService = app(\App\Services\StockReservationService::class);
+            $availableStock = $stockService->getAvailableStock($item->product);
+            
             if ($availableStock < $requestedQuantity) {
                 $productName = $item->product->{'product_name_' . app()->getLocale()} ?? $item->product->product_name_en ?? 'Product';
                 throw new \Exception("Insufficient stock for {$productName}. Available: {$availableStock}, Requested: {$requestedQuantity}");
@@ -111,19 +114,30 @@ class OrderService
                 ['order_id' => $order->id, 'product_id' => $item->product_id],
                 [
                     'quantity' => $item->quantity,
-                    'price'    => $item->price,
-                    'total'    => $item->price * $item->quantity,
+                    'price'    => $item->price ?? $item->product->product_price,
+                    'total'    => ($item->price ?? $item->product->product_price) * $item->quantity,
                     'engineer_selected' => $engineerSelected,
                     'engineer_price' => $engineerPrice,
                 ]
             );
-            
-            // Safely decrement stock - ensure it doesn't go below zero
-            if ($availableStock >= $requestedQuantity) {
-                $newAmount = max(0, $availableStock - $requestedQuantity);
-                $item->product->update(['amount' => $newAmount]);
-            }
         }
+        
+        // Reserve stock for cash order (prevents race conditions)
+        $stockService = app(\App\Services\StockReservationService::class);
+        $reservationSuccess = $stockService->reserveStockForOrder($order);
+        
+        if (!$reservationSuccess) {
+            // Stock reservation failed - cancel order and return error
+            $order->update([
+                'status' => 'cancelled',
+                'payment_status' => 'failed'
+            ]);
+            
+            throw new \Exception(__('One or more items are out of stock. Please update your cart.'));
+        }
+        
+        // For cash orders, confirm reservation immediately (payment is cash on delivery)
+        $stockService->confirmReservation($order);
         
         // Calculate Vendor Payments (Pending for Cash Orders)
         $this->calculateVendorPayments($order);

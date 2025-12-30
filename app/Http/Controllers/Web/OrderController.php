@@ -148,7 +148,7 @@ class OrderController extends Controller
                     'status'       => 'completed',
                 ]);
 
-                // Confirm stock reservation
+                // Confirm stock reservation (this also decrements actual stock)
                 $stockService = app(\App\Services\StockReservationService::class);
                 $stockService->confirmReservation($order);
                 
@@ -170,18 +170,8 @@ class OrderController extends Controller
                          Cart::where('cookie_id', $cookieId)->whereNull('user_id')->delete();
                      }
                  }
-                 foreach ($order->items as $item) {
-                    if ($item->product) {
-                        $availableStock = $item->product->amount ?? 0;
-                        $requestedQuantity = $item->quantity;
-                        
-                        // Safely decrement stock - ensure it doesn't go below zero
-                        if ($availableStock >= $requestedQuantity) {
-                            $newAmount = max(0, $availableStock - $requestedQuantity);
-                            $item->product->update(['amount' => $newAmount]);
-                        }
-                    }
-                }
+                 // Note: Stock decrement is handled by StockReservationService::confirmReservation()
+                 // No need to manually decrement here
 
                 return view('payment', compact('order', 'url'));
 

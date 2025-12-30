@@ -51,10 +51,15 @@ class OrderController extends Controller implements HasMiddleware
     public function update(Request $request, string $id)
     {
         $data = $request->validate([
-            'status' => 'required|in:pending,completed,cancelled',
+            'status' => 'required|in:pending,pending_payment,processing,shipped,delivered,completed,cancelled',
         ]);
-        $this->orderService->update($data, $id);
-        return redirect()->route('dashboard.orders.index')->with('success', 'Order updated successfully.');
+        
+        try {
+            $this->orderService->update($data, $id);
+            return redirect()->route('dashboard.orders.index')->with('success', 'Order updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy(string $id)
