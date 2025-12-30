@@ -230,8 +230,8 @@ foreach ($supportedLocales as $locale) {
             Route::get('/dashboard', function () {
                 $user = Auth::user();
                 // Remove locale prefix and redirect to actual dashboard
-                $locale = app()->getLocale();
-                $dashboardUrl = str_replace('/' . $locale . '/dashboard', '/dashboard', request()->url());
+                $currentLocale = app()->getLocale();
+                $dashboardUrl = str_replace('/' . $currentLocale . '/dashboard', '/dashboard', request()->url());
                 
                 if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
                     return redirect('/dashboard/home');
@@ -245,9 +245,9 @@ foreach ($supportedLocales as $locale) {
                     // Recruitment company dashboard
                     return redirect()->route('company.dashboard');
                 } else {
-                    return redirect()->route('history_order.index');
+                    return redirect()->route("history_order.index.{$currentLocale}");
                 }
-            })->name('dashboard');
+            })->name("dashboard.{$locale}");
         });
         
     }); // End of locale route group
