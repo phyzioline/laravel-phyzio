@@ -18,6 +18,11 @@ class HistoryOrderController extends Controller
         return $this->orderService->index();
     }
 
-    
-
+    /**
+     * Show order tracking details.
+     */
+    public function tracking($id)
+    {
+        return $this->orderService->tracking($id);
+    }
 }

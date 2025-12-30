@@ -80,18 +80,25 @@ class Product extends Model
         });
 
         // Check for low stock alerts when stock is updated
-        static::updating(function ($product) {
-            // Only check if amount (stock) is being changed
-            if ($product->isDirty('amount')) {
+        static::updated(function ($product) {
+            // Only check if amount (stock) was changed
+            if ($product->wasChanged('amount')) {
                 $previousStock = $product->getOriginal('amount');
                 $newStock = $product->amount;
                 
-                // If stock decreased, check for alerts
-                if ($newStock < $previousStock) {
-                    // Use a queued job to avoid blocking the update
-                    \Illuminate\Support\Facades\Queue::push(function () use ($product, $previousStock) {
-                        $alertService = app(\App\Services\InventoryAlertService::class);
-                        $alertService->checkAndAlert($product->fresh(), $previousStock);
+                // If stock decreased, check for alerts (run after commit to avoid blocking)
+                if ($newStock < $previousStock && $newStock > 0) {
+                    // Dispatch after response to avoid blocking
+                    \Illuminate\Support\Facades\DB::afterCommit(function () use ($product, $previousStock) {
+                        try {
+                            $alertService = app(\App\Services\InventoryAlertService::class);
+                            $alertService->checkAndAlert($product->fresh(), $previousStock);
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error('Failed to check low stock alert', [
+                                'product_id' => $product->id,
+                                'error' => $e->getMessage()
+                            ]);
+                        }
                     });
                 }
             }
