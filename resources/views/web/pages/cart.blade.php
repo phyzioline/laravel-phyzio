@@ -149,7 +149,7 @@
                 <div class="cuponcode-form mb-4">
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-4 col-md-6 col-sm-12 mb-3 mb-lg-0">
-                            <a href="{{ route('history_order.index') }}" class="btn btn-outline-primary" 
+                            <a href="{{ route('history_order.index.' . app()->getLocale()) }}" class="btn btn-outline-primary" 
                                style="border-color: #02767F; color: #02767F;">
                                 <i class="las la-shipping-fast me-2"></i>{{ __('Track Your Order') }}
                             </a>

@@ -43,7 +43,7 @@
           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Support') }}</h4>
            <ul class="list-unstyled">
              <li class="mb-2"><a href="{{ route('help.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Help Center') }}</a></li>
-             <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Track Your Order') }}</a></li>
+             <li class="mb-2"><a href="{{ route('history_order.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Track Your Order') }}</a></li>
              <li class="mb-2"><a href="{{ route('feedback.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Contact Us') }}</a></li>
              <li class="mb-2"><a href="{{ route('shipping_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shipping Policy') }}</a></li>
               <li class="mb-2"><a href="{{ route('privacy_policy.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Privacy Policy') }}</a></li>
@@ -59,8 +59,8 @@
            <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Account') }}</h4>
             <ul class="list-unstyled mb-5">
                 @if(Auth::check())
-                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('My Account') }}</a></li>
-                 <li class="mb-2"><a href="{{ route('history_order.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Order History') }}</a></li>
+                 <li class="mb-2"><a href="{{ route('history_order.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('My Account') }}</a></li>
+                 <li class="mb-2"><a href="{{ route('history_order.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Order History') }}</a></li>
                 @else
                  <li class="mb-2"><a href="{{ route('view_login.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Login') }} / {{ __('Register') }}</a></li>
                 @endif

@@ -180,12 +180,12 @@
                 <li class="menu-item-box {{ Route::is('web.datahub.index.*') ? 'active' : '' }}"><a href="{{ route('web.datahub.index.' . app()->getLocale()) }}">{{ __('Data Hub') }}</a></li>
                 
                 <li class="menu-item-box {{ Route::is('history_order.index') ? 'active' : '' }}">
-                    <a href="{{ route('history_order.index') }}"><i class="las la-shipping-fast"></i> {{ __('Track Your Order') }}</a>
+                    <a href="{{ route('history_order.index.' . app()->getLocale()) }}"><i class="las la-shipping-fast"></i> {{ __('Track Your Order') }}</a>
                 </li>
                 
                 @if (Auth::check())
                     <li class="menu-item-box {{ Route::is('history_order.index') ? 'active' : '' }}">
-                        <a href="{{ route('history_order.index') }}"><i class="las la-history"></i> {{ __('Order History') }}</a>
+                        <a href="{{ route('history_order.index.' . app()->getLocale()) }}"><i class="las la-history"></i> {{ __('Order History') }}</a>
                     </li>
                     <li class="menu-item-box">
                         <a href="{{ route('logout.' . app()->getLocale()) }}"><i class="las la-sign-out-alt"></i> {{ __('Logout') }}</a>

@@ -793,12 +793,12 @@ body.has-hero .shop-hero-banner {
 
         <!-- TRACK YOUR ORDER BUTTON (Mobile) - Always visible for all users -->
         @php
-            $trackUrl = route('history_order.index');
+            $trackUrl = route('history_order.index.' . app()->getLocale());
             // If guest just placed an order, add order number and email to URL
             if (!Auth::check() && (session('success') || session('guest_order'))) {
                 $guestOrder = session('guest_order');
                 if ($guestOrder && isset($guestOrder->order_number)) {
-                    $trackUrl = route('history_order.index') . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
+                    $trackUrl = route('history_order.index.' . app()->getLocale()) . '?order_number=' . $guestOrder->order_number . '&email=' . ($guestOrder->email ?? '');
                 }
             }
         @endphp
@@ -840,11 +840,11 @@ body.has-hero .shop-hero-banner {
                             <li><a href="{{ route('feed.index') }}" class="text-decoration-none">{{ __('Feed') }}</a></li>
                             <li><a href="{{ route('web.datahub.index.' . app()->getLocale()) }}" class="text-decoration-none">{{ __('Data Hub') }}</a></li>
                             <li>
-                                <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Track Your Order') }}</a>
+                                <a href="{{ route('history_order.index.' . app()->getLocale()) }}" class="text-decoration-none">{{ __('Track Your Order') }}</a>
                             </li>
                            	 @if (Auth::check())
                                   <li>
-                                      <a href="{{ route('history_order.index') }}" class="text-decoration-none">{{ __('Order History') }}</a>
+                                      <a href="{{ route('history_order.index.' . app()->getLocale()) }}" class="text-decoration-none">{{ __('Order History') }}</a>
                                   </li>
                             @endif
                             <li><a href="{{ '/' . app()->getLocale() }}#about" class="text-decoration-none">{{ __('About Us') }}</a></li>
@@ -984,10 +984,10 @@ body.has-hero .shop-hero-banner {
                                             </a>
                                             <div class="dropdown-divider"></div>
                                         @endif
-                                        <a class="dropdown-item" href="{{ route('history_order.index') }}">
+                                        <a class="dropdown-item" href="{{ route('history_order.index.' . app()->getLocale()) }}">
                                             <i class="las la-history mr-2"></i> {{ __('Order History') }}
                                         </a>
-                                        <a class="dropdown-item" href="{{ route('history_order.index') }}">
+                                        <a class="dropdown-item" href="{{ route('history_order.index.' . app()->getLocale()) }}">
                                             <i class="las la-shipping-fast mr-2"></i> {{ __('Track Your Order') }}
                                         </a>
                                         <a class="dropdown-item" href="{{ route('favorites.index.' . app()->getLocale()) }}">
