@@ -58,4 +58,12 @@ class EpisodeOfCare extends Model
     {
         return $this->hasMany(Outcome::class, 'episode_id');
     }
+
+    /**
+     * Get specialty key (alias for specialty field)
+     */
+    public function getSpecialtyKeyAttribute(): ?string
+    {
+        return $this->specialty;
+    }
 }

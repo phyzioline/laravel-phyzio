@@ -27,13 +27,15 @@ class ClinicSpecialty extends Model
      * Available specialty types
      */
     public const SPECIALTIES = [
-        'orthopedic' => 'Orthopedic Physical Therapy',
+        'musculoskeletal' => 'Musculoskeletal / Orthopedic Physical Therapy',
+        'neurological' => 'Neurological Physical Therapy',
+        'cardiopulmonary' => 'Cardiopulmonary Physical Therapy',
         'pediatric' => 'Pediatric Physical Therapy',
-        'neurological' => 'Neurological Rehabilitation',
-        'sports' => 'Sports Physical Therapy',
         'geriatric' => 'Geriatric Physical Therapy',
-        'womens_health' => "Women's Health / Pelvic Floor",
-        'cardiorespiratory' => 'Cardiorespiratory Physical Therapy',
+        'sports' => 'Sports Physical Therapy',
+        'womens_health' => "Women's Health / Pelvic Floor Physical Therapy",
+        'pain_management' => 'Pain Management Physical Therapy',
+        'occupational' => 'Occupational Therapy',
         'home_care' => 'Home Care / Mobile Physical Therapy',
         'multi_specialty' => 'Multi-Specialty Clinic'
     ];
