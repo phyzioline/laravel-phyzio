@@ -40,7 +40,10 @@ class JobController extends Controller
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
             $allJobs = $query->get()->map(function($job) use ($service) {
-                $job->match_score = $service->calculateScore($job, auth()->user());
+                $matchData = $service->calculateScore($job, auth()->user());
+                $job->match_score = $matchData['score'];
+                $job->match_breakdown = $matchData['breakdown'];
+                $job->match_summary = $matchData['summary'];
                 return $job;
             })->sortByDesc('match_score');
 
@@ -76,13 +79,18 @@ class JobController extends Controller
             })
             ->findOrFail($id);
         $matchScore = 0;
+        $matchBreakdown = [];
+        $matchSummary = [];
         if (auth()->check() && auth()->user()->type === 'therapist') {
             $service = new \App\Services\MatchingService();
-            $matchScore = $service->calculateScore($job, auth()->user());
+            $matchData = $service->calculateScore($job, auth()->user());
+            $matchScore = $matchData['score'];
+            $matchBreakdown = $matchData['breakdown'];
+            $matchSummary = $matchData['summary'];
         }
         $hasApplied = auth()->check() ? $job->applications()->where('therapist_id', auth()->id())->exists() : false;
         
-        return view('web.pages.jobs.show', compact('job', 'matchScore', 'hasApplied'));
+        return view('web.pages.jobs.show', compact('job', 'matchScore', 'matchBreakdown', 'matchSummary', 'hasApplied'));
     }
 
     public function apply(Request $request, $id)
@@ -104,12 +112,12 @@ class JobController extends Controller
 
         // Calculate score
         $service = new \App\Services\MatchingService();
-        $score = $service->calculateScore($job, auth()->user());
+        $matchData = $service->calculateScore($job, auth()->user());
 
         \App\Models\JobApplication::create([
             'job_id' => $job->id,
             'therapist_id' => auth()->id(),
-            'match_score' => $score,
+            'match_score' => $matchData['score'],
             'status' => 'pending',
             'cover_letter' => $request->cover_letter ?? null,
         ]);

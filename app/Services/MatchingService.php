@@ -10,73 +10,192 @@ class MatchingService
 {
     /**
      * Calculate match score between a job and a therapist.
+     * Now returns detailed breakdown for transparency.
      * 
      * @param Job $job
      * @param User $therapist
-     * @return float
+     * @return array ['score' => float, 'breakdown' => array]
      */
     public function calculateScore(Job $job, User $therapist)
     {
         $score = 0;
+        $breakdown = [];
         $profile = $therapist->therapistProfile;
 
         if (!$profile) {
-            return 0;
+            return [
+                'score' => 0,
+                'breakdown' => ['error' => 'No therapist profile found']
+            ];
         }
 
         // 1. Specialty Match (30%)
-        // Assuming job->specialty is array of strings and profile->specialization is string or array
-        // We'll normalize to array
         $jobSpecialties = $job->specialty ?? [];
         $therapistSpecialties = is_array($profile->specialization) ? $profile->specialization : explode(',', $profile->specialization);
         $therapistSpecialties = array_map('trim', $therapistSpecialties);
 
-        if (!empty(array_intersect($jobSpecialties, $therapistSpecialties))) {
+        $specialtyMatches = array_intersect($jobSpecialties, $therapistSpecialties);
+        if (!empty($specialtyMatches)) {
             $score += 30;
+            $breakdown['specialty'] = [
+                'points' => 30,
+                'max' => 30,
+                'matches' => $specialtyMatches,
+                'status' => 'matched'
+            ];
+        } else {
+            $breakdown['specialty'] = [
+                'points' => 0,
+                'max' => 30,
+                'required' => $jobSpecialties,
+                'therapist_has' => $therapistSpecialties,
+                'status' => 'no_match'
+            ];
         }
 
-        // 2. Skills Match (30%) - Placeholder logic based on 'techniques' vs 'skills_matrix'
-        // If profile has ANY of the job techniques in their matrix
+        // 2. Skills Match (30%)
         $jobTechniques = $job->techniques ?? [];
-        $therapistSkills = $profile->skills_matrix ?? []; // array of key => score
+        $therapistSkills = $profile->skills_matrix ?? [];
         
-        // Simple check: if key exists in therapist skills
         $matchedSkills = 0;
+        $matchedSkillsList = [];
+        
         if (count($jobTechniques) > 0) {
             foreach ($jobTechniques as $tech) {
-                // Normalize string for key check if needed, but assuming direct match for now
                 if (isset($therapistSkills[$tech]) || in_array($tech, array_keys($therapistSkills))) {
                     $matchedSkills++;
+                    $matchedSkillsList[] = $tech;
                 }
             }
-            if ($matchedSkills > 0) {
-                $score += 30 * ($matchedSkills / count($jobTechniques));
-            }
+            $skillsScore = $matchedSkills > 0 ? 30 * ($matchedSkills / count($jobTechniques)) : 0;
+            $score += $skillsScore;
+            
+            $breakdown['skills'] = [
+                'points' => round($skillsScore, 1),
+                'max' => 30,
+                'matched' => $matchedSkills,
+                'required' => count($jobTechniques),
+                'match_rate' => round(($matchedSkills / count($jobTechniques)) * 100, 1) . '%',
+                'matched_skills' => $matchedSkillsList,
+                'status' => $matchedSkills > 0 ? 'partial_match' : 'no_match'
+            ];
         } else {
-            // No techniques required? Free points? Or neutral. Let's give full if no requirements.
             $score += 30;
+            $breakdown['skills'] = [
+                'points' => 30,
+                'max' => 30,
+                'status' => 'no_requirements'
+            ];
         }
 
         // 3. Location (10%)
-        if (stripos($job->location, $profile->location ?? '') !== false) { // Simple string match
+        $locationMatch = stripos($job->location, $profile->location ?? '') !== false;
+        if ($locationMatch) {
             $score += 10;
+            $breakdown['location'] = [
+                'points' => 10,
+                'max' => 10,
+                'job_location' => $job->location,
+                'therapist_location' => $profile->location,
+                'status' => 'matched'
+            ];
+        } else {
+            $breakdown['location'] = [
+                'points' => 0,
+                'max' => 10,
+                'job_location' => $job->location,
+                'therapist_location' => $profile->location ?? 'Not specified',
+                'status' => 'no_match'
+            ];
         }
 
         // 4. Experience (10%)
-        if ($profile->years_experience >= ($job->requirements->min_years_experience ?? 0)) {
+        $minExperience = $job->requirements->min_years_experience ?? 0;
+        $therapistExperience = $profile->years_experience ?? 0;
+        
+        if ($therapistExperience >= $minExperience) {
             $score += 10;
+            $breakdown['experience'] = [
+                'points' => 10,
+                'max' => 10,
+                'required' => $minExperience . ' years',
+                'therapist_has' => $therapistExperience . ' years',
+                'status' => 'qualified'
+            ];
+        } else {
+            $breakdown['experience'] = [
+                'points' => 0,
+                'max' => 10,
+                'required' => $minExperience . ' years',
+                'therapist_has' => $therapistExperience . ' years',
+                'shortfall' => ($minExperience - $therapistExperience) . ' years',
+                'status' => 'insufficient'
+            ];
         }
 
         // 5. Gender Preference (10%)
-        if (empty($job->requirements->gender_preference) || 
-            $job->requirements->gender_preference === 'no_preference' || 
-            $job->requirements->gender_preference === ($therapist->gender ?? $profile->gender)) {
+        $genderPref = $job->requirements->gender_preference ?? 'no_preference';
+        $therapistGender = $therapist->gender ?? $profile->gender ?? null;
+        
+        if (empty($genderPref) || $genderPref === 'no_preference' || $genderPref === $therapistGender) {
             $score += 10;
+            $breakdown['gender'] = [
+                'points' => 10,
+                'max' => 10,
+                'status' => 'matched'
+            ];
+        } else {
+            $breakdown['gender'] = [
+                'points' => 0,
+                'max' => 10,
+                'preferred' => $genderPref,
+                'therapist' => $therapistGender ?? 'Not specified',
+                'status' => 'no_match'
+            ];
         }
 
-        // 6. Salary (10%) - Optional check
-        // ...
+        // 6. Availability (10%) - Bonus points
+        // Future: Check therapist schedule availability
+        $breakdown['availability'] = [
+            'points' => 10,
+            'max' => 10,
+            'status' => 'assumed_available',
+            'note' => 'Schedule integration pending'
+        ];
+        $score += 10;
 
-        return min($score, 100);
+        $finalScore = min($score, 100);
+        
+        return [
+            'score' => $finalScore,
+            'breakdown' => $breakdown,
+            'summary' => $this->generateSummary($breakdown, $finalScore)
+        ];
+    }
+
+    /**
+     * Generate human-readable summary of match score.
+     */
+    private function generateSummary(array $breakdown, float $score): array
+    {
+        $strengths = [];
+        $weaknesses = [];
+        
+        foreach ($breakdown as $category => $details) {
+            if (isset($details['status'])) {
+                if (in_array($details['status'], ['matched', 'qualified', 'no_requirements'])) {
+                    $strengths[] = ucfirst($category) . ': ' . $details['points'] . '/' . $details['max'];
+                } elseif (in_array($details['status'], ['no_match', 'insufficient'])) {
+                    $weaknesses[] = ucfirst($category) . ': ' . $details['points'] . '/' . $details['max'];
+                }
+            }
+        }
+
+        return [
+            'overall' => $score >= 70 ? 'Excellent Match' : ($score >= 50 ? 'Good Match' : 'Fair Match'),
+            'strengths' => $strengths,
+            'weaknesses' => $weaknesses,
+            'recommendation' => $score >= 70 ? 'Highly Recommended' : ($score >= 50 ? 'Recommended' : 'Consider with caution')
+        ];
     }
 }

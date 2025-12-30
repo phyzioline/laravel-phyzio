@@ -714,7 +714,7 @@ header,
                         },
                         success: function(response) {
                             toastr.success('Product added to cart');
-                            window.location.href = '{{ route('carts.index') }}';
+                            window.location.href = "{{ route('carts.index.' . app()->getLocale()) }}";
                         },
                         error: function() {
                             toastr.error('Error adding product to cart');

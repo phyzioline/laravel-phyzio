@@ -745,7 +745,7 @@
                             success: function(response) {
                                 toastr.success('تمت إضافة المنتج إلى السلة');
                                 // Redirect to cart or checkout page
-                                window.location.href = '{{ route('carts.index') }}';
+                                window.location.href = "{{ route('carts.index.' . app()->getLocale()) }}";
                             },
                             error: function() {
                                 toastr.error('حدث خطأ أثناء الإضافة للسلة');

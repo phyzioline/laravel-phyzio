@@ -89,6 +89,15 @@ foreach ($supportedLocales as $locale) {
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name("web.jobs.show.{$locale}");
         Route::post('/jobs/{id}/apply', [App\Http\Controllers\Web\JobController::class, 'apply'])->name("web.jobs.apply.{$locale}");
 
+        // Return/Refund Routes (Customer-facing)
+        Route::middleware('auth')->prefix('returns')->name("returns.{$locale}.")->group(function() {
+            Route::get('/', [App\Http\Controllers\Web\ReturnController::class, 'index'])->name('index');
+            Route::get('/create/{orderItemId}', [App\Http\Controllers\Web\ReturnController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Web\ReturnController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\Web\ReturnController::class, 'show'])->name('show');
+            Route::post('/{id}/cancel', [App\Http\Controllers\Web\ReturnController::class, 'cancel'])->name('cancel');
+        });
+
         // Data Hub
         Route::get('/data-hub', [App\Http\Controllers\Web\DataHubController::class, 'index'])->name("web.datahub.index.{$locale}");
         Route::get('/data-hub/dashboard', [App\Http\Controllers\Web\DataHubController::class, 'dashboard'])->name("web.datahub.dashboard.{$locale}");

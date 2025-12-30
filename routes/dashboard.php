@@ -185,6 +185,18 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::post('privacy_policies', [PrivacyPolicyController::class, 'update'])->name('privacy_policies.update');
 
 
+        
+    // Debugging Route
+    Route::get('/debug', [DashboardController::class, 'debug'])->name('debug');
+    
+    // Admin Return Management Routes
+    Route::prefix('returns')->name('returns.')->group(function() {
+        Route::get('/', [App\Http\Controllers\Dashboard\ReturnManagementController::class, 'index'])->name('index');
+        Route::get('/{id}', [App\Http\Controllers\Dashboard\ReturnManagementController::class, 'show'])->name('show');
+        Route::post('/{id}/approve', [App\Http\Controllers\Dashboard\ReturnManagementController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [App\Http\Controllers\Dashboard\ReturnManagementController::class, 'reject'])->name('reject');
+        Route::post('/{id}/refund', [App\Http\Controllers\Dashboard\ReturnManagementController::class, 'refund'])->name('refund');
+    });
             // logout
             Route::get('logout', [AuthController::class, 'logout'])->name('logout');
         });
