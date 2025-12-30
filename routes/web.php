@@ -65,6 +65,7 @@ foreach ($supportedLocales as $locale) {
     Route::post('/forget_password', [PasswordController::class, 'store'])->name("forget_password.{$locale}");
     
     Route::get('/products/{id}', [ShowController::class, 'product'])->name("product.show.{$locale}");
+    Route::post('/products/{id}/reviews', [App\Http\Controllers\Web\ProductReviewController::class, 'store'])->name("product.reviews.store.{$locale}");
         Route::get('shipping_policy',[ShippingPolicyController::class, 'index'])->name("shipping_policy.index.{$locale}");
      Route::get('privacy_policy',[PrivacyPolicyController::class, 'index'])->name("privacy_policy.index.{$locale}");
      
