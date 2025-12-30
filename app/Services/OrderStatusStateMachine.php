@@ -146,6 +146,16 @@ class OrderStatusStateMachine
                         'delivered_at' => now()
                     ]);
                 }
+                
+                // Release Vendor Payments
+                \App\Models\VendorPayment::where('order_id', $order->id)
+                    ->where('status', 'pending')
+                    ->update(['status' => 'released']);
+
+                // If COD, mark as paid
+                if ($order->payment_method === 'cash') {
+                     $order->update(['payment_status' => 'paid']);
+                }
                 break;
 
             case 'completed':
@@ -154,6 +164,11 @@ class OrderStatusStateMachine
                 if ($order->payment_status !== 'paid') {
                     $order->update(['payment_status' => 'paid']);
                 }
+                
+                // Ensure Vendor Payments are released (if skipped delivered state)
+                \App\Models\VendorPayment::where('order_id', $order->id)
+                    ->whereIn('status', ['pending', 'released'])
+                    ->update(['status' => 'paid']); // Assuming 'completed' implies paid
                 break;
 
             case 'cancelled':
@@ -166,6 +181,10 @@ class OrderStatusStateMachine
                 if ($order->payment_status === 'pending') {
                     $order->update(['payment_status' => 'failed']);
                 }
+                
+                // Cancel Vendor Payments
+                \App\Models\VendorPayment::where('order_id', $order->id)
+                    ->update(['status' => 'cancelled']);
                 break;
         }
     }

@@ -233,6 +233,7 @@ foreach ($supportedLocales as $locale) {
         Route::delete('/compare/{id}', [App\Http\Controllers\Web\CompareController::class, 'destroy'])->name("compare.delete.{$locale}");
         Route::get('history_order',[HistoryOrderController::class, 'index'])->name("history_order.index.{$locale}");
         Route::get('orders/{id}/tracking',[HistoryOrderController::class, 'tracking'])->name("orders.tracking.{$locale}");
+        Route::get('orders/{id}/invoice',[HistoryOrderController::class, 'invoice'])->name("orders.invoice.{$locale}");
 
             // logout
             Route::get('logout', [LoginController::class, 'logout'])->name("logout.{$locale}");

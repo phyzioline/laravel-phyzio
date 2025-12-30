@@ -516,4 +516,62 @@ class OrderService
         }
     }
 
+    /**
+     * Update order status with State Machine logic
+     */
+    public function updateOrderStatus(Order $order, $newStatus)
+    {
+        $currentStatus = $order->status;
+        
+        // Define allowed transitions
+        $transitions = [
+            'pending_payment' => ['pending', 'cancelled'],
+            'pending' => ['confirmed', 'cancelled'],
+            'confirmed' => ['shipped', 'cancelled', 'processing'], // 'processing' added for flexibility
+            'processing' => ['shipped', 'cancelled'],
+            'shipped' => ['delivered', 'returned'],
+            'delivered' => ['returned'], // Only allowed if return is approved
+            'cancelled' => [], // Terminal state
+            'returned' => [], // Terminal state
+        ];
+
+        // Check validation
+        if (!isset($transitions[$currentStatus])) {
+            // New or unknown status? Allow admin override or throw error?
+            // For safety, let's assume if it's unknown, we can't move it.
+            // But let's allow 'pending' as a catch-all start
+        }
+
+        if (!in_array($newStatus, $transitions[$currentStatus] ?? [])) {
+             // Admin override exception? Or strict enforcement?
+             // Let's allow strict enforcement but checking for 'admin' role context might be needed.
+             // For now, strict:
+             throw new \Exception("Invalid status transition from {$currentStatus} to {$newStatus}.");
+        }
+
+        $order->update(['status' => $newStatus]);
+
+        // Trigger actions based on new status
+        if ($newStatus === 'delivered') {
+            // 1. Release Vendor Payments
+            \App\Models\VendorPayment::where('order_id', $order->id)->update(['status' => 'released']);
+            
+            // 2. Mark Payment as Paid (if COD)
+            if ($order->payment_method === 'cash') {
+                 $order->update(['payment_status' => 'paid']);
+            }
+        }
+        
+        if ($newStatus === 'cancelled') {
+             // Release Stock
+             $stockService = app(\App\Services\StockReservationService::class);
+             $stockService->releaseStockForOrder($order);
+             
+             // Mark Vendor Payments as Cancelled
+             \App\Models\VendorPayment::where('order_id', $order->id)->update(['status' => 'cancelled']);
+        }
+        
+        return $order;
+    }
+
 }

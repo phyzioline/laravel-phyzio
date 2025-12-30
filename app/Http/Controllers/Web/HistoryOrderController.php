@@ -25,4 +25,14 @@ class HistoryOrderController extends Controller
     {
         return $this->orderService->tracking($id);
     }
+
+    /**
+     * Download invoice for an order.
+     */
+    public function invoice($id)
+    {
+        $order = Order::where('user_id', auth()->id())->findOrFail($id);
+        $invoiceService = app(\App\Services\InvoiceService::class);
+        return $invoiceService->generateHtmlInvoice($order);
+    }
 }

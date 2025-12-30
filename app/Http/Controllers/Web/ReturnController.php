@@ -26,7 +26,7 @@ class ReturnController extends Controller
         // Check if return already exists
         $existingReturn = ReturnModel::where('order_item_id', $orderItemId)->first();
         if ($existingReturn) {
-            return redirect()->route('returns.show', $existingReturn->id)
+            return redirect()->route('returns.show.' . app()->getLocale(), $existingReturn->id)
                 ->with('info', 'Return request already exists for this item');
         }
 
@@ -77,7 +77,7 @@ class ReturnController extends Controller
             // Notification logic here
         }
 
-        return redirect()->route('returns.show', $return->id)
+        return redirect()->route('returns.show.' . app()->getLocale(), $return->id)
             ->with('success', 'Return request submitted successfully. We will review it within 2-3 business days.');
     }
 

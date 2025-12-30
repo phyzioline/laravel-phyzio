@@ -73,4 +73,14 @@ class OrderController extends Controller implements HasMiddleware
         $order = $this->orderService->show($id);
         return view('dashboard.pages.order.print-label', compact('order'));
     }
+
+    /**
+     * Generate and download invoice for an order.
+     */
+    public function invoice(string $id)
+    {
+        $order = $this->orderService->show($id);
+        $invoiceService = app(\App\Services\InvoiceService::class);
+        return $invoiceService->generateHtmlInvoice($order);
+    }
 }
