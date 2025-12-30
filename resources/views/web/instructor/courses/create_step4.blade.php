@@ -74,11 +74,11 @@
                      </div>
                  </div>
 
-                 <form action="{{ route('instructor.courses.update.' . app()->getLocale(), ['course' => $course->id, 'step' => 4]) }}" method="POST" class="mt-4">
+                 <form action="{{ route('instructor.' . app()->getLocale() . '.courses.update.' . app()->getLocale(), ['course' => $course->id, 'step' => 4]) }}" method="POST" class="mt-4">
                     @csrf
                     @method('PUT')
                     <div class="d-flex justify-content-between border-top pt-3">
-                        <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 3]) }}" class="btn btn-light px-4 btn-lg">
+                        <a href="{{ route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 3]) }}" class="btn btn-light px-4 btn-lg">
                             <i class="las la-arrow-left mr-2"></i> {{ __('Back') }}
                         </a>
                         <button type="submit" class="btn btn-success px-5 btn-lg">

@@ -6,7 +6,7 @@
 @section('content')
 <div class="row mb-4">
     <div class="col-12">
-        <a href="{{ route('instructor.students.index') }}" class="btn btn-light mb-3">
+        <a href="{{ route('instructor.' . app()->getLocale() . '.students.index.' . app()->getLocale()) }}" class="btn btn-light mb-3">
             <i class="las la-arrow-left"></i> {{ __('Back to Students') }}
         </a>
     </div>

@@ -6,7 +6,7 @@
         <h4>Edit Course: {{ $course->title }}</h4>
     </div>
     <div class="card-body">
-        <form action="{{ route('instructor.courses.update.' . app()->getLocale(), $course->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('instructor.' . app()->getLocale() . '.courses.update.' . app()->getLocale(), $course->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
 
             <button type="submit" class="btn btn-primary">Update Course</button>
-            <a href="{{ route('instructor.courses.index.' . app()->getLocale()) }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('instructor.' . app()->getLocale() . '.courses.index.' . app()->getLocale()) }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 </div>

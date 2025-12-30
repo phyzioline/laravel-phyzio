@@ -24,7 +24,7 @@ class CourseController extends Controller
             abort(403);
         }
         // For now, redirect 'show' to the curriculum/edit view as it is the main dashboard for a course
-        return redirect()->route('instructor.courses.edit', $course->id);
+        return redirect()->route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), $course->id);
     }
 
     public function create()
@@ -91,7 +91,7 @@ class CourseController extends Controller
             DB::commit();
             
             // Redirect to Curriculum Builder (Step 2)
-            return redirect()->route('instructor.courses.edit', ['course' => $course->id, 'step' => 'curriculum'])
+            return redirect()->route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 'curriculum'])
                              ->with('success', 'Course draft created. Now add modules and units.');
 
         } catch (\Exception $e) {
@@ -129,7 +129,7 @@ class CourseController extends Controller
             if ($request->status === 'published') {
                 // Instructor wants to publish, but needs admin approval first
                 $course->update(['status' => 'review']);
-                return redirect()->route('instructor.dashboard')->with('success', __('Course created successfully! Please wait for review.'));
+                return redirect()->route('instructor.' . app()->getLocale() . '.dashboard.' . app()->getLocale())->with('success', __('Course created successfully! Please wait for review.'));
             } else {
                 $course->update(['status' => $request->status]);
             }
@@ -174,6 +174,6 @@ class CourseController extends Controller
             abort(403);
         }
         $course->delete();
-        return redirect()->route('instructor.courses.index')->with('success', 'Course deleted.');
+        return redirect()->route('instructor.' . app()->getLocale() . '.courses.index.' . app()->getLocale())->with('success', 'Course deleted.');
     }
 }

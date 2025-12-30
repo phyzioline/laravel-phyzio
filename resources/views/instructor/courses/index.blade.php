@@ -8,7 +8,7 @@
     <div class="col-md-12 mb-4">
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="mb-0 text-gray-800">My Clinical Courses</h5>
-            <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}" class="btn btn-primary shadow-sm">
+            <a href="{{ route('instructor.' . app()->getLocale() . '.courses.create.' . app()->getLocale()) }}" class="btn btn-primary shadow-sm">
                 <i class="las la-plus-circle"></i> Create New Course
             </a>
         </div>
@@ -75,7 +75,7 @@
                                     <div class="text-muted mb-3"><i class="las la-layer-group fa-3x"></i></div>
                                     <h5>No Courses Created Yet</h5>
                                     <p class="text-muted">Start by creating your first clinical course.</p>
-                                    <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}" class="btn btn-outline-primary">Create Course</a>
+                                    <a href="{{ route('instructor.' . app()->getLocale() . '.courses.create.' . app()->getLocale()) }}" class="btn btn-outline-primary">Create Course</a>
                                 </td>
                             </tr>
                             @endforelse

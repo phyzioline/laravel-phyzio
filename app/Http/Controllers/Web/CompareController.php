@@ -13,7 +13,7 @@ class CompareController extends Controller
     public function index()
     {
         if (!Auth::check()) {
-            return redirect()->route('view_login')->with('message', [
+            return redirect()->route('view_login.' . app()->getLocale())->with('message', [
                 'type' => 'error',
                 'text' => __('Please login to compare products')
             ]);
@@ -77,7 +77,7 @@ class CompareController extends Controller
     public function destroy($id)
     {
         if (!Auth::check()) {
-            return redirect()->route('view_login');
+            return redirect()->route('view_login.' . app()->getLocale());
         }
 
         CompareItem::where('user_id', Auth::id())

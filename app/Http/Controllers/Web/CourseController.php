@@ -92,7 +92,7 @@ class CourseController extends Controller
     public function purchase(Request $request, $id)
     {
         if (!auth()->check()) {
-            return redirect()->route('view_login')->with('error', 'Please login to purchase the course');
+            return redirect()->route('view_login.' . app()->getLocale())->with('error', 'Please login to purchase the course');
         }
 
         $course = Course::findOrFail($id);

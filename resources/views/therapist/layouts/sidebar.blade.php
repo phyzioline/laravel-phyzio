@@ -58,11 +58,11 @@
                     <div class="menu-title">{{ __('Courses Management') }}</div>
                 </a>
                 <ul>
-                    <li> <a href="{{ route('instructor.dashboard') }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
+                    <li> <a href="{{ route('instructor.' . app()->getLocale() . '.dashboard.' . app()->getLocale()) }}"><i class="las la-tachometer-alt"></i>{{ __('Dashboard') }}</a>
                     </li>
-                    <li> <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
+                    <li> <a href="{{ route('instructor.' . app()->getLocale() . '.courses.create.' . app()->getLocale()) }}"><i class="las la-plus-circle"></i>{{ __('Create Course') }}</a>
                     </li>
-                    <li> <a href="{{ route('instructor.courses.index.' . app()->getLocale()) }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
+                    <li> <a href="{{ route('instructor.' . app()->getLocale() . '.courses.index.' . app()->getLocale()) }}"><i class="las la-book"></i>{{ __('My Courses') }}</a>
                     </li>
                     {{-- Students link removed - functionality not implemented --}}
                     <li> <a href="{{ route('therapist.earnings.index') }}"><i class="las la-coins"></i>{{ __('Earnings') }}</a>

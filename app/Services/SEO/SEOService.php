@@ -200,7 +200,7 @@ class SEOService
             "@type" => "DataCatalog",
             "name" => "Phyzioline Data Hub",
             "description" => "Global physical therapy data, statistics, and licensing requirements. Your central resource for PT insights.",
-            "url" => route('web.datahub.index'),
+            "url" => route('web.datahub.index.' . app()->getLocale()),
             "keywords" => "Physical Therapy Data, Statistics, Licensing, Global PT Landscape"
         ];
     }

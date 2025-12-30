@@ -63,7 +63,7 @@ class LoginService
         // Instructor users
         if ($user->hasRole('instructor')) {
             Session::flash('message', ['type' => 'success', 'text' => __('Welcome to your dashboard!')]);
-            return redirect()->route('instructor.dashboard');
+            return redirect()->route('instructor.' . app()->getLocale() . '.dashboard.' . app()->getLocale());
         }
 
         // Clinic users
@@ -140,7 +140,7 @@ class LoginService
 
         $user->update($data);
 
-        return redirect()->route('home');
+        return redirect()->route('home.' . app()->getLocale());
     }
 
 

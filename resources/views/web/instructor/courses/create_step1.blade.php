@@ -38,7 +38,7 @@
                 <h5 class="mb-0 font-weight-bold">{{ __('Step 1: Basic Information') }}</h5>
             </div>
             <div class="card-body">
-                <form action="{{ isset($course) ? route('instructor.courses.update.' . app()->getLocale(), ['course' => $course->id, 'step' => 1]) : route('instructor.courses.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ isset($course) ? route('instructor.' . app()->getLocale() . '.courses.update.' . app()->getLocale(), ['course' => $course->id, 'step' => 1]) : route('instructor.' . app()->getLocale() . '.courses.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @if(isset($course)) @method('PUT') @endif
                     

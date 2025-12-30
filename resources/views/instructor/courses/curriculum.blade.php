@@ -10,7 +10,7 @@
             <div class="card-header bg-white">
                 <ul class="nav nav-pills card-header-pills">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('instructor.courses.edit.' . app()->getLocale(), $course->id) }}">1. Course Basics</a>
+                        <a class="nav-link" href="{{ route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), $course->id) }}">1. Course Basics</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="#">2. Curriculum & Cases</a>
@@ -68,7 +68,7 @@
                                 <div class="modal fade" id="addUnitModal{{ $module->id }}" tabindex="-1" role="dialog">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
-                                            <form action="{{ route('instructor.courses.modules.units.store.' . app()->getLocale(), [$course->id, $module->id]) }}" method="POST">
+                                            <form action="{{ route('instructor.' . app()->getLocale() . '.courses.modules.units.store.' . app()->getLocale(), [$course->id, $module->id]) }}" method="POST">
                                                 @csrf
                                                 <div class="modal-header">
                                                     <h5 class="modal-title">Add Unit to: {{ $module->title }}</h5>
@@ -115,8 +115,8 @@
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">
-                     <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), $course->id) }}" class="btn btn-light"><i class="las la-arrow-left"></i> Back to Basics</a>
-                     <form action="{{ route('instructor.courses.update.' . app()->getLocale(), $course->id) }}" method="POST" class="d-inline">
+                     <a href="{{ route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), $course->id) }}" class="btn btn-light"><i class="las la-arrow-left"></i> Back to Basics</a>
+                     <form action="{{ route('instructor.' . app()->getLocale() . '.courses.update.' . app()->getLocale(), $course->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="status" value="published">
@@ -133,7 +133,7 @@
 <div class="modal fade" id="addModuleModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="{{ route('instructor.courses.modules.store.' . app()->getLocale(), $course->id) }}" method="POST">
+            <form action="{{ route('instructor.' . app()->getLocale() . '.courses.modules.store.' . app()->getLocale(), $course->id) }}" method="POST">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Create New Module</h5>

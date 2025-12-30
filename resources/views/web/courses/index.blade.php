@@ -301,7 +301,7 @@
         <div class="container text-center text-white">
             <h2 class="font-weight-bold mb-3">{{ __('Ready to Start Your Learning Journey?') }}</h2>
             <p class="lead mb-4 opacity-90">{{ __('Join thousands of therapists advancing their careers with our expert-led courses.') }}</p>
-            <a href="{{ route('instructor.courses.create.' . app()->getLocale()) }}" class="btn btn-light btn-lg px-5 rounded-pill font-weight-bold shadow-lg mr-3">
+            <a href="{{ route('instructor.' . app()->getLocale() . '.courses.create.' . app()->getLocale()) }}" class="btn btn-light btn-lg px-5 rounded-pill font-weight-bold shadow-lg mr-3">
                 {{ __('Become an Instructor') }}
             </a>
             <a href="{{ route('web.courses.index') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill font-weight-bold">

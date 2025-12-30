@@ -18,7 +18,7 @@ class VendorMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect()->route('view_login')
+            return redirect()->route('view_login.' . app()->getLocale())
                 ->with('error', 'Please login to access vendor dashboard');
         }
 
@@ -31,7 +31,7 @@ class VendorMiddleware
 
         // Check if vendor account is active
         if ($user->status !== 'active') {
-            return redirect()->route('home')
+            return redirect()->route('home.' . app()->getLocale())
                 ->with('error', 'Your vendor account is inactive. Please contact support.');
         }
 

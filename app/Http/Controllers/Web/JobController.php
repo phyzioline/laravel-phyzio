@@ -95,7 +95,7 @@ class JobController extends Controller
             ->findOrFail($id);
         
         if (!auth()->check() || auth()->user()->type !== 'therapist') {
-            return redirect()->route('view_login')->with('error', 'You must be logged in as a therapist to apply.');
+            return redirect()->route('view_login.' . app()->getLocale())->with('error', 'You must be logged in as a therapist to apply.');
         }
 
         if ($job->applications()->where('therapist_id', auth()->id())->exists()) {

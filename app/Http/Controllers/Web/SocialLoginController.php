@@ -69,10 +69,10 @@ class SocialLoginController extends Controller
             ]);
 
             Auth::login($new_user);
-            return redirect()->route('complecet_info_view');
+            return redirect()->route('complecet_info_view.' . app()->getLocale());
 
         } catch (Throwable $e) {
-            return redirect()->route('register')->withErrors([
+            return redirect()->route('register.' . app()->getLocale())->withErrors([
                 'email' => 'Login Failed: ' . $e->getMessage(),
             ]);
         }
@@ -95,7 +95,7 @@ class SocialLoginController extends Controller
 
         // Instructor users
         if ($user->hasRole('instructor')) {
-            return redirect()->route('instructor.dashboard');
+            return redirect()->route('instructor.' . app()->getLocale() . '.dashboard.' . app()->getLocale());
         }
 
         // Clinic users

@@ -85,10 +85,10 @@
                 @endif
                 
                 <div class="d-flex justify-content-between border-top pt-3 mt-4">
-                    <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 1]) }}" class="btn btn-light px-4 btn-lg">
+                    <a href="{{ route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 1]) }}" class="btn btn-light px-4 btn-lg">
                         <i class="las la-arrow-left mr-2"></i> {{ __('Back') }}
                     </a>
-                    <a href="{{ route('instructor.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 3]) }}" class="btn btn-primary px-4 btn-lg">
+                    <a href="{{ route('instructor.' . app()->getLocale() . '.courses.edit.' . app()->getLocale(), ['course' => $course->id, 'step' => 3]) }}" class="btn btn-primary px-4 btn-lg">
                         {{ __('Save & Continue') }} <i class="las la-arrow-right ml-2"></i>
                     </a>
                 </div>

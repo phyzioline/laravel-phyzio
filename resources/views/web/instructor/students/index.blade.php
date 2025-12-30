@@ -62,7 +62,7 @@
 <!-- Filters -->
 <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px;">
     <div class="card-body">
-        <form method="GET" action="{{ route('instructor.students.index') }}" class="row align-items-end">
+        <form method="GET" action="{{ route('instructor.' . app()->getLocale() . '.students.index.' . app()->getLocale()) }}" class="row align-items-end">
             <div class="col-md-4 mb-3">
                 <label class="form-label">{{ __('Search Student') }}</label>
                 <input type="text" name="search" class="form-control" placeholder="{{ __('Name or Email') }}" value="{{ request('search') }}">
@@ -146,7 +146,7 @@
                                     <strong>${{ number_format($enrollment->paid_amount ?? 0, 2) }}</strong>
                                 </td>
                                 <td>
-                                    <a href="{{ route('instructor.students.show', $enrollment->student->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('instructor.' . app()->getLocale() . '.students.show.' . app()->getLocale(), $enrollment->student->id) }}" class="btn btn-sm btn-outline-primary">
                                         <i class="las la-eye"></i> {{ __('View') }}
                                     </a>
                                 </td>

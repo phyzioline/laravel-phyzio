@@ -19,6 +19,6 @@ class TherapistMiddleware
             return $next($request);
         }
 
-        return redirect()->route('home')->with('error', 'Unauthorized access.');
+        return redirect()->route('home.' . app()->getLocale())->with('error', 'Unauthorized access.');
     }
 }

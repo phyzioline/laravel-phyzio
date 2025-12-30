@@ -14,13 +14,13 @@ trait ChecksModuleAccess
         $user = auth()->user();
         
         if ($user->type !== 'therapist') {
-            return redirect()->route('home')->with('error', 'Unauthorized access.');
+            return redirect()->route('home.' . app()->getLocale())->with('error', 'Unauthorized access.');
         }
 
         $therapistProfile = $user->therapistProfile;
         
         if (!$therapistProfile) {
-            return redirect()->route('home')->with('error', 'Therapist profile not found.');
+            return redirect()->route('home.' . app()->getLocale())->with('error', 'Therapist profile not found.');
         }
 
         if (!$therapistProfile->canAccessModule($moduleType)) {
