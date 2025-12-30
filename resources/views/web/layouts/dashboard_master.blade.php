@@ -331,7 +331,7 @@
             <!-- Common Links (Hidden for Clinic to avoid 403) -->
             @if(!request()->routeIs('clinic.*') && !auth()->user()->hasRole('clinic'))
             <li>
-                <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('*.dashboard') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.' . app()->getLocale()) }}" class="{{ request()->routeIs('dashboard.*') ? 'active' : '' }}">
                     <span class="las la-igloo"></span>
                     <span>{{ __('Dashboard') }}</span>
                 </a>

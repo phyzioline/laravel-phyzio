@@ -163,7 +163,7 @@
                     
                     {{-- Dashboard button for all logged-in users --}}
                     <li class="menu-item-box">
-                        <a href="{{ route('dashboard') }}" style="display: flex; align-items: center; color: #02767F; font-weight: 600;">
+                        <a href="{{ route('dashboard.' . app()->getLocale()) }}" style="display: flex; align-items: center; color: #02767F; font-weight: 600;">
                             <i class="las la-tachometer-alt" style="margin-right: 8px; font-size: 18px;"></i>
                             {{ __('Dashboard') }}
                         </a>
