@@ -52,27 +52,27 @@
     }
     
     .stat-card .stat-icon {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        margin-bottom: 0.75rem;
         background: var(--icon-bg);
         color: var(--icon-color);
     }
     
     .stat-card .stat-value {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.25rem;
         color: var(--card-color);
     }
     
     .stat-card .stat-label {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
         color: #6c757d;
         margin-bottom: 0;
     }
@@ -125,12 +125,17 @@
     .quick-access-card {
         transition: all 0.3s ease;
         text-align: center;
-        padding: 1.5rem;
         border-radius: 12px;
+        overflow: visible !important;
+    }
+    
+    .quick-access-card .card-body {
+        overflow: visible !important;
+        padding: 0.75rem !important;
     }
     
     .quick-access-card:hover {
-        transform: translateY(-8px) scale(1.02);
+        transform: translateY(-5px) scale(1.02);
         box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
     }
     
@@ -139,7 +144,12 @@
     }
     
     .quick-access-card:hover i {
-        transform: scale(1.2);
+        transform: scale(1.1);
+    }
+    
+    .quick-access-card h6 {
+        font-size: 0.8rem;
+        margin-bottom: 0;
     }
     
     /* Pending Approvals Badge */
@@ -238,7 +248,7 @@
                         <div class="col-md-8">
                             <h2 class="mb-2">
                                 <i class="fa fa-hand-sparkles me-2"></i>
-                                Welcome back, {{ auth()->user()->name }}!
+                                {{ __('Welcome back, :name!', ['name' => auth()->user()->name]) }}
                             </h2>
                             <p class="mb-0">
                                 <i class="fa fa-calendar me-2"></i>
@@ -252,12 +262,12 @@
                                 <div class="mb-2">
                                     <span class="badge bg-light text-dark px-3 py-2">
                                         <i class="fa fa-shield-check me-1"></i>
-                                        {{ auth()->user()->hasRole('super-admin') ? 'Super Admin' : 'Administrator' }}
+                                        {{ auth()->user()->hasRole('super-admin') ? __('Super Admin') : __('Administrator') }}
                                     </span>
                                 </div>
                                 <small class="opacity-75">
                                     <i class="fa fa-chart-line me-1"></i>
-                                    Platform Overview
+                                    {{ __('Platform Overview') }}
                                 </small>
                             </div>
                         </div>
@@ -269,13 +279,13 @@
                     <div class="col-12">
                         <h5 class="mb-3">
                             <i class="fa fa-chart-bar text-primary me-2"></i>
-                            Platform Statistics
+                            {{ __('Platform Statistics') }}
                         </h5>
                     </div>
                     
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #02767F; --icon-bg: rgba(2, 118, 127, 0.1); --icon-color: #02767F;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-users"></i>
                                 </div>
@@ -287,7 +297,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #28a745; --icon-bg: rgba(40, 167, 69, 0.1); --icon-color: #28a745;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-store"></i>
                                 </div>
@@ -299,7 +309,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #17a2b8; --icon-bg: rgba(23, 162, 184, 0.1); --icon-color: #17a2b8;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-cart-shopping"></i>
                                 </div>
@@ -311,7 +321,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #ffc107; --icon-bg: rgba(255, 193, 7, 0.1); --icon-color: #ffc107;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-box"></i>
                                 </div>
@@ -362,7 +372,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #dc3545; --icon-bg: rgba(220, 53, 69, 0.1); --icon-color: #dc3545;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-receipt"></i>
                                 </div>
@@ -374,7 +384,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #6f42c1; --icon-bg: rgba(111, 66, 193, 0.1); --icon-color: #6f42c1;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-credit-card"></i>
                                 </div>
@@ -386,7 +396,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #fd7e14; --icon-bg: rgba(253, 126, 20, 0.1); --icon-color: #fd7e14;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-money-bill"></i>
                                 </div>
@@ -398,7 +408,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #20c997; --icon-bg: rgba(32, 201, 151, 0.1); --icon-color: #20c997;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-tags"></i>
                                 </div>
@@ -411,7 +421,7 @@
                     {{-- Ecosystem Stats --}}
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #28a745; --icon-bg: rgba(40, 167, 69, 0.1); --icon-color: #28a745;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-user-md"></i>
                                 </div>
@@ -423,7 +433,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #17a2b8; --icon-bg: rgba(23, 162, 184, 0.1); --icon-color: #17a2b8;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-clinic-medical"></i>
                                 </div>
@@ -435,7 +445,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #ffc107; --icon-bg: rgba(255, 193, 7, 0.1); --icon-color: #ffc107;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-calendar-check"></i>
                                 </div>
@@ -447,7 +457,7 @@
 
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                         <div class="card rounded-3 border-0 shadow-sm stat-card" style="--card-color: #dc3545; --icon-bg: rgba(220, 53, 69, 0.1); --icon-color: #dc3545;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-3">
                                 <div class="stat-icon">
                                     <i class="fa fa-graduation-cap"></i>
                                 </div>
@@ -464,7 +474,7 @@
                     <div class="col-12">
                         <h5 class="mb-3">
                             <i class="fa fa-chart-pie text-primary me-2"></i>
-                            Analytics & Insights
+                            {{ __('Analytics & Insights') }}
                         </h5>
                     </div>
                     
@@ -475,7 +485,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="card-title mb-0 fw-bold">
                                         <i class="fa fa-credit-card text-primary me-2"></i>
-                                        Payment Methods
+                                        {{ __('Payment Methods') }}
                                     </h6>
                                 </div>
                                 <div class="chart-container" style="height: 250px;">
@@ -492,7 +502,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="card-title mb-0 fw-bold">
                                         <i class="fa fa-users text-success me-2"></i>
-                                        User Distribution
+                                        {{ __('User Distribution') }}
                                     </h6>
                                 </div>
                                 <div class="chart-container" style="height: 250px;">
@@ -509,7 +519,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="card-title mb-0 fw-bold">
                                         <i class="fa fa-tasks text-warning me-2"></i>
-                                        Order Status
+                                        {{ __('Order Status') }}
                                     </h6>
                                 </div>
                                 <div class="chart-container" style="height: 250px;">
@@ -526,7 +536,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="card-title mb-0 fw-bold">
                                         <i class="fa fa-chart-line text-info me-2"></i>
-                                        Sales Trend (Last 30 Days)
+                                        {{ __('Sales Trend (Last 30 Days)') }}
                                     </h6>
                                     <span class="badge bg-primary">
                                         <i class="fa fa-dollar-sign me-1"></i>
@@ -547,7 +557,7 @@
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="card-title mb-0 fw-bold">
                                         <i class="fa fa-network-wired text-danger me-2"></i>
-                                        Ecosystem Overview
+                                        {{ __('Ecosystem Overview') }}
                                     </h6>
                                 </div>
                                 <div class="chart-container" style="height: 280px;">
@@ -563,7 +573,7 @@
                     <div class="col-12">
                         <h5 class="mb-3">
                             <i class="fa fa-heartbeat text-danger me-2"></i>
-                            System Health & Performance
+                            {{ __('System Health & Performance') }}
                         </h5>
                     </div>
                     
@@ -574,11 +584,11 @@
                                     <div class="stat-icon" style="--icon-bg: rgba(40, 167, 69, 0.1); --icon-color: #28a745;">
                                         <i class="fa fa-dollar-sign"></i>
                                     </div>
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="badge bg-success">{{ __('Active') }}</span>
                                 </div>
-                                <p class="text-muted mb-1 small">Total Revenue</p>
+                                <p class="text-muted mb-1 small">{{ __('Total Revenue') }}</p>
                                 <h4 class="mb-0 fw-bold text-success">${{ number_format($totalRevenue ?? 0, 2) }}</h4>
-                                <small class="text-muted">All time</small>
+                                <small class="text-muted">{{ __('All time') }}</small>
                             </div>
                         </div>
                     </div>
@@ -590,11 +600,11 @@
                                     <div class="stat-icon" style="--icon-bg: rgba(255, 193, 7, 0.1); --icon-color: #ffc107;">
                                         <i class="fa fa-calendar-day"></i>
                                     </div>
-                                    <span class="badge bg-warning">Today</span>
+                                    <span class="badge bg-warning">{{ __('Today') }}</span>
                                 </div>
-                                <p class="text-muted mb-1 small">Today's Visits</p>
+                                <p class="text-muted mb-1 small">{{ __('Today\'s Visits') }}</p>
                                 <h4 class="mb-0 fw-bold text-warning">{{ $todayAppointments ?? 0 }}</h4>
-                                <small class="text-muted">Appointments scheduled</small>
+                                <small class="text-muted">{{ __('Appointments scheduled') }}</small>
                             </div>
                         </div>
                     </div>
@@ -606,11 +616,11 @@
                                     <div class="stat-icon" style="--icon-bg: rgba(23, 162, 184, 0.1); --icon-color: #17a2b8;">
                                         <i class="fa fa-check-circle"></i>
                                     </div>
-                                    <span class="badge bg-info">Online</span>
+                                    <span class="badge bg-info">{{ __('Online') }}</span>
                                 </div>
-                                <p class="text-muted mb-1 small">Platform Status</p>
-                                <h4 class="mb-0 fw-bold text-info">Operational</h4>
-                                <small class="text-muted">All systems running</small>
+                                <p class="text-muted mb-1 small">{{ __('Platform Status') }}</p>
+                                <h4 class="mb-0 fw-bold text-info">{{ __('Operational') }}</h4>
+                                <small class="text-muted">{{ __('All systems running') }}</small>
                             </div>
                         </div>
                     </div>
@@ -622,11 +632,11 @@
                                     <div class="stat-icon" style="--icon-bg: rgba(108, 117, 125, 0.1); --icon-color: #6c757d;">
                                         <i class="fa fa-server"></i>
                                     </div>
-                                    <span class="badge bg-secondary">Stable</span>
+                                    <span class="badge bg-secondary">{{ __('Stable') }}</span>
                                 </div>
-                                <p class="text-muted mb-1 small">System Status</p>
-                                <h4 class="mb-0 fw-bold text-secondary">Healthy</h4>
-                                <small class="text-muted">No issues detected</small>
+                                <p class="text-muted mb-1 small">{{ __('System Status') }}</p>
+                                <h4 class="mb-0 fw-bold text-secondary">{{ __('Healthy') }}</h4>
+                                <small class="text-muted">{{ __('No issues detected') }}</small>
                             </div>
                         </div>
                     </div>
@@ -637,18 +647,18 @@
                     <div class="col-12">
                         <h5 class="mb-3">
                             <i class="fa fa-bolt text-warning me-2"></i>
-                            Quick Access
+                            {{ __('Quick Access') }}
                         </h5>
                     </div>
 
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.verifications.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-shield-check fa-2x mb-3" style="color: #02767F;"></i>
-                                    <h6 class="fw-bold mb-0">Verifications</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-shield-check mb-2" style="color: #02767F; font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Verifications') }}</h6>
                                     @if(collect($pendingApprovals)->sum('count') > 0)
-                                        <span class="badge bg-danger pending-badge mt-2">
+                                        <span class="badge bg-danger pending-badge mt-1" style="font-size: 0.7rem;">
                                             {{ collect($pendingApprovals)->sum('count') }}
                                         </span>
                                     @endif
@@ -660,9 +670,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.users.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-users fa-2x mb-3" style="color: #02767F;"></i>
-                                    <h6 class="fw-bold mb-0">Users</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-users mb-2" style="color: #02767F; font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Users') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -671,9 +681,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.therapist_profiles.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-user-md fa-2x mb-3 text-success"></i>
-                                    <h6 class="fw-bold mb-0">Therapists</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-user-md mb-2 text-success" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Therapists') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -682,11 +692,11 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.home_visits.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-calendar-check fa-2x mb-3 text-warning"></i>
-                                    <h6 class="fw-bold mb-0">Home Visits</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-calendar-check mb-2 text-warning" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Home Visits') }}</h6>
                                     @if(($todayAppointments ?? 0) > 0)
-                                        <span class="badge bg-warning mt-2">{{ $todayAppointments }}</span>
+                                        <span class="badge bg-warning mt-1" style="font-size: 0.7rem;">{{ $todayAppointments }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -696,9 +706,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.clinic_profiles.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-clinic-medical fa-2x mb-3 text-info"></i>
-                                    <h6 class="fw-bold mb-0">Clinics</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-clinic-medical mb-2 text-info" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Clinics') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -707,9 +717,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.courses.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-graduation-cap fa-2x mb-3 text-danger"></i>
-                                    <h6 class="fw-bold mb-0">Courses</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-graduation-cap mb-2 text-danger" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Courses') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -718,11 +728,11 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.products.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-box fa-2x mb-3" style="color: #02767F;"></i>
-                                    <h6 class="fw-bold mb-0">Products</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-box mb-2" style="color: #02767F; font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Products') }}</h6>
                                     @if(($lowStockProducts ?? 0) > 0)
-                                        <span class="badge bg-danger mt-2">{{ $lowStockProducts }}</span>
+                                        <span class="badge bg-danger mt-1" style="font-size: 0.7rem;">{{ $lowStockProducts }}</span>
                                     @endif
                                 </div>
                             </div>
@@ -732,9 +742,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.orders.index') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-receipt fa-2x mb-3 text-success"></i>
-                                    <h6 class="fw-bold mb-0">Orders</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-receipt mb-2 text-success" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Orders') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -743,9 +753,9 @@
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6">
                         <a href="{{ route('dashboard.settings.show') }}" class="text-decoration-none">
                             <div class="card rounded-3 border-0 shadow-sm quick-access-card h-100">
-                                <div class="card-body text-center p-4">
-                                    <i class="fa fa-cog fa-2x mb-3 text-secondary"></i>
-                                    <h6 class="fw-bold mb-0">Settings</h6>
+                                <div class="card-body text-center p-3" style="overflow: visible !important;">
+                                    <i class="fa fa-cog mb-2 text-secondary" style="font-size: 1.5rem;"></i>
+                                    <h6 class="fw-bold mb-0" style="font-size: 0.8rem;">{{ __('Settings') }}</h6>
                                 </div>
                             </div>
                         </a>
@@ -756,7 +766,7 @@
                 @if(collect($pendingApprovals)->sum('count') > 0)
                 <div class="row g-3 mt-3">
                     <div class="col-12">
-                        <h6 class="mb-2"><i class="fa fa-clock text-warning"></i> Pending Approvals</h6>
+                        <h6 class="mb-2"><i class="fa fa-clock text-warning"></i> {{ __('Pending Approvals') }}</h6>
                     </div>
 
                     @foreach($pendingApprovals as $pending)
@@ -767,7 +777,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div>
                                             <h6 class="mb-0 small fw-bold">{{ $pending['title'] }}</h6>
-                                            <p class="text-muted mb-0" style="font-size: 0.75rem;">Requires attention</p>
+                                            <p class="text-muted mb-0" style="font-size: 0.75rem;">{{ __('Requires attention') }}</p>
                                         </div>
                                         <div class="text-center">
                                             <span class="badge bg-{{ $pending['color'] }} rounded-circle p-2" style="font-size: 1rem; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
@@ -776,7 +786,7 @@
                                         </div>
                                     </div>
                                     <a href="{{ $pending['link'] }}" class="btn btn-sm btn-outline-{{ $pending['color'] }} w-100 mt-2">
-                                        <i class="fa {{ $pending['icon'] }}"></i> Review
+                                        <i class="fa {{ $pending['icon'] }}"></i> {{ __('Review') }}
                                     </a>
                                 </div>
                             </div>
@@ -795,12 +805,12 @@
                                     <div>
                                         <h5 class="mb-1">
                                             <i class="fa fa-stream text-primary me-2"></i>
-                                            Recent Activity
+                                            {{ __('Recent Activity') }}
                                         </h5>
-                                        <small class="text-muted">Latest platform actions and updates</small>
+                                        <small class="text-muted">{{ __('Latest platform actions and updates') }}</small>
                                     </div>
                                     <span class="badge bg-primary">
-                                        {{ $recentActivity && count($recentActivity) > 0 ? count($recentActivity) : 0 }} items
+                                        {{ $recentActivity && count($recentActivity) > 0 ? count($recentActivity) : 0 }} {{ __('items') }}
                                     </span>
                                 </div>
                             </div>
@@ -822,7 +832,7 @@
                                                     {{ $activity['time']->diffForHumans() }}
                                                 </small>
                                             </div>
-                                            <a href="{{ $activity['link'] }}" class="btn btn-sm btn-outline-{{ $activity['color'] }} ms-2" title="View Details">
+                                            <a href="{{ $activity['link'] }}" class="btn btn-sm btn-outline-{{ $activity['color'] }} ms-2" title="{{ __('View Details') }}">
                                                 <i class="fa fa-arrow-right"></i>
                                             </a>
                                         </div>
@@ -831,8 +841,8 @@
                                 @else
                                     <div class="text-center py-5">
                                         <i class="fa fa-inbox fa-3x text-muted mb-3 opacity-50"></i>
-                                        <p class="text-muted mb-0">No recent activity</p>
-                                        <small class="text-muted">Activity will appear here as users interact with the platform</small>
+                                        <p class="text-muted mb-0">{{ __('No recent activity') }}</p>
+                                        <small class="text-muted">{{ __('Activity will appear here as users interact with the platform') }}</small>
                                     </div>
                                 @endif
                             </div>
