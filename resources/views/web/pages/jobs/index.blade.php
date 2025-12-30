@@ -56,17 +56,18 @@
     .job-card-row {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: 1px solid #e2e8f0;
-        border-radius: 12px;
+        border-radius: 20px; /* More rounded corners */
         background: white;
-        margin-bottom: 20px;
+        margin-bottom: 16px; /* Reduced spacing */
         position: relative;
         overflow: hidden;
+        padding: 20px; /* Reduced from p-4 */
     }
 
     .job-card-row:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08); /* Soft shadow */
-        border-color: #cbd5e0;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px -6px rgba(2, 118, 127, 0.15); /* Enhanced shadow with brand color */
+        border-color: var(--primary-color);
     }
 
     .job-card-row::before {
@@ -78,6 +79,7 @@
         width: 4px;
         background: transparent;
         transition: background-color 0.3s;
+        border-radius: 20px 0 0 20px; /* Match card radius */
     }
 
     .job-card-row:hover::before {
@@ -85,14 +87,15 @@
     }
 
     .company-logo-wrapper {
-        width: 80px;
-        height: 80px;
-        border-radius: 12px;
+        width: 60px; /* Reduced from 80px */
+        height: 60px; /* Reduced from 80px */
+        border-radius: 16px; /* More rounded */
         background: #f8f9fa;
         display: flex;
         align-items: center;
         justify-content: center;
-        border: 1px solid #edf2f7;
+        border: 2px solid #edf2f7;
+        flex-shrink: 0;
     }
 
     .company-logo-img {
@@ -113,23 +116,29 @@
     }
 
     .meta-item {
-        font-size: 0.9rem;
+        font-size: 0.85rem; /* Reduced from 0.9rem */
         color: var(--text-muted);
         display: inline-flex;
         align-items: center;
     }
 
     .meta-item i {
-        margin-right: 6px;
-        font-size: 1.1rem;
+        margin-right: 4px; /* Reduced from 6px */
+        font-size: 0.9rem; /* Reduced from 1.1rem */
+    }
+    
+    .badge-secondary {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
     }
 
     .job-title-link {
         color: var(--text-dark);
         font-weight: 700;
-        font-size: 1.2rem;
+        font-size: 1.1rem; /* Reduced from 1.2rem */
         text-decoration: none;
         transition: color 0.2s;
+        line-height: 1.4;
     }
 
     .job-title-link:hover {
@@ -367,58 +376,87 @@
             </div>
 
             @forelse($jobs as $job)
-                <div class="job-card-row p-4 d-md-flex align-items-center justify-content-between">
-                    <div class="d-md-flex align-items-center mb-3 mb-md-0">
+                <div class="job-card-row d-md-flex align-items-center justify-content-between">
+                    <div class="d-md-flex align-items-center mb-3 mb-md-0 flex-grow-1">
                         <!-- Company Logo -->
-                        <div class="company-logo-wrapper mr-4 mb-3 mb-md-0 flex-shrink-0">
+                        <div class="company-logo-wrapper mr-3 mb-3 mb-md-0 flex-shrink-0">
                             @if($job->clinic && $job->clinic->image_url)
                                 <img src="{{ $job->clinic->image_url }}" alt="{{ $job->clinic->name }}" class="company-logo-img">
                             @else
-                                <i class="las la-hospital text-muted fa-2x"></i>
+                                <i class="las la-hospital text-muted" style="font-size: 1.5rem;"></i>
                             @endif
                         </div>
                         
                         <!-- Job Info -->
-                        <div>
-                            <h5 class="mb-1">
-                                <a href="{{ route('web.jobs.show', $job->id) }}" class="job-title-link">{{ $job->title }}</a>
-                            </h5>
-                            <div class="mb-2">
-                                <span class="font-weight-bold text-dark mr-2">
-                                    <i class="las la-building text-muted"></i> {{ $job->clinic->name ?? 'Confidential' }}
-                                </span>
-                            </div>
-                            
-                            <div class="d-flex flex-wrap">
-                                <span class="meta-item mr-3">
-                                    <i class="las la-map-marker"></i> {{ $job->location ?? 'Remote' }}
-                                </span>
-                                <span class="meta-item mr-3">
-                                    <i class="las la-clock"></i> {{ $job->employment_type ?? 'Full Time' }}
-                                </span>
-                                @if(isset($job->salary_range))
-                                    <span class="meta-item">
-                                        <i class="las la-wallet"></i> {{ $job->salary_range }}
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-1">
+                                        <a href="{{ route('web.jobs.show', $job->id) }}" class="job-title-link">{{ $job->title }}</a>
+                                    </h5>
+                                    <div class="mb-2">
+                                        <span class="font-weight-semibold text-dark" style="font-size: 0.95rem;">
+                                            <i class="las la-building text-muted" style="font-size: 0.9rem;"></i> {{ $job->clinic->name ?? __('Confidential') }}
+                                        </span>
+                                    </div>
+                                </div>
+                                @if($job->urgency_level == 'urgent')
+                                    <span class="badge badge-danger ml-2 px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                        <i class="las la-fire"></i> {{ __('Urgent') }}
                                     </span>
                                 @endif
+                            </div>
+                            
+                            <div class="d-flex flex-wrap align-items-center mb-2">
+                                <span class="meta-item mr-3 mb-1">
+                                    <i class="las la-map-marker"></i> <span style="font-size: 0.85rem;">{{ $job->location ?? __('Remote') }}</span>
+                                </span>
+                                <span class="meta-item mr-3 mb-1">
+                                    <i class="las la-clock"></i> <span style="font-size: 0.85rem;">{{ ucfirst($job->type ?? 'Full Time') }}</span>
+                                </span>
+                                @if($job->salary_range)
+                                    <span class="meta-item mb-1">
+                                        <i class="las la-wallet"></i> <span style="font-size: 0.85rem; font-weight: 600; color: var(--primary-color);">{{ $job->salary_range }}</span>
+                                    </span>
+                                @endif
+                            </div>
+                            
+                            <!-- Additional Info -->
+                            <div class="d-flex flex-wrap align-items-center">
+                                @if($job->experience_level)
+                                    <span class="badge badge-light mr-2 mb-1 px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                        <i class="las la-user-graduate"></i> {{ ucfirst($job->experience_level) }}
+                                    </span>
+                                @endif
+                                @if($job->specialty && is_array($job->specialty) && count($job->specialty) > 0)
+                                    @foreach(array_slice($job->specialty, 0, 2) as $spec)
+                                        <span class="badge badge-soft-primary mr-2 mb-1 px-2 py-1 rounded-pill" style="font-size: 0.75rem;">
+                                            {{ ucfirst(str_replace('_', ' ', $spec)) }}
+                                        </span>
+                                    @endforeach
+                                @endif
+                                <small class="text-muted ml-auto" style="font-size: 0.8rem;">
+                                    <i class="las la-calendar"></i> {{ $job->created_at->diffForHumans() }}
+                                </small>
                             </div>
                         </div>
                     </div>
 
                     <!-- Actions / Tags -->
-                    <div class="text-md-right mt-3 mt-md-0 flex-shrink-0 ml-md-4">
-                        <div class="mb-2">
-                            <span class="badge {{ $job->type == 'job' ? 'badge-soft-primary' : 'badge-soft-info' }} px-3 py-2 rounded-pill">
-                                {{ ucfirst($job->type) }}
+                    <div class="text-md-right mt-3 mt-md-0 flex-shrink-0 ml-md-3" style="min-width: 140px;">
+                        <div class="mb-2 d-flex flex-wrap justify-content-md-end">
+                            <span class="badge {{ $job->type == 'job' ? 'badge-soft-primary' : ($job->type == 'part-time' ? 'badge-soft-info' : 'badge-secondary') }} px-2 py-1 rounded-pill mb-1" style="font-size: 0.75rem;">
+                                {{ ucfirst(str_replace('-', ' ', $job->type ?? 'job')) }}
                             </span>
                             @if(isset($job->match_score) && $job->match_score > 0)
-                                <span class="badge badge-warning text-white px-2 py-1 rounded ml-1" title="Match Score">
+                                <span class="badge badge-warning text-white px-2 py-1 rounded-pill ml-1 mb-1" style="font-size: 0.75rem;" title="{{ __('Match Score') }}">
                                     <i class="las la-star"></i> {{ round($job->match_score) }}%
                                 </span>
                             @endif
                         </div>
-                        <small class="text-muted d-block mb-2">{{ $job->created_at->diffForHumans() }}</small>
-                        <a href="{{ route('web.jobs.show', $job->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-4">See Details</a>
+                        <a href="{{ route('web.jobs.show', $job->id) }}" class="btn btn-sm btn-primary rounded-pill px-3 py-1" style="font-size: 0.85rem; background-color: var(--primary-color); border-color: var(--primary-color);">
+                            <i class="las la-eye mr-1"></i>{{ __('View') }}
+                        </a>
                     </div>
                 </div>
             @empty
