@@ -188,7 +188,7 @@
                         <a href="{{ route('history_order.index') }}"><i class="las la-history"></i> {{ __('Order History') }}</a>
                     </li>
                     <li class="menu-item-box">
-                        <a href="{{ route('logout') }}"><i class="las la-sign-out-alt"></i> {{ __('Logout') }}</a>
+                        <a href="{{ route('logout.' . app()->getLocale()) }}"><i class="las la-sign-out-alt"></i> {{ __('Logout') }}</a>
                     </li>
                 @else
                     <li class="menu-item-box">

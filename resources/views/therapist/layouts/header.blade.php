@@ -63,7 +63,7 @@
             <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('therapist.dashboard') }}"><i
                 class="material-icons-outlined">dashboard</i>{{ __('Dashboard') }}</a>
             <hr class="dropdown-divider">
-            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('logout') }}"><i
+            <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="{{ route('dashboard.logout') }}"><i
                 class="material-icons-outlined">power_settings_new</i>{{ __('Logout') }}</a>
           </div>
         </li>

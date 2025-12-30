@@ -994,7 +994,7 @@ body.has-hero .shop-hero-banner {
                                             <i class="la la-heart mr-2"></i> {{ __('My Wishlist') }}
                                         </a>
                                         <div class="dropdown-divider"></div>
-                                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
+                                        <a class="dropdown-item text-danger" href="{{ route('logout.' . app()->getLocale()) }}">
                                             <i class="las la-sign-out-alt mr-2"></i> {{ __('Logout') }}
                                         </a>
                                     </div>

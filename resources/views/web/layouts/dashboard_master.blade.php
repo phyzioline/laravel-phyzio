@@ -594,7 +594,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('logout') }}">
+                <a href="{{ route('logout.' . app()->getLocale()) }}">
                     <span class="las la-sign-out-alt"></span>
                     <span>{{ __('Logout') }}</span>
                 </a>

@@ -70,7 +70,7 @@
                 <i class="las la-user-circle"></i> My Profile
             </a>
             <hr>
-            <a href="{{ route('logout') }}" class="nav-link text-danger">
+            <a href="{{ route('logout.' . app()->getLocale()) }}" class="nav-link text-danger">
                 <i class="las la-sign-out-alt"></i> Logout
             </a>
         </nav>
