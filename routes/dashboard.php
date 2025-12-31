@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::post('products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
             Route::resource('products', ProductController::class);
             Route::resource('orders', OrderController::class);
+            Route::post('orders/{id}/accept', [OrderController::class, 'accept'])->name('orders.accept');
             Route::get('orders/{id}/print-label', [OrderController::class, 'printLabel'])->name('orders.print-label');
             Route::get('orders/{id}/invoice', [OrderController::class, 'invoice'])->name('orders.invoice');
             Route::get('order_cash', [OrderController::class, 'orderCash'])->name('order_cash');

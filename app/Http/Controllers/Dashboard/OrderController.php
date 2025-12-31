@@ -17,7 +17,7 @@ class OrderController extends Controller implements HasMiddleware
         return [
            new Middleware('can:orders-index', only: ['index', 'orderCash']),
            new Middleware('can:orders-show', only: ['show', 'printLabel']),
-           new Middleware('can:orders-update', only: ['edit', 'update']),
+           new Middleware('can:orders-update', only: ['edit', 'update', 'accept']),
            new Middleware('can:orders-delete', only: ['destroy']),
         ];
     }
@@ -78,6 +78,28 @@ class OrderController extends Controller implements HasMiddleware
         try {
             $this->orderService->update($data, $id);
             return redirect()->route('dashboard.orders.index')->with('success', 'Order updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Accept an order - automatically sets status to pending.
+     */
+    public function accept(Request $request, string $id)
+    {
+        try {
+            $order = $this->orderService->show($id);
+            
+            // Check if order can be accepted (not already completed or cancelled)
+            if (in_array($order->status, ['completed', 'cancelled'])) {
+                return redirect()->back()->with('error', 'Cannot accept an order that is already completed or cancelled.');
+            }
+            
+            // Update order status to pending
+            $this->orderService->update(['status' => 'pending'], $id);
+            
+            return redirect()->route('dashboard.orders.index')->with('success', 'Order accepted successfully. Status changed to pending.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

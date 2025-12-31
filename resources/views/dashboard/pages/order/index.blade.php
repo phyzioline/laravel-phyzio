@@ -316,10 +316,17 @@
                                                             </a>
                                                         @endcan
                                                         @can('orders-update')
-                                                            <a href="{{ route('dashboard.orders.edit', $order) }}"
-                                                               class="btn btn-sm btn-info" title="{{ __('Edit') }}">
-                                                                <i class="fas fa-edit"></i>
-                                                            </a>
+                                                            @if($order->status != 'pending' && $order->status != 'completed' && $order->status != 'cancelled')
+                                                                <form action="{{ route('dashboard.orders.accept', $order->id) }}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-sm btn-success" title="{{ __('Accept Order') }}"
+                                                                            onclick="return confirm('{{ __('Are you sure you want to accept this order? Status will be changed to pending.') }}')">
+                                                                        <i class="fas fa-check"></i> {{ __('Accept Order') }}
+                                                                    </button>
+                                                                </form>
+                                                            @elseif($order->status == 'pending')
+                                                                <span class="badge bg-success">{{ __('Already Accepted') }}</span>
+                                                            @endif
                                                             <a href="{{ route('dashboard.orders.print-label', $order->id) }}" 
                                                                target="_blank"
                                                                class="btn btn-sm btn-secondary" title="{{ __('Print Label') }}">
