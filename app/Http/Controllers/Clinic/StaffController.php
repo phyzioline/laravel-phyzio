@@ -23,29 +23,34 @@ class StaffController extends BaseClinicController
         // This ensures proper data isolation between clinics
         // Note: clinic_staff.role ENUM values are: ['therapist', 'admin', 'receptionist', 'doctor']
         // We map form values: 'staff'->'admin', 'nurse'->'admin', 'receptionist'->'receptionist'
-        $staffIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
-            ->whereIn('role', ['admin', 'receptionist']) // Only valid ENUM values for staff
-            ->where('is_active', true)
-            ->pluck('user_id')
-            ->toArray();
         
-        if (empty($staffIds)) {
-            // No staff assigned to this clinic - return empty collection
+        // Get all staff (both active and inactive) - filter by request if needed
+        $clinicStaffQuery = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->whereIn('role', ['admin', 'receptionist']); // Only valid ENUM values for staff
+        
+        // Optional filter by status
+        if (request()->has('status') && request('status') !== 'all') {
+            $clinicStaffQuery->where('is_active', request('status') === 'active');
+        }
+        
+        $clinicStaffRecords = $clinicStaffQuery->with('user')->get();
+        
+        if ($clinicStaffRecords->isEmpty()) {
             $staff = collect();
         } else {
-            $staff = User::whereIn('id', $staffIds)
-                ->whereIn('type', ['staff', 'receptionist', 'nurse', 'admin'])
-                ->get()
-                ->map(function($staffMember) {
-                    return (object)[
-                        'id' => $staffMember->id,
-                        'name' => $staffMember->name ?? ($staffMember->first_name . ' ' . $staffMember->last_name),
-                        'role' => ucfirst($staffMember->type),
-                        'email' => $staffMember->email,
-                        'phone' => $staffMember->phone,
-                        'status' => $staffMember->status ?? 'Active'
-                    ];
-                });
+            $staff = $clinicStaffRecords->map(function($clinicStaff) {
+                $staffMember = $clinicStaff->user;
+                return (object)[
+                    'id' => $staffMember->id,
+                    'name' => $staffMember->name ?? ($staffMember->first_name . ' ' . $staffMember->last_name),
+                    'role' => ucfirst($staffMember->type),
+                    'email' => $staffMember->email,
+                    'phone' => $staffMember->phone,
+                    'status' => $clinicStaff->is_active ? 'Active' : 'Inactive', // Use clinic_staff.is_active
+                    'is_active' => $clinicStaff->is_active,
+                    'clinic_staff_id' => $clinicStaff->id
+                ];
+            });
         }
         
         return view('web.clinic.staff.index', compact('staff', 'clinic'));
@@ -252,5 +257,39 @@ class StaffController extends BaseClinicController
 
         return redirect()->route('clinic.staff.index')
             ->with('success', 'Staff member deleted successfully.');
+    }
+
+    /**
+     * Toggle staff active/inactive status
+     */
+    public function toggleStatus($id)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        // CRITICAL: Verify staff member belongs to this clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $id)
+            ->whereIn('role', ['admin', 'receptionist'])
+            ->first();
+        
+        if (!$clinicStaff) {
+            abort(403, 'This staff member is not assigned to your clinic.');
+        }
+
+        // Toggle status
+        $newStatus = !$clinicStaff->is_active;
+        $clinicStaff->update([
+            'is_active' => $newStatus,
+            'terminated_date' => $newStatus ? null : now(), // Clear terminated_date if activating
+        ]);
+
+        $status = $newStatus ? 'activated' : 'deactivated';
+        
+        return redirect()->route('clinic.staff.index')
+            ->with('success', "Staff member {$status} successfully.");
     }
 }

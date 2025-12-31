@@ -362,6 +362,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::post('/staff', [\App\Http\Controllers\Clinic\StaffController::class, 'store'])->name('staff.store');
         Route::get('/staff/{id}/edit', [\App\Http\Controllers\Clinic\StaffController::class, 'edit'])->name('staff.edit');
         Route::put('/staff/{id}', [\App\Http\Controllers\Clinic\StaffController::class, 'update'])->name('staff.update');
+        Route::post('/staff/{id}/toggle-status', [\App\Http\Controllers\Clinic\StaffController::class, 'toggleStatus'])->name('staff.toggle-status');
         Route::delete('/staff/{id}', [\App\Http\Controllers\Clinic\StaffController::class, 'destroy'])->name('staff.destroy');
         
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');

@@ -7,7 +7,24 @@
 <div class="card border-0 shadow-sm" style="border-radius: 15px;">
     <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
         <h5 class="font-weight-bold mb-0">{{ __('All Staff Members') }}</h5>
-        <a href="{{ route('clinic.staff.create') }}" class="btn btn-primary btn-sm"><i class="las la-user-plus"></i> Add Staff</a>
+        <div class="d-flex align-items-center gap-2">
+            <!-- Status Filter -->
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="{{ route('clinic.staff.index', ['status' => 'all']) }}" 
+                   class="btn btn-sm {{ request('status', 'all') == 'all' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    All
+                </a>
+                <a href="{{ route('clinic.staff.index', ['status' => 'active']) }}" 
+                   class="btn btn-sm {{ request('status') == 'active' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    Active
+                </a>
+                <a href="{{ route('clinic.staff.index', ['status' => 'inactive']) }}" 
+                   class="btn btn-sm {{ request('status') == 'inactive' ? 'btn-primary' : 'btn-outline-secondary' }}">
+                    Inactive
+                </a>
+            </div>
+            <a href="{{ route('clinic.staff.create') }}" class="btn btn-primary btn-sm"><i class="las la-user-plus"></i> Add Staff</a>
+        </div>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -38,19 +55,44 @@
                             <div class="small text-muted">{{ $member->phone }}</div>
                         </td>
                         <td>
-                             <span class="badge {{ $member->status == 'Active' ? 'badge-success' : 'badge-secondary' }}">{{ $member->status }}</span>
+                            <span class="badge {{ $member->status == 'Active' ? 'badge-success' : 'badge-secondary' }}">
+                                {{ $member->status }}
+                            </span>
                         </td>
                         <td class="text-right">
-                            <a href="{{ route('clinic.staff.edit', $member->id) }}" class="btn btn-sm btn-link text-muted" title="Edit">
-                                <i class="las la-edit"></i>
-                            </a>
-                            <form action="{{ route('clinic.staff.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this staff member?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-link text-danger" title="Delete">
-                                    <i class="las la-trash"></i>
-                                </button>
-                            </form>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <!-- Toggle Status Button -->
+                                <form action="{{ route('clinic.staff.toggle-status', $member->id) }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <button type="submit" 
+                                            class="btn btn-sm {{ $member->is_active ? 'btn-warning' : 'btn-success' }}" 
+                                            title="{{ $member->is_active ? 'Deactivate' : 'Activate' }}"
+                                            onclick="return confirm('Are you sure you want to {{ $member->is_active ? 'deactivate' : 'activate' }} this staff member?');">
+                                        <i class="las {{ $member->is_active ? 'la-ban' : 'la-check-circle' }}"></i>
+                                    </button>
+                                </form>
+                                
+                                <!-- Edit Button -->
+                                <a href="{{ route('clinic.staff.edit', $member->id) }}" 
+                                   class="btn btn-sm btn-info" 
+                                   title="Edit">
+                                    <i class="las la-edit"></i>
+                                </a>
+                                
+                                <!-- Delete Button -->
+                                <form action="{{ route('clinic.staff.destroy', $member->id) }}" 
+                                      method="POST" 
+                                      class="d-inline" 
+                                      onsubmit="return confirm('Are you sure you want to permanently delete this staff member? This action cannot be undone.');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="btn btn-sm btn-danger" 
+                                            title="Delete">
+                                        <i class="las la-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty
