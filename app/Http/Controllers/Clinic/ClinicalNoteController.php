@@ -65,7 +65,7 @@ class ClinicalNoteController extends BaseClinicController
         // Get filter options
         $patients = \App\Models\Patient::where('clinic_id', $clinic->id)->get();
         $therapists = \App\Models\User::where('type', 'therapist')
-            ->whereHas('clinics', function($q) use ($clinic) {
+            ->whereHas('clinicsAsStaff', function($q) use ($clinic) {
                 $q->where('clinics.id', $clinic->id);
             })
             ->get();

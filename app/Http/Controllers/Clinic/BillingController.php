@@ -48,8 +48,8 @@ class BillingController extends BaseClinicController
         // Try invoices table first
         if (\Schema::hasTable('invoices')) {
             $invoices = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->leftJoin('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->join('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->where('patients.clinic_id', $clinic->id)
                 ->select(
                     'invoices.*',
                     DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
@@ -69,76 +69,135 @@ class BillingController extends BaseClinicController
                 });
 
             $pendingPayments = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'pending')
-                ->sum('amount');
+                ->join('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->where('patients.clinic_id', $clinic->id)
+                ->where('invoices.status', 'pending')
+                ->sum('invoices.amount');
 
             $totalRevenue = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->sum('amount');
+                ->join('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->where('patients.clinic_id', $clinic->id)
+                ->where('invoices.status', 'paid')
+                ->sum('invoices.amount');
                 
             $thisMonthRevenue = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('amount');
+                ->join('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->where('patients.clinic_id', $clinic->id)
+                ->where('invoices.status', 'paid')
+                ->whereMonth('invoices.created_at', now()->month)
+                ->whereYear('invoices.created_at', now()->year)
+                ->sum('invoices.amount');
                 
             $lastMonthRevenue = DB::table('invoices')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->whereMonth('created_at', now()->subMonth()->month)
-                ->whereYear('created_at', now()->subMonth()->year)
-                ->sum('amount');
+                ->join('patients', 'invoices.patient_id', '=', 'patients.id')
+                ->where('patients.clinic_id', $clinic->id)
+                ->where('invoices.status', 'paid')
+                ->whereMonth('invoices.created_at', now()->subMonth()->month)
+                ->whereYear('invoices.created_at', now()->subMonth()->year)
+                ->sum('invoices.amount');
         }
 
         // If no invoices, try payments table
         if ($invoices->isEmpty() && \Schema::hasTable('payments')) {
-            $invoices = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->leftJoin('patients', 'payments.patient_id', '=', 'patients.id')
-                ->select(
-                    'payments.*',
-                    DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
-                )
-                ->orderBy('payments.created_at', 'desc')
-                ->limit(50)
-                ->get()
-                ->map(function($payment) {
-                    return (object)[
-                        'id' => 'PAY-' . $payment->id,
-                        'patient' => $payment->patient_name ?? 'Unknown',
-                        'amount' => $payment->amount ?? 0,
-                        'date' => $payment->created_at ?? now(),
-                        'status' => $payment->status ?? 'pending',
-                        'type' => 'payment'
-                    ];
-                });
+            // Check if payments table has clinic_id column
+            $hasClinicId = \Schema::hasColumn('payments', 'clinic_id');
+            
+            if ($hasClinicId) {
+                $invoices = DB::table('payments')
+                    ->where('clinic_id', $clinic->id)
+                    ->leftJoin('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->select(
+                        'payments.*',
+                        DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
+                    )
+                    ->orderBy('payments.created_at', 'desc')
+                    ->limit(50)
+                    ->get()
+                    ->map(function($payment) {
+                        return (object)[
+                            'id' => 'PAY-' . $payment->id,
+                            'patient' => $payment->patient_name ?? 'Unknown',
+                            'amount' => $payment->amount ?? 0,
+                            'date' => $payment->created_at ?? now(),
+                            'status' => $payment->status ?? 'pending',
+                            'type' => 'payment'
+                        ];
+                    });
 
-            $pendingPayments = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'pending')
-                ->sum('amount');
+                $pendingPayments = DB::table('payments')
+                    ->where('clinic_id', $clinic->id)
+                    ->where('status', 'pending')
+                    ->sum('amount');
 
-            $totalRevenue = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->sum('amount');
-                
-            $thisMonthRevenue = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->whereMonth('created_at', now()->month)
-                ->whereYear('created_at', now()->year)
-                ->sum('amount');
-                
-            $lastMonthRevenue = DB::table('payments')
-                ->where('clinic_id', $clinic->id)
-                ->where('status', 'paid')
-                ->whereMonth('created_at', now()->subMonth()->month)
-                ->whereYear('created_at', now()->subMonth()->year)
-                ->sum('amount');
+                $totalRevenue = DB::table('payments')
+                    ->where('clinic_id', $clinic->id)
+                    ->where('status', 'paid')
+                    ->sum('amount');
+                    
+                $thisMonthRevenue = DB::table('payments')
+                    ->where('clinic_id', $clinic->id)
+                    ->where('status', 'paid')
+                    ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
+                    ->sum('amount');
+                    
+                $lastMonthRevenue = DB::table('payments')
+                    ->where('clinic_id', $clinic->id)
+                    ->where('status', 'paid')
+                    ->whereMonth('created_at', now()->subMonth()->month)
+                    ->whereYear('created_at', now()->subMonth()->year)
+                    ->sum('amount');
+            } else {
+                // If payments table doesn't have clinic_id, join through patients
+                $invoices = DB::table('payments')
+                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->where('patients.clinic_id', $clinic->id)
+                    ->select(
+                        'payments.*',
+                        DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
+                    )
+                    ->orderBy('payments.created_at', 'desc')
+                    ->limit(50)
+                    ->get()
+                    ->map(function($payment) {
+                        return (object)[
+                            'id' => 'PAY-' . $payment->id,
+                            'patient' => $payment->patient_name ?? 'Unknown',
+                            'amount' => $payment->amount ?? 0,
+                            'date' => $payment->created_at ?? now(),
+                            'status' => $payment->status ?? 'pending',
+                            'type' => 'payment'
+                        ];
+                    });
+
+                $pendingPayments = DB::table('payments')
+                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->where('patients.clinic_id', $clinic->id)
+                    ->where('payments.status', 'pending')
+                    ->sum('payments.amount');
+
+                $totalRevenue = DB::table('payments')
+                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->where('patients.clinic_id', $clinic->id)
+                    ->where('payments.status', 'paid')
+                    ->sum('payments.amount');
+                    
+                $thisMonthRevenue = DB::table('payments')
+                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->where('patients.clinic_id', $clinic->id)
+                    ->where('payments.status', 'paid')
+                    ->whereMonth('payments.created_at', now()->month)
+                    ->whereYear('payments.created_at', now()->year)
+                    ->sum('payments.amount');
+                    
+                $lastMonthRevenue = DB::table('payments')
+                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                    ->where('patients.clinic_id', $clinic->id)
+                    ->where('payments.status', 'paid')
+                    ->whereMonth('payments.created_at', now()->subMonth()->month)
+                    ->whereYear('payments.created_at', now()->subMonth()->year)
+                    ->sum('payments.amount');
+            }
         }
 
         // Add program payments
