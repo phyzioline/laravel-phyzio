@@ -686,5 +686,12 @@
     "Review": "Review",
     "No jobs posted yet.": "No jobs posted yet.",
     "Post your first job": "Post your first job",
-    "Failed to release transaction from hold.": "Failed to release transaction from hold."
+    "Failed to release transaction from hold.": "Failed to release transaction from hold.",
+    "Account Verification Required": "Account Verification Required",
+    "Your account is currently": "Your account is currently",
+    "You must complete the verification process to post jobs and search for candidates.": "You must complete the verification process to post jobs and search for candidates.",
+    "Complete Verification": "Complete Verification",
+    "Inactive": "Inactive",
+    "No applications yet.": "No applications yet.",
+    "Active": "Active"
 }

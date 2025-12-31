@@ -777,5 +777,12 @@
     "Applied": "تاريخ التقديم",
     "Review": "مراجعة",
     "No jobs posted yet.": "لم يتم نشر أي وظائف بعد.",
-    "Post your first job": "انشر وظيفتك الأولى"
+    "Post your first job": "انشر وظيفتك الأولى",
+    "Account Verification Required": "التحقق من الحساب مطلوب",
+    "Your account is currently": "حسابك حالياً",
+    "You must complete the verification process to post jobs and search for candidates.": "يجب إكمال عملية التحقق لنشر الوظائف والبحث عن المرشحين.",
+    "Complete Verification": "إكمال التحقق",
+    "Inactive": "غير نشط",
+    "No applications yet.": "لا توجد طلبات بعد.",
+    "Active": "نشط"
 }
