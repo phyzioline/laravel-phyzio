@@ -48,10 +48,10 @@ class AppointmentController extends BaseClinicController
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
 
-        // Handle week navigation
-        $weekOffset = (int) $request->get('week', 0);
-        $startOfWeek = Carbon::now()->startOfWeek()->addWeeks($weekOffset);
-        $endOfWeek = $startOfWeek->copy()->addDays(6); // Show 1 week (7 days)
+        // Handle week navigation - support both 'week' and 'date' parameters
+        $currentDate = $request->input('date') ? Carbon::parse($request->input('date')) : Carbon::now();
+        $startOfWeek = $currentDate->copy()->startOfWeek(Carbon::SUNDAY); // Start week on Sunday
+        $endOfWeek = $startOfWeek->copy()->addDays(6)->endOfDay(); // End week on Saturday
         
         // Show empty state instead of using clinic_id = 0
         if (!$clinic) {
@@ -61,10 +61,12 @@ class AppointmentController extends BaseClinicController
             return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
         }
         
+        // Load appointments for the week range (using datetime comparison for accuracy)
         $appointments = ClinicAppointment::with(['patient', 'doctor', 'additionalData'])
                         ->where('clinic_id', $clinic->id)
-                        ->whereDate('appointment_date', '>=', $startOfWeek->format('Y-m-d'))
-                        ->whereDate('appointment_date', '<=', $endOfWeek->format('Y-m-d'))
+                        ->where('appointment_date', '>=', $startOfWeek->startOfDay())
+                        ->where('appointment_date', '<=', $endOfWeek->endOfDay())
+                        ->orderBy('appointment_date')
                         ->get();
 
         $patients = Patient::where('clinic_id', $clinic->id)->get(); 
@@ -305,16 +307,19 @@ class AppointmentController extends BaseClinicController
             }
         }
 
+        // Get the appointment date to preserve week view after redirect
+        $appointmentDate = Carbon::parse($appointment->appointment_date);
+        
         // Return JSON for AJAX requests, redirect for regular form submissions
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Appointment scheduled successfully.',
-                'redirect' => route('clinic.appointments.index')
+                'redirect' => route('clinic.appointments.index', ['date' => $appointmentDate->format('Y-m-d')])
             ]);
         }
 
-        return redirect()->route('clinic.appointments.index')
+        return redirect()->route('clinic.appointments.index', ['date' => $appointmentDate->format('Y-m-d')])
             ->with('success', 'Appointment scheduled successfully.');
     }
 

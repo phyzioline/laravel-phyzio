@@ -17,7 +17,8 @@ class FinancialAuditLog extends Model
         'user_id',
         'old_values',
         'new_values',
-        'notes'
+        'notes',
+        'created_at' // Required since $timestamps = false
     ];
 
     protected $casts = [
