@@ -111,52 +111,52 @@
     <main class="main-wrapper">
         <div class="main-content">
             <!-- Order Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-md-2">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <h6>Total Orders</h6>
-                            <h3>{{ $stats['total_orders'] }}</h3>
+            <div class="row mb-4 g-2" style="display: flex; flex-wrap: wrap;">
+                <div class="col-auto">
+                    <div class="card bg-primary text-white" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Total Orders</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['total_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="card bg-warning text-dark">
-                        <div class="card-body">
-                            <h6>Pending</h6>
-                            <h3>{{ $stats['pending_orders'] }}</h3>
+                <div class="col-auto">
+                    <div class="card bg-warning text-dark" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Pending</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['pending_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <h6>Completed</h6>
-                            <h3>{{ $stats['completed_orders'] }}</h3>
+                <div class="col-auto">
+                    <div class="card bg-success text-white" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Completed</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['completed_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <h6>Cancelled</h6>
-                            <h3>{{ $stats['cancelled_orders'] }}</h3>
+                <div class="col-auto">
+                    <div class="card bg-danger text-white" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Cancelled</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['cancelled_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <h6>Card Orders</h6>
-                            <h3>{{ $stats['card_orders'] }}</h3>
+                <div class="col-auto">
+                    <div class="card bg-info text-white" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Card Orders</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['card_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
-                    <div class="card bg-secondary text-white">
-                        <div class="card-body">
-                            <h6>Return Orders</h6>
-                            <h3>{{ $stats['return_orders'] }}</h3>
+                <div class="col-auto">
+                    <div class="card bg-secondary text-white" style="border-radius: 8px; display: inline-block;">
+                        <div class="card-body" style="padding: 0.5rem 1rem;">
+                            <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Return Orders</h6>
+                            <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['return_orders'] }}</h3>
                         </div>
                     </div>
                 </div>
@@ -170,14 +170,13 @@
                             <h5>Orders by Status</h5>
                         </div>
                         <div class="card-body">
-                            <ul class="list-group">
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
                                 @foreach($ordersByStatus as $status)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        {{ ucfirst($status->status) }}
-                                        <span class="badge bg-primary rounded-pill">{{ $status->count }}</span>
-                                    </li>
+                                    <span class="badge bg-primary" style="border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500;">
+                                        {{ $status->count }} {{ ucfirst($status->status) }}
+                                    </span>
                                 @endforeach
-                            </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
