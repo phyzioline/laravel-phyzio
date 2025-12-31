@@ -30,16 +30,20 @@ class WeeklyProgramService
         try {
             DB::beginTransaction();
 
+            // Ensure numeric values (cast strings to integers)
+            $sessionsPerWeek = (int) $data['sessions_per_week'];
+            $totalWeeks = (int) $data['total_weeks'];
+
             // Calculate total sessions
-            $totalSessions = $data['sessions_per_week'] * $data['total_weeks'];
+            $totalSessions = $sessionsPerWeek * $totalWeeks;
 
             // Calculate pricing
             $pricingData = $this->paymentCalculator->calculateProgramPrice(
                 $data['clinic'],
                 [
                     'specialty' => $data['specialty'],
-                    'sessions_per_week' => $data['sessions_per_week'],
-                    'total_weeks' => $data['total_weeks'],
+                    'sessions_per_week' => $sessionsPerWeek,
+                    'total_weeks' => $totalWeeks,
                     'location' => $data['location'] ?? 'clinic',
                     'duration_minutes' => $data['duration_minutes'] ?? 60,
                     'therapist_level' => $data['therapist_level'] ?? 'senior'
@@ -48,7 +52,7 @@ class WeeklyProgramService
 
             // Calculate end date
             $startDate = Carbon::parse($data['start_date']);
-            $endDate = $startDate->copy()->addWeeks($data['total_weeks']);
+            $endDate = $startDate->copy()->addWeeks($totalWeeks);
 
             // Create program
             $program = WeeklyProgram::create([
@@ -58,13 +62,13 @@ class WeeklyProgramService
                 'therapist_id' => $data['therapist_id'] ?? null,
                 'program_name' => $data['program_name'],
                 'specialty' => $data['specialty'],
-                'sessions_per_week' => $data['sessions_per_week'],
-                'total_weeks' => $data['total_weeks'],
+                'sessions_per_week' => $sessionsPerWeek,
+                'total_weeks' => $totalWeeks,
                 'total_sessions' => $totalSessions,
                 'session_types' => $data['session_types'] ?? null,
                 'progression_rules' => $data['progression_rules'] ?? null,
                 'reassessment_interval_weeks' => $data['reassessment_interval_weeks'] ?? 4,
-                'reassessment_schedule' => $this->calculateReassessmentSchedule($data['total_weeks'], $data['reassessment_interval_weeks'] ?? 4),
+                'reassessment_schedule' => $this->calculateReassessmentSchedule($totalWeeks, $data['reassessment_interval_weeks'] ?? 4),
                 'payment_plan' => $data['payment_plan'] ?? 'pay_per_week',
                 'total_price' => $pricingData['total_with_discount'],
                 'discount_percentage' => $pricingData['discount_percentage'],
@@ -115,8 +119,8 @@ class WeeklyProgramService
     protected function generateProgramSessions(WeeklyProgram $program, float $sessionPrice): void
     {
         $startDate = Carbon::parse($program->start_date);
-        $sessionsPerWeek = $program->sessions_per_week;
-        $totalWeeks = $program->total_weeks;
+        $sessionsPerWeek = (int) $program->sessions_per_week;
+        $totalWeeks = (int) $program->total_weeks;
         $sessionInProgram = 0;
 
         // Get preferred days if set

@@ -14,34 +14,54 @@ return new class extends Migration
     {
         if (Schema::hasTable('episodes_of_care')) {
             // Drop existing foreign keys for patient_id and clinic_id
-            // Try multiple methods to ensure we drop them regardless of naming convention
+            // First, check if foreign keys exist before trying to drop them
             Schema::table('episodes_of_care', function (Blueprint $table) {
-                // Try dropping by column name (Laravel's default method)
-                try {
-                    $table->dropForeign(['patient_id']);
-                } catch (\Exception $e) {
-                    // Try common constraint name patterns
-                    try {
-                        $table->dropForeign('episodes_patient_id_foreign');
-                    } catch (\Exception $e2) {
+                // Check and drop patient_id foreign key
+                $patientForeignKeys = DB::select("
+                    SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = 'episodes_of_care' 
+                    AND COLUMN_NAME = 'patient_id'
+                    AND REFERENCED_TABLE_NAME IS NOT NULL
+                ");
+                
+                if (!empty($patientForeignKeys)) {
+                    foreach ($patientForeignKeys as $fk) {
                         try {
-                            $table->dropForeign('episodes_of_care_patient_id_foreign');
-                        } catch (\Exception $e3) {
-                            // Foreign key might not exist, continue
+                            $table->dropForeign($fk->CONSTRAINT_NAME);
+                        } catch (\Exception $e) {
+                            // Try dropping by column name as fallback
+                            try {
+                                $table->dropForeign(['patient_id']);
+                            } catch (\Exception $e2) {
+                                // Foreign key might not exist or already dropped, continue
+                            }
                         }
                     }
                 }
                 
-                try {
-                    $table->dropForeign(['clinic_id']);
-                } catch (\Exception $e) {
-                    try {
-                        $table->dropForeign('episodes_clinic_id_foreign');
-                    } catch (\Exception $e2) {
+                // Check and drop clinic_id foreign key
+                $clinicForeignKeys = DB::select("
+                    SELECT CONSTRAINT_NAME 
+                    FROM information_schema.KEY_COLUMN_USAGE 
+                    WHERE TABLE_SCHEMA = DATABASE() 
+                    AND TABLE_NAME = 'episodes_of_care' 
+                    AND COLUMN_NAME = 'clinic_id'
+                    AND REFERENCED_TABLE_NAME IS NOT NULL
+                ");
+                
+                if (!empty($clinicForeignKeys)) {
+                    foreach ($clinicForeignKeys as $fk) {
                         try {
-                            $table->dropForeign('episodes_of_care_clinic_id_foreign');
-                        } catch (\Exception $e3) {
-                            // Foreign key might not exist, continue
+                            $table->dropForeign($fk->CONSTRAINT_NAME);
+                        } catch (\Exception $e) {
+                            // Try dropping by column name as fallback
+                            try {
+                                $table->dropForeign(['clinic_id']);
+                            } catch (\Exception $e2) {
+                                // Foreign key might not exist or already dropped, continue
+                            }
                         }
                     }
                 }
@@ -51,25 +71,49 @@ return new class extends Migration
             Schema::table('episodes_of_care', function (Blueprint $table) {
                 // patient_id should reference patients table, not users
                 if (Schema::hasTable('patients') && Schema::hasColumn('episodes_of_care', 'patient_id')) {
-                    try {
-                        $table->foreign('patient_id')
-                            ->references('id')
-                            ->on('patients')
-                            ->onDelete('cascade');
-                    } catch (\Exception $e) {
-                        // Foreign key might already exist
+                    // Check if foreign key already exists pointing to patients
+                    $existingFk = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'episodes_of_care' 
+                        AND COLUMN_NAME = 'patient_id'
+                        AND REFERENCED_TABLE_NAME = 'patients'
+                    ");
+                    
+                    if (empty($existingFk)) {
+                        try {
+                            $table->foreign('patient_id')
+                                ->references('id')
+                                ->on('patients')
+                                ->onDelete('cascade');
+                        } catch (\Exception $e) {
+                            // Foreign key might already exist, continue
+                        }
                     }
                 }
                 
                 // clinic_id should reference clinics table, not users
                 if (Schema::hasTable('clinics') && Schema::hasColumn('episodes_of_care', 'clinic_id')) {
-                    try {
-                        $table->foreign('clinic_id')
-                            ->references('id')
-                            ->on('clinics')
-                            ->onDelete('cascade');
-                    } catch (\Exception $e) {
-                        // Foreign key might already exist
+                    // Check if foreign key already exists pointing to clinics
+                    $existingFk = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'episodes_of_care' 
+                        AND COLUMN_NAME = 'clinic_id'
+                        AND REFERENCED_TABLE_NAME = 'clinics'
+                    ");
+                    
+                    if (empty($existingFk)) {
+                        try {
+                            $table->foreign('clinic_id')
+                                ->references('id')
+                                ->on('clinics')
+                                ->onDelete('cascade');
+                        } catch (\Exception $e) {
+                            // Foreign key might already exist, continue
+                        }
                     }
                 }
             });
