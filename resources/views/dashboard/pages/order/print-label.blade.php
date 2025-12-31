@@ -13,13 +13,20 @@
     
     /* Print styles - Only show the label, fit on one page */
     @media print {
-        /* Page settings - A4 size */
+        /* Page settings - A4 size with minimal margins */
         @page {
             size: A4;
-            margin: 0.5cm;
+            margin: 0.3cm;
         }
         
-        /* Hide EVERYTHING except printable area */
+        /* Reset everything */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Hide EVERYTHING by default */
         html, body {
             margin: 0 !important;
             padding: 0 !important;
@@ -27,9 +34,10 @@
             height: auto !important;
             background: white !important;
             overflow: visible !important;
+            font-size: 12px !important;
         }
         
-        /* Hide all dashboard layout elements */
+        /* Hide ALL dashboard elements - be very aggressive */
         body > *:not(#printable-area),
         .sidebar,
         .main-header,
@@ -42,8 +50,8 @@
         .no-print,
         .btn,
         button,
-        .main-wrapper > *:not(#printable-area),
-        .main-content > *:not(#printable-area) {
+        .main-wrapper,
+        .main-content {
             display: none !important;
             visibility: hidden !important;
             height: 0 !important;
@@ -52,26 +60,19 @@
             padding: 0 !important;
             position: absolute !important;
             left: -9999px !important;
+            opacity: 0 !important;
         }
         
-        /* Show only the printable area */
-        .main-wrapper,
-        .main-content {
-            margin: 0 !important;
-            padding: 0 !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            background: white !important;
-        }
-        
-        /* Label container - fit on one page */
+        /* Show ONLY the printable area - clean white page */
         #printable-area {
+            display: block !important;
+            visibility: visible !important;
             position: relative !important;
             left: 0 !important;
             top: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
-            margin: 0 !important;
+            margin: 0 auto !important;
             padding: 15px !important;
             border: 2px solid #000 !important;
             background: white !important;
@@ -79,6 +80,14 @@
             page-break-inside: avoid;
             page-break-after: avoid;
             font-size: 11px !important;
+            color: #000 !important;
+            clear: both !important;
+        }
+        
+        /* Ensure all content inside is visible */
+        #printable-area * {
+            visibility: visible !important;
+            color: #000 !important;
         }
         
         /* Compact header */
@@ -174,10 +183,6 @@
             display: table-cell !important;
         }
         
-        /* Text colors for print */
-        #printable-area {
-            color: #000 !important;
-        }
         
         /* Keep brand color for headers */
         #printable-area .label-section h5,
