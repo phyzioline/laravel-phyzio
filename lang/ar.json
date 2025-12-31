@@ -760,5 +760,22 @@
     "Transaction put on hold successfully.": "تم وضع المعاملة في الانتظار بنجاح.",
     "Failed to put transaction on hold.": "فشل في وضع المعاملة في الانتظار.",
     "Transaction released from hold successfully.": "تم إطلاق المعاملة من الانتظار بنجاح.",
-    "Failed to release transaction from hold.": "فشل في إطلاق المعاملة من الانتظار."
+    "Failed to release transaction from hold.": "فشل في إطلاق المعاملة من الانتظار.",
+    "Company Dashboard": "لوحة تحكم الشركة",
+    "Total Jobs": "إجمالي الوظائف",
+    "Total Applications": "إجمالي الطلبات",
+    "Pending Reviews": "مراجعات معلقة",
+    "Quick Actions": "إجراءات سريعة",
+    "Post New Job": "نشر وظيفة جديدة",
+    "Manage Jobs": "إدارة الوظائف",
+    "Recent Jobs": "أحدث الوظائف",
+    "Recent Applications": "أحدث الطلبات",
+    "Title": "العنوان",
+    "Applicants": "المتقدمين",
+    "Posted": "تاريخ النشر",
+    "Match Score": "نسبة التطابق",
+    "Applied": "تاريخ التقديم",
+    "Review": "مراجعة",
+    "No jobs posted yet.": "لم يتم نشر أي وظائف بعد.",
+    "Post your first job": "انشر وظيفتك الأولى"
 }
