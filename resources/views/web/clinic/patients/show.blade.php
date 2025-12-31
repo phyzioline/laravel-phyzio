@@ -100,7 +100,7 @@
                     <div class="tab-pane fade" id="plans" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-weight-bold">{{ __('Active Treatment Plans') }}</h6>
-                            <button class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-plus"></i> {{ __('Create Plan') }}</button>
+                            <a href="{{ route('clinic.plans.create', ['patient_id' => $patient->id]) }}" class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-plus"></i> {{ __('Create Plan') }}</a>
                         </div>
                         @if($treatmentPlans->isEmpty())
                             <div class="text-center text-muted py-4">No active treatment plans.</div>
@@ -127,22 +127,93 @@
                     <div class="tab-pane fade" id="notes" role="tabpanel">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-weight-bold">{{ __('Clinical Documentation') }}</h6>
-                            <button class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-plus"></i> {{ __('Add SOAP Note') }}</button>
+                            <a href="{{ route('clinic.clinical-notes.create', ['patient_id' => $patient->id]) }}" class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-plus"></i> {{ __('Add SOAP Note') }}</a>
                         </div>
-                        <div class="text-center text-muted py-4">Select an appointment to view session notes.</div>
+                        @php
+                            // Get clinical notes for this patient
+                            $clinicalNotes = \App\Models\ClinicalNote::where('patient_id', $patient->id)
+                                ->with(['appointment', 'episode'])
+                                ->latest()
+                                ->get();
+                        @endphp
+                        @if($clinicalNotes->isEmpty())
+                            <div class="text-center text-muted py-4">No clinical notes found. Create a SOAP note to document patient sessions.</div>
+                        @else
+                            <div class="list-group">
+                                @foreach($clinicalNotes as $note)
+                                    <div class="list-group-item mb-2 border rounded">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h6 class="mb-1">{{ $note->created_at->format('M d, Y H:i') }}</h6>
+                                                @if($note->appointment)
+                                                    <small class="text-muted">Appointment: {{ $note->appointment->appointment_date ?? 'N/A' }}</small>
+                                                @endif
+                                                @if($note->episode)
+                                                    <small class="text-muted">Episode: {{ $note->episode->title ?? 'N/A' }}</small>
+                                                @endif
+                                            </div>
+                                            <a href="{{ route('clinic.clinical-notes.show', $note->id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                        </div>
+                                        @if($note->subjective)
+                                            <p class="mb-1 small"><strong>S:</strong> {{ Str::limit($note->subjective, 100) }}</p>
+                                        @endif
+                                        @if($note->objective)
+                                            <p class="mb-1 small"><strong>O:</strong> {{ Str::limit($note->objective, 100) }}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
                     <!-- Billing Tab -->
                     <div class="tab-pane fade" id="billing" role="tabpanel">
                          <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="font-weight-bold">{{ __('Invoices & Payments') }}</h6>
-                            <button class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-file-invoice-dollar"></i> {{ __('New Invoice') }}</button>
+                            <a href="{{ route('clinic.invoices.create', ['patient_id' => $patient->id]) }}" class="btn btn-sm btn-primary" style="background-color: #00897b;"><i class="las la-file-invoice-dollar"></i> {{ __('New Invoice') }}</a>
                         </div>
+                         @php
+                            // Get invoices for this patient if not already loaded
+                            if (!isset($invoices) || $invoices->isEmpty()) {
+                                $invoices = \App\Models\PatientInvoice::where('patient_id', $patient->id)
+                                    ->with('payments')
+                                    ->latest()
+                                    ->get();
+                            }
+                         @endphp
                          @if($invoices->isEmpty())
                             <div class="text-center text-muted py-4">No invoices found.</div>
                          @else
-                            <!-- Invoice List Mock -->
-                            <p>Invoice #101 - Paid</p>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Invoice #</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($invoices as $invoice)
+                                        <tr>
+                                            <td>{{ $invoice->invoice_number }}</td>
+                                            <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
+                                            <td>{{ number_format($invoice->final_amount, 2) }} {{ config('app.currency', 'EGP') }}</td>
+                                            <td>
+                                                <span class="badge badge-{{ $invoice->status == 'paid' ? 'success' : ($invoice->status == 'partial' ? 'warning' : 'danger') }}">
+                                                    {{ ucfirst($invoice->status) }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('clinic.invoices.show', $invoice->id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                          @endif
                     </div>
                 </div>

@@ -18,7 +18,9 @@
                         <select name="patient_id" class="form-control select2" required>
                             <option value="">{{ __('Choose a patient...') }}</option>
                             @foreach($patients as $patient)
-                                <option value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }} (ID: {{ $patient->id }})</option>
+                                <option value="{{ $patient->id }}" {{ isset($selectedPatientId) && $selectedPatientId == $patient->id ? 'selected' : '' }}>
+                                    {{ $patient->first_name }} {{ $patient->last_name }} (ID: {{ $patient->id }})
+                                </option>
                             @endforeach
                         </select>
                     </div>

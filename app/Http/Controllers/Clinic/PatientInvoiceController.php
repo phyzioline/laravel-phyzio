@@ -80,7 +80,10 @@ class PatientInvoiceController extends BaseClinicController
 
         $patients = Patient::where('clinic_id', $clinic->id)->get();
         
-        return view('web.clinic.invoices.create', compact('clinic', 'patients'));
+        // Get pre-selected patient_id from query parameter
+        $selectedPatientId = $request->get('patient_id');
+        
+        return view('web.clinic.invoices.create', compact('clinic', 'patients', 'selectedPatientId'));
     }
 
     public function store(Request $request)

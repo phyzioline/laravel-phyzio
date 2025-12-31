@@ -147,6 +147,15 @@ class PatientController extends BaseClinicController
         if (method_exists($patient, 'treatmentPlans')) {
             $treatmentPlans = $patient->treatmentPlans()->latest()->get();
         }
+        
+        // Load invoices for this patient
+        if ($clinic && class_exists(\App\Models\PatientInvoice::class)) {
+            $invoices = \App\Models\PatientInvoice::where('patient_id', $patient->id)
+                ->where('clinic_id', $clinic->id)
+                ->with('payments')
+                ->latest()
+                ->get();
+        }
 
         return view('web.clinic.patients.show', compact('patient', 'appointments', 'treatmentPlans', 'invoices', 'clinic'));
     }
