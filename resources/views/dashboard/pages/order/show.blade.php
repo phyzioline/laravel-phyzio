@@ -138,10 +138,44 @@
                 @can('orders-update')
                 <div class="card">
                     <div class="card-body">
+                        {{-- Quick Actions --}}
+                        @if(in_array($order->status, ['pending', 'processing', 'shipped', 'delivered']))
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Quick Actions</label>
+                            <div class="d-grid gap-2">
+                                @if($order->status === 'pending')
+                                    {{-- Accept Button --}}
+                                    <form action="{{ route('dashboard.orders.accept', $order->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-success w-100" 
+                                                onclick="return confirm('Are you sure you want to accept this order? Status will be changed to Processing.')">
+                                            <i class="fas fa-check-circle"></i> Accept Order (→ Processing)
+                                        </button>
+                                    </form>
+                                @endif
+                                
+                                @if(!in_array($order->status, ['completed', 'cancelled']))
+                                    {{-- Cancel Button --}}
+                                    <form action="{{ route('dashboard.orders.update', $order->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn btn-danger w-100" 
+                                                onclick="return confirm('Are you sure you want to cancel this order? This action cannot be undone.')">
+                                            <i class="fas fa-times-circle"></i> Cancel Order
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                        <hr>
+                        @endif
+                        
+                        {{-- Status Update Form --}}
                         <form action="{{ route('dashboard.orders.update', $order->id) }}" method="POST" id="status-update-form">
                             @csrf
                             @method('PUT')
-                            <label class="form-label">Update Status</label>
+                            <label class="form-label fw-bold">Update Status Manually</label>
                             <select name="status" id="status-select" class="form-select mb-3" required>
                                 @if(isset($statusOptions) && count($statusOptions) > 0)
                                     @foreach($statusOptions as $statusValue => $statusLabel)
