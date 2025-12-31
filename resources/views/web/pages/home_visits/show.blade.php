@@ -729,7 +729,7 @@
                             <div class="empty-state">
                                 <i class="las la-user-md empty-state-icon"></i>
                                 <h5 class="text-muted mb-2">{{ __('No bio available') }}</h5>
-                                <p class="text-muted">{{ __('This therapist hasn't added a bio yet.') }}</p>
+                                <p class="text-muted">{{ __('This therapist hasn\'t added a bio yet.') }}</p>
                             </div>
                         @endif
                         
