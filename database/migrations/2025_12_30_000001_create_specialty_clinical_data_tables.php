@@ -61,7 +61,8 @@ return new class extends Migration
         }
 
         // 1. Specialty Configuration Table
-        Schema::create('pt_specialty_configs', function (Blueprint $table) {
+        if (!Schema::hasTable('pt_specialty_configs')) {
+            Schema::create('pt_specialty_configs', function (Blueprint $table) {
             $table->id();
             $table->string('specialty_key')->unique(); // musculoskeletal, neurological, etc.
             $table->string('name_en');
@@ -73,10 +74,12 @@ return new class extends Migration
             $table->json('tools_devices')->nullable(); // Required tools/devices
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-        });
+            });
+        }
 
         // 2. Joint ROM (Range of Motion) Table - Musculoskeletal/Orthopedic
-        Schema::create('joint_rom_measurements', function (Blueprint $table) {
+        if (!Schema::hasTable('joint_rom_measurements')) {
+            Schema::create('joint_rom_measurements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -91,10 +94,12 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['assessment_id', 'joint_name']);
-        });
+            });
+        }
 
         // 3. Muscle Strength Grades - Musculoskeletal/Orthopedic
-        Schema::create('muscle_strength_grades', function (Blueprint $table) {
+        if (!Schema::hasTable('muscle_strength_grades')) {
+            Schema::create('muscle_strength_grades', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -109,10 +114,12 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['assessment_id', 'muscle_group']);
-        });
+            });
+        }
 
         // 4. Special Orthopedic Tests - Musculoskeletal
-        Schema::create('special_orthopedic_tests', function (Blueprint $table) {
+        if (!Schema::hasTable('special_orthopedic_tests')) {
+            Schema::create('special_orthopedic_tests', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -126,10 +133,12 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['assessment_id', 'test_name']);
-        });
+            });
+        }
 
         // 5. Pain Assessment - Universal
-        Schema::create('pain_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('pain_assessments')) {
+            Schema::create('pain_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -143,10 +152,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 6. Neurological Assessments
-        Schema::create('neurological_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('neurological_assessments')) {
+            Schema::create('neurological_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -160,10 +171,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 7. Cardiopulmonary Assessments
-        Schema::create('cardiopulmonary_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('cardiopulmonary_assessments')) {
+            Schema::create('cardiopulmonary_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -181,10 +194,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 8. Pediatric Assessments
-        Schema::create('pediatric_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('pediatric_assessments')) {
+            Schema::create('pediatric_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -199,10 +214,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 9. Geriatric Assessments
-        Schema::create('geriatric_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('geriatric_assessments')) {
+            Schema::create('geriatric_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -218,10 +235,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 10. Sports Performance Assessments
-        Schema::create('sports_performance_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('sports_performance_assessments')) {
+            Schema::create('sports_performance_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -236,10 +255,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 11. Women's Health / Pelvic Floor Assessments
-        Schema::create('pelvic_floor_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('pelvic_floor_assessments')) {
+            Schema::create('pelvic_floor_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -254,10 +275,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 12. Pain Management Assessments
-        Schema::create('pain_management_assessments', function (Blueprint $table) {
+        if (!Schema::hasTable('pain_management_assessments')) {
+            Schema::create('pain_management_assessments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -291,10 +314,12 @@ return new class extends Migration
             
             $table->index(['episode_id', 'measure_name']);
             $table->index(['assessment_id', 'measure_name']);
-        });
+            });
+        }
 
         // 14. Functional Score Tracking
-        Schema::create('functional_scores', function (Blueprint $table) {
+        if (!Schema::hasTable('functional_scores')) {
+            Schema::create('functional_scores', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -308,10 +333,12 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['episode_id', 'functional_task']);
-        });
+            });
+        }
 
         // 15. Posture Analysis - Musculoskeletal
-        Schema::create('posture_analyses', function (Blueprint $table) {
+        if (!Schema::hasTable('posture_analyses')) {
+            Schema::create('posture_analyses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -322,10 +349,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 16. Gait Analysis - Neurological/Musculoskeletal
-        Schema::create('gait_analyses', function (Blueprint $table) {
+        if (!Schema::hasTable('gait_analyses')) {
+            Schema::create('gait_analyses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -339,10 +368,12 @@ return new class extends Migration
             $table->timestamp('assessed_at');
             $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
-        });
+            });
+        }
 
         // 17. Vital Signs Log - Cardiopulmonary/General
-        Schema::create('vital_signs_logs', function (Blueprint $table) {
+        if (!Schema::hasTable('vital_signs_logs')) {
+            Schema::create('vital_signs_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('assessment_id')->nullable()->constrained('clinical_assessments')->onDelete('cascade');
             $table->foreignId('episode_id')->constrained('episodes_of_care')->onDelete('cascade');
@@ -358,7 +389,8 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['episode_id', 'recorded_at']);
-        });
+            });
+        }
     }
 
     /**
