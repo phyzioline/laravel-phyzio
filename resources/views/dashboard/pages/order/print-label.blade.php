@@ -11,22 +11,26 @@
         background: white;
     }
     
-    /* Print styles */
+    /* Print styles - Only show the label, fit on one page */
     @media print {
-        /* Reset page settings */
+        /* Page settings - A4 size */
         @page {
             size: A4;
-            margin: 1cm;
+            margin: 0.5cm;
         }
         
-        /* Hide all dashboard elements */
-        body {
+        /* Hide EVERYTHING except printable area */
+        html, body {
             margin: 0 !important;
             padding: 0 !important;
+            width: 100% !important;
+            height: auto !important;
             background: white !important;
+            overflow: visible !important;
         }
         
-        /* Hide sidebar, header, navigation, etc. */
+        /* Hide all dashboard layout elements */
+        body > *:not(#printable-area),
         .sidebar,
         .main-header,
         .navbar,
@@ -37,43 +41,113 @@
         footer,
         .no-print,
         .btn,
-        button:not(.print-only) {
+        button,
+        .main-wrapper > *:not(#printable-area),
+        .main-content > *:not(#printable-area) {
             display: none !important;
             visibility: hidden !important;
             height: 0 !important;
             width: 0 !important;
             margin: 0 !important;
             padding: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
         }
         
-        /* Show only printable area */
+        /* Show only the printable area */
         .main-wrapper,
         .main-content {
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
+            background: white !important;
         }
         
-        /* Position printable area */
+        /* Label container - fit on one page */
         #printable-area {
             position: relative !important;
-            left: auto !important;
-            top: auto !important;
+            left: 0 !important;
+            top: 0 !important;
             width: 100% !important;
             max-width: 100% !important;
-            margin: 0 auto !important;
-            padding: 20px !important;
+            margin: 0 !important;
+            padding: 15px !important;
             border: 2px solid #000 !important;
             background: white !important;
             box-shadow: none !important;
             page-break-inside: avoid;
+            page-break-after: avoid;
+            font-size: 11px !important;
         }
         
-        /* Ensure all content is visible */
+        /* Compact header */
+        .label-header {
+            padding: 10px 0 !important;
+            margin-bottom: 10px !important;
+        }
+        
+        .label-header h2 {
+            font-size: 20px !important;
+            margin: 5px 0 !important;
+        }
+        
+        .label-header h4 {
+            font-size: 14px !important;
+            margin: 5px 0 !important;
+        }
+        
+        .barcode {
+            font-size: 40px !important;
+            margin: 10px 0 !important;
+        }
+        
+        /* Compact sections */
+        .label-section {
+            margin-bottom: 10px !important;
+            padding: 10px !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .label-section h5 {
+            font-size: 12px !important;
+            margin-bottom: 8px !important;
+            padding-bottom: 5px !important;
+        }
+        
+        .label-section p {
+            margin: 3px 0 !important;
+            font-size: 10px !important;
+        }
+        
+        /* Compact table */
+        .label-section table {
+            font-size: 9px !important;
+            margin: 5px 0 !important;
+        }
+        
+        .label-section table th,
+        .label-section table td {
+            padding: 4px !important;
+        }
+        
+        /* Compact info rows */
+        .info-row {
+            margin-bottom: 5px !important;
+            font-size: 10px !important;
+        }
+        
+        /* Compact footer */
+        .text-center.mt-4 {
+            margin-top: 10px !important;
+            padding-top: 8px !important;
+            font-size: 9px !important;
+        }
+        
+        /* Ensure all content displays */
         #printable-area * {
             visibility: visible !important;
-            display: block !important;
         }
         
         /* Fix inline elements */
@@ -100,13 +174,6 @@
             display: table-cell !important;
         }
         
-        /* Ensure all sections print */
-        .label-section {
-            page-break-inside: avoid;
-            break-inside: avoid;
-            margin-bottom: 15px !important;
-        }
-        
         /* Text colors for print */
         #printable-area {
             color: #000 !important;
@@ -118,7 +185,7 @@
             color: #02767F !important;
         }
         
-        /* Remove background colors except for specific sections */
+        /* Background colors */
         #printable-area .label-section {
             background: white !important;
         }
@@ -134,8 +201,15 @@
         /* Fix badge display */
         #printable-area .badge {
             display: inline-block !important;
-            padding: 4px 8px !important;
+            padding: 2px 6px !important;
+            font-size: 9px !important;
             border: 1px solid #000 !important;
+        }
+        
+        /* Remove icons in print */
+        #printable-area .fa,
+        #printable-area i {
+            display: none !important;
         }
     }
     
