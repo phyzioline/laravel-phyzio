@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Clinic;
 
 use App\Models\DailyExpense;
+use App\Models\Patient;
 use App\Models\PatientInvoice;
 use App\Models\PatientPayment;
 use App\Models\MonthlyExpenseSummary;
