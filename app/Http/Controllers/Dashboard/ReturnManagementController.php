@@ -16,12 +16,20 @@ class ReturnManagementController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');
+        $orderId = $request->get('order_id');
         
         $query = ReturnModel::with(['orderItem.product', 'orderItem.order.user', 'approver'])
             ->orderBy('created_at', 'desc');
 
         if ($status !== 'all') {
             $query->where('status', $status);
+        }
+
+        // Filter by order ID if provided
+        if ($orderId) {
+            $query->whereHas('orderItem', function($q) use ($orderId) {
+                $q->where('order_id', $orderId);
+            });
         }
 
         $returns = $query->paginate(20);

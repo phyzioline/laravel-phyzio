@@ -42,7 +42,14 @@ class OrderController extends Controller implements HasMiddleware
             ->groupBy('status')
             ->get();
         
-        return view('dashboard.pages.order.index', compact('data', 'stats', 'ordersByStatus'));
+        // Get vendors for filter (admin only)
+        $vendors = auth()->user()->hasRole('admin') 
+            ? \App\Models\User::where('type', 'vendor')->orWhereHas('roles', function($q) {
+                $q->where('name', 'vendor');
+            })->get()
+            : collect();
+        
+        return view('dashboard.pages.order.index', compact('data', 'stats', 'ordersByStatus', 'vendors'));
     }
     public function orderCash()
     {

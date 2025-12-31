@@ -9,7 +9,7 @@ class OrderService
     {}
     public function index()
     {
-        $query = $this->model->with(['items.product']);
+        $query = $this->model->with(['items.product.productImages', 'items.product.user', 'returns']);
 
         // Check ownership if not admin
         if (!auth()->user()->hasRole('admin')) {
@@ -19,16 +19,57 @@ class OrderService
         }
 
         // Apply Status Filter
-        if (request()->has('status')) {
+        if (request()->has('status') && request('status') !== 'all') {
             $query->where('status', request('status'));
         }
 
         // Apply Payment Method Filter
-        if (request()->has('payment_method')) {
-            $query->where('payment_method', request('payment_method'));
+        if (request()->has('payment_method') && request('payment_method') !== 'all') {
+            if (request('payment_method') === 'card') {
+                // Card orders are non-cash orders
+                $query->where('payment_method', '!=', 'cash');
+            } else {
+                $query->where('payment_method', request('payment_method'));
+            }
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate(10);
+        // Apply Payment Status Filter
+        if (request()->has('payment_status') && request('payment_status') !== 'all') {
+            $query->where('payment_status', request('payment_status'));
+        }
+
+        // Apply Return Orders Filter
+        if (request()->has('has_returns') && request('has_returns') == '1') {
+            $query->whereHas('returns');
+        }
+
+        // Apply Date Range Filter
+        if (request()->has('date_from')) {
+            $query->whereDate('created_at', '>=', request('date_from'));
+        }
+        if (request()->has('date_to')) {
+            $query->whereDate('created_at', '<=', request('date_to'));
+        }
+
+        // Apply Vendor Filter (admin only)
+        if (auth()->user()->hasRole('admin') && request()->has('vendor_id') && request('vendor_id')) {
+            $query->whereHas('items.product', function ($q) {
+                $q->where('user_id', request('vendor_id'));
+            });
+        }
+
+        // Apply Search Filter
+        if (request()->has('search') && request('search')) {
+            $search = request('search');
+            $query->where(function($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                  ->orWhere('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        return $query->orderBy('created_at', 'desc')->paginate(20);
     }
 
     /**
@@ -50,6 +91,9 @@ class OrderService
             'pending_orders' => (clone $baseQuery)->where('status', 'pending')->count(),
             'completed_orders' => (clone $baseQuery)->where('status', 'completed')->count(),
             'cancelled_orders' => (clone $baseQuery)->where('status', 'cancelled')->count(),
+            'card_orders' => (clone $baseQuery)->where('payment_method', '!=', 'cash')->count(),
+            'cash_orders' => (clone $baseQuery)->where('payment_method', 'cash')->count(),
+            'return_orders' => (clone $baseQuery)->whereHas('returns')->count(),
         ];
     }
 
