@@ -364,6 +364,18 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/analytics', [\App\Http\Controllers\Clinic\AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('/billing', [\App\Http\Controllers\Clinic\BillingController::class, 'index'])->name('billing.index');
         
+        // Clinic ERP - Daily Expenses
+        Route::get('/expenses/analytics', [\App\Http\Controllers\Clinic\ExpenseController::class, 'analytics'])->name('expenses.analytics');
+        Route::resource('expenses', \App\Http\Controllers\Clinic\ExpenseController::class);
+        
+        // Clinic ERP - Patient Invoices & Payments
+        Route::resource('invoices', \App\Http\Controllers\Clinic\PatientInvoiceController::class);
+        Route::resource('payments', \App\Http\Controllers\Clinic\PatientPaymentController::class);
+        
+        // Clinic ERP - Financial Reports
+        Route::get('/reports', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/export', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'export'])->name('reports.export');
+        
         // Insurance Claims (RCM)
         Route::post('/insurance-claims/{id}/submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'submit'])->name('insurance-claims.submit');
         Route::post('/insurance-claims/batch-submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'batchSubmit'])->name('insurance-claims.batchSubmit');

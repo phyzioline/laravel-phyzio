@@ -510,6 +510,41 @@
                     </a>
                 </li>
 
+                <!-- 12.6. Clinic ERP - Financial Management -->
+                <li class="menu-label mt-3 ml-3 text-white small">{{ __('Financial Management') }}</li>
+                
+                <!-- Daily Expenses -->
+                <li>
+                    <a href="{{ route('clinic.expenses.index') }}" class="{{ request()->routeIs('clinic.expenses.*') ? 'active' : '' }}">
+                        <span class="las la-money-bill-wave"></span>
+                        <span>{{ __('Daily Expenses') }}</span>
+                    </a>
+                </li>
+
+                <!-- Patient Invoices -->
+                <li>
+                    <a href="{{ route('clinic.invoices.index') }}" class="{{ request()->routeIs('clinic.invoices.*') ? 'active' : '' }}">
+                        <span class="las la-file-invoice"></span>
+                        <span>{{ __('Patient Invoices') }}</span>
+                    </a>
+                </li>
+
+                <!-- Patient Payments -->
+                <li>
+                    <a href="{{ route('clinic.payments.index') }}" class="{{ request()->routeIs('clinic.payments.*') ? 'active' : '' }}">
+                        <span class="las la-money-check-alt"></span>
+                        <span>{{ __('Patient Payments') }}</span>
+                    </a>
+                </li>
+
+                <!-- Financial Reports -->
+                <li>
+                    <a href="{{ route('clinic.reports.index') }}" class="{{ request()->routeIs('clinic.reports.*') ? 'active' : '' }}">
+                        <span class="las la-chart-line"></span>
+                        <span>{{ __('Financial Reports') }}</span>
+                    </a>
+                </li>
+
                 <!-- 13. Job System (Post Jobs - Secondary Feature) -->
                 <li>
                     <a href="{{ route('clinic.jobs.index') }}" class="{{ request()->routeIs('clinic.jobs.*') ? 'active' : '' }}">
