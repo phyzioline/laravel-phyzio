@@ -79,9 +79,9 @@
             </div>
 
             <div class="row mb-5">
-                <div class="col-12 col-xl-12">
-                    <div class="card">
-                        <div class="card-body">
+                <div class="col-12">
+                    <div class="card" style="width: 100%; overflow: hidden;">
+                        <div class="card-body" style="padding: 1rem;">
                             <!-- Advanced Filters -->
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -216,27 +216,27 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: 70vh; overflow-y: auto;">
-                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem;">
-                                    <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
+                            <div class="table-responsive text-center" style="max-height: 75vh; overflow-x: auto; overflow-y: auto; width: 100%;">
+                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; min-width: 1400px;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index: 10; background-color: #f8f9fa;">
                                         <tr>
-                                            <th style="width: 3%;">{{ __('ID') }}</th>
-                                            <th style="width: 5%;">{{ __('Product') }}</th>
+                                            <th style="min-width: 50px; width: 4%;">{{ __('ID') }}</th>
+                                            <th style="min-width: 70px; width: 5%;">{{ __('Product') }}</th>
                                             @if(auth()->user()->hasRole('admin'))
-                                                <th style="width: 6%;">{{ __('Vendor') }}</th>
+                                                <th style="min-width: 100px; width: 7%;">{{ __('Vendor') }}</th>
                                             @endif
-                                            <th style="width: 8%;">{{ __('Order #') }}</th>
-                                            <th style="width: 8%;">{{ __('Name') }}</th>
-                                            <th style="width: 7%;">{{ __('Phone') }}</th>
-                                            <th style="width: 10%;">{{ __('Address') }}</th>
-                                            <th style="width: 6%;">{{ __('Total') }}</th>
-                                            <th style="width: 6%;">{{ __('Status') }}</th>
-                                            <th style="width: 6%;">{{ __('Pay Status') }}</th>
-                                            <th style="width: 5%;">{{ __('Method') }}</th>
-                                            <th style="width: 7%;">{{ __('Order Date') }}</th>
-                                            <th style="width: 7%;">{{ __('Updated') }}</th>
-                                            <th style="width: 4%;">{{ __('Returns') }}</th>
-                                            <th style="width: 10%;">{{ __('Actions') }}</th>
+                                            <th style="min-width: 120px; width: 9%;">{{ __('Order #') }}</th>
+                                            <th style="min-width: 100px; width: 8%;">{{ __('Name') }}</th>
+                                            <th style="min-width: 110px; width: 8%;">{{ __('Phone') }}</th>
+                                            <th style="min-width: 150px; width: 12%;">{{ __('Address') }}</th>
+                                            <th style="min-width: 90px; width: 7%;">{{ __('Total') }}</th>
+                                            <th style="min-width: 90px; width: 7%;">{{ __('Status') }}</th>
+                                            <th style="min-width: 100px; width: 8%;">{{ __('Pay Status') }}</th>
+                                            <th style="min-width: 80px; width: 6%;">{{ __('Method') }}</th>
+                                            <th style="min-width: 120px; width: 8%;">{{ __('Order Date') }}</th>
+                                            <th style="min-width: 120px; width: 8%;">{{ __('Updated') }}</th>
+                                            <th style="min-width: 80px; width: 6%;">{{ __('Returns') }}</th>
+                                            <th style="min-width: 120px; width: 9%;">{{ __('Actions') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -355,13 +355,13 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="mt-2" style="padding: 5px; direction: ltr;">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="text-muted" style="font-size: 0.85rem;">
-                                        {{ __('Showing') }} {{ $data->firstItem() ?? 0 }} {{ __('to') }} {{ $data->lastItem() ?? 0 }} {{ __('of') }} {{ $data->total() }} {{ __('orders') }}
+                            <div class="mt-3 pt-2 border-top" style="padding: 8px 15px; direction: ltr; background-color: #f8f9fa;">
+                                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                    <div class="text-muted mb-2 mb-md-0" style="font-size: 0.8rem;">
+                                        <i class="fas fa-info-circle"></i> {{ __('Showing') }} <strong>{{ $data->firstItem() ?? 0 }}</strong> {{ __('to') }} <strong>{{ $data->lastItem() ?? 0 }}</strong> {{ __('of') }} <strong>{{ $data->total() }}</strong> {{ __('orders') }}
                                     </div>
                                     <div>
-                                        {!! $data->withQueryString()->links('pagination::bootstrap-5', ['class' => 'pagination-sm mb-0']) !!}
+                                        {!! $data->withQueryString()->links('pagination::bootstrap-5', ['class' => 'pagination-sm mb-0', 'list_classes' => ['justify-content-end']]) !!}
                                     </div>
                                 </div>
                             </div>

@@ -69,7 +69,7 @@ class OrderService
             });
         }
 
-        return $query->orderBy('created_at', 'desc')->paginate(100);
+        return $query->orderBy('created_at', 'desc')->paginate(50);
     }
 
     /**

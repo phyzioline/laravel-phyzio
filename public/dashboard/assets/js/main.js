@@ -49,10 +49,36 @@ $(function () {
 
 
 
-  /* menu */
+  /* menu - Enhanced for both LTR (English) and RTL (Arabic) */
 
-  $(function () {
-    $('#sidenav').metisMenu();
+  // Initialize metisMenu after DOM and all scripts are ready
+  function initMetisMenu() {
+    var $sidenav = $('#sidenav');
+    if ($sidenav.length && typeof $.fn.metisMenu !== 'undefined') {
+      // Destroy existing instance if any to prevent conflicts
+      if ($sidenav.data('metisMenu')) {
+        $sidenav.metisMenu('dispose');
+      }
+      // Initialize with proper configuration for both LTR and RTL
+      $sidenav.metisMenu({
+        toggle: true,
+        doubleTapToGo: false,
+        preventDefault: true,
+        triggerElement: 'a.has-arrow',
+        parentTrigger: 'li',
+        subMenu: 'ul'
+      });
+    }
+  }
+
+  // Initialize when jQuery is ready
+  $(document).ready(function() {
+    initMetisMenu();
+  });
+
+  // Also initialize on window load as backup (ensures all scripts are loaded)
+  $(window).on('load', function() {
+    initMetisMenu();
   });
 
   $(".sidebar-close").on("click", function () {
