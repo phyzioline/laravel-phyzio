@@ -53,7 +53,22 @@ class EpisodeController extends BaseClinicController
 
         // Get patients from this clinic
         $patients = \App\Models\Patient::where('clinic_id', $clinic->id)->get();
-        $therapists = User::where('type', 'therapist')->get();
+        
+        // CRITICAL: Only show therapists/doctors assigned to THIS clinic via clinic_staff table
+        // This ensures proper data isolation - no external doctors from other clinics
+        $therapistIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->where('is_active', true)
+            ->pluck('user_id')
+            ->toArray();
+        
+        if (empty($therapistIds)) {
+            $therapists = collect();
+        } else {
+            $therapists = User::whereIn('id', $therapistIds)
+                ->whereIn('type', ['therapist', 'doctor'])
+                ->get();
+        }
         
         return view('clinic.erp.episodes.create', compact('patients', 'therapists', 'clinic'));
     }
@@ -81,6 +96,19 @@ class EpisodeController extends BaseClinicController
         // Verify patient belongs to this clinic
         $patient = \App\Models\Patient::where('clinic_id', $clinic->id)
             ->findOrFail($data['patient_id']);
+
+        // CRITICAL: Verify therapist belongs to this clinic via clinic_staff
+        $therapistStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $data['primary_therapist_id'])
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->where('is_active', true)
+            ->first();
+        
+        if (!$therapistStaff) {
+            return back()
+                ->withInput()
+                ->with('error', 'Selected therapist is not assigned to your clinic.');
+        }
 
         $data['clinic_id'] = $clinic->id; // Use clinic ID, not Auth::id()
         $data['status'] = 'active';

@@ -21,8 +21,10 @@ class StaffController extends BaseClinicController
 
         // CRITICAL: Only show staff members assigned to THIS clinic via clinic_staff table
         // This ensures proper data isolation between clinics
+        // Note: clinic_staff.role ENUM values are: ['therapist', 'admin', 'receptionist', 'doctor']
+        // We map form values: 'staff'->'admin', 'nurse'->'admin', 'receptionist'->'receptionist'
         $staffIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
-            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->whereIn('role', ['admin', 'receptionist']) // Only valid ENUM values for staff
             ->where('is_active', true)
             ->pluck('user_id')
             ->toArray();
@@ -103,10 +105,19 @@ class StaffController extends BaseClinicController
         $staff = User::create($staffData);
         
         // CRITICAL: Assign staff to this clinic via clinic_staff table
+        // Map form role values to clinic_staff ENUM values
+        $roleMapping = [
+            'staff' => 'admin',        // Map 'staff' to 'admin' in clinic_staff
+            'receptionist' => 'receptionist',
+            'nurse' => 'admin',        // Map 'nurse' to 'admin' in clinic_staff
+        ];
+        
+        $clinicStaffRole = $roleMapping[$request->role] ?? 'admin';
+        
         \App\Models\ClinicStaff::create([
             'clinic_id' => $clinic->id,
             'user_id' => $staff->id,
-            'role' => $request->role,
+            'role' => $clinicStaffRole,
             'is_active' => true,
             'hired_date' => now(),
         ]);
@@ -124,9 +135,10 @@ class StaffController extends BaseClinicController
         }
         
         // CRITICAL: Verify staff member belongs to this clinic
+        // Note: clinic_staff.role ENUM values are: ['therapist', 'admin', 'receptionist', 'doctor']
         $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
             ->where('user_id', $id)
-            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->whereIn('role', ['admin', 'receptionist']) // Only valid ENUM values for staff
             ->first();
         
         if (!$clinicStaff) {
@@ -147,9 +159,10 @@ class StaffController extends BaseClinicController
         }
 
         // CRITICAL: Verify staff member belongs to this clinic
+        // Note: clinic_staff.role ENUM values are: ['therapist', 'admin', 'receptionist', 'doctor']
         $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
             ->where('user_id', $id)
-            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->whereIn('role', ['admin', 'receptionist']) // Only valid ENUM values for staff
             ->first();
         
         if (!$clinicStaff) {
@@ -190,8 +203,17 @@ class StaffController extends BaseClinicController
         $staffMember->update($updateData);
         
         // Update role in clinic_staff if it changed
-        if ($clinicStaff->role !== $request->role) {
-            $clinicStaff->update(['role' => $request->role]);
+        // Map form role values to clinic_staff ENUM values
+        $roleMapping = [
+            'staff' => 'admin',        // Map 'staff' to 'admin' in clinic_staff
+            'receptionist' => 'receptionist',
+            'nurse' => 'admin',        // Map 'nurse' to 'admin' in clinic_staff
+        ];
+        
+        $clinicStaffRole = $roleMapping[$request->role] ?? 'admin';
+        
+        if ($clinicStaff->role !== $clinicStaffRole) {
+            $clinicStaff->update(['role' => $clinicStaffRole]);
         }
 
         return redirect()->route('clinic.staff.index')
@@ -207,9 +229,10 @@ class StaffController extends BaseClinicController
         }
 
         // CRITICAL: Verify staff member belongs to this clinic
+        // Note: clinic_staff.role ENUM values are: ['therapist', 'admin', 'receptionist', 'doctor']
         $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
             ->where('user_id', $id)
-            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->whereIn('role', ['admin', 'receptionist']) // Only valid ENUM values for staff
             ->first();
         
         if (!$clinicStaff) {

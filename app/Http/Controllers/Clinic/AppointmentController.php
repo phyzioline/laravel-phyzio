@@ -48,9 +48,10 @@ class AppointmentController extends BaseClinicController
         $user = Auth::user();
         $clinic = $this->getUserClinic($user);
 
-        $startOfWeek = Carbon::now()->startOfWeek();
-        $endOfWeek = Carbon::now()->endOfWeek();
-        $endOfWeek = $endOfWeek->addDays(7); // Show 2 weeks
+        // Handle week navigation
+        $weekOffset = (int) $request->get('week', 0);
+        $startOfWeek = Carbon::now()->startOfWeek()->addWeeks($weekOffset);
+        $endOfWeek = $startOfWeek->copy()->addDays(6); // Show 1 week (7 days)
         
         // Show empty state instead of using clinic_id = 0
         if (!$clinic) {
@@ -62,11 +63,27 @@ class AppointmentController extends BaseClinicController
         
         $appointments = ClinicAppointment::with(['patient', 'doctor', 'additionalData'])
                         ->where('clinic_id', $clinic->id)
-                        ->whereBetween('appointment_date', [$startOfWeek, $endOfWeek])
+                        ->whereDate('appointment_date', '>=', $startOfWeek->format('Y-m-d'))
+                        ->whereDate('appointment_date', '<=', $endOfWeek->format('Y-m-d'))
                         ->get();
 
         $patients = Patient::where('clinic_id', $clinic->id)->get(); 
-        $therapists = User::where('type', 'therapist')->get();
+        
+        // CRITICAL: Only show therapists/doctors assigned to THIS clinic via clinic_staff table
+        // This ensures proper data isolation - no external doctors from other clinics
+        $therapistIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->where('is_active', true)
+            ->pluck('user_id')
+            ->toArray();
+        
+        if (empty($therapistIds)) {
+            $therapists = collect();
+        } else {
+            $therapists = User::whereIn('id', $therapistIds)
+                ->whereIn('type', ['therapist', 'doctor'])
+                ->get();
+        }
 
         return view('web.clinic.appointments.index', compact('appointments', 'startOfWeek', 'patients', 'therapists', 'clinic'));
     }
@@ -135,12 +152,39 @@ class AppointmentController extends BaseClinicController
             return redirect()->back()->with('error', 'Clinic not found.');
         }
 
+        // Verify patient belongs to this clinic
+        $patient = Patient::where('clinic_id', $clinic->id)
+            ->findOrFail($request->patient_id);
+        
+        // CRITICAL: Verify doctor belongs to this clinic if provided
+        if ($request->filled('doctor_id')) {
+            $therapistStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+                ->where('user_id', $request->doctor_id)
+                ->whereIn('role', ['therapist', 'doctor'])
+                ->where('is_active', true)
+                ->first();
+            
+            if (!$therapistStaff) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'Selected doctor is not assigned to your clinic.');
+            }
+        }
+
+        // Map Quick Book form fields to store() method expectations
+        // Form has 'type' but validation expects 'visit_type'
+        $request->merge([
+            'visit_type' => $request->input('type', 'followup'), // Map 'type' to 'visit_type'
+            'location' => $request->input('location', 'clinic'), // Default to clinic
+            'specialty' => $request->input('specialty', $clinic->primary_specialty ?? 'general'), // Use clinic's specialty
+        ]);
+
         $validator = \Validator::make($request->all(), [
             'patient_id' => 'required|exists:patients,id',
             'doctor_id' => 'nullable|exists:users,id',
             'appointment_date' => 'required|date',
             'appointment_time' => 'required',
-            'visit_type' => 'required|in:evaluation,followup,re_evaluation',
+            'visit_type' => 'required|in:evaluation,followup,re_evaluation,session', // Added 'session' for Quick Book
             'location' => 'required|in:clinic,home',
             'payment_method' => 'nullable|in:cash,card,insurance',
             'specialty' => 'required|string',
@@ -187,6 +231,12 @@ class AppointmentController extends BaseClinicController
                 ->withInput();
         }
         
+        // Map 'session' type to 'followup' for database
+        $visitType = $request->visit_type;
+        if ($visitType === 'session') {
+            $visitType = 'followup';
+        }
+        
         // Create appointment
         $appointment = ClinicAppointment::create([
             'clinic_id' => $clinic->id,
@@ -195,11 +245,11 @@ class AppointmentController extends BaseClinicController
             'appointment_date' => $start,
             'duration_minutes' => $request->duration_minutes ?? 60,
             'status' => 'scheduled',
-            'visit_type' => $request->visit_type,
+            'visit_type' => $visitType,
             'location' => $request->location,
             'payment_method' => $request->payment_method,
             'specialty' => $request->specialty,
-            'session_type' => $request->session_type
+            'session_type' => $request->session_type ?? $request->input('type')
         ]);
 
         // Save specialty-specific additional data

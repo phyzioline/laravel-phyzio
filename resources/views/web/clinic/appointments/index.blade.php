@@ -58,11 +58,15 @@
     <div class="col-lg-9">
         <div class="card border-0 shadow-sm" style="border-radius: 15px; min-height: 600px;">
             <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-                <button class="btn btn-sm btn-light"><i class="las la-chevron-left"></i></button>
+                <a href="{{ route('clinic.appointments.index', ['week' => request('week', 0) - 1]) }}" class="btn btn-sm btn-light">
+                    <i class="las la-chevron-left"></i>
+                </a>
                 <h5 class="font-weight-bold mb-0">
                     {{ $startOfWeek->format('M d') }} - {{ $startOfWeek->copy()->addDays(6)->format('M d, Y') }}
                 </h5>
-                <button class="btn btn-sm btn-light"><i class="las la-chevron-right"></i></button>
+                <a href="{{ route('clinic.appointments.index', ['week' => request('week', 0) + 1]) }}" class="btn btn-sm btn-light">
+                    <i class="las la-chevron-right"></i>
+                </a>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -84,16 +88,18 @@
                                     <td class="align-middle text-muted small py-3">{{ $hour }}:00</td>
                                     @for($day = 0; $day < 7; $day++)
                                         @php
-                                            $currentSlot = $startOfWeek->copy()->addDays($day)->setHour($hour)->startOfHour();
-                                            // Find appointment in this slot
+                                            $currentSlot = $startOfWeek->copy()->addDays($day)->setHour($hour)->setMinute(0)->setSecond(0);
+                                            // Find appointment in this slot (check if appointment time matches this hour)
                                             $appt = $appointments->filter(function($a) use ($currentSlot) {
-                                                return \Carbon\Carbon::parse($a->appointment_date)->format('Y-m-d H') == $currentSlot->format('Y-m-d H');
+                                                $apptDate = \Carbon\Carbon::parse($a->appointment_date);
+                                                return $apptDate->format('Y-m-d H') == $currentSlot->format('Y-m-d H');
                                             })->first();
                                         @endphp
                                         <td class="p-1">
                                             @if($appt)
                                                 <div class="rounded p-1 small text-left text-white shadow-sm" 
-                                                     style="background-color: {{ $appt->type == 'evaluation' ? '#fb8c00' : '#00897b' }}; font-size: 0.75rem; cursor: pointer;">
+                                                     style="background-color: {{ ($appt->visit_type ?? $appt->type ?? 'followup') == 'evaluation' ? '#fb8c00' : '#00897b' }}; font-size: 0.75rem; cursor: pointer;"
+                                                     title="{{ $appt->patient->first_name }} {{ $appt->patient->last_name }} - {{ \Carbon\Carbon::parse($appt->appointment_date)->format('H:i') }}">
                                                     <div class="font-weight-bold text-truncate">{{ $appt->patient->first_name }}</div>
                                                     <div class="text-truncate">{{ \Carbon\Carbon::parse($appt->appointment_date)->format('H:i') }}</div>
                                                 </div>

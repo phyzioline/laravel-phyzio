@@ -32,12 +32,12 @@ class EpisodeOfCare extends Model
 
     public function patient()
     {
-        return $this->belongsTo(User::class, 'patient_id');
+        return $this->belongsTo(Patient::class, 'patient_id');
     }
 
     public function clinic()
     {
-        return $this->belongsTo(User::class, 'clinic_id');
+        return $this->belongsTo(Clinic::class, 'clinic_id');
     }
     
     public function primaryTherapist()
