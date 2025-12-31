@@ -185,25 +185,41 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Revenue Chart - Use real data
+    // Revenue Chart - Use real data (Line chart)
     var ctxR = document.getElementById('revenueChart');
     if (ctxR) {
+        var revenueData = @json($monthlyRevenue ?? []);
         new Chart(ctxR.getContext('2d'), {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: @json($monthlyLabels ?? []),
                 datasets: [{
                     label: '{{ __('Revenue (EGP)') }}',
-                    data: @json($monthlyRevenue ?? []),
-                    backgroundColor: '#00897b'
+                    data: revenueData,
+                    borderColor: '#00897b',
+                    backgroundColor: 'rgba(0, 137, 123, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'EGP ' + value.toLocaleString();
+                            }
+                        }
                     }
                 }
             }

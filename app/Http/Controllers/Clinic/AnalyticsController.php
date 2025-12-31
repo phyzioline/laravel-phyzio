@@ -39,12 +39,33 @@ class AnalyticsController extends BaseClinicController
             $monthEnd = $month->copy()->endOfMonth();
             $monthlyLabels[] = $monthStart->format('M');
             
-            // Get revenue from WeeklyPrograms (primary source - has clinic_id and paid_amount)
-            $revenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+            // Get revenue from multiple sources
+            $revenue = 0;
+            
+            // Revenue from WeeklyPrograms (paid_amount)
+            $programRevenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
                 ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->sum('paid_amount') ?? 0;
+            $revenue += $programRevenue;
             
-            $monthlyRevenue[] = $revenue ?? 0;
+            // Revenue from PatientPayments (actual payments received)
+            $paymentRevenue = \App\Models\PatientPayment::where('clinic_id', $clinic->id)
+                ->whereBetween('payment_date', [$monthStart->format('Y-m-d'), $monthEnd->format('Y-m-d')])
+                ->sum('payment_amount') ?? 0;
+            $revenue += $paymentRevenue;
+            
+            // Revenue from paid PatientInvoices (if no payments exist, use invoice final_amount for paid invoices)
+            $invoiceRevenue = \App\Models\PatientInvoice::where('clinic_id', $clinic->id)
+                ->where('status', 'paid')
+                ->whereBetween('invoice_date', [$monthStart->format('Y-m-d'), $monthEnd->format('Y-m-d')])
+                ->sum('final_amount') ?? 0;
+            
+            // Only add invoice revenue if payment revenue is 0 (to avoid double counting)
+            if ($paymentRevenue == 0) {
+                $revenue += $invoiceRevenue;
+            }
+            
+            $monthlyRevenue[] = round($revenue, 2);
         }
 
         // Patient growth (last 6 months) - aligning with monthlyLabels
@@ -109,9 +130,28 @@ class AnalyticsController extends BaseClinicController
             ->where('status', 'active')
             ->sum('paid_amount');
         
-        // Total revenue from WeeklyPrograms (primary source)
-        $totalRevenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
+        // Total revenue from all sources (consistent with monthly revenue calculation)
+        $totalRevenue = 0;
+        
+        // Revenue from WeeklyPrograms
+        $totalProgramRevenue = \App\Models\WeeklyProgram::where('clinic_id', $clinic->id)
             ->sum('paid_amount') ?? 0;
+        $totalRevenue += $totalProgramRevenue;
+        
+        // Revenue from PatientPayments
+        $totalPaymentRevenue = \App\Models\PatientPayment::where('clinic_id', $clinic->id)
+            ->sum('payment_amount') ?? 0;
+        $totalRevenue += $totalPaymentRevenue;
+        
+        // Revenue from paid PatientInvoices (only if no payments exist to avoid double counting)
+        if ($totalPaymentRevenue == 0) {
+            $totalInvoiceRevenue = \App\Models\PatientInvoice::where('clinic_id', $clinic->id)
+                ->where('status', 'paid')
+                ->sum('final_amount') ?? 0;
+            $totalRevenue += $totalInvoiceRevenue;
+        }
+        
+        $totalRevenue = round($totalRevenue, 2);
         
         // Average appointment value
         $avgAppointmentValue = $completedAppointments > 0 
