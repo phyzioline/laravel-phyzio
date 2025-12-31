@@ -180,7 +180,7 @@ class CartController extends Controller
             'options' => $options,
         ]);
 
-        return to_route('carts.index');
+        return to_route('carts.index.' . app()->getLocale());
 
     }
 
@@ -200,7 +200,7 @@ class CartController extends Controller
 
         $cart->update($product, $request->quantity);
 
-        return to_route('carts.index');
+        return to_route('carts.index.' . app()->getLocale());
     }
 
 
@@ -268,7 +268,7 @@ class CartController extends Controller
     public function destroy(CartRepository $cart, $id)
     {
         $cart->delete($id);
-        return to_route('carts.index')->with('success', 'Item removed from cart successfully');
+        return to_route('carts.index.' . app()->getLocale())->with('success', 'Item removed from cart successfully');
     }
 
     // public function total(CartRepository $cart)
@@ -299,7 +299,7 @@ public function getTotal()
     public function flush(CartRepository $cart)
     {
         $cart->flush();
-        return to_route('carts.index')->with('success', 'Item removed from cart successfully');
+        return to_route('carts.index.' . app()->getLocale())->with('success', 'Item removed from cart successfully');
 
     }
 
