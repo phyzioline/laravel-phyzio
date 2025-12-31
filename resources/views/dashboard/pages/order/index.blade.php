@@ -44,13 +44,27 @@
     /* Adjust max-height to account for header, stats, and filters - Increased to show more data */
     @media screen and (min-width: 992px) {
         .table-responsive {
-            max-height: calc(100vh - 200px) !important;
-            min-height: 600px !important;
-            height: calc(100vh - 200px) !important;
+            max-height: calc(100vh - 100px) !important;
+            min-height: 700px !important;
+            height: calc(100vh - 100px) !important;
             flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
         }
+    }
+    
+    /* Filter container - fit content only */
+    .card.mb-4 {
+        min-height: auto !important;
+        height: auto !important;
+    }
+    
+    .card.mb-4 .card-header {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    .card.mb-4 .card-body {
+        padding: 0.75rem 1rem !important;
     }
     
     /* Ensure card and container use full available space */
@@ -154,17 +168,17 @@
                                 </div>
                             </div>
                             <!-- Advanced Filters -->
-                            <div class="card mb-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                            <div class="card mb-4" style="min-height: auto !important; height: auto !important;">
+                                <div class="card-header" style="padding: 0.5rem 1rem;">
+                                    <h5 class="mb-0" style="font-size: 1rem;">
+                                        <button class="btn btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse" style="padding: 0;">
                                             <i class="fas fa-filter"></i> {{ __('Advanced Filters') }}
                                         </button>
                                     </h5>
                                 </div>
                                 <div id="filtersCollapse" class="collapse {{ request()->hasAny(['status', 'payment_method', 'payment_status', 'date_from', 'date_to', 'vendor_id', 'search', 'has_returns']) ? 'show' : '' }}">
-                                    <div class="card-body">
-                                        <form method="GET" action="{{ route('dashboard.orders.index') }}" class="row g-3">
+                                    <div class="card-body" style="padding: 0.75rem 1rem;">
+                                        <form method="GET" action="{{ route('dashboard.orders.index') }}" class="row g-2">
                                             <div class="col-md-3">
                                                 <label class="form-label">{{ __('Search') }}</label>
                                                 <input type="text" name="search" class="form-control" 
@@ -287,7 +301,7 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 200px); min-height: 600px; height: calc(100vh - 200px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 100px); min-height: 700px; height: calc(100vh - 100px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column;">
                                 <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                     <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                         <tr>
