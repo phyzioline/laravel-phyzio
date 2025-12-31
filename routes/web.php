@@ -90,6 +90,15 @@ foreach ($supportedLocales as $locale) {
         Route::get('/jobs', [App\Http\Controllers\Web\JobController::class, 'index'])->name("web.jobs.index.{$locale}");
         Route::get('/jobs/{id}', [App\Http\Controllers\Web\JobController::class, 'show'])->name("web.jobs.show.{$locale}");
         Route::post('/jobs/{id}/apply', [App\Http\Controllers\Web\JobController::class, 'apply'])->name("web.jobs.apply.{$locale}");
+        
+        // Home Visits Routes
+        Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name("web.home_visits.index.{$locale}");
+        Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name("web.home_visits.show.{$locale}");
+        Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name("web.home_visits.book.{$locale}");
+        Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name("web.home_visits.store.{$locale}");
+        Route::get('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'payment'])->name("web.home_visits.payment.{$locale}");
+        Route::post('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'processPayment'])->name("web.home_visits.process_payment.{$locale}");
+        Route::get('/home_visits/success/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'success'])->name("web.home_visits.success.{$locale}");
 
         // Return/Refund Routes (Customer-facing)
         Route::middleware('auth')->prefix('returns')->name("returns.{$locale}.")->group(function() {
@@ -286,13 +295,20 @@ Route::get('/shop', function() {
     $locale = app()->getLocale();
     return redirect("/{$locale}/shop");
 })->name('show');
-Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name('web.home_visits.index');
-Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name('web.home_visits.show');
-Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name('web.home_visits.book');
-Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name('web.home_visits.store');
-Route::get('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'payment'])->name('web.home_visits.payment');
-Route::post('/home_visits/payment/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'processPayment'])->name('web.home_visits.process_payment');
-Route::get('/home_visits/success/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'success'])->name('web.home_visits.success');
+
+// Redirect old home_visits routes to locale-specific versions
+Route::get('/home_visits', function() {
+    $locale = app()->getLocale();
+    return redirect("/{$locale}/home_visits");
+});
+Route::get('/home_visits/therapist/{id}', function($id) {
+    $locale = app()->getLocale();
+    return redirect("/{$locale}/home_visits/therapist/{$id}");
+});
+Route::get('/home_visits/book/{id}', function($id) {
+    $locale = app()->getLocale();
+    return redirect("/{$locale}/home_visits/book/{$id}");
+});
 Route::get('/erp', [App\Http\Controllers\Web\ErpController::class, 'index'])->name('web.erp.index');
 Route::get('/courses', [App\Http\Controllers\Web\CourseController::class, 'index'])->name('web.courses.index');
 Route::get('/courses/{id}', [App\Http\Controllers\Web\CourseController::class, 'show'])->name('web.courses.show');

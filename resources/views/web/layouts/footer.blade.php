@@ -29,7 +29,7 @@
         <div class="footer-widget">
           <h4 class="widget-title mb-4" style="font-weight: 700; font-size: 18px; color: white;">{{ __('Services') }}</h4>
           <ul class="list-unstyled">
-             <li class="mb-2"><a href="{{ route('web.home_visits.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Home Visits') }}</a></li>
+             <li class="mb-2"><a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Home Visits') }}</a></li>
              <li class="mb-2"><a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Find Jobs') }}</a></li>
              <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Courses') }}</a></li>
              <li class="mb-2"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Products') }}</a></li>

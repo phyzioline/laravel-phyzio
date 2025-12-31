@@ -37,7 +37,7 @@
                                 </div>
                             </div>
 
-                            <form action="{{ route('web.home_visits.process_payment', $visit->id) }}" method="POST">
+                            <form action="{{ route('web.home_visits.process_payment.' . app()->getLocale(), $visit->id) }}" method="POST">
                                 @csrf
                                 <h5 class="font-weight-bold mb-3">{{ __('Select Payment Method') }}</h5>
                                 

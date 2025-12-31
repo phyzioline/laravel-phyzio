@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeVisitController extends Controller
 {
@@ -21,7 +22,30 @@ class HomeVisitController extends Controller
             $query->where('specialization', 'LIKE', '%' . $request->specialization . '%');
         }
 
-        // Filter by area
+        // Filter by area (city)
+        if ($request->has('city') && $request->city != '') {
+            $query->whereJsonContains('available_areas', $request->city);
+        }
+        
+        // Filter by state (governorate)
+        if ($request->has('state') && $request->state != '') {
+            // Get cities in this governorate
+            $citiesInState = DB::table('cities')
+                ->where('governorate_id', $request->state)
+                ->pluck(app()->getLocale() === 'ar' ? 'name_ar' : 'name_en')
+                ->toArray();
+            
+            // Filter therapists whose available_areas contain any city from this governorate
+            if (!empty($citiesInState)) {
+                $query->where(function($q) use ($citiesInState) {
+                    foreach ($citiesInState as $city) {
+                        $q->orWhereJsonContains('available_areas', $city);
+                    }
+                });
+            }
+        }
+        
+        // Legacy: Filter by area (for backward compatibility)
         if ($request->has('area') && $request->area != '') {
             $query->whereJsonContains('available_areas', $request->area);
         }
@@ -43,7 +67,7 @@ class HomeVisitController extends Controller
         
         $therapists = $query->paginate(12);
         
-        // Get unique specializations and areas for filters (only verified therapists)
+        // Get unique specializations for filters (only verified therapists)
         $specializations = \App\Models\TherapistProfile::where('status', 'approved')
             ->whereHas('user', function($q) {
                 $q->where('verification_status', 'approved')
@@ -51,11 +75,38 @@ class HomeVisitController extends Controller
             })
             ->distinct()
             ->pluck('specialization');
-            
-        // For areas, we might need to collect them from JSON, but for now let's hardcode common ones or extract
+        
+        // Get governorates (states) for filter
+        $governorates = DB::table('governorates')
+            ->orderBy(app()->getLocale() === 'ar' ? 'name_ar' : 'name_en')
+            ->get()
+            ->map(function($gov) {
+                return [
+                    'id' => $gov->id,
+                    'name' => app()->getLocale() === 'ar' ? $gov->name_ar : $gov->name_en
+                ];
+            });
+        
+        // Get cities for filter (if state is selected, show only cities in that state)
+        $citiesQuery = DB::table('cities');
+        if ($request->has('state') && $request->state != '') {
+            $citiesQuery->where('governorate_id', $request->state);
+        }
+        $cities = $citiesQuery
+            ->orderBy(app()->getLocale() === 'ar' ? 'name_ar' : 'name_en')
+            ->get()
+            ->map(function($city) {
+                return [
+                    'id' => $city->id,
+                    'name' => app()->getLocale() === 'ar' ? $city->name_ar : $city->name_en,
+                    'governorate_id' => $city->governorate_id
+                ];
+            });
+        
+        // Legacy: For backward compatibility, keep areas list
         $areas = ['Nasr City', 'New Cairo', 'Maadi', 'Giza', 'Dokki', 'Mohandessin', 'Zamalek', 'Heliopolis', 'Sheikh Zayed', '6th of October'];
 
-        return view('web.pages.home_visits.index', compact('therapists', 'specializations', 'areas'));
+        return view('web.pages.home_visits.index', compact('therapists', 'specializations', 'areas', 'governorates', 'cities'));
     }
 
     public function show($id)

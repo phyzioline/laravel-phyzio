@@ -172,7 +172,7 @@
 
                 <li class="menu-item-box {{ request()->is(app()->getLocale()) || request()->is(app()->getLocale() . '/*') ? 'active' : '' }}"><a href="{{ '/' . app()->getLocale() }}">{{ __('Home') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.shop.show.*') ? 'active' : '' }}"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}">{{ __('Shop') }}</a></li>
-                <li class="menu-item-box {{ Route::is('web.home_visits.*') ? 'active' : '' }}"><a href="{{ route('web.home_visits.index') }}">{{ __('Home Visits') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.home_visits.*') ? 'active' : '' }}"><a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}">{{ __('Home Visits') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.jobs.index.*') ? 'active' : '' }}"><a href="{{ route('web.jobs.index.' . app()->getLocale()) }}">{{ __('Jobs') }}</a></li>

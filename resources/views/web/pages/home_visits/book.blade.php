@@ -84,7 +84,7 @@
                             </div>
                         </div>
                         <div class="card-body p-4">
-                            <form action="{{ route('web.home_visits.store') }}" method="POST" id="bookingForm">
+                            <form action="{{ route('web.home_visits.store.' . app()->getLocale()) }}" method="POST" id="bookingForm">
                                 @csrf
                                 <input type="hidden" name="therapist_id" value="{{ $therapist->id }}">
                                 

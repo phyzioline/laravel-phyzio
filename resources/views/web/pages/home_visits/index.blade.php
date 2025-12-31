@@ -171,7 +171,7 @@
 
                                 <!-- Tab 2: Search (Existing) -->
                                 <div class="tab-pane fade" id="pills-search" role="tabpanel">
-                                    <form action="{{ url('/home_visits') }}" method="GET">
+                                    <form action="{{ route('web.home_visits.index.' . app()->getLocale()) }}" method="GET">
                                         <div class="form-group mb-4">
                                             <label class="font-weight-bold text-muted">{{ __('Specialization') }}</label>
                                             <select name="specialization" class="form-control form-control-lg border-0 shadow-sm">
@@ -182,11 +182,25 @@
                                             </select>
                                         </div>
                                         <div class="form-group mb-4">
-                                            <label class="font-weight-bold text-muted">{{ __('Area / Governance') }}</label>
-                                            <select name="area" class="form-control form-control-lg border-0 shadow-sm">
-                                                <option value="">{{ __('All Areas') }}</option>
-                                                @foreach($areas as $area)
-                                                    <option value="{{ $area }}" {{ request('area') == $area ? 'selected' : '' }}>{{ $area }}</option>
+                                            <label class="font-weight-bold text-muted">{{ __('State / Governorate') }}</label>
+                                            <select name="state" id="state_filter" class="form-control form-control-lg border-0 shadow-sm">
+                                                <option value="">{{ __('All States') }}</option>
+                                                @foreach($governorates as $governorate)
+                                                    <option value="{{ $governorate['id'] }}" {{ request('state') == $governorate['id'] ? 'selected' : '' }}>{{ $governorate['name'] }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group mb-4">
+                                            <label class="font-weight-bold text-muted">{{ __('City') }}</label>
+                                            <select name="city" id="city_filter" class="form-control form-control-lg border-0 shadow-sm">
+                                                <option value="">{{ __('All Cities') }}</option>
+                                                @foreach($cities as $city)
+                                                    <option value="{{ $city['name'] }}" 
+                                                            data-governorate="{{ $city['governorate_id'] }}"
+                                                            {{ request('city') == $city['name'] ? 'selected' : '' }}>
+                                                        {{ $city['name'] }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -213,6 +227,32 @@
                     <div class="bg-white p-4 rounded shadow-sm">
                         <h5 class="font-weight-bold mb-4">{{ __('Filters') }}</h5>
                                 <form action="{{ url('/home_visits') }}" method="GET">
+                            <div class="form-group">
+                                <label class="font-weight-bold">{{ __('State / Governorate') }}</label>
+                                <select name="state" id="sidebar_state_filter" class="form-control">
+                                    <option value="">{{ __('All States') }}</option>
+                                    @foreach($governorates as $governorate)
+                                        <option value="{{ $governorate['id'] }}" {{ request('state') == $governorate['id'] ? 'selected' : '' }}>{{ $governorate['name'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="font-weight-bold">{{ __('City') }}</label>
+                                <select name="city" id="sidebar_city_filter" class="form-control">
+                                    <option value="">{{ __('All Cities') }}</option>
+                                    @foreach($cities as $city)
+                                        <option value="{{ $city['name'] }}" 
+                                                data-governorate="{{ $city['governorate_id'] }}"
+                                                {{ request('city') == $city['name'] ? 'selected' : '' }}>
+                                            {{ $city['name'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <hr>
+                            
                             <div class="form-group">
                                 <label class="font-weight-bold">{{ __('Gender') }}</label>
                                 <select name="gender" class="form-control">
@@ -245,7 +285,7 @@
                             </div>
                             
                             <button type="submit" class="btn btn-block btn-primary mt-4" style="background-color: #02767F; border-color: #02767F;">{{ __('Apply Filters') }}</button>
-                            <a href="{{ url('/home_visits') }}" class="btn btn-block btn-outline-secondary mt-2">{{ __('Clear Filters') }}</a>
+                            <a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" class="btn btn-block btn-outline-secondary mt-2">{{ __('Clear Filters') }}</a>
                         </form>
                     </div>
                 </div>
@@ -258,7 +298,7 @@
                             <div class="row align-items-center">
                                 <!-- Profile Photo - Square with Rounded Corners -->
                                 <div class="col-md-3 text-center mb-3 mb-md-0">
-                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="d-inline-block">
+                                    <a href="{{ route('web.home_visits.show.' . app()->getLocale(), $therapist->id) }}" class="d-inline-block">
                                         @php
                                             // Use profile_photo_url accessor if available, otherwise check therapist profile_photo, then default
                                             $imageUrl = ($therapist->user && $therapist->user->profile_photo_url) 
@@ -288,7 +328,7 @@
                                     <div class="d-flex align-items-start justify-content-between mb-2">
                                         <div>
                                             <h4 class="font-weight-bold mb-1" style="color: #02767F;">
-                                                <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" class="text-decoration-none" style="color: #02767F;">
+                                                <a href="{{ route('web.home_visits.show.' . app()->getLocale(), $therapist->id) }}" class="text-decoration-none" style="color: #02767F;">
                                                     {{ $therapist->user->name }}
                                                 </a>
                                             </h4>
@@ -351,12 +391,12 @@
                                         <span class="h3 font-weight-bold text-white mb-0">{{ number_format($therapist->home_visit_rate ?? 0, 2) }} {{ __('EGP') }}</span>
                                     </div>
                                     
-                                    <a href="{{ url('/home_visits/book/'.$therapist->id) }}" 
+                                    <a href="{{ route('web.home_visits.book.' . app()->getLocale(), $therapist->id) }}" 
                                        class="btn btn-block text-white font-weight-bold mb-2 shadow-lg therapist-book-btn" 
                                        style="background-color: #02767F; border: none; border-radius: 8px; padding: 12px; font-size: 1rem; transition: all 0.3s ease;">
                                         <i class="las la-calendar-check mr-1"></i> {{ __('Book Now') }}
                                     </a>
-                                    <a href="{{ url('/home_visits/therapist/'.$therapist->id) }}" 
+                                    <a href="{{ route('web.home_visits.show.' . app()->getLocale(), $therapist->id) }}" 
                                        class="btn btn-block btn-outline-primary font-weight-bold" 
                                        style="color: #02767F; border-color: #02767F; border-radius: 8px; padding: 10px; transition: all 0.3s ease;">
                                         <i class="las la-user-circle mr-1"></i> {{ __('View Profile') }}
@@ -772,6 +812,52 @@ header,
             document.getElementById('scheduleInput').style.display = this.value === 'normal' ? 'block' : 'none';
         });
     });
+    
+    // City/State Filter Logic
+    function filterCitiesByState(stateSelectId, citySelectId) {
+        const stateSelect = document.getElementById(stateSelectId);
+        const citySelect = document.getElementById(citySelectId);
+        
+        if (!stateSelect || !citySelect) return;
+        
+        stateSelect.addEventListener('change', function() {
+            const selectedStateId = this.value;
+            const selectedCity = citySelect.value;
+            
+            // Show/hide city options based on selected state
+            Array.from(citySelect.options).forEach(option => {
+                if (option.value === '') {
+                    // Always show "All Cities" option
+                    option.style.display = '';
+                } else {
+                    const cityGovernorateId = option.getAttribute('data-governorate');
+                    if (selectedStateId === '' || cityGovernorateId === selectedStateId) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Reset city selection if current selection is not in the selected state
+            if (selectedStateId !== '') {
+                const selectedOption = citySelect.options[citySelect.selectedIndex];
+                const selectedCityGovernorateId = selectedOption ? selectedOption.getAttribute('data-governorate') : null;
+                if (selectedCityGovernorateId && selectedCityGovernorateId !== selectedStateId) {
+                    citySelect.value = '';
+                }
+            }
+        });
+        
+        // Trigger on page load if state is already selected
+        if (stateSelect.value !== '') {
+            stateSelect.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Initialize filters for both search form and sidebar
+    filterCitiesByState('state_filter', 'city_filter');
+    filterCitiesByState('sidebar_state_filter', 'sidebar_city_filter');
 </script>
 @endsection
 @endsection

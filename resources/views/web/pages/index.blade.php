@@ -202,7 +202,7 @@
                                 <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Personalized Treatment Plans') }}</li>
                                 <li class="mb-2"><i class="las la-check-circle text-success mr-2"></i> {{ __('Convenient Scheduling') }}</li>
                             </ul>
-                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
+                            <a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" class="btn btn-primary rounded-pill px-4 shadow py-2" style="background: #02767F; border-color: #02767F;">
                                 {{ __('Book a Visit') }}
                             </a>
                         </div>
@@ -1272,7 +1272,7 @@
                                 <li class="mb-2"><i class="las la-check-circle mr-2" style="color: #02767F;"></i> {{ __('Personalized Treatment Plans') }}</li>
                                 <li class="mb-2"><i class="las la-check-circle mr-2" style="color: #02767F;"></i> {{ __('Convenient Scheduling') }}</li>
                             </ul>
-                            <a href="{{ route('web.home_visits.index') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" style="background-color: #02767F; border-color: #02767F;">
+                            <a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm" style="background-color: #02767F; border-color: #02767F;">
                                 {{ __('Book a Visit') }}
                             </a>
                         </div>

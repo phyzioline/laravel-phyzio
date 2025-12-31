@@ -897,7 +897,7 @@
                             <div class="price-display">{{ number_format($therapist->home_visit_rate ?? 0, 0) }}</div>
                             <p class="text-muted mb-4" style="font-size: 1.1rem;">{{ __('EGP per visit') }}</p>
                             
-                            <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-book-primary mb-3">
+                            <a href="{{ route('web.home_visits.book.' . app()->getLocale(), $therapist->id) }}" class="btn btn-book-primary mb-3">
                                 <span><i class="las la-calendar-check mr-2"></i> {{ __('Book Appointment') }}</span>
                             </a>
                             
@@ -1155,7 +1155,7 @@
                                         <i class="las la-fire mr-1"></i> {{ __('Limited Time') }}
                                     </span>
                                 </div>
-                                <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-cta-primary">
+                                <a href="{{ route('web.home_visits.book.' . app()->getLocale(), $therapist->id) }}" class="btn btn-cta-primary">
                                     <span><i class="las la-calendar-check mr-2"></i> {{ __('Book Now & Be First to Review') }}</span>
                                 </a>
                                 <p class="text-muted mt-3 mb-0 small">
