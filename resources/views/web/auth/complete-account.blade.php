@@ -94,7 +94,7 @@
                                             </div>
 
                                             <div class="d-flex justify-content-between">
-                                                <a href="{{ route('verification.verification-center') }}" class="btn btn-primary">
+                                                <a href="{{ route('verification.verification-center.' . app()->getLocale()) }}" class="btn btn-primary">
                                                     <i class="fas fa-upload mr-2"></i>{{ __('Upload Documents') }}
                                                 </a>
                                                 <a href="{{ route('dashboard.home') }}" class="btn btn-outline-secondary">

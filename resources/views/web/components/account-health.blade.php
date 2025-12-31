@@ -59,7 +59,7 @@
 
         @if(!$isVerified)
             <div class="mt-3">
-                <a href="{{ route('verification.verification-center') }}" class="btn btn-primary btn-block">
+                <a href="{{ route('verification.verification-center.' . app()->getLocale()) }}" class="btn btn-primary btn-block">
                     <i class="fas fa-upload mr-2"></i>{{ __('Complete Verification') }}
                 </a>
             </div>

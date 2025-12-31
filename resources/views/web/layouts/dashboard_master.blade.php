@@ -650,7 +650,7 @@
                             <i class="las {{ $barIcon }} mr-2" style="font-size: 20px;"></i>
                             <span class="font-weight-bold">{{ $barText }}</span>
                         </div>
-                            <a href="{{ route('verification.verification-center') }}" class="btn btn-sm btn-light ml-3" style="white-space: nowrap;">
+                            <a href="{{ route('verification.verification-center.' . app()->getLocale()) }}" class="btn btn-sm btn-light ml-3" style="white-space: nowrap;">
                                 <i class="las la-upload mr-1"></i> {{ $status === 'under_review' ? __('View Status') : __('Upload Documents') }}
                             </a>
                     </div>

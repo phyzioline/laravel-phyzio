@@ -117,7 +117,7 @@
                         <i class="las la-exclamation-triangle"></i> 
                         <strong>{{ __('Document Upload for Approval') }}</strong><br>
                         {{ __('You can upload documents here for quick access, but for official approval, please visit the') }} 
-                        <a href="{{ route('verification.verification-center') }}" class="alert-link font-weight-bold">{{ __('Verification Center') }}</a> 
+                        <a href="{{ route('verification.verification-center.' . app()->getLocale()) }}" class="alert-link font-weight-bold">{{ __('Verification Center') }}</a> 
                         {{ __('to upload clinic documents (Clinic License, Commercial Register, Tax Card) for admin review and approval.') }}
                     </div>
                     <div class="row">
