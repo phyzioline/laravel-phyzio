@@ -111,54 +111,30 @@
     <main class="main-wrapper">
         <div class="main-content">
             <!-- Order Statistics Cards -->
-            <div class="row mb-4 g-2" style="display: flex; flex-wrap: wrap;">
-                <div class="col-auto">
-                    <div class="card bg-primary text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Total Orders</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['total_orders'] }}</h3>
-                        </div>
-                    </div>
+            <div class="mb-4" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <div class="bg-primary text-white" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Total Orders</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['total_orders'] }}</strong>
                 </div>
-                <div class="col-auto">
-                    <div class="card bg-warning text-dark" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Pending</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['pending_orders'] }}</h3>
-                        </div>
-                    </div>
+                <div class="bg-warning text-dark" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Pending</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['pending_orders'] }}</strong>
                 </div>
-                <div class="col-auto">
-                    <div class="card bg-success text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Completed</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['completed_orders'] }}</h3>
-                        </div>
-                    </div>
+                <div class="bg-success text-white" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Completed</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['completed_orders'] }}</strong>
                 </div>
-                <div class="col-auto">
-                    <div class="card bg-danger text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Cancelled</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['cancelled_orders'] }}</h3>
-                        </div>
-                    </div>
+                <div class="bg-danger text-white" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Cancelled</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['cancelled_orders'] }}</strong>
                 </div>
-                <div class="col-auto">
-                    <div class="card bg-info text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Card Orders</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['card_orders'] }}</h3>
-                        </div>
-                    </div>
+                <div class="bg-info text-white" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Card Orders</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['card_orders'] }}</strong>
                 </div>
-                <div class="col-auto">
-                    <div class="card bg-secondary text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
-                        <div class="card-body" style="padding: 0.35rem 0.75rem;">
-                            <h6 class="mb-1" style="font-size: 0.65rem; margin-bottom: 0.1rem; line-height: 1.2;">Return Orders</h6>
-                            <h3 class="mb-0" style="font-size: 1rem; margin-bottom: 0; line-height: 1.2;">{{ $stats['return_orders'] }}</h3>
-                        </div>
-                    </div>
+                <div class="bg-secondary text-white" style="border-radius: 8px; padding: 0.25rem 0.5rem; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: auto;">
+                    <span style="font-size: 0.6rem; line-height: 1; margin-bottom: 0.15rem; opacity: 0.9;">Return Orders</span>
+                    <strong style="font-size: 0.85rem; line-height: 1; font-weight: 600;">{{ $stats['return_orders'] }}</strong>
                 </div>
             </div>
 
