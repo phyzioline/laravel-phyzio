@@ -216,27 +216,27 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center">
-                                <table id="example2" class="table table-striped table-bordered">
-                                    <thead>
+                            <div class="table-responsive text-center" style="max-height: 70vh; overflow-y: auto;">
+                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index: 10;">
                                         <tr>
-                                            <th>{{ __('ID') }}</th>
-                                            <th>{{ __('Product') }}</th>
+                                            <th style="width: 3%;">{{ __('ID') }}</th>
+                                            <th style="width: 5%;">{{ __('Product') }}</th>
                                             @if(auth()->user()->hasRole('admin'))
-                                                <th>{{ __('Vendor') }}</th>
+                                                <th style="width: 6%;">{{ __('Vendor') }}</th>
                                             @endif
-                                            <th>{{ __('Order #') }}</th>
-                                            <th>{{ __('Name Buyer') }}</th>
-                                            <th>{{ __('Phone Buyer') }}</th>
-                                            <th>{{ __('Address Buyer') }}</th>
-                                            <th>{{ __('Total Price') }}</th>
-                                            <th>{{ __('Status') }}</th>
-                                            <th>{{ __('Payment Status') }}</th>
-                                            <th>{{ __('Payment Method') }}</th>
-                                            <th>{{ __('Order Date') }}</th>
-                                            <th>{{ __('Updated Date') }}</th>
-                                            <th>{{ __('Returns') }}</th>
-                                            <th>{{ __('Actions') }}</th>
+                                            <th style="width: 8%;">{{ __('Order #') }}</th>
+                                            <th style="width: 8%;">{{ __('Name') }}</th>
+                                            <th style="width: 7%;">{{ __('Phone') }}</th>
+                                            <th style="width: 10%;">{{ __('Address') }}</th>
+                                            <th style="width: 6%;">{{ __('Total') }}</th>
+                                            <th style="width: 6%;">{{ __('Status') }}</th>
+                                            <th style="width: 6%;">{{ __('Pay Status') }}</th>
+                                            <th style="width: 5%;">{{ __('Method') }}</th>
+                                            <th style="width: 7%;">{{ __('Order Date') }}</th>
+                                            <th style="width: 7%;">{{ __('Updated') }}</th>
+                                            <th style="width: 4%;">{{ __('Returns') }}</th>
+                                            <th style="width: 10%;">{{ __('Actions') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -248,21 +248,21 @@
                                                         <img src="{{ asset($order->items->first()->product->productImages->first()->image) }}" 
                                                              alt="{{ $order->items->first()->product->product_name_en ?? 'Product' }}" 
                                                              class="img-thumbnail" 
-                                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                                             style="width: 40px; height: 40px; object-fit: cover;">
                                                     @else
-                                                        <span class="badge bg-secondary">No Image</span>
+                                                        <span class="badge bg-secondary" style="font-size: 0.7rem;">No Img</span>
                                                     @endif
                                                 </td>
                                                 @if(auth()->user()->hasRole('admin'))
-                                                    <td>{{ $order->items->first()?->product?->user?->name ?? 'N/A' }}</td>
+                                                    <td style="font-size: 0.75rem;">{{ Str::limit($order->items->first()?->product?->user?->name ?? 'N/A', 12) }}</td>
                                                 @endif
-                                                <td>
+                                                <td style="font-size: 0.75rem;">
                                                     <strong>{{ $order->order_number ?? 'N/A' }}</strong>
                                                 </td>
-                                                <td>{{ $order->name }}</td>
-                                                <td>{{ $order->phone }}</td>
-                                                <td>{{ Str::limit($order->address, 30) }}</td>
-                                                <td><strong>{{ number_format($order->total, 2) }} EGP</strong></td>
+                                                <td style="font-size: 0.8rem;">{{ Str::limit($order->name, 15) }}</td>
+                                                <td style="font-size: 0.8rem;">{{ $order->phone }}</td>
+                                                <td style="font-size: 0.8rem;">{{ Str::limit($order->address, 25) }}</td>
+                                                <td style="font-size: 0.8rem;"><strong>{{ number_format($order->total, 0) }}</strong><br><small>EGP</small></td>
                                                 <td>
                                                     @php
                                                         $statusColors = [
@@ -295,8 +295,8 @@
                                                         <span class="badge bg-primary">{{ __('Card') }}</span>
                                                     @endif
                                                 </td>
-                                                <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
-                                                <td>{{ $order->updated_at->format('Y-m-d H:i') }}</td>
+                                                <td style="font-size: 0.75rem;">{{ $order->created_at->format('Y-m-d') }}<br><small>{{ $order->created_at->format('H:i') }}</small></td>
+                                                <td style="font-size: 0.75rem;">{{ $order->updated_at->format('Y-m-d') }}<br><small>{{ $order->updated_at->format('H:i') }}</small></td>
                                                 <td>
                                                     @if($order->returns->count() > 0)
                                                         <a href="{{ route('dashboard.returns.index', ['order_id' => $order->id]) }}" 
@@ -308,34 +308,35 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
+                                                    <div class="btn-group-vertical btn-group-sm" role="group" style="flex-wrap: wrap;">
                                                         @can('orders-show')
                                                             <a href="{{ route('dashboard.orders.show', $order) }}"
-                                                               class="btn btn-sm btn-warning" title="{{ __('View') }}">
+                                                               class="btn btn-sm btn-warning mb-1" title="{{ __('View') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                 <i class="fas fa-eye"></i>
                                                             </a>
                                                         @endcan
                                                         @can('orders-update')
                                                             @if($order->status != 'pending' && $order->status != 'completed' && $order->status != 'cancelled')
-                                                                <form action="{{ route('dashboard.orders.accept', $order->id) }}" method="POST" class="d-inline">
+                                                                <form action="{{ route('dashboard.orders.accept', $order->id) }}" method="POST" class="d-inline mb-1">
                                                                     @csrf
                                                                     <button type="submit" class="btn btn-sm btn-success" title="{{ __('Accept Order') }}"
+                                                                            style="font-size: 0.7rem; padding: 0.2rem 0.4rem;"
                                                                             onclick="return confirm('{{ __('Are you sure you want to accept this order? Status will be changed to pending.') }}')">
-                                                                        <i class="fas fa-check"></i> {{ __('Accept Order') }}
+                                                                        <i class="fas fa-check"></i>
                                                                     </button>
                                                                 </form>
                                                             @elseif($order->status == 'pending')
-                                                                <span class="badge bg-success">{{ __('Already Accepted') }}</span>
+                                                                <span class="badge bg-success" style="font-size: 0.65rem;">{{ __('Accepted') }}</span>
                                                             @endif
                                                             <a href="{{ route('dashboard.orders.print-label', $order->id) }}" 
                                                                target="_blank"
-                                                               class="btn btn-sm btn-secondary" title="{{ __('Print Label') }}">
+                                                               class="btn btn-sm btn-secondary mb-1" title="{{ __('Print Label') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                 <i class="fas fa-print"></i>
                                                             </a>
                                                         @endcan
                                                         @can('orders-delete')
-                                                            <button type="button" class="btn btn-sm btn-danger delete-country-btn"
-                                                                    data-id="{{ $order->id }}" title="{{ __('Delete') }}">
+                                                            <button type="button" class="btn btn-sm btn-danger delete-country-btn mb-1"
+                                                                    data-id="{{ $order->id }}" title="{{ __('Delete') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                 <i class="far fa-trash-alt"></i>
                                                             </button>
                                                         @endcan
@@ -353,8 +354,15 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                                <div style="padding:5px;direction: ltr;">
-                                    {!! $data->withQueryString()->links('pagination::bootstrap-5') !!}
+                            </div>
+                            <div class="mt-2" style="padding: 5px; direction: ltr;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="text-muted" style="font-size: 0.85rem;">
+                                        {{ __('Showing') }} {{ $data->firstItem() ?? 0 }} {{ __('to') }} {{ $data->lastItem() ?? 0 }} {{ __('of') }} {{ $data->total() }} {{ __('orders') }}
+                                    </div>
+                                    <div>
+                                        {!! $data->withQueryString()->links('pagination::bootstrap-5', ['class' => 'pagination-sm mb-0']) !!}
+                                    </div>
                                 </div>
                             </div>
                         </div>

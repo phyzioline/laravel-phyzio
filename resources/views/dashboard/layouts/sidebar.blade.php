@@ -78,6 +78,9 @@
                       <li><a href="{{ route('dashboard.orders.index', ['status' => 'completed']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Shipped Orders") }}</a></li>
                       <li><a href="{{ route('dashboard.order_cash') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Cash Orders") }}</a></li>
                       <li><a href="{{ route('dashboard.reports.orders') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Order Reports") }}</a></li>
+                      @if(auth()->user()->type === 'vendor')
+                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
+                      @endif
                   </ul>
               </li>
               @endcan
@@ -121,18 +124,6 @@
               </li>
               @endif
 
-              <!-- 9. Vendor Dashboard (Only for Vendors) -->
-              @if(auth()->user()->type === 'vendor')
-              <li>
-                  <a href="javascript:;" class="has-arrow">
-                      <div class="parent-icon"><i class="bi bi-shop"></i></div>
-                      <div class="menu-title">{{ __("Vendor Hub") }}</div>
-                  </a>
-                  <ul style="font-size: 0.9em;">
-                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
-                  </ul>
-              </li>
-              @endif
 
               <!-- 10. Business Reports & Analytics -->
               @can('reports-index')
