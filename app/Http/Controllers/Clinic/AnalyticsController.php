@@ -69,7 +69,7 @@ class AnalyticsController extends BaseClinicController
         $threeMonthsAgo = now()->subMonths(3);
         $returningPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
             ->where('created_at', '<', $threeMonthsAgo)
-            ->whereHas('appointments', function($q) use ($threeMonthsAgo) {
+            ->whereHas('appointments', function($q) use ($threeMonthsAgo, $clinic) {
                 $q->where('clinic_id', $clinic->id)
                   ->where('created_at', '>=', $threeMonthsAgo);
             })
