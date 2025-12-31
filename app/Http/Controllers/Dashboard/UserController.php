@@ -48,6 +48,16 @@ class UserController extends Controller implements HasMiddleware
         return redirect()->route('dashboard.users.index');
     }
 
+    public function show(User $user)
+    {
+        // Check if user has permission to view users
+        if (!auth()->user()->can('users-index') && auth()->id() !== $user->id) {
+            abort(403, 'THIS ACTION IS UNAUTHORIZED.');
+        }
+
+        return view('dashboard.pages.users.show', compact('user'));
+    }
+
     public function edit(User $user)
     {
         // Allow users to edit their own profile OR require users-update permission

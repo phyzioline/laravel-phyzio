@@ -204,62 +204,6 @@
         </div>
     </section>
 
-    <!-- Benefits Section -->
-    <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="font-weight-bold text-dark mb-3">{{ __('Why Choose Home Physical Therapy?') }}</h2>
-                <p class="text-muted lead">{{ __('Experience the convenience of professional care at home') }}</p>
-            </div>
-            <div class="row">
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
-                        <div class="benefit-icon-wrapper mb-3">
-                            <div class="benefit-icon-circle">
-                                <i class="las la-home la-3x text-primary"></i>
-                            </div>
-                        </div>
-                        <h5 class="font-weight-bold mb-2">{{ __('Comfort of Home') }}</h5>
-                        <p class="text-muted small mb-0">{{ __('Receive treatment in the comfort of your own home') }}</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
-                        <div class="benefit-icon-wrapper mb-3">
-                            <div class="benefit-icon-circle">
-                                <i class="las la-clock la-3x text-primary"></i>
-                            </div>
-                        </div>
-                        <h5 class="font-weight-bold mb-2">{{ __('Flexible Scheduling') }}</h5>
-                        <p class="text-muted small mb-0">{{ __('Book appointments that fit your schedule') }}</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
-                        <div class="benefit-icon-wrapper mb-3">
-                            <div class="benefit-icon-circle">
-                                <i class="las la-user-md la-3x text-primary"></i>
-                            </div>
-                        </div>
-                        <h5 class="font-weight-bold mb-2">{{ __('Expert Care') }}</h5>
-                        <p class="text-muted small mb-0">{{ __('Licensed and experienced therapists') }}</p>
-                    </div>
-                </div>
-                <div class="col-md-3 col-sm-6 mb-4">
-                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
-                        <div class="benefit-icon-wrapper mb-3">
-                            <div class="benefit-icon-circle">
-                                <i class="las la-dollar-sign la-3x text-primary"></i>
-                            </div>
-                        </div>
-                        <h5 class="font-weight-bold mb-2">{{ __('Transparent Pricing') }}</h5>
-                        <p class="text-muted small mb-0">{{ __('No hidden fees, clear pricing upfront') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Therapists List -->
     <section class="py-5 bg-light">
         <div class="container">
@@ -431,6 +375,62 @@
 
                     <div class="d-flex justify-content-center mt-4">
                         {{ $therapists->links() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="py-5" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="font-weight-bold text-dark mb-3">{{ __('Why Choose Home Physical Therapy?') }}</h2>
+                <p class="text-muted lead">{{ __('Experience the convenience of professional care at home') }}</p>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-home la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Comfort of Home') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Receive treatment in the comfort of your own home') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-clock la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Flexible Scheduling') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Book appointments that fit your schedule') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-user-md la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Expert Care') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('Licensed and experienced therapists') }}</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-4">
+                    <div class="benefit-card text-center p-4 bg-white rounded-lg shadow-sm h-100">
+                        <div class="benefit-icon-wrapper mb-3">
+                            <div class="benefit-icon-circle">
+                                <i class="las la-dollar-sign la-3x text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="font-weight-bold mb-2">{{ __('Transparent Pricing') }}</h5>
+                        <p class="text-muted small mb-0">{{ __('No hidden fees, clear pricing upfront') }}</p>
                     </div>
                 </div>
             </div>

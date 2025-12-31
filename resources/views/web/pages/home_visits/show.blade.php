@@ -2,20 +2,20 @@
 
 @push('styles')
 <style>
-    /* Fix header overlap - Add padding for fixed header */
+    /* Fix header overlap - Add proper padding for fixed header */
     body {
-        padding-top: 150px !important;
+        padding-top: 180px !important;
     }
     
     @media (max-width: 991px) {
         body {
-            padding-top: 130px !important;
+            padding-top: 160px !important;
         }
     }
     
     @media (max-width: 768px) {
         body {
-            padding-top: 120px !important;
+            padding-top: 140px !important;
         }
     }
     
@@ -25,36 +25,70 @@
         margin-top: 0 !important;
     }
     
-    /* Profile section styling */
+    /* Enhanced Profile Header Section */
     .profile-header-section {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        padding: 50px 0;
+        background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%);
+        padding: 60px 0 40px;
         margin-top: 0;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .profile-header-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(255,255,255,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(255,255,255,0.08) 0%, transparent 50%);
+        pointer-events: none;
+    }
+    
+    .profile-header-section .container {
+        position: relative;
+        z-index: 1;
     }
     
     @media (max-width: 768px) {
         .profile-header-section {
-            padding: 40px 0;
+            padding: 40px 0 30px;
         }
     }
     
-    /* Square photo box with better styling */
+    /* Enhanced Photo Box */
     .therapist-photo-box {
         width: 280px;
         height: 280px;
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        border: 4px solid #02767F;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        border: 5px solid white;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         background: #f8f9fa;
         display: block;
         margin: 0 auto;
+        position: relative;
+    }
+    
+    .therapist-photo-box::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 2px rgba(255,255,255,0.3);
+        pointer-events: none;
     }
     
     .therapist-photo-box:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 16px 50px rgba(0,0,0,0.3);
     }
     
     .therapist-photo-box img {
@@ -64,25 +98,253 @@
         display: block;
     }
     
-    /* Ensure text is visible on white background */
-    .profile-details {
-        color: #333 !important;
+    /* Profile Details in Header */
+    .profile-details-header {
+        color: white !important;
     }
     
-    .profile-details h2 {
-        color: #212529 !important;
-        font-size: 2rem;
+    .profile-details-header h2 {
+        color: white !important;
+        font-size: 2.5rem;
         margin-bottom: 10px;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
-    .profile-details .text-primary {
-        color: #02767F !important;
+    .profile-details-header .specialization {
+        color: rgba(255,255,255,0.95) !important;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    
+    .profile-details-header .text-muted {
+        color: rgba(255,255,255,0.85) !important;
+    }
+    
+    /* Trust Badges */
+    .trust-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 25px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        border: 1px solid rgba(255,255,255,0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .trust-badge:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+    
+    .trust-badge i {
+        margin-right: 6px;
+        font-size: 1.1rem;
+    }
+    
+    /* Stats Cards */
+    .stat-card {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        border: 1px solid rgba(255,255,255,0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-3px);
+    }
+    
+    .stat-card .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 5px;
+    }
+    
+    .stat-card .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.9);
+    }
+    
+    /* Pricing Card */
+    .pricing-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .pricing-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 50px rgba(0,0,0,0.2);
+    }
+    
+    .pricing-card-header {
+        background: linear-gradient(135deg, #ea3d2f 0%, #ff6b5a 100%);
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+    
+    .pricing-card-body {
+        padding: 30px;
+    }
+    
+    .price-display {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #02767F;
+        margin: 15px 0;
+    }
+    
+    /* CTA Buttons */
+    .btn-book-primary {
+        background: linear-gradient(135deg, #ea3d2f 0%, #ff6b5a 100%);
+        border: none;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 15px 30px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(234, 61, 47, 0.4);
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-book-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(234, 61, 47, 0.5);
+        color: white;
+    }
+    
+    .btn-book-secondary {
+        background: white;
+        border: 2px solid #02767F;
+        color: #02767F;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 12px 25px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .btn-book-secondary:hover {
+        background: #02767F;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    /* Content Sections */
+    .content-section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .content-section:hover {
+        box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    
+    .section-title {
+        color: #02767F;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 3px solid #e0f7fa;
+    }
+    
+    /* Service Cards */
+    .service-item {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border: 2px solid #e0f7fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+    
+    .service-item:hover {
+        border-color: #02767F;
+        transform: translateX(5px);
+        box-shadow: 0 4px 15px rgba(2,118,127,0.15);
+    }
+    
+    /* Working Hours */
+    .working-hours-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .working-hours-header {
+        background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%);
+        color: white;
+        padding: 20px;
+        font-weight: 700;
         font-size: 1.2rem;
+    }
+    
+    .hours-item {
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s ease;
+    }
+    
+    .hours-item:last-child {
+        border-bottom: none;
+    }
+    
+    .hours-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .hours-item .day {
+        font-weight: 600;
+        color: #212529;
+    }
+    
+    .hours-item .time {
         font-weight: 600;
     }
     
-    .profile-details .text-muted {
-        color: #6c757d !important;
+    /* Credentials Section */
+    .credential-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #02767F 0%, #10b8c4 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 5px;
+        box-shadow: 0 2px 8px rgba(2,118,127,0.2);
+    }
+    
+    /* Reviews */
+    .review-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 15px;
+        border-left: 4px solid #02767F;
     }
     
     /* Mobile responsive */
@@ -93,16 +355,20 @@
             margin-bottom: 20px;
         }
         
-        .profile-header-section {
-            padding: 30px 0;
+        .profile-details-header h2 {
+            font-size: 1.8rem;
         }
         
-        .profile-details h2 {
+        .profile-details-header .specialization {
+            font-size: 1.1rem;
+        }
+        
+        .stat-card {
+            padding: 12px 15px;
+        }
+        
+        .stat-card .stat-number {
             font-size: 1.5rem;
-        }
-        
-        .profile-details .text-primary {
-            font-size: 1rem;
         }
     }
 </style>
@@ -110,13 +376,12 @@
 
 @section('content')
 <main>
-    <!-- Profile Header -->
-    <section class="profile-header-section border-bottom">
+    <!-- Enhanced Profile Header -->
+    <section class="profile-header-section">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-3 col-12 text-center mb-4 mb-md-0">
                     @php
-                        // Use profile_photo_url accessor if available, otherwise check therapist profile_photo, then default
                         $imageUrl = ($therapist->user && $therapist->user->profile_photo_url) 
                             ? $therapist->user->profile_photo_url
                             : ($therapist->profile_photo 
@@ -135,49 +400,98 @@
                              alt="{{ $therapist->user->name ?? 'Therapist' }} {{ __('Profile Photo') }}">
                     </a>
                 </div>
-                <div class="col-md-6 col-12 profile-details">
-                    <h2 class="font-weight-bold mb-2">{{ $therapist->user->name }}</h2>
-                    <p class="text-primary font-weight-bold mb-3">{{ $therapist->specialization ?? __('Specialist') }}</p>
+                <div class="col-md-6 col-12 profile-details-header">
+                    <h2>{{ $therapist->user->name }}</h2>
+                    <p class="specialization mb-3">{{ $therapist->specialization ?? __('Physical Therapist') }}</p>
                     
+                    <!-- Rating & Reviews -->
                     <div class="d-flex align-items-center mb-3 flex-wrap">
-                        <div class="mr-3 mb-2">
+                        <div class="mr-4 mb-2">
                             @for($i = 1; $i <= 5; $i++)
-                                <i class="las la-star {{ $i <= ($therapist->rating ?? 0) ? 'text-warning' : 'text-muted' }}"></i>
+                                <i class="las la-star {{ $i <= ($therapist->rating ?? 0) ? 'text-warning' : 'text-muted' }}" style="font-size: 1.3rem;"></i>
                             @endfor
-                            <span class="font-weight-bold ml-1">{{ number_format($therapist->rating ?? 0, 1) }}</span>
+                            <span class="font-weight-bold ml-2" style="font-size: 1.2rem;">{{ number_format($therapist->rating ?? 0, 1) }}</span>
                         </div>
-                        <div class="text-muted mb-2">
-                            <i class="las la-comment"></i> {{ $therapist->total_reviews ?? 0 }} {{ __('Reviews') }}
+                        <div class="mb-2">
+                            <i class="las la-comment"></i> 
+                            <strong>{{ $therapist->total_reviews ?? 0 }}</strong> {{ __('Reviews') }}
                         </div>
                     </div>
                     
-                    <p class="text-muted mb-4" style="line-height: 1.6;">
-                        {{ $therapist->bio ?? __('No bio available.') }}
-                    </p>
-                    
-                    <div class="d-flex flex-wrap">
-                        <div class="mr-4 mb-2">
-                            <i class="las la-briefcase text-primary mr-1"></i>
-                            <span class="font-weight-bold">{{ $therapist->years_experience ?? 0 }}+ {{ __('Years Exp.') }}</span>
-                        </div>
-                        @if(!empty($therapist->available_areas))
-                        <div class="mr-4 mb-2">
-                            <i class="las la-map-marker text-primary mr-1"></i>
-                            <span>{{ __('Available in') }}: {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 3)) }}</span>
-                        </div>
+                    <!-- Trust Badges -->
+                    <div class="mb-3">
+                        @if($therapist->home_visit_verified)
+                        <span class="trust-badge">
+                            <i class="las la-check-circle"></i> {{ __('Verified Therapist') }}
+                        </span>
+                        @endif
+                        @if($therapist->license_number)
+                        <span class="trust-badge">
+                            <i class="las la-certificate"></i> {{ __('Licensed') }}
+                        </span>
+                        @endif
+                        @if($therapist->years_experience && $therapist->years_experience >= 5)
+                        <span class="trust-badge">
+                            <i class="las la-award"></i> {{ __('Experienced') }}
+                        </span>
                         @endif
                     </div>
+                    
+                    <!-- Key Stats -->
+                    <div class="row mt-3">
+                        <div class="col-6 col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">{{ $therapist->years_experience ?? 0 }}+</div>
+                                <div class="stat-label">{{ __('Years Experience') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">{{ $therapist->homeVisits->where('status', 'completed')->count() ?? 0 }}</div>
+                                <div class="stat-label">{{ __('Completed Visits') }}</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">< 2h</div>
+                                <div class="stat-label">{{ __('Response Time') }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Available Areas -->
+                    @if(!empty($therapist->available_areas))
+                    <div class="mt-3">
+                        <i class="las la-map-marker-alt"></i> 
+                        <strong>{{ __('Available in') }}:</strong> 
+                        {{ implode(', ', array_slice($therapist->available_areas ?? [], 0, 4)) }}
+                        @if(count($therapist->available_areas ?? []) > 4)
+                            <span class="text-white-50">+{{ count($therapist->available_areas) - 4 }} {{ __('more') }}</span>
+                        @endif
+                    </div>
+                    @endif
                 </div>
-                <div class="col-md-3 col-12 text-center mt-4 mt-md-0">
-                    <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);">
-                        <div class="card-body">
-                            <h6 class="text-muted mb-3">{{ __('Home Visit Fees') }}</h6>
-                            <h2 class="text-primary font-weight-bold mb-4">{{ $therapist->home_visit_rate ?? 0 }} {{ __('EGP') }}</h2>
+                
+                <!-- Pricing & Booking Card -->
+                <div class="col-md-3 col-12 mt-4 mt-md-0">
+                    <div class="pricing-card">
+                        <div class="pricing-card-header">
+                            <h5 class="mb-0">{{ __('Home Visit Fees') }}</h5>
+                        </div>
+                        <div class="pricing-card-body text-center">
+                            <div class="price-display">{{ number_format($therapist->home_visit_rate ?? 0, 0) }}</div>
+                            <p class="text-muted mb-4">{{ __('EGP per visit') }}</p>
                             
-                            <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-block text-white font-weight-bold py-3 mb-2" style="background-color: #ea3d2f; font-size: 1.1rem; border-radius: 8px;">
-                                {{ __('Book Appointment') }}
+                            <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-book-primary mb-3">
+                                <i class="las la-calendar-check mr-2"></i> {{ __('Book Appointment') }}
                             </a>
-                            <p class="small text-muted mb-0">{{ __('No booking fees') }}</p>
+                            
+                            <p class="small text-success mb-0">
+                                <i class="las la-check-circle"></i> {{ __('No booking fees') }}
+                            </p>
+                            <p class="small text-muted mb-0 mt-2">
+                                <i class="las la-shield-alt"></i> {{ __('Secure payment') }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -185,115 +499,200 @@
         </div>
     </section>
 
-    <!-- Details Section -->
-    <section class="py-5" style="background-color: #ffffff;">
+    <!-- Main Content Section -->
+    <section class="py-5" style="background-color: #f8f9fa;">
         <div class="container">
             <div class="row">
+                <!-- Left Column -->
                 <div class="col-lg-8">
-                    <!-- About -->
-                    <div class="mb-5">
-                        <h4 class="font-weight-bold mb-3" style="color: #212529;">{{ __('About Doctor') }}</h4>
-                        <p class="text-muted" style="line-height: 1.8; color: #495057 !important;">
-                            {{ $therapist->bio ?? __('No bio available.') }}
-                        </p>
+                    <!-- About Section -->
+                    <div class="content-section">
+                        <h4 class="section-title">
+                            <i class="las la-user-md mr-2"></i> {{ __('About Doctor') }}
+                        </h4>
+                        @if($therapist->bio)
+                            <p class="text-muted" style="line-height: 1.8; font-size: 1.05rem;">
+                                {{ $therapist->bio }}
+                            </p>
+                        @else
+                            <p class="text-muted">{{ __('No bio available.') }}</p>
+                        @endif
+                        
+                        <!-- Credentials -->
+                        @if($therapist->license_number || $therapist->university_degree ?? null)
+                        <div class="mt-4">
+                            <h6 class="font-weight-bold mb-3" style="color: #02767F;">{{ __('Credentials & Qualifications') }}</h6>
+                            <div>
+                                @if($therapist->license_number)
+                                <span class="credential-badge">
+                                    <i class="las la-certificate"></i> {{ __('License') }}: {{ $therapist->license_number }}
+                                </span>
+                                @endif
+                                @if($therapist->university_degree ?? null)
+                                <span class="credential-badge">
+                                    <i class="las la-graduation-cap"></i> {{ $therapist->university_degree }}
+                                </span>
+                                @endif
+                                @if($therapist->professional_level ?? null)
+                                <span class="credential-badge">
+                                    <i class="las la-star"></i> {{ ucfirst($therapist->professional_level) }} {{ __('Level') }}
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     
-                    <!-- Services -->
-                    <div class="mb-5">
-                        <h4 class="font-weight-bold mb-3" style="color: #212529;">{{ __('Services') }}</h4>
+                    <!-- Services Section -->
+                    <div class="content-section">
+                        <h4 class="section-title">
+                            <i class="las la-concierge-bell mr-2"></i> {{ __('Services Offered') }}
+                        </h4>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center p-2 bg-light rounded">
-                                    <i class="las la-check-circle text-success mr-2" style="font-size: 1.2rem;"></i>
-                                    <span style="color: #212529 !important;">{{ __('Home Physical Therapy') }}</span>
+                                <div class="service-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="las la-check-circle text-success mr-3" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="font-weight-bold mb-1">{{ __('Home Physical Therapy') }}</h6>
+                                            <small class="text-muted">{{ __('Professional therapy at your home') }}</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center p-2 bg-light rounded">
-                                    <i class="las la-check-circle text-success mr-2" style="font-size: 1.2rem;"></i>
-                                    <span style="color: #212529 !important;">{{ __('Post-Surgery Rehabilitation') }}</span>
+                                <div class="service-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="las la-check-circle text-success mr-3" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="font-weight-bold mb-1">{{ __('Post-Surgery Rehabilitation') }}</h6>
+                                            <small class="text-muted">{{ __('Recovery support after surgery') }}</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center p-2 bg-light rounded">
-                                    <i class="las la-check-circle text-success mr-2" style="font-size: 1.2rem;"></i>
-                                    <span style="color: #212529 !important;">{{ __('Sports Injury Recovery') }}</span>
+                                <div class="service-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="las la-check-circle text-success mr-3" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="font-weight-bold mb-1">{{ __('Sports Injury Recovery') }}</h6>
+                                            <small class="text-muted">{{ __('Specialized sports injury treatment') }}</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <div class="d-flex align-items-center p-2 bg-light rounded">
-                                    <i class="las la-check-circle text-success mr-2" style="font-size: 1.2rem;"></i>
-                                    <span style="color: #212529 !important;">{{ __('Elderly Care') }}</span>
+                                <div class="service-item">
+                                    <div class="d-flex align-items-center">
+                                        <i class="las la-check-circle text-success mr-3" style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="font-weight-bold mb-1">{{ __('Elderly Care') }}</h6>
+                                            <small class="text-muted">{{ __('Specialized care for elderly patients') }}</small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Reviews -->
-                    <div class="mb-5">
-                        <h4 class="font-weight-bold mb-3" style="color: #212529;">{{ __('Patient Reviews') }}</h4>
+                    <!-- Reviews Section -->
+                    <div class="content-section">
+                        <h4 class="section-title">
+                            <i class="las la-star mr-2"></i> {{ __('Patient Reviews') }}
+                        </h4>
                         
-                        @if($therapist->homeVisits && $therapist->homeVisits->count() > 0)
-                            <!-- Loop through reviews if we had a review model, for now placeholder -->
-                            <div class="card border-0 shadow-sm mb-3">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <h6 class="font-weight-bold" style="color: #212529;">{{ __('Patient Name') }}</h6>
+                        @if($therapist->total_reviews && $therapist->total_reviews > 0)
+                            <div class="mb-4">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="mr-3">
+                                        <h2 class="mb-0" style="color: #02767F;">{{ number_format($therapist->rating ?? 0, 1) }}</h2>
                                         <div class="text-warning">
-                                            <i class="las la-star"></i>
-                                            <i class="las la-star"></i>
-                                            <i class="las la-star"></i>
-                                            <i class="las la-star"></i>
-                                            <i class="las la-star"></i>
+                                            @for($i = 1; $i <= 5; $i++)
+                                                <i class="las la-star {{ $i <= ($therapist->rating ?? 0) ? '' : 'text-muted' }}"></i>
+                                            @endfor
                                         </div>
                                     </div>
-                                    <p class="text-muted mb-0" style="color: #6c757d !important;">{{ __('Great experience, very professional.') }}</p>
+                                    <div>
+                                        <p class="mb-0"><strong>{{ $therapist->total_reviews }}</strong> {{ __('reviews') }}</p>
+                                        <small class="text-muted">{{ __('Based on completed visits') }}</small>
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <!-- Sample Review Cards (Replace with actual reviews when available) -->
+                            <div class="review-card">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <h6 class="font-weight-bold mb-0">{{ __('Patient Name') }}</h6>
+                                    <div class="text-warning">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="las la-star"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <p class="text-muted mb-0">{{ __('Great experience, very professional and caring. Highly recommended!') }}</p>
+                                <small class="text-muted">{{ __('2 weeks ago') }}</small>
+                            </div>
                         @else
-                            <p class="text-muted" style="color: #6c757d !important;">{{ __('No reviews yet.') }}</p>
+                            <div class="text-center py-4">
+                                <i class="las la-comment-alt" style="font-size: 3rem; color: #ccc;"></i>
+                                <p class="text-muted mt-3">{{ __('No reviews yet. Be the first to book and review!') }}</p>
+                            </div>
                         @endif
                     </div>
                 </div>
                 
+                <!-- Right Column -->
                 <div class="col-lg-4">
-                    <!-- Availability Calendar Placeholder -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-header bg-white border-0 pb-2">
-                            <h5 class="font-weight-bold mb-0" style="color: #212529;">{{ __('Working Hours') }}</h5>
+                    <!-- Working Hours -->
+                    <div class="working-hours-card mb-4">
+                        <div class="working-hours-header">
+                            <i class="las la-clock mr-2"></i> {{ __('Working Hours') }}
                         </div>
-                        <div class="card-body">
+                        <div class="card-body p-0">
                             <ul class="list-unstyled mb-0">
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Saturday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Sunday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Monday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Tuesday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Wednesday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between mb-2 pb-2 border-bottom">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Thursday') }}</span>
-                                    <span class="text-success font-weight-bold">10:00 {{ __('AM') }} - 10:00 {{ __('PM') }}</span>
-                                </li>
-                                <li class="d-flex justify-content-between">
-                                    <span style="color: #212529 !important; font-weight: 500;">{{ __('Friday') }}</span>
-                                    <span class="text-danger font-weight-bold">{{ __('Closed') }}</span>
-                                </li>
+                                @php
+                                    $days = [
+                                        'saturday' => __('Saturday'),
+                                        'sunday' => __('Sunday'),
+                                        'monday' => __('Monday'),
+                                        'tuesday' => __('Tuesday'),
+                                        'wednesday' => __('Wednesday'),
+                                        'thursday' => __('Thursday'),
+                                        'friday' => __('Friday')
+                                    ];
+                                    $workingHours = $therapist->working_hours ?? [];
+                                @endphp
+                                @foreach($days as $key => $day)
+                                    @php
+                                        $daySchedule = $workingHours[$key] ?? null;
+                                        $isClosed = !$daySchedule || ($daySchedule['is_closed'] ?? false);
+                                    @endphp
+                                    <li class="hours-item">
+                                        <span class="day">{{ $day }}</span>
+                                        @if($isClosed)
+                                            <span class="time text-danger">{{ __('Closed') }}</span>
+                                        @else
+                                            <span class="time text-success">
+                                                {{ isset($daySchedule['start_time']) ? \Carbon\Carbon::parse($daySchedule['start_time'])->format('g:i A') : '10:00 AM' }} - 
+                                                {{ isset($daySchedule['end_time']) ? \Carbon\Carbon::parse($daySchedule['end_time'])->format('g:i A') : '10:00 PM' }}
+                                            </span>
+                                        @endif
+                                    </li>
+                                @endforeach
                             </ul>
                         </div>
+                    </div>
+                    
+                    <!-- Quick Contact Card -->
+                    <div class="content-section text-center">
+                        <h5 class="font-weight-bold mb-4" style="color: #02767F;">{{ __('Ready to Book?') }}</h5>
+                        <a href="{{ url('/home_visits/book/'.$therapist->id) }}" class="btn btn-book-primary mb-3">
+                            <i class="las la-calendar-check mr-2"></i> {{ __('Book Now') }}
+                        </a>
+                        <p class="small text-muted mb-0">
+                            <i class="las la-info-circle"></i> {{ __('Instant confirmation') }}
+                        </p>
                     </div>
                 </div>
             </div>
