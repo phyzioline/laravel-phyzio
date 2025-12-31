@@ -148,27 +148,31 @@ class BillingController extends BaseClinicController
                     ->whereYear('created_at', now()->subMonth()->year)
                     ->sum('amount');
             } else {
-                // If payments table doesn't have clinic_id, join through patients
-                $invoices = DB::table('payments')
-                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
-                    ->where('patients.clinic_id', $clinic->id)
-                    ->select(
-                        'payments.*',
-                        DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
-                    )
-                    ->orderBy('payments.created_at', 'desc')
-                    ->limit(50)
-                    ->get()
-                    ->map(function($payment) {
-                        return (object)[
-                            'id' => 'PAY-' . $payment->id,
-                            'patient' => $payment->patient_name ?? 'Unknown',
-                            'amount' => $payment->amount ?? 0,
-                            'date' => $payment->created_at ?? now(),
-                            'status' => $payment->status ?? 'pending',
-                            'type' => 'payment'
-                        ];
-                    });
+                // If payments table doesn't have clinic_id, check if it has patient_id
+                $hasPatientId = \Schema::hasColumn('payments', 'patient_id');
+                
+                if ($hasPatientId) {
+                    // Join through patients table
+                    $invoices = DB::table('payments')
+                        ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                        ->where('patients.clinic_id', $clinic->id)
+                        ->select(
+                            'payments.*',
+                            DB::raw("CONCAT(patients.first_name, ' ', patients.last_name) as patient_name")
+                        )
+                        ->orderBy('payments.created_at', 'desc')
+                        ->limit(50)
+                        ->get()
+                        ->map(function($payment) {
+                            return (object)[
+                                'id' => 'PAY-' . $payment->id,
+                                'patient' => $payment->patient_name ?? 'Unknown',
+                                'amount' => $payment->amount ?? 0,
+                                'date' => $payment->created_at ?? now(),
+                                'status' => $payment->status ?? 'pending',
+                                'type' => 'payment'
+                            ];
+                        });
 
                 $pendingPayments = DB::table('payments')
                     ->join('patients', 'payments.patient_id', '=', 'patients.id')
