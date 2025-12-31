@@ -113,7 +113,7 @@
             <!-- Order Statistics Cards -->
             <div class="row mb-4 g-2" style="display: flex; flex-wrap: wrap;">
                 <div class="col-auto">
-                    <div class="card bg-primary text-white" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-primary text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Total Orders</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['total_orders'] }}</h3>
@@ -121,7 +121,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="card bg-warning text-dark" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-warning text-dark" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Pending</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['pending_orders'] }}</h3>
@@ -129,7 +129,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="card bg-success text-white" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-success text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Completed</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['completed_orders'] }}</h3>
@@ -137,7 +137,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="card bg-danger text-white" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-danger text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Cancelled</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['cancelled_orders'] }}</h3>
@@ -145,7 +145,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="card bg-info text-white" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-info text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Card Orders</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['card_orders'] }}</h3>
@@ -153,30 +153,10 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <div class="card bg-secondary text-white" style="border-radius: 8px; display: inline-block;">
+                    <div class="card bg-secondary text-white" style="border-radius: 8px; display: inline-block; min-height: auto !important; height: auto !important;">
                         <div class="card-body" style="padding: 0.5rem 1rem;">
                             <h6 class="mb-1" style="font-size: 0.75rem; margin-bottom: 0.25rem;">Return Orders</h6>
                             <h3 class="mb-0" style="font-size: 1.25rem; margin-bottom: 0;">{{ $stats['return_orders'] }}</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Orders by Status -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5>Orders by Status</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex flex-wrap gap-2 align-items-center">
-                                @foreach($ordersByStatus as $status)
-                                    <span class="badge bg-primary" style="border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500;">
-                                        {{ $status->count }} {{ ucfirst($status->status) }}
-                                    </span>
-                                @endforeach
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,6 +166,17 @@
                 <div class="col-12">
                     <div class="card" style="width: 100%; overflow: hidden; margin: 0; min-height: calc(100vh - 200px); flex: 1; display: flex; flex-direction: column;">
                         <div class="card-body" style="padding: 1rem; margin: 0; min-height: calc(100vh - 240px); flex: 1; display: flex; flex-direction: column;">
+                            <!-- Orders by Status -->
+                            <div class="mb-4">
+                                <h5 class="mb-3">Orders by Status</h5>
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    @foreach($ordersByStatus as $status)
+                                        <span class="badge bg-primary" style="border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500;">
+                                            {{ $status->count }} {{ ucfirst($status->status) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </div>
                             <!-- Advanced Filters -->
                             <div class="card mb-4">
                                 <div class="card-header">

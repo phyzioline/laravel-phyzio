@@ -237,6 +237,7 @@
        min-height: 140px !important; /* Min: 120-160px */
        display: flex !important;
        flex-direction: column !important;
+       width: 100% !important;
      }
      
      .card-body {
@@ -244,6 +245,23 @@
        flex: 1 !important;
        display: flex !important;
        flex-direction: column !important;
+     }
+     
+     /* 100% Width Containers */
+     .container-fluid,
+     .dashboard-card,
+     .widget,
+     .panel {
+       width: 100% !important;
+     }
+     
+     .card {
+       width: 100% !important;
+     }
+     
+     .main-content {
+       transition: all 0.3s ease !important;
+       width: 100% !important;
      }
      
      /* Charts - Height: 280-360px */
@@ -432,6 +450,15 @@
        .card {
          min-height: 120px !important;
          margin-bottom: 12px !important;
+         width: 100% !important;
+         margin-left: 0 !important;
+         margin-right: 0 !important;
+       }
+       .container,
+       .container-fluid {
+         padding-left: 10px !important;
+         padding-right: 10px !important;
+         width: 100% !important;
        }
        .card-body {
          padding: 12px 16px !important; /* Horizontal padding: 16px */
@@ -442,6 +469,28 @@
        }
        h5, .h5, .card-title {
          font-size: 16px !important;
+       }
+     }
+     
+     /* Mobile Responsive - 100% Width (768px and below) */
+     @media (max-width: 768px) {
+       .card {
+         width: 100% !important;
+         margin-left: 0 !important;
+         margin-right: 0 !important;
+       }
+       
+       .container,
+       .container-fluid {
+         padding-left: 10px !important;
+         padding-right: 10px !important;
+         width: 100% !important;
+       }
+       
+       .main-content {
+         width: 100% !important;
+         margin-left: 0 !important;
+         margin-right: 0 !important;
        }
      }
      
@@ -464,11 +513,9 @@
        justify-content: center !important; /* Center content */
      }
      
-     /* Main Content Container - Centered, Max: 1200-1240px */
+     /* Main Content Container - 100% Width */
      .main-content {
        width: 100% !important;
-       max-width: 1220px !important; /* Max: 1200-1240px */
-       margin: 0 auto !important; /* Center horizontally */
        box-sizing: border-box !important;
      }
      
@@ -500,14 +547,31 @@
      
      /* When sidebar is toggled/collapsed */
      body.toggled .page-wrapper,
-     body.toggled .page-content {
+     body.toggled .page-content,
+     .sidebar-collapsed .page-wrapper,
+     .sidebar-collapsed .page-content {
        margin-left: 0 !important;
        width: 100% !important;
        max-width: 100% !important;
      }
      
-     body.toggled .main-content {
-       max-width: 1220px !important; /* Keep centered container */
+     body.toggled .main-content,
+     .sidebar-collapsed .main-content {
+       margin-left: 0 !important;
+       width: 100% !important;
+       max-width: 100% !important;
+     }
+     
+     /* When sidebar is open */
+     .sidebar-open .main-content {
+       margin-left: 260px !important; /* Sidebar width */
+       width: calc(100% - 260px) !important;
+     }
+     
+     [dir="rtl"] .sidebar-open .main-content {
+       margin-left: 0 !important;
+       margin-right: 260px !important;
+       width: calc(100% - 260px) !important;
      }
      
      /* RTL Toggle State */
