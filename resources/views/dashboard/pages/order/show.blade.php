@@ -143,9 +143,21 @@
                             @method('PUT')
                             <label class="form-label">Update Status</label>
                             <select name="status" class="form-select mb-3">
-                                <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed/Shipped</option>
-                                <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                @if(isset($statusOptions) && count($statusOptions) > 0)
+                                    @foreach($statusOptions as $statusValue => $statusLabel)
+                                        <option value="{{ $statusValue }}" {{ $order->status == $statusValue ? 'selected' : '' }}>
+                                            {{ $statusLabel }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    {{-- Fallback if statusOptions not available --}}
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
+                                    <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
+                                    <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
+                                    <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                    <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                @endif
                             </select>
                             <button type="submit" class="btn btn-primary w-100">Update Order</button>
                         </form>

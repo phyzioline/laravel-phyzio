@@ -60,7 +60,28 @@ class OrderController extends Controller implements HasMiddleware
     public function show(string $id)
     {
         $order = $this->orderService->show($id);
-        return view('dashboard.pages.order.show', compact('order'));
+        
+        // Get allowed status transitions for this order
+        $stateMachine = app(\App\Services\OrderStatusStateMachine::class);
+        $allowedTransitions = $stateMachine->getAllowedTransitions($order->status);
+        
+        // Define status order for logical display
+        $statusOrder = ['pending', 'pending_payment', 'processing', 'shipped', 'delivered', 'completed', 'cancelled'];
+        
+        // Create status options with labels
+        $statusOptions = [];
+        
+        // Add current status first (to show it's selected)
+        $statusOptions[$order->status] = $stateMachine->getStatusLabel($order->status);
+        
+        // Add allowed transitions in logical order
+        foreach ($statusOrder as $status) {
+            if (in_array($status, $allowedTransitions) && $status !== $order->status) {
+                $statusOptions[$status] = $stateMachine->getStatusLabel($status);
+            }
+        }
+        
+        return view('dashboard.pages.order.show', compact('order', 'statusOptions'));
     }
 
     public function edit(string $id)
