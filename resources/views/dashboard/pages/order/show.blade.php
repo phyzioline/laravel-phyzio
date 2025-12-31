@@ -138,11 +138,11 @@
                 @can('orders-update')
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('dashboard.orders.update', $order->id) }}" method="POST">
+                        <form action="{{ route('dashboard.orders.update', $order->id) }}" method="POST" id="status-update-form">
                             @csrf
                             @method('PUT')
                             <label class="form-label">Update Status</label>
-                            <select name="status" class="form-select mb-3">
+                            <select name="status" id="status-select" class="form-select mb-3" required>
                                 @if(isset($statusOptions) && count($statusOptions) > 0)
                                     @foreach($statusOptions as $statusValue => $statusLabel)
                                         <option value="{{ $statusValue }}" {{ $order->status == $statusValue ? 'selected' : '' }}>
@@ -159,8 +159,18 @@
                                     <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                 @endif
                             </select>
-                            <button type="submit" class="btn btn-primary w-100">Update Order</button>
+                            <button type="submit" class="btn btn-primary w-100" id="update-status-btn">
+                                <i class="fas fa-save"></i> Update Order Status
+                            </button>
                         </form>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                Current Status: <strong>{{ ucfirst($order->status) }}</strong>
+                                @if(isset($statusOptions) && count($statusOptions) > 0)
+                                    | Available transitions: {{ count($statusOptions) - 1 }}
+                                @endif
+                            </small>
+                        </div>
                     </div>
                 </div>
                 @endcan
@@ -168,4 +178,33 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('status-update-form');
+    const statusSelect = document.getElementById('status-select');
+    const updateBtn = document.getElementById('update-status-btn');
+    
+    if (form && statusSelect && updateBtn) {
+        form.addEventListener('submit', function(e) {
+            const selectedStatus = statusSelect.value;
+            const currentStatus = '{{ $order->status }}';
+            
+            if (selectedStatus === currentStatus) {
+                e.preventDefault();
+                alert('Please select a different status. Current status is already: ' + currentStatus);
+                return false;
+            }
+            
+            // Show loading state
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+            
+            // Form will submit normally
+        });
+    }
+});
+</script>
+@endpush
 @endsection

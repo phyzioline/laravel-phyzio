@@ -131,7 +131,7 @@ class OrderController extends Controller implements HasMiddleware
                 'new_status' => $order->status
             ]);
             
-            return redirect()->route('dashboard.orders.index')->with('message', [
+            return redirect()->route('dashboard.orders.show', $order->id)->with('message', [
                 'type' => 'success',
                 'text' => 'Order status updated successfully from ' . ucfirst($oldStatus) . ' to ' . ucfirst($order->status) . '.'
             ]);
