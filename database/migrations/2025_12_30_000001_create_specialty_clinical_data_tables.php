@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,6 +13,53 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // 0. Create clinical_assessments table if it doesn't exist (required by all specialty tables)
+        if (!Schema::hasTable('clinical_assessments')) {
+            Schema::create('clinical_assessments', function (Blueprint $table) {
+                $table->id();
+                
+                // Only add episode_id foreign key if episodes_of_care table exists
+                if (Schema::hasTable('episodes_of_care')) {
+                    $table->foreignId('episode_id')->nullable()->constrained('episodes_of_care')->onDelete('cascade');
+                } else {
+                    $table->unsignedBigInteger('episode_id')->nullable();
+                }
+                
+                $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
+                $table->foreignId('therapist_id')->constrained('users')->onDelete('cascade');
+                $table->foreignId('clinic_id')->nullable()->constrained('users')->onDelete('cascade');
+                $table->string('assessment_type')->default('initial'); // initial, re_evaluation, discharge, follow_up
+                $table->string('specialty_key')->nullable(); // musculoskeletal, neurological, etc.
+                $table->text('subjective_findings')->nullable();
+                $table->text('objective_findings')->nullable();
+                $table->text('assessment_summary')->nullable();
+                $table->text('clinical_impression')->nullable();
+                $table->text('plan_of_care')->nullable();
+                $table->date('assessment_date');
+                $table->timestamps();
+                
+                $table->index(['episode_id', 'assessment_date']);
+                $table->index(['patient_id', 'assessment_date']);
+            });
+            
+            // Add foreign key constraint later if episodes_of_care table exists
+            if (Schema::hasTable('episodes_of_care') && Schema::hasColumn('clinical_assessments', 'episode_id')) {
+                Schema::table('clinical_assessments', function (Blueprint $table) {
+                    // Check if foreign key doesn't already exist
+                    $foreignKeys = DB::select("
+                        SELECT CONSTRAINT_NAME 
+                        FROM information_schema.KEY_COLUMN_USAGE 
+                        WHERE TABLE_SCHEMA = DATABASE() 
+                        AND TABLE_NAME = 'clinical_assessments' 
+                        AND CONSTRAINT_NAME LIKE '%episode_id%'
+                    ");
+                    if (empty($foreignKeys)) {
+                        $table->foreign('episode_id')->references('id')->on('episodes_of_care')->onDelete('cascade');
+                    }
+                });
+            }
+        }
+
         // 1. Specialty Configuration Table
         Schema::create('pt_specialty_configs', function (Blueprint $table) {
             $table->id();
@@ -335,6 +383,9 @@ return new class extends Migration
         Schema::dropIfExists('muscle_strength_grades');
         Schema::dropIfExists('joint_rom_measurements');
         Schema::dropIfExists('pt_specialty_configs');
+        // Only drop clinical_assessments if we created it in this migration
+        // (check if it was created by us or existed before)
+        // For safety, we'll leave it - it might be used by other parts of the system
     }
 };
 
