@@ -85,23 +85,24 @@
         .table-responsive {
             width: 100% !important;
             max-width: 100% !important;
-            max-height: 75vh;
+            max-height: calc(100vh - 350px);
             overflow-x: auto;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+            margin: 0 !important;
+            padding: 0 !important;
         }
         
         #example2 {
             width: 100% !important;
-            min-width: 1600px;
             font-size: 0.85rem;
             table-layout: fixed;
+            margin: 0 !important;
         }
         
         #example2 th,
         #example2 td {
             padding: 6px 8px !important;
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -109,8 +110,9 @@
         #example2 thead {
             position: sticky;
             top: 0;
-            z-index: 10;
-            background-color: #f8f9fa;
+            z-index: 100;
+            background-color: #f8f9fa !important;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
         }
         
         /* Ensure card uses full width */
@@ -118,6 +120,18 @@
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
+            margin: 0 !important;
+        }
+        
+        .card-body {
+            padding: 1rem !important;
+            margin: 0 !important;
+        }
+        
+        /* Remove any left margin/padding that might create empty space */
+        .main-content {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
         }
         
         /* Responsive table adjustments */
@@ -237,24 +251,24 @@
                             </div>
                         </div>
                         
-                        <div class="card-body">
-                            <div class="table-responsive text-center" style="max-height: 75vh; overflow-x: auto; overflow-y: auto; width: 100%;">
-                                        <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; min-width: 1600px;">
-                                            <thead class="table-light" style="position: sticky; top: 0; z-index: 10; background-color: #f8f9fa;">
+                        <div class="card-body" style="padding: 1rem; margin: 0;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 350px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                                        <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
+                                            <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                                 <tr>
-                                                    <th class="checkbox-column" style="min-width: 40px; width: 2%;">
+                                                    <th style="width: 3%;">{{ __('ID') }}</th>
+                                                    <th style="width: 5%;">{{ __('Image') }}</th>
+                                                    <th style="width: 7%;">{{ __('Category') }}</th>
+                                                    <th style="width: 7%;">{{ __('Sub Category') }}</th>
+                                                    <th style="width: 22%;">{{ __('Product Name') }}</th>
+                                                    <th style="width: 6%;">{{ __('Price') }}</th>
+                                                    <th style="width: 5%;">{{ __('Amount') }}</th>
+                                                    <th style="width: 8%;">{{ __('SKU') }}</th>
+                                                    <th style="width: 6%;">{{ __('Status') }}</th>
+                                                    <th style="width: 9%;">{{ __('Actions') }}</th>
+                                                    <th class="checkbox-column" style="width: 2%;">
                                                         <input type="checkbox" id="selectAll">
                                                     </th>
-                                                    <th style="min-width: 60px; width: 3%;">{{ __('ID') }}</th>
-                                                    <th style="min-width: 90px; width: 5%;">{{ __('Image') }}</th>
-                                                    <th style="min-width: 120px; width: 8%;">{{ __('Category') }}</th>
-                                                    <th style="min-width: 120px; width: 8%;">{{ __('Sub Category') }}</th>
-                                                    <th style="min-width: 300px; width: 25%;">{{ __('Product Name') }}</th>
-                                                    <th style="min-width: 90px; width: 6%;">{{ __('Price') }}</th>
-                                                    <th style="min-width: 80px; width: 5%;">{{ __('Amount') }}</th>
-                                                    <th style="min-width: 120px; width: 8%;">{{ __('SKU') }}</th>
-                                                    <th style="min-width: 90px; width: 6%;">{{ __('Status') }}</th>
-                                                    <th style="min-width: 150px; width: 10%;">{{ __('Actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -264,9 +278,6 @@
                                                         data-stock="{{ $product->amount }}"
                                                         data-category="{{ $product->category_id }}"
                                                         data-price="{{ $product->product_price }}">
-                                                        <td class="checkbox-column">
-                                                            <input type="checkbox" class="product-checkbox" value="{{ $product->id }}">
-                                                        </td>
                                                         <td style="font-size: 0.8rem;">{{ $product->id }}</td>
                                                         <td>
                                                             <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 6px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
@@ -307,6 +318,9 @@
                                                                 </a>
                                                             @endcan
                                                             </div>
+                                                        </td>
+                                                        <td class="checkbox-column">
+                                                            <input type="checkbox" class="product-checkbox" value="{{ $product->id }}">
                                                         </td>
                                                     </tr>
                                                 @empty

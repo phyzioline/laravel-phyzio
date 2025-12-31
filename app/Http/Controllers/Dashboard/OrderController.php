@@ -84,22 +84,29 @@ class OrderController extends Controller implements HasMiddleware
     }
 
     /**
-     * Accept an order - automatically sets status to pending.
+     * Accept an order - moves status from pending to processing.
+     * This means the vendor/admin accepts the order and starts processing it.
      */
     public function accept(Request $request, string $id)
     {
         try {
             $order = $this->orderService->show($id);
             
-            // Check if order can be accepted (not already completed or cancelled)
+            // Check if order can be accepted (must be pending)
+            if ($order->status !== 'pending') {
+                $currentStatus = ucfirst($order->status);
+                return redirect()->back()->with('error', "Cannot accept order. Order is already {$currentStatus}. Only pending orders can be accepted.");
+            }
+            
+            // Check if order is already completed or cancelled (safety check)
             if (in_array($order->status, ['completed', 'cancelled'])) {
                 return redirect()->back()->with('error', 'Cannot accept an order that is already completed or cancelled.');
             }
             
-            // Update order status to pending
-            $this->orderService->update(['status' => 'pending'], $id);
+            // Update order status to processing (accepting means starting to process)
+            $this->orderService->update(['status' => 'processing'], $id);
             
-            return redirect()->route('dashboard.orders.index')->with('success', 'Order accepted successfully. Status changed to pending.');
+            return redirect()->route('dashboard.orders.index')->with('success', 'Order accepted successfully. Status changed to processing.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }

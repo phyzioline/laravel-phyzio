@@ -7,6 +7,7 @@
     #example2 {
         table-layout: fixed !important;
         width: 100% !important;
+        margin: 0 !important;
     }
     
     #example2 th,
@@ -21,6 +22,8 @@
     .table-responsive {
         width: 100% !important;
         max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     /* Adjust max-height to account for header, stats, and filters */
@@ -47,6 +50,21 @@
         white-space: normal;
         word-wrap: break-word;
         line-height: 1.3;
+    }
+    
+    /* Remove any left margin/padding that creates empty space */
+    .card {
+        margin: 0 !important;
+    }
+    
+    .card-body {
+        padding: 1rem !important;
+        margin: 0 !important;
+    }
+    
+    .main-content {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
     }
 </style>
 @endpush
@@ -130,8 +148,8 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="card" style="width: 100%; overflow: hidden;">
-                        <div class="card-body" style="padding: 1rem;">
+                    <div class="card" style="width: 100%; overflow: hidden; margin: 0;">
+                        <div class="card-body" style="padding: 1rem; margin: 0;">
                             <!-- Advanced Filters -->
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -266,8 +284,8 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 350px); overflow-x: auto; overflow-y: auto; width: 100%;">
-                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 380px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                     <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                         <tr>
                                             @if(auth()->user()->hasRole('admin'))
@@ -383,17 +401,25 @@
                                                             </a>
                                                         @endcan
                                                         @can('orders-update')
-                                                            @if($order->status != 'pending' && $order->status != 'completed' && $order->status != 'cancelled')
+                                                            @if($order->status == 'pending')
                                                                 <form action="{{ route('dashboard.orders.accept', $order->id) }}" method="POST" class="d-inline mb-1">
                                                                     @csrf
                                                                     <button type="submit" class="btn btn-sm btn-success" title="{{ __('Accept Order') }}"
                                                                             style="font-size: 0.7rem; padding: 0.2rem 0.4rem;"
-                                                                            onclick="return confirm('{{ __('Are you sure you want to accept this order? Status will be changed to pending.') }}')">
-                                                                        <i class="fas fa-check"></i>
+                                                                            onclick="return confirm('{{ __('Are you sure you want to accept this order? Status will be changed to processing.') }}')">
+                                                                        <i class="fas fa-check"></i> {{ __('Accept') }}
                                                                     </button>
                                                                 </form>
-                                                            @elseif($order->status == 'pending')
-                                                                <span class="badge bg-success" style="font-size: 0.65rem;">{{ __('Accepted') }}</span>
+                                                            @elseif($order->status == 'processing')
+                                                                <span class="badge bg-info" style="font-size: 0.65rem;">{{ __('Processing') }}</span>
+                                                            @elseif($order->status == 'shipped')
+                                                                <span class="badge bg-primary" style="font-size: 0.65rem;">{{ __('Shipped') }}</span>
+                                                            @elseif($order->status == 'delivered')
+                                                                <span class="badge bg-success" style="font-size: 0.65rem;">{{ __('Delivered') }}</span>
+                                                            @elseif($order->status == 'completed')
+                                                                <span class="badge bg-success" style="font-size: 0.65rem;">{{ __('Completed') }}</span>
+                                                            @elseif($order->status == 'cancelled')
+                                                                <span class="badge bg-danger" style="font-size: 0.65rem;">{{ __('Cancelled') }}</span>
                                                             @endif
                                                             <a href="{{ route('dashboard.orders.print-label', $order->id) }}" 
                                                                target="_blank"
