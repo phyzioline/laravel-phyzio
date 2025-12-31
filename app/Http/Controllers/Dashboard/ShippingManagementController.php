@@ -215,13 +215,15 @@ class ShippingManagementController extends Controller
         
         $shipment->update($updateData);
         
-        // Create tracking log
-        \App\Models\TrackingLog::create([
-            'shipment_id' => $shipment->id,
-            'status' => $request->status,
-            'description' => $request->notes ?? "Status updated from {$oldStatus} to {$request->status}",
-            'source' => 'manual',
-        ]);
+        // Use ShippingService to log tracking update (prevents duplicates and validates source)
+        $shippingService = app(\App\Services\ShippingService::class);
+        $source = auth()->user()->hasRole('admin') ? 'admin' : 'manual';
+        $shippingService->logTrackingUpdate(
+            $shipment->id,
+            $request->status,
+            $source,
+            $request->notes ?? "Status updated from {$oldStatus} to {$request->status}"
+        );
         
         return redirect()
             ->back()

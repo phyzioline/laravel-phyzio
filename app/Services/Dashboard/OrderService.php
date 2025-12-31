@@ -31,6 +31,28 @@ class OrderService
         return $query->orderBy('created_at', 'desc')->paginate(10);
     }
 
+    /**
+     * Get order statistics for dashboard
+     */
+    public function getStats()
+    {
+        $baseQuery = $this->model->query();
+
+        // Check ownership if not admin
+        if (!auth()->user()->hasRole('admin')) {
+            $baseQuery->whereHas('items.product', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+
+        return [
+            'total_orders' => (clone $baseQuery)->count(),
+            'pending_orders' => (clone $baseQuery)->where('status', 'pending')->count(),
+            'completed_orders' => (clone $baseQuery)->where('status', 'completed')->count(),
+            'cancelled_orders' => (clone $baseQuery)->where('status', 'cancelled')->count(),
+        ];
+    }
+
     public function orderCash()
     {
         if (auth()->user()->hasRole('admin')) {

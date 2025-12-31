@@ -47,6 +47,17 @@ class VendorShipmentController extends Controller
 
         DB::beginTransaction();
         try {
+            // Check if shipment already exists for this order/vendor combination with same items
+            $existingShipment = Shipment::where('order_id', $order->id)
+                ->where('vendor_id', auth()->id())
+                ->where('tracking_number', $request->tracking_number)
+                ->first();
+            
+            if ($existingShipment) {
+                DB::rollBack();
+                return back()->with('error', 'A shipment with this tracking number already exists for this order.');
+            }
+            
             // Create Shipment
             $shipment = Shipment::create([
                 'order_id' => $order->id,
@@ -61,12 +72,14 @@ class VendorShipmentController extends Controller
             // Link Items and Update Inventory if needed (assuming inventory deducted on Order placement)
             \App\Models\ItemsOrder::whereIn('id', $request->item_ids)->update(['shipment_id' => $shipment->id]);
 
-            // Log Tracking
-            TrackingLog::create([
-                'shipment_id' => $shipment->id,
-                'status' => 'shipped',
-                'notes' => 'Shipment created with tracking number ' . $request->tracking_number
-            ]);
+            // Log Tracking using ShippingService to prevent duplicates
+            $shippingService = app(\App\Services\ShippingService::class);
+            $shippingService->logTrackingUpdate(
+                $shipment->id,
+                'shipped',
+                'manual',
+                'Shipment created with tracking number ' . $request->tracking_number
+            );
 
             DB::commit();
             return redirect()->route('dashboard.shipments.index')->with('success', 'Shipment created successfully.');
@@ -97,11 +110,14 @@ class VendorShipmentController extends Controller
              $shipment->update(['delivered_at' => now()]);
         }
 
-        TrackingLog::create([
-            'shipment_id' => $shipment->id,
-            'status' => $request->status,
-            'notes' => $request->notes ?? 'Status updated to ' . $request->status
-        ]);
+        // Use ShippingService to log tracking update (prevents duplicates)
+        $shippingService = app(\App\Services\ShippingService::class);
+        $shippingService->logTrackingUpdate(
+            $shipment->id,
+            $request->status,
+            'manual',
+            $request->notes ?? 'Status updated to ' . $request->status
+        );
 
         return back()->with('success', 'Tracking updated.');
     }

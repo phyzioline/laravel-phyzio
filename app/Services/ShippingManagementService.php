@@ -30,6 +30,28 @@ class ShippingManagementService
             $order = Order::findOrFail($orderId);
             $vendor = User::findOrFail($vendorId);
             
+            // Check if shipment already exists for this order/vendor combination
+            $existingShipment = Shipment::where('order_id', $orderId)
+                ->where('vendor_id', $vendorId)
+                ->where('shipment_status', '!=', 'cancelled')
+                ->first();
+            
+            if ($existingShipment) {
+                // Check if all requested items are already in a shipment
+                $requestedItemIds = !empty($itemIds) ? $itemIds : ItemsOrder::where('order_id', $orderId)
+                    ->where('vendor_id', $vendorId)
+                    ->pluck('id')
+                    ->toArray();
+                
+                $itemsInShipment = ItemsOrder::where('shipment_id', $existingShipment->id)
+                    ->whereIn('id', $requestedItemIds)
+                    ->count();
+                
+                if ($itemsInShipment === count($requestedItemIds)) {
+                    throw new \Exception('A shipment already exists for this order and vendor combination.');
+                }
+            }
+            
             // Get vendor address (from vendor profile or default)
             $vendorAddress = $this->getVendorAddress($vendor);
             
@@ -87,13 +109,14 @@ class ShippingManagementService
                 $item->update(['shipment_id' => $shipment->id]);
             });
             
-            // Create initial tracking log
-            TrackingLog::create([
-                'shipment_id' => $shipment->id,
-                'status' => 'pending',
-                'description' => 'Shipment created and ready for processing',
-                'source' => 'system',
-            ]);
+            // Create initial tracking log using ShippingService to prevent duplicates
+            $shippingService = app(\App\Services\ShippingService::class);
+            $shippingService->logTrackingUpdate(
+                $shipment->id,
+                'pending',
+                'system',
+                'Shipment created and ready for processing'
+            );
             
             Log::info("Shipment #{$shipment->id} created for order #{$orderId}, vendor #{$vendorId}");
             
@@ -153,12 +176,14 @@ class ShippingManagementService
                 'ready_to_ship_at' => now(),
             ]);
             
-            TrackingLog::create([
-                'shipment_id' => $shipment->id,
-                'status' => 'ready_to_ship',
-                'description' => "Shipment created with {$provider}. Tracking: {$response['data']['tracking_number']}",
-                'source' => 'api',
-            ]);
+            // Use ShippingService to log tracking update (prevents duplicates)
+            $shippingService = app(\App\Services\ShippingService::class);
+            $shippingService->logTrackingUpdate(
+                $shipment->id,
+                'ready_to_ship',
+                'api',
+                "Shipment created with {$provider}. Tracking: {$response['data']['tracking_number']}"
+            );
             
             return $shipment;
         }
@@ -216,13 +241,15 @@ class ShippingManagementService
         
         $shipment->update($updateData);
         
-        TrackingLog::create([
-            'shipment_id' => $shipment->id,
-            'status' => $newStatus,
-            'location' => $data['location'] ?? null,
-            'description' => $data['description'] ?? "Status updated from {$oldStatus} to {$newStatus}",
-            'source' => 'api',
-        ]);
+        // Use ShippingService to log tracking update (prevents duplicates)
+        $shippingService = app(\App\Services\ShippingService::class);
+        $shippingService->logTrackingUpdate(
+            $shipment->id,
+            $newStatus,
+            'api',
+            $data['description'] ?? "Status updated from {$oldStatus} to {$newStatus}",
+            $data['location'] ?? null
+        );
         
         return $shipment;
     }

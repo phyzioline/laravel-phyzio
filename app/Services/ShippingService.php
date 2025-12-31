@@ -46,9 +46,36 @@ class ShippingService
 
     /**
      * Log tracking status update.
+     * Prevents duplicate logs for the same status within 5 seconds.
      */
     public function logTrackingUpdate($shipmentId, $status, $source = 'manual', $description = null, $location = null)
     {
+        // Validate source value
+        $validSources = ['api', 'manual', 'system', 'admin'];
+        if (!in_array($source, $validSources)) {
+            Log::warning("Invalid source '{$source}' provided, defaulting to 'manual'", [
+                'shipment_id' => $shipmentId,
+                'status' => $status
+            ]);
+            $source = 'manual';
+        }
+        
+        // Prevent duplicate logs for the same status within 5 seconds
+        $recentLog = TrackingLog::where('shipment_id', $shipmentId)
+            ->where('status', $status)
+            ->where('source', $source)
+            ->where('created_at', '>=', now()->subSeconds(5))
+            ->first();
+        
+        if ($recentLog) {
+            Log::info("Duplicate tracking log prevented", [
+                'shipment_id' => $shipmentId,
+                'status' => $status,
+                'existing_log_id' => $recentLog->id
+            ]);
+            return $recentLog;
+        }
+        
         return TrackingLog::create([
             'shipment_id' => $shipmentId,
             'status' => $status,
@@ -60,22 +87,65 @@ class ShippingService
 
     /**
      * Update shipment status.
+     * Ensures atomic updates and prevents duplicate status changes.
      */
     public function updateShipmentStatus($shipmentId, $status, $source = 'manual', $description = null)
     {
         return DB::transaction(function () use ($shipmentId, $status, $source, $description) {
-            $shipment = Shipment::findOrFail($shipmentId);
+            $shipment = Shipment::lockForUpdate()->findOrFail($shipmentId);
             
             $oldStatus = $shipment->shipment_status;
-            $shipment->update(['shipment_status' => $status]);
             
-            // Log the change
-            $this->logTrackingUpdate($shipmentId, $status, $source, $description ?? "Status changed from {$oldStatus} to {$status}");
+            // Prevent updating to the same status
+            if ($oldStatus === $status) {
+                Log::info("Shipment status unchanged", [
+                    'shipment_id' => $shipmentId,
+                    'status' => $status
+                ]);
+                return $shipment;
+            }
+            
+            // Prepare update data
+            $updateData = ['shipment_status' => $status];
+            
+            // Update timestamps based on status
+            switch ($status) {
+                case 'shipped':
+                    $updateData['shipped_at'] = Carbon::now();
+                    break;
+                case 'delivered':
+                    $updateData['delivered_at'] = Carbon::now();
+                    break;
+                case 'in_transit':
+                    $updateData['in_transit_at'] = Carbon::now();
+                    break;
+                case 'out_for_delivery':
+                    $updateData['out_for_delivery_at'] = Carbon::now();
+                    break;
+            }
+            
+            // Atomic update
+            $shipment->update($updateData);
+            
+            // Log the change (prevents duplicates)
+            $this->logTrackingUpdate(
+                $shipmentId, 
+                $status, 
+                $source, 
+                $description ?? "Status changed from {$oldStatus} to {$status}"
+            );
             
             // If delivered, trigger settlement
             if ($status === 'delivered') {
                 $this->markAsDelivered($shipmentId);
             }
+            
+            Log::info("Shipment status updated", [
+                'shipment_id' => $shipmentId,
+                'old_status' => $oldStatus,
+                'new_status' => $status,
+                'source' => $source
+            ]);
             
             return $shipment;
         });

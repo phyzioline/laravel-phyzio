@@ -28,7 +28,21 @@ class OrderController extends Controller implements HasMiddleware
      public function index()
     {
         $data = $this->orderService->index();
-        return view('dashboard.pages.order.index', compact('data'));
+        $stats = $this->orderService->getStats();
+        
+        // Get orders by status for the list
+        $baseQuery = \App\Models\Order::query();
+        if (!auth()->user()->hasRole('admin')) {
+            $baseQuery->whereHas('items.product', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
+        }
+        $ordersByStatus = (clone $baseQuery)
+            ->select('status', \Illuminate\Support\Facades\DB::raw('COUNT(*) as count'))
+            ->groupBy('status')
+            ->get();
+        
+        return view('dashboard.pages.order.index', compact('data', 'stats', 'ordersByStatus'));
     }
     public function orderCash()
     {

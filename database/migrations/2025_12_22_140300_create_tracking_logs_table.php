@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('location')->nullable();
             $table->text('description')->nullable();
-            $table->enum('source', ['api', 'manual', 'system'])->default('manual');
+            $table->enum('source', ['api', 'manual', 'system', 'admin'])->default('manual');
             $table->timestamp('created_at')->useCurrent();
 
             // Indexes for better query performance
