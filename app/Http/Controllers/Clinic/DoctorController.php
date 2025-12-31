@@ -18,29 +18,32 @@ class DoctorController extends BaseClinicController
             return view('web.clinic.doctors.index', compact('doctors', 'clinic'));
         }
 
-        // Get real doctors/therapists linked to this clinic
-        // Get doctor IDs who have appointments in this clinic
-        $doctorIds = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
-            ->whereNotNull('doctor_id')
-            ->distinct()
-            ->pluck('doctor_id')
+        // CRITICAL: Only show doctors/therapists assigned to THIS clinic via clinic_staff table
+        // This ensures proper data isolation between clinics
+        $doctorIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->where('is_active', true)
+            ->pluck('user_id')
             ->toArray();
         
-        // Also check if doctors are linked via company_id (if column exists)
-        $query = User::whereIn('type', ['therapist', 'doctor']);
-        
-        if (!empty($doctorIds)) {
-            $query->whereIn('id', $doctorIds);
-        } elseif (\Schema::hasColumn('users', 'company_id')) {
-            // Fallback: show doctors from same company
-            $query->where('company_id', $clinic->company_id);
-        } else {
-            // If no linking mechanism, show all therapists (for now)
-            $query->where('type', 'therapist');
+        // If no doctors assigned via clinic_staff, check appointments as fallback
+        if (empty($doctorIds)) {
+            $doctorIds = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                ->whereNotNull('doctor_id')
+                ->distinct()
+                ->pluck('doctor_id')
+                ->toArray();
         }
         
-        $doctors = $query->get()
-            ->map(function($doctor) use ($clinic) {
+        // Only get doctors that are assigned to this clinic
+        if (empty($doctorIds)) {
+            // No doctors assigned to this clinic - return empty collection
+            $doctors = collect();
+        } else {
+            $doctors = User::whereIn('id', $doctorIds)
+                ->whereIn('type', ['therapist', 'doctor'])
+                ->get()
+                ->map(function($doctor) use ($clinic) {
                 // Get patient count for this doctor in this clinic
                 $patientCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
                     ->where('doctor_id', $doctor->id)
@@ -87,6 +90,7 @@ class DoctorController extends BaseClinicController
                     'phone' => $doctor->phone,
                 ];
             });
+        }
         
         return view('web.clinic.doctors.index', compact('doctors', 'clinic'));
     }
@@ -141,6 +145,15 @@ class DoctorController extends BaseClinicController
         }
 
         $doctor = User::create($doctorData);
+        
+        // CRITICAL: Assign doctor to this clinic via clinic_staff table
+        \App\Models\ClinicStaff::create([
+            'clinic_id' => $clinic->id,
+            'user_id' => $doctor->id,
+            'role' => 'therapist',
+            'is_active' => true,
+            'hired_date' => now(),
+        ]);
 
         return redirect()->route('clinic.doctors.index')
             ->with('success', 'Doctor registered successfully. They can now be assigned to appointments.');
@@ -166,9 +179,17 @@ class DoctorController extends BaseClinicController
             return view('web.clinic.doctors.show', compact('doctor', 'doctorData', 'clinic'));
         }
 
-        $doctor = User::where('type', 'therapist')
-            ->orWhere('type', 'doctor')
-            ->findOrFail($id);
+        // CRITICAL: Verify doctor belongs to this clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $id)
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->first();
+        
+        if (!$clinicStaff) {
+            abort(403, 'This doctor is not assigned to your clinic.');
+        }
+        
+        $doctor = User::findOrFail($id);
         
         $patientCount = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
             ->where('doctor_id', $doctor->id)

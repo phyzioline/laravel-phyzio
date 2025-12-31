@@ -41,8 +41,16 @@
                              <span class="badge {{ $member->status == 'Active' ? 'badge-success' : 'badge-secondary' }}">{{ $member->status }}</span>
                         </td>
                         <td class="text-right">
-                            <button class="btn btn-sm btn-link text-muted"><i class="las la-edit"></i></button>
-                            <button class="btn btn-sm btn-link text-danger"><i class="las la-trash"></i></button>
+                            <a href="{{ route('clinic.staff.edit', $member->id) }}" class="btn btn-sm btn-link text-muted" title="Edit">
+                                <i class="las la-edit"></i>
+                            </a>
+                            <form action="{{ route('clinic.staff.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this staff member?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-link text-danger" title="Delete">
+                                    <i class="las la-trash"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty

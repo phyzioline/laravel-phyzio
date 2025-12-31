@@ -19,25 +19,32 @@ class StaffController extends BaseClinicController
             return view('web.clinic.staff.index', compact('staff', 'clinic'));
         }
 
-        // Get real staff members - filter by clinic's company if possible
-        $query = User::whereIn('type', ['staff', 'receptionist', 'nurse', 'admin']);
+        // CRITICAL: Only show staff members assigned to THIS clinic via clinic_staff table
+        // This ensures proper data isolation between clinics
+        $staffIds = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->where('is_active', true)
+            ->pluck('user_id')
+            ->toArray();
         
-        // Try to filter by company_id if column exists
-        if (Schema::hasColumn('users', 'company_id')) {
-            $query->where('company_id', $clinic->company_id);
+        if (empty($staffIds)) {
+            // No staff assigned to this clinic - return empty collection
+            $staff = collect();
+        } else {
+            $staff = User::whereIn('id', $staffIds)
+                ->whereIn('type', ['staff', 'receptionist', 'nurse', 'admin'])
+                ->get()
+                ->map(function($staffMember) {
+                    return (object)[
+                        'id' => $staffMember->id,
+                        'name' => $staffMember->name ?? ($staffMember->first_name . ' ' . $staffMember->last_name),
+                        'role' => ucfirst($staffMember->type),
+                        'email' => $staffMember->email,
+                        'phone' => $staffMember->phone,
+                        'status' => $staffMember->status ?? 'Active'
+                    ];
+                });
         }
-        
-        $staff = $query->get()
-            ->map(function($staffMember) {
-                return (object)[
-                    'id' => $staffMember->id,
-                    'name' => $staffMember->name ?? ($staffMember->first_name . ' ' . $staffMember->last_name),
-                    'role' => ucfirst($staffMember->type),
-                    'email' => $staffMember->email,
-                    'phone' => $staffMember->phone,
-                    'status' => $staffMember->status ?? 'Active'
-                ];
-            });
         
         return view('web.clinic.staff.index', compact('staff', 'clinic'));
     }
@@ -73,8 +80,6 @@ class StaffController extends BaseClinicController
         }
 
         $staffData = [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
             'name' => $request->first_name . ' ' . $request->last_name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -82,14 +87,147 @@ class StaffController extends BaseClinicController
             'type' => $request->role,
         ];
         
+        // Only set first_name and last_name if columns exist
+        if (Schema::hasColumn('users', 'first_name')) {
+            $staffData['first_name'] = $request->first_name;
+        }
+        if (Schema::hasColumn('users', 'last_name')) {
+            $staffData['last_name'] = $request->last_name;
+        }
+        
         // Link staff to clinic's company if company_id column exists
         if (Schema::hasColumn('users', 'company_id')) {
             $staffData['company_id'] = $clinic->company_id;
         }
         
         $staff = User::create($staffData);
+        
+        // CRITICAL: Assign staff to this clinic via clinic_staff table
+        \App\Models\ClinicStaff::create([
+            'clinic_id' => $clinic->id,
+            'user_id' => $staff->id,
+            'role' => $request->role,
+            'is_active' => true,
+            'hired_date' => now(),
+        ]);
 
         return redirect()->route('clinic.staff.index')
             ->with('success', 'Staff member registered successfully.');
+    }
+
+    public function edit($id)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+        
+        // CRITICAL: Verify staff member belongs to this clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $id)
+            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->first();
+        
+        if (!$clinicStaff) {
+            abort(403, 'This staff member is not assigned to your clinic.');
+        }
+        
+        $staffMember = User::findOrFail($id);
+        
+        return view('web.clinic.staff.edit', compact('staffMember', 'clinic'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        // CRITICAL: Verify staff member belongs to this clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $id)
+            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->first();
+        
+        if (!$clinicStaff) {
+            abort(403, 'This staff member is not assigned to your clinic.');
+        }
+        
+        $staffMember = User::findOrFail($id);
+
+        $validator = \Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'required|string|max:20',
+            'role' => 'required|in:staff,receptionist,nurse',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $updateData = [
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'type' => $request->role,
+        ];
+        
+        // Only set first_name and last_name if columns exist
+        if (Schema::hasColumn('users', 'first_name')) {
+            $updateData['first_name'] = $request->first_name;
+        }
+        if (Schema::hasColumn('users', 'last_name')) {
+            $updateData['last_name'] = $request->last_name;
+        }
+        
+        $staffMember->update($updateData);
+        
+        // Update role in clinic_staff if it changed
+        if ($clinicStaff->role !== $request->role) {
+            $clinicStaff->update(['role' => $request->role]);
+        }
+
+        return redirect()->route('clinic.staff.index')
+            ->with('success', 'Staff member updated successfully.');
+    }
+
+    public function destroy($id)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return back()->with('error', 'Clinic not found.');
+        }
+
+        // CRITICAL: Verify staff member belongs to this clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $id)
+            ->whereIn('role', ['staff', 'receptionist', 'nurse', 'admin'])
+            ->first();
+        
+        if (!$clinicStaff) {
+            abort(403, 'This staff member is not assigned to your clinic.');
+        }
+        
+        $staffMember = User::findOrFail($id);
+        
+        // Remove from clinic_staff table (soft delete relationship)
+        $clinicStaff->update([
+            'is_active' => false,
+            'terminated_date' => now(),
+        ]);
+        
+        // Optionally delete the user account (uncomment if needed)
+        // $staffMember->delete();
+
+        return redirect()->route('clinic.staff.index')
+            ->with('success', 'Staff member deleted successfully.');
     }
 }

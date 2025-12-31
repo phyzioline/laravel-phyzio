@@ -18,6 +18,7 @@ class EpisodeOfCare extends Model
         'specialty', // orthopedic, pediatric, neurological, sports
         'diagnosis_icd',
         'chief_complaint',
+        'title',
         'start_date',
         'end_date',
         'status',

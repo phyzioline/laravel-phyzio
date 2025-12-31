@@ -84,6 +84,15 @@ class EpisodeController extends BaseClinicController
 
         $data['clinic_id'] = $clinic->id; // Use clinic ID, not Auth::id()
         $data['status'] = 'active';
+        
+        // Generate a default title if not provided
+        if (empty($data['title'])) {
+            $specialtyLabel = ucfirst($data['specialty'] ?? 'General');
+            $complaintPreview = !empty($data['chief_complaint']) 
+                ? substr($data['chief_complaint'], 0, 50) 
+                : 'Care Episode';
+            $data['title'] = $specialtyLabel . ' - ' . $complaintPreview;
+        }
 
         $episode = EpisodeOfCare::create($data);
 
