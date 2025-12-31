@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth', 'therapist', \App\Http\Middleware\SetDash
     
     // Home Visits
     Route::get('/home_visits', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'index'])->name('home_visits.index');
+    Route::get('/home_visits/{id}', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'show'])->name('home_visits.show');
     Route::post('/home_visits/{id}/status', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'updateStatus'])->name('home_visits.status');
     Route::post('/home_visits/{id}/accept', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'accept'])->name('home_visits.accept');
     Route::post('/home_visits/{id}/complete', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'complete'])->name('home_visits.complete');
@@ -52,9 +53,6 @@ Route::group(['middleware' => ['auth', 'therapist', \App\Http\Middleware\SetDash
     Route::get('/patients', [\App\Http\Controllers\Therapist\PatientController::class, 'index'])->name('patients.index');
     Route::get('/patients/create', [\App\Http\Controllers\Therapist\PatientController::class, 'create'])->name('patients.create');
     Route::get('/patients/{id}', [\App\Http\Controllers\Therapist\PatientController::class, 'show'])->name('patients.show');
-    
-    // Home Visit Details
-    Route::get('/home_visits/{id}', [\App\Http\Controllers\Therapist\HomeVisitController::class, 'show'])->name('home_visits.show');
 
     // Earnings (New)
     Route::get('/earnings', [\App\Http\Controllers\Therapist\EarningsController::class, 'index'])->name('earnings.index');

@@ -9,8 +9,8 @@
             <p class="text-muted">{{ __('View and manage your consultation schedule') }}</p>
         </div>
         <div>
-             <button class="btn btn-outline-secondary mr-2 shadow-sm"><i class="las la-history"></i> {{ __('History') }}</button>
-             <button class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('New Visit') }}</button>
+             <a href="#past" class="btn btn-outline-secondary mr-2 shadow-sm" data-toggle="tab" role="tab" aria-controls="past" aria-selected="false"><i class="las la-history"></i> {{ __('History') }}</a>
+             <a href="{{ route('therapist.schedule.index') }}" class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('New Visit') }}</a>
         </div>
     </div>
 
@@ -121,16 +121,16 @@
         <div class="card-header py-3 bg-white border-bottom-0">
             <ul class="nav nav-pills" id="appointmentTabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="upcoming-tab" data-toggle="pill" href="#upcoming" role="tab" aria-controls="upcoming" aria-selected="true">{{ __('Upcoming') }}</a>
+                    <a class="nav-link active" id="upcoming-tab" data-toggle="tab" href="#upcoming" role="tab" aria-controls="upcoming" aria-selected="true">{{ __('Upcoming') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="past-tab" data-toggle="pill" href="#past" role="tab" aria-controls="past" aria-selected="false">{{ __('Past') }}</a>
+                    <a class="nav-link" id="past-tab" data-toggle="tab" href="#past" role="tab" aria-controls="past" aria-selected="false">{{ __('Past') }}</a>
                 </li>
                  <li class="nav-item">
-                    <a class="nav-link" id="cancelled-tab" data-toggle="pill" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">{{ __('Cancelled') }}</a>
+                    <a class="nav-link" id="cancelled-tab" data-toggle="tab" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">{{ __('Cancelled') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="visits-tab" data-toggle="pill" href="#visits" role="tab" aria-controls="visits" aria-selected="false">{{ __('Home Visit Requests') }}</a>
+                    <a class="nav-link" id="visits-tab" data-toggle="tab" href="#visits" role="tab" aria-controls="visits" aria-selected="false">{{ __('Home Visit Requests') }}</a>
                 </li>
             </ul>
         </div>
@@ -161,12 +161,12 @@
                                             <span class="font-weight-bold">{{ $appointment->patient->name ?? 'Unknown Patient' }}</span>
                                         </div>
                                     </td>
-                                    <td><span class="badge badge-light border">{{ $appointment->service->name ?? $appointment->type }}</span></td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') }}</td>
+                                    <td><span class="badge badge-light border">{{ $appointment->complain_type ?? $appointment->type ?? __('Home Visit') }}</span></td>
+                                    <td>{{ $appointment->scheduled_at ? \Carbon\Carbon::parse($appointment->scheduled_at)->format('M d, Y') : ($appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') : 'N/A') }}</td>
+                                    <td>{{ $appointment->scheduled_at ? \Carbon\Carbon::parse($appointment->scheduled_at)->format('h:i A') : ($appointment->appointment_time ? \Carbon\Carbon::parse($appointment->appointment_time)->format('h:i A') : 'N/A') }}</td>
                                     <td><span class="badge badge-warning">{{ ucfirst($appointment->status) }}</span></td>
                                     <td class="text-center">
-                                        <a href="{{ route('therapist.home_visits.show', $appointment->id) }}" class="btn btn-sm btn-light border shadow-sm" title="View Details"><i class="las la-eye"></i></a>
+                                        <a href="{{ route('therapist.home_visits.show', $appointment->id) }}" class="btn btn-sm btn-light border shadow-sm" title="{{ __('View Details') }}"><i class="las la-eye"></i></a>
                                     </td>
                                 </tr>
                                 @empty
@@ -196,11 +196,11 @@
                             <tbody>
                                 @forelse($past as $appointment)
                                 <tr>
-                                    <td>{{ $appointment->patient->name ?? 'Unknown' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}</td>
+                                    <td>{{ $appointment->patient->name ?? ($appointment->guest_name ?? 'Unknown') }}</td>
+                                    <td>{{ $appointment->scheduled_at ? \Carbon\Carbon::parse($appointment->scheduled_at)->format('M d, Y') : ($appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') : 'N/A') }}</td>
                                     <td><span class="badge badge-light border">{{ ucfirst($appointment->status) }}</span></td>
                                     <td class="text-center">
-                                        <button class="btn btn-sm btn-light border shadow-sm"><i class="las la-eye"></i></button>
+                                        <a href="{{ route('therapist.home_visits.show', $appointment->id) }}" class="btn btn-sm btn-light border shadow-sm" title="{{ __('View Details') }}"><i class="las la-eye"></i></a>
                                     </td>
                                 </tr>
                                 @empty
@@ -224,9 +224,9 @@
                             <tbody>
                                 @forelse($cancelled as $appointment)
                                 <tr>
-                                    <td>{{ $appointment->patient->name ?? 'Unknown' }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') }}</td>
-                                    <td>{{ $appointment->notes ?? __('No reason provided') }}</td>
+                                    <td>{{ $appointment->patient->name ?? ($appointment->guest_name ?? 'Unknown') }}</td>
+                                    <td>{{ $appointment->scheduled_at ? \Carbon\Carbon::parse($appointment->scheduled_at)->format('M d, Y') : ($appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('M d, Y') : 'N/A') }}</td>
+                                    <td>{{ $appointment->cancellation_reason ?? $appointment->notes ?? __('No reason provided') }}</td>
                                 </tr>
                                 @empty
                                      <tr><td colspan="3" class="text-center">{{ __('No cancelled home visits.') }}</td></tr>
@@ -320,4 +320,33 @@
     </div>
 </div>
 @endif
+
+@push('scripts')
+<script>
+    // Initialize Bootstrap tabs
+    $(document).ready(function() {
+        // Tab switching
+        $('#appointmentTabs a[data-toggle="tab"]').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // Handle History button click - switch to Past tab
+        $('a[href="#past"]').on('click', function(e) {
+            e.preventDefault();
+            $('#past-tab').tab('show');
+            // Scroll to tabs section
+            $('html, body').animate({
+                scrollTop: $('#appointmentTabs').offset().top - 100
+            }, 500);
+        });
+
+        // Ensure tabs work on page load
+        var hash = window.location.hash;
+        if (hash) {
+            $('a[href="' + hash + '"]').tab('show');
+        }
+    });
+</script>
+@endpush
 @endsection
