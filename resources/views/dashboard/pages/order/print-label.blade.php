@@ -37,8 +37,7 @@
             font-size: 12px !important;
         }
         
-        /* Hide ALL dashboard elements - be very aggressive */
-        body > *:not(#printable-area),
+        /* Hide dashboard elements but NOT the wrappers containing printable area */
         .sidebar,
         .main-header,
         .navbar,
@@ -49,18 +48,24 @@
         footer,
         .no-print,
         .btn,
-        button,
-        .main-wrapper,
-        .main-content {
+        button {
             display: none !important;
             visibility: hidden !important;
-            height: 0 !important;
-            width: 0 !important;
+        }
+        
+        /* Keep wrappers visible but clean */
+        .main-wrapper {
             margin: 0 !important;
             padding: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-            opacity: 0 !important;
+            width: 100% !important;
+            background: white !important;
+        }
+        
+        .main-content {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            background: white !important;
         }
         
         /* Show ONLY the printable area - clean white page */
@@ -84,10 +89,45 @@
             clear: both !important;
         }
         
-        /* Ensure all content inside is visible */
+        /* CRITICAL: Ensure ALL content inside printable area is visible */
+        #printable-area,
         #printable-area * {
             visibility: visible !important;
-            color: #000 !important;
+            display: block !important;
+        }
+        
+        /* Fix inline elements */
+        #printable-area span,
+        #printable-area p,
+        #printable-area strong,
+        #printable-area em,
+        #printable-area small {
+            display: inline !important;
+        }
+        
+        /* Fix table elements */
+        #printable-area table {
+            display: table !important;
+            width: 100% !important;
+        }
+        
+        #printable-area tr {
+            display: table-row !important;
+        }
+        
+        #printable-area td,
+        #printable-area th {
+            display: table-cell !important;
+        }
+        
+        /* Fix list elements */
+        #printable-area ul,
+        #printable-area ol {
+            display: block !important;
+        }
+        
+        #printable-area li {
+            display: list-item !important;
         }
         
         /* Compact header */
