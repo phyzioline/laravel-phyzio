@@ -8,6 +8,7 @@
         table-layout: fixed !important;
         width: 100% !important;
         margin: 0 !important;
+        min-height: 100% !important;
     }
     
     #example2 th,
@@ -26,11 +27,47 @@
         padding: 0 !important;
     }
     
-    /* Adjust max-height to account for header, stats, and filters */
+    /* Make row and col-12 expand to fill available space */
+    .row.mb-5 {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: calc(100vh - 200px) !important;
+    }
+    
+    .row.mb-5 .col-12 {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: calc(100vh - 200px) !important;
+    }
+    
+    /* Adjust max-height to account for header, stats, and filters - Increased to show more data */
     @media screen and (min-width: 992px) {
         .table-responsive {
-            max-height: calc(100vh - 380px) !important;
+            max-height: calc(100vh - 200px) !important;
+            min-height: 600px !important;
+            height: calc(100vh - 200px) !important;
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
+    }
+    
+    /* Ensure card and container use full available space */
+    .card {
+        min-height: calc(100vh - 200px) !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .card-body {
+        min-height: calc(100vh - 240px) !important;
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 1rem !important;
+        margin: 0 !important;
     }
     
     /* Ensure sticky header stays on top */
@@ -148,8 +185,8 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="card" style="width: 100%; overflow: hidden; margin: 0;">
-                        <div class="card-body" style="padding: 1rem; margin: 0;">
+                    <div class="card" style="width: 100%; overflow: hidden; margin: 0; min-height: calc(100vh - 200px); flex: 1; display: flex; flex-direction: column;">
+                        <div class="card-body" style="padding: 1rem; margin: 0; min-height: calc(100vh - 240px); flex: 1; display: flex; flex-direction: column;">
                             <!-- Advanced Filters -->
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -284,7 +321,7 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 380px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 200px); min-height: 600px; height: calc(100vh - 200px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column;">
                                 <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                     <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                         <tr>

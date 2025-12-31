@@ -81,11 +81,13 @@
             height: 18px;
         }
         
-        /* Table container and scaling - Optimized for laptop screens */
+        /* Table container and scaling - Optimized for laptop screens - Increased height to fit more data */
         .table-responsive {
             width: 100% !important;
             max-width: 100% !important;
-            max-height: calc(100vh - 350px);
+            max-height: calc(100vh - 280px) !important;
+            min-height: 500px !important;
+            height: calc(100vh - 280px) !important;
             overflow-x: auto;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -115,17 +117,19 @@
             box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
         }
         
-        /* Ensure card uses full width */
+        /* Ensure card uses full width and height */
         .card {
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
             margin: 0 !important;
+            min-height: calc(100vh - 280px) !important;
         }
         
         .card-body {
             padding: 1rem !important;
             margin: 0 !important;
+            min-height: calc(100vh - 320px) !important;
         }
         
         /* Remove any left margin/padding that might create empty space */
@@ -252,7 +256,7 @@
                         </div>
                         
                         <div class="card-body" style="padding: 1rem; margin: 0;">
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 350px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 280px); min-height: 500px; height: calc(100vh - 280px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
                                         <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                             <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                                 <tr>
