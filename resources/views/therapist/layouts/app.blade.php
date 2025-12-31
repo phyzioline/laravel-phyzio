@@ -117,6 +117,29 @@
         width: 100% !important;
       }
     }
+    
+    /* Ensure modals are always on top of everything */
+    .modal {
+      z-index: 9999 !important;
+    }
+    .modal-backdrop {
+      z-index: 9998 !important;
+    }
+    .modal.show {
+      display: block !important;
+      pointer-events: auto !important;
+    }
+    .modal-dialog {
+      pointer-events: auto !important;
+    }
+    .modal-content {
+      pointer-events: auto !important;
+    }
+    /* Hide overlay when modal is open */
+    body.modal-open .overlay {
+      display: none !important;
+      z-index: 1 !important;
+    }
   </style>
 
    <link href="{{ asset('layout/plugins/toastr/toastr.min.css') }}" rel="stylesheet">

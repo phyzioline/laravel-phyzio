@@ -2,36 +2,39 @@
 
 @section('content')
 <style>
-    /* Fix modal z-index and pointer events */
-    .modal {
-        z-index: 1055 !important;
+    /* Fix modal z-index - must be higher than header (999) and everything else */
+    #addSlotModal {
+        z-index: 9999 !important;
+    }
+    #addSlotModal .modal-dialog {
+        z-index: 10000 !important;
+        pointer-events: auto !important;
+    }
+    #addSlotModal .modal-content {
+        z-index: 10001 !important;
+        pointer-events: auto !important;
+        position: relative;
     }
     .modal-backdrop {
-        z-index: 1054 !important;
+        z-index: 9998 !important;
         background-color: rgba(0, 0, 0, 0.5) !important;
+        pointer-events: auto !important;
     }
     .modal.show {
         display: block !important;
-    }
-    .modal-dialog {
-        z-index: 1056 !important;
         pointer-events: auto !important;
-    }
-    .modal-content {
-        z-index: 1057 !important;
-        pointer-events: auto !important;
-        position: relative;
     }
     /* Prevent body scroll when modal is open */
     body.modal-open {
         overflow: hidden !important;
         padding-right: 0 !important;
     }
-    /* Ensure no overlay blocks the modal */
-    .overlay {
+    /* Hide overlay when modal is open */
+    body.modal-open .overlay {
         display: none !important;
+        z-index: 1 !important;
     }
-    body.toggled .overlay {
+    body.toggled.modal-open .overlay {
         display: none !important;
     }
 </style>
@@ -128,11 +131,11 @@
 </div>
 
 <!-- Add Availability Modal -->
-<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="z-index: 1056;">
+<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="addSlotModalLabel" aria-modal="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Set Availability</h5>
+        <h5 class="modal-title" id="addSlotModalLabel">SET AVAILABILITY</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form action="{{ route('therapist.availability.update') }}" method="POST">
@@ -207,196 +210,134 @@
 
 @push('scripts')
 <script>
-    (function() {
-        'use strict';
+$(document).ready(function() {
+    var modalElement = $('#addSlotModal');
+    var modalInstance = null;
+    
+    // Check for Bootstrap 5
+    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+        modalInstance = new bootstrap.Modal(modalElement[0], {
+            backdrop: true,
+            keyboard: true,
+            focus: true
+        });
+    }
+    
+    // Open modal button
+    $('#openAvailabilityModal').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         
-        // Wait for DOM and jQuery/Bootstrap to be ready
-        function initModal() {
-            var modalElement = document.getElementById('addSlotModal');
-            if (!modalElement) return;
-            
-            var addSlotModal = null;
-            var isBootstrap5 = typeof bootstrap !== 'undefined';
-            var isBootstrap4 = typeof $.fn.modal !== 'undefined';
-            
-            // Initialize Bootstrap modal
-            if (isBootstrap5) {
-                addSlotModal = new bootstrap.Modal(modalElement, {
-                    backdrop: true,
-                    keyboard: true,
-                    focus: true
-                });
-            } else if (isBootstrap4) {
-                $(modalElement).modal({
-                    backdrop: true,
-                    keyboard: true,
-                    show: false
-                });
-            }
-            
-            // Handle button click to open modal
-            $('#openAvailabilityModal').off('click').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Remove any blocking overlays
-                $('.overlay').hide();
-                $('body').removeClass('toggled');
-                
-                // Remove any existing backdrops
-                $('.modal-backdrop').remove();
-                
-                // Reset form and errors
-                var form = $('#addSlotModal form')[0];
-                if (form) form.reset();
-                $('#days-error').hide();
-                $('.form-control').removeClass('is-invalid');
-                
-                // Show modal
-                try {
-                    if (addSlotModal) {
-                        addSlotModal.show();
-                    } else if (isBootstrap4) {
-                        $(modalElement).modal('show');
-                    } else {
-                        // Manual fallback
-                        $(modalElement).addClass('show').css({
-                            'display': 'block',
-                            'z-index': '1055'
-                        });
-                        $('body').addClass('modal-open').append('<div class="modal-backdrop fade show" style="z-index: 1054;"></div>');
-                    }
-                } catch(err) {
-                    console.error('Error showing modal:', err);
-                    // Fallback: show modal manually
-                    $(modalElement).addClass('show').css({
-                        'display': 'block',
-                        'z-index': '1055'
-                    });
-                    $('body').addClass('modal-open').append('<div class="modal-backdrop fade show" style="z-index: 1054;"></div>');
-                }
-            });
-            
-            // Handle modal close events
-            function closeModal() {
-                try {
-                    if (addSlotModal) {
-                        addSlotModal.hide();
-                    } else if (isBootstrap4) {
-                        $(modalElement).modal('hide');
-                    } else {
-                        $(modalElement).removeClass('show').css('display', 'none');
-                        $('.modal-backdrop').remove();
-                        $('body').removeClass('modal-open');
-                    }
-                } catch(err) {
-                    console.error('Error closing modal:', err);
-                    $(modalElement).removeClass('show').css('display', 'none');
-                    $('.modal-backdrop').remove();
-                    $('body').removeClass('modal-open');
-                }
-            }
-            
-            // Close button handlers
-            $(modalElement).find('.btn-close, [data-bs-dismiss="modal"]').off('click').on('click', closeModal);
-            $(modalElement).find('button[type="button"].btn-secondary').off('click').on('click', closeModal);
-            
-            // Close on backdrop click (Bootstrap 5)
-            if (isBootstrap5) {
-                $(modalElement).off('click.bs.modal').on('click.bs.modal', function(e) {
-                    if (e.target === this) {
-                        closeModal();
-                    }
-                });
-            }
-            
-            // Handle modal shown event
-            $(modalElement).on('shown.bs.modal', function () {
-                // Ensure modal is visible and clickable
-                $(this).css({
-                    'display': 'block',
-                    'z-index': '1055'
-                });
-                $('.modal-dialog', this).css('z-index', '1056');
-                $('.modal-content', this).css('z-index', '1057');
-            });
-            
-            // Handle modal hidden event
-            $(modalElement).on('hidden.bs.modal', function () {
-                // Clean up
-                $('.modal-backdrop').remove();
-                $('body').removeClass('modal-open');
-            });
-            
-            // Client-side form validation
-            $('#addSlotModal form').off('submit').on('submit', function(e) {
-                var daysChecked = $('.day-checkbox:checked').length;
-                var startTime = $('input[name="start_time"]').val();
-                var endTime = $('input[name="end_time"]').val();
-                var isValid = true;
-                
-                // Validate days
-                if (daysChecked === 0) {
-                    $('#days-error').show();
-                    isValid = false;
-                } else {
-                    $('#days-error').hide();
-                }
-                
-                // Validate times
-                if (!startTime) {
-                    $('input[name="start_time"]').addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $('input[name="start_time"]').removeClass('is-invalid');
-                }
-                
-                if (!endTime) {
-                    $('input[name="end_time"]').addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $('input[name="end_time"]').removeClass('is-invalid');
-                }
-                
-                // Validate end time is after start time
-                if (startTime && endTime && startTime >= endTime) {
-                    alert('{{ __("End time must be after start time.") }}');
-                    $('input[name="end_time"]').addClass('is-invalid');
-                    isValid = false;
-                }
-                
-                if (!isValid) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
-                }
-            });
-            
-            // Remove error on day selection
-            $('.day-checkbox').off('change').on('change', function() {
-                if ($('.day-checkbox:checked').length > 0) {
-                    $('#days-error').hide();
-                }
-            });
-        }
+        // Hide overlay immediately
+        $('.overlay').hide();
+        $('body').removeClass('toggled');
         
-        // Initialize when ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                if (typeof $ !== 'undefined') {
-                    $(document).ready(initModal);
-                } else {
-                    setTimeout(initModal, 100);
-                }
-            });
+        // Remove any existing backdrops
+        $('.modal-backdrop').remove();
+        
+        // Reset form
+        modalElement.find('form')[0].reset();
+        $('#days-error').hide();
+        modalElement.find('.form-control').removeClass('is-invalid');
+        
+        // Show modal
+        if (modalInstance) {
+            modalInstance.show();
         } else {
-            if (typeof $ !== 'undefined') {
-                $(document).ready(initModal);
+            // Fallback for Bootstrap 4 or manual
+            modalElement.modal('show');
+        }
+        
+        // Force hide overlay after a short delay
+        setTimeout(function() {
+            $('.overlay').hide();
+            $('body').removeClass('toggled');
+        }, 100);
+    });
+    
+    // Close modal handlers
+    modalElement.find('.btn-close, [data-bs-dismiss="modal"], button.btn-secondary').on('click', function() {
+        if (modalInstance) {
+            modalInstance.hide();
+        } else {
+            modalElement.modal('hide');
+        }
+    });
+    
+    // Close on backdrop click
+    modalElement.on('click', function(e) {
+        if ($(e.target).is(modalElement)) {
+            if (modalInstance) {
+                modalInstance.hide();
             } else {
-                setTimeout(initModal, 100);
+                modalElement.modal('hide');
             }
         }
-    })();
+    });
+    
+    // Ensure overlay is hidden when modal is shown
+    modalElement.on('shown.bs.modal show.bs.modal', function() {
+        $('.overlay').hide();
+        $('body').removeClass('toggled');
+        // Force z-index
+        $(this).css('z-index', '9999');
+        $(this).find('.modal-dialog').css('z-index', '10000');
+        $(this).find('.modal-content').css('z-index', '10001');
+    });
+    
+    // Clean up on hide
+    modalElement.on('hidden.bs.modal', function() {
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
+    });
+    
+    // Form validation
+    modalElement.find('form').on('submit', function(e) {
+        var daysChecked = $('.day-checkbox:checked').length;
+        var startTime = $('input[name="start_time"]').val();
+        var endTime = $('input[name="end_time"]').val();
+        var isValid = true;
+        
+        if (daysChecked === 0) {
+            $('#days-error').show();
+            isValid = false;
+        } else {
+            $('#days-error').hide();
+        }
+        
+        if (!startTime) {
+            $('input[name="start_time"]').addClass('is-invalid');
+            isValid = false;
+        } else {
+            $('input[name="start_time"]').removeClass('is-invalid');
+        }
+        
+        if (!endTime) {
+            $('input[name="end_time"]').addClass('is-invalid');
+            isValid = false;
+        } else {
+            $('input[name="end_time"]').removeClass('is-invalid');
+        }
+        
+        if (startTime && endTime && startTime >= endTime) {
+            alert('{{ __("End time must be after start time.") }}');
+            $('input[name="end_time"]').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    
+    // Remove error on day selection
+    $('.day-checkbox').on('change', function() {
+        if ($('.day-checkbox:checked').length > 0) {
+            $('#days-error').hide();
+        }
+    });
+});
 </script>
 @endpush
 @endsection
