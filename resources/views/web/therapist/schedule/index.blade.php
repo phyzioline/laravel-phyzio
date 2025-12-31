@@ -3,23 +3,36 @@
 @section('content')
 <style>
     /* Fix modal z-index and pointer events */
-    #addSlotModal {
+    .modal {
         z-index: 1055 !important;
     }
     .modal-backdrop {
         z-index: 1054 !important;
-        pointer-events: auto !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
     }
-    .modal {
+    .modal.show {
+        display: block !important;
+    }
+    .modal-dialog {
+        z-index: 1056 !important;
         pointer-events: auto !important;
     }
     .modal-content {
+        z-index: 1057 !important;
         pointer-events: auto !important;
+        position: relative;
     }
-    /* Ensure modal is clickable */
-    .modal.show {
-        display: block !important;
-        pointer-events: auto !important;
+    /* Prevent body scroll when modal is open */
+    body.modal-open {
+        overflow: hidden !important;
+        padding-right: 0 !important;
+    }
+    /* Ensure no overlay blocks the modal */
+    .overlay {
+        display: none !important;
+    }
+    body.toggled .overlay {
+        display: none !important;
     }
 </style>
 <div class="container-fluid py-4" style="background-color: #f8f9fa;">
@@ -194,133 +207,196 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
-        // Get modal element
-        var modalElement = document.getElementById('addSlotModal');
-        var addSlotModal = null;
+    (function() {
+        'use strict';
         
-        // Initialize Bootstrap modal
-        if (typeof bootstrap !== 'undefined') {
-            addSlotModal = new bootstrap.Modal(modalElement, {
-                backdrop: true,
-                keyboard: true,
-                focus: true
+        // Wait for DOM and jQuery/Bootstrap to be ready
+        function initModal() {
+            var modalElement = document.getElementById('addSlotModal');
+            if (!modalElement) return;
+            
+            var addSlotModal = null;
+            var isBootstrap5 = typeof bootstrap !== 'undefined';
+            var isBootstrap4 = typeof $.fn.modal !== 'undefined';
+            
+            // Initialize Bootstrap modal
+            if (isBootstrap5) {
+                addSlotModal = new bootstrap.Modal(modalElement, {
+                    backdrop: true,
+                    keyboard: true,
+                    focus: true
+                });
+            } else if (isBootstrap4) {
+                $(modalElement).modal({
+                    backdrop: true,
+                    keyboard: true,
+                    show: false
+                });
+            }
+            
+            // Handle button click to open modal
+            $('#openAvailabilityModal').off('click').on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Remove any blocking overlays
+                $('.overlay').hide();
+                $('body').removeClass('toggled');
+                
+                // Remove any existing backdrops
+                $('.modal-backdrop').remove();
+                
+                // Reset form and errors
+                var form = $('#addSlotModal form')[0];
+                if (form) form.reset();
+                $('#days-error').hide();
+                $('.form-control').removeClass('is-invalid');
+                
+                // Show modal
+                try {
+                    if (addSlotModal) {
+                        addSlotModal.show();
+                    } else if (isBootstrap4) {
+                        $(modalElement).modal('show');
+                    } else {
+                        // Manual fallback
+                        $(modalElement).addClass('show').css({
+                            'display': 'block',
+                            'z-index': '1055'
+                        });
+                        $('body').addClass('modal-open').append('<div class="modal-backdrop fade show" style="z-index: 1054;"></div>');
+                    }
+                } catch(err) {
+                    console.error('Error showing modal:', err);
+                    // Fallback: show modal manually
+                    $(modalElement).addClass('show').css({
+                        'display': 'block',
+                        'z-index': '1055'
+                    });
+                    $('body').addClass('modal-open').append('<div class="modal-backdrop fade show" style="z-index: 1054;"></div>');
+                }
             });
-        } else if (typeof $.fn.modal !== 'undefined') {
-            // Fallback to jQuery Bootstrap modal (Bootstrap 4)
-            $(modalElement).modal({
-                backdrop: true,
-                keyboard: true,
-                show: false
+            
+            // Handle modal close events
+            function closeModal() {
+                try {
+                    if (addSlotModal) {
+                        addSlotModal.hide();
+                    } else if (isBootstrap4) {
+                        $(modalElement).modal('hide');
+                    } else {
+                        $(modalElement).removeClass('show').css('display', 'none');
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+                    }
+                } catch(err) {
+                    console.error('Error closing modal:', err);
+                    $(modalElement).removeClass('show').css('display', 'none');
+                    $('.modal-backdrop').remove();
+                    $('body').removeClass('modal-open');
+                }
+            }
+            
+            // Close button handlers
+            $(modalElement).find('.btn-close, [data-bs-dismiss="modal"]').off('click').on('click', closeModal);
+            $(modalElement).find('button[type="button"].btn-secondary').off('click').on('click', closeModal);
+            
+            // Close on backdrop click (Bootstrap 5)
+            if (isBootstrap5) {
+                $(modalElement).off('click.bs.modal').on('click.bs.modal', function(e) {
+                    if (e.target === this) {
+                        closeModal();
+                    }
+                });
+            }
+            
+            // Handle modal shown event
+            $(modalElement).on('shown.bs.modal', function () {
+                // Ensure modal is visible and clickable
+                $(this).css({
+                    'display': 'block',
+                    'z-index': '1055'
+                });
+                $('.modal-dialog', this).css('z-index', '1056');
+                $('.modal-content', this).css('z-index', '1057');
+            });
+            
+            // Handle modal hidden event
+            $(modalElement).on('hidden.bs.modal', function () {
+                // Clean up
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            });
+            
+            // Client-side form validation
+            $('#addSlotModal form').off('submit').on('submit', function(e) {
+                var daysChecked = $('.day-checkbox:checked').length;
+                var startTime = $('input[name="start_time"]').val();
+                var endTime = $('input[name="end_time"]').val();
+                var isValid = true;
+                
+                // Validate days
+                if (daysChecked === 0) {
+                    $('#days-error').show();
+                    isValid = false;
+                } else {
+                    $('#days-error').hide();
+                }
+                
+                // Validate times
+                if (!startTime) {
+                    $('input[name="start_time"]').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('input[name="start_time"]').removeClass('is-invalid');
+                }
+                
+                if (!endTime) {
+                    $('input[name="end_time"]').addClass('is-invalid');
+                    isValid = false;
+                } else {
+                    $('input[name="end_time"]').removeClass('is-invalid');
+                }
+                
+                // Validate end time is after start time
+                if (startTime && endTime && startTime >= endTime) {
+                    alert('{{ __("End time must be after start time.") }}');
+                    $('input[name="end_time"]').addClass('is-invalid');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+            });
+            
+            // Remove error on day selection
+            $('.day-checkbox').off('change').on('change', function() {
+                if ($('.day-checkbox:checked').length > 0) {
+                    $('#days-error').hide();
+                }
             });
         }
         
-        // Handle button click to open modal
-        $('#openAvailabilityModal').on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Remove any blocking overlays
-            $('.overlay').hide();
-            $('body').removeClass('toggled');
-            
-            // Reset form and errors
-            $('#addSlotModal form')[0].reset();
-            $('#days-error').hide();
-            $('.form-control').removeClass('is-invalid');
-            
-            // Show modal
-            if (addSlotModal) {
-                addSlotModal.show();
-            } else if (typeof $.fn.modal !== 'undefined') {
-                $(modalElement).modal('show');
+        // Initialize when ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                if (typeof $ !== 'undefined') {
+                    $(document).ready(initModal);
+                } else {
+                    setTimeout(initModal, 100);
+                }
+            });
+        } else {
+            if (typeof $ !== 'undefined') {
+                $(document).ready(initModal);
             } else {
-                // Fallback: show modal manually
-                $(modalElement).addClass('show').css('display', 'block');
-                $('body').append('<div class="modal-backdrop fade show"></div>');
+                setTimeout(initModal, 100);
             }
-        });
-        
-        // Handle modal open event
-        $(modalElement).on('show.bs.modal', function () {
-            // Remove any blocking overlays
-            $('.overlay').hide();
-            $('body').removeClass('toggled');
-            // Reset form and errors
-            $('#addSlotModal form')[0].reset();
-            $('#days-error').hide();
-            $('.form-control').removeClass('is-invalid');
-        });
-        
-        // Ensure modal content is clickable
-        $(modalElement).on('shown.bs.modal', function () {
-            $(this).css('pointer-events', 'auto');
-            $('.modal-content', this).css('pointer-events', 'auto');
-        });
-        
-        // Handle close button
-        $(modalElement).find('.btn-close, [data-bs-dismiss="modal"], button[type="button"].btn-secondary').on('click', function() {
-            if (addSlotModal) {
-                addSlotModal.hide();
-            } else if (typeof $.fn.modal !== 'undefined') {
-                $(modalElement).modal('hide');
-            } else {
-                $(modalElement).removeClass('show').css('display', 'none');
-                $('.modal-backdrop').remove();
-            }
-        });
-        
-        // Client-side form validation
-        $('#addSlotModal form').on('submit', function(e) {
-            var daysChecked = $('.day-checkbox:checked').length;
-            var startTime = $('input[name="start_time"]').val();
-            var endTime = $('input[name="end_time"]').val();
-            var isValid = true;
-            
-            // Validate days
-            if (daysChecked === 0) {
-                $('#days-error').show();
-                isValid = false;
-            } else {
-                $('#days-error').hide();
-            }
-            
-            // Validate times
-            if (!startTime) {
-                $('input[name="start_time"]').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('input[name="start_time"]').removeClass('is-invalid');
-            }
-            
-            if (!endTime) {
-                $('input[name="end_time"]').addClass('is-invalid');
-                isValid = false;
-            } else {
-                $('input[name="end_time"]').removeClass('is-invalid');
-            }
-            
-            // Validate end time is after start time
-            if (startTime && endTime && startTime >= endTime) {
-                alert('End time must be after start time.');
-                $('input[name="end_time"]').addClass('is-invalid');
-                isValid = false;
-            }
-            
-            if (!isValid) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        });
-        
-        // Remove error on day selection
-        $('.day-checkbox').on('change', function() {
-            if ($('.day-checkbox:checked').length > 0) {
-                $('#days-error').hide();
-            }
-        });
-    });
+        }
+    })();
 </script>
 @endpush
 @endsection
