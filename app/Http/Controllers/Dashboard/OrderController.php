@@ -113,23 +113,52 @@ class OrderController extends Controller implements HasMiddleware
         try {
             $order = $this->orderService->show($id);
             
+            // Log the current status for debugging
+            \Illuminate\Support\Facades\Log::info('Accept order attempt', [
+                'order_id' => $order->id,
+                'current_status' => $order->status,
+                'user_id' => auth()->id()
+            ]);
+            
             // Check if order can be accepted (must be pending)
             if ($order->status !== 'pending') {
                 $currentStatus = ucfirst($order->status);
+                \Illuminate\Support\Facades\Log::warning('Cannot accept order - wrong status', [
+                    'order_id' => $order->id,
+                    'current_status' => $order->status
+                ]);
                 return redirect()->back()->with('error', "Cannot accept order. Order is already {$currentStatus}. Only pending orders can be accepted.");
             }
             
             // Check if order is already completed or cancelled (safety check)
             if (in_array($order->status, ['completed', 'cancelled'])) {
+                \Illuminate\Support\Facades\Log::warning('Cannot accept order - terminal status', [
+                    'order_id' => $order->id,
+                    'current_status' => $order->status
+                ]);
                 return redirect()->back()->with('error', 'Cannot accept an order that is already completed or cancelled.');
             }
             
             // Update order status to processing (accepting means starting to process)
             $this->orderService->update(['status' => 'processing'], $id);
             
+            // Refresh order to verify the update
+            $order->refresh();
+            
+            \Illuminate\Support\Facades\Log::info('Order accepted successfully', [
+                'order_id' => $order->id,
+                'old_status' => 'pending',
+                'new_status' => $order->status
+            ]);
+            
             return redirect()->route('dashboard.orders.index')->with('success', 'Order accepted successfully. Status changed to processing.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage());
+            \Illuminate\Support\Facades\Log::error('Error accepting order', [
+                'order_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return redirect()->back()->with('error', 'Failed to accept order: ' . $e->getMessage());
         }
     }
 
