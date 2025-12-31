@@ -103,7 +103,7 @@
                     <div class="card-body">
                         <div class="card-list-widget">
                             <ul class="list-unstyled">
-                                <li><a href="{{ route('show') }}" style="text-decoration: none; color: #333; padding: 10px 0; display: block; font-weight: 500;">All Products</a></li>
+                                <li><a href="{{ route('web.shop.show.' . app()->getLocale()) }}" style="text-decoration: none; color: #333; padding: 10px 0; display: block; font-weight: 500;">{{ __('All Products') }}</a></li>
                                 @foreach (App\Models\Category::where('status', 'active')->get() as $category)
                                     <li style="border-bottom: 1px solid #f0f0f0;">
                                         <a href="#category-{{ $category->id }}" data-toggle="collapse" aria-expanded="false" class="d-flex justify-content-between align-items-center" style="text-decoration: none; color: #333; padding: 12px 0; font-weight: 500;">
@@ -171,7 +171,7 @@
                 @endif
 
                 <li class="menu-item-box {{ request()->is(app()->getLocale()) || request()->is(app()->getLocale() . '/*') ? 'active' : '' }}"><a href="{{ '/' . app()->getLocale() }}">{{ __('Home') }}</a></li>
-                <li class="menu-item-box {{ Route::is('show') ? 'active' : '' }}"><a href="{{ route('show') }}">{{ __('Shop') }}</a></li>
+                <li class="menu-item-box {{ Route::is('web.shop.show.*') ? 'active' : '' }}"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}">{{ __('Shop') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.home_visits.*') ? 'active' : '' }}"><a href="{{ route('web.home_visits.index') }}">{{ __('Home Visits') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.erp.index') ? 'active' : '' }}"><a href="{{ route('web.erp.index') }}">{{ __('Clinic ERP') }}</a></li>
                 <li class="menu-item-box {{ Route::is('web.courses.index') ? 'active' : '' }}"><a href="{{ route('web.courses.index') }}">{{ __('Courses') }}</a></li>

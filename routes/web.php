@@ -77,6 +77,8 @@ foreach ($supportedLocales as $locale) {
 
      Route::get('tearms_condition',[TearmsConditionController::class, 'index'])->name("tearms_condition.index.{$locale}");
         
+        // Shop routes with locale prefix
+        Route::get('/shop', [ShowController::class, 'show'])->name("web.shop.show.{$locale}");
         Route::get('/shop/search', [ShowController::class, 'search'])->name("web.shop.search.{$locale}");
      
           Route::get('/shop/subcategory/{id}', [ShowController::class, 'ProductBySubCategory'])->name("web.shop.category.{$locale}");
@@ -279,7 +281,11 @@ Route::post('/currency/switch', function (\Illuminate\Http\Request $request) {
 
 // Routes that work WITHOUT locale prefix (use session/default locale)
 // These routes were working before and should continue to work
-Route::get('/shop', [ShowController::class, 'show'])->name('show');
+// Note: /shop is now inside locale loop, but keeping this as fallback for backward compatibility
+Route::get('/shop', function() {
+    $locale = app()->getLocale();
+    return redirect("/{$locale}/shop");
+})->name('show');
 Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name('web.home_visits.index');
 Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name('web.home_visits.show');
 Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name('web.home_visits.book');

@@ -832,7 +832,7 @@ body.has-hero .shop-hero-banner {
                 <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
                     <nav class="main-menu ul-li-center clearfix">
                         <ul class="clearfix">
-                            <li><a href="{{ route('show') }}" class="text-decoration-none">{{ __('Shop') }}</a></li>
+                            <li><a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="text-decoration-none">{{ __('Shop') }}</a></li>
                             <li><a href="{{ route('web.home_visits.index') }}" class="text-decoration-none">{{ __('Home Visits') }}</a></li>
                             <li><a href="{{ route('web.erp.index') }}" class="text-decoration-none">{{ __('Clinic ERP') }}</a></li>
                             <li><a href="{{ route('web.courses.index') }}" class="text-decoration-none">{{ __('Courses') }}</a></li>

@@ -507,14 +507,14 @@ header,
     <!-- Category Icons Bar -->
     <section class="category-icons-bar">
         <div class="category-icons-container">
-            <a href="{{ route('show') }}" class="category-icon-item {{ !request()->has('category') ? 'active' : '' }}">
+            <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="category-icon-item {{ !request()->has('category') ? 'active' : '' }}">
                 <div class="category-icon-circle">
                     <i class="las la-border-all"></i>
                 </div>
                 <span class="category-icon-name">All Products</span>
             </a>
             @foreach ($categories as $category)
-                <a href="{{ route('show', ['category' => $category->id]) }}" 
+                <a href="{{ route('web.shop.show.' . app()->getLocale(), ['category' => $category->id]) }}" 
                    class="category-icon-item {{ request('category') == $category->id ? 'active' : '' }}"
                    data-category-id="{{ $category->id }}">
                         <div class="category-icon-circle">

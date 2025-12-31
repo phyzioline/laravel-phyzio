@@ -382,7 +382,7 @@
                     <div class="breadcrumb-nav ul-li-center clearfix">
                         <ul class="clearfix">
                             <li style="font-size: 18px;color: #fff; "><a href="{{ '/' . app()->getLocale() }}">Home |</a></li>
-                            <li style="font-size: 18px;" class="active mx-2"><a href="{{ route('show') }}">Shop |</a></li>
+                            <li style="font-size: 18px;" class="active mx-2"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}">{{ __('Shop') }} |</a></li>
                             <li style="font-size: 18px; color: #fff; " class="active">Wishlist</li>
                         </ul>
                     </div>
@@ -454,7 +454,7 @@
                         <i class="lar la-heart"></i>
                         <h3>Your Wishlist is Empty</h3>
                         <p>You haven't added any products to your wishlist yet. Start exploring our products and add your favorites!</p>
-                        <a href="{{ route('show') }}" class="btn">Browse Products</a>
+                        <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="btn">{{ __('Browse Products') }}</a>
                     </div>
                 @endif
             </div>

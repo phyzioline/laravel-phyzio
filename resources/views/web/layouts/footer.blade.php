@@ -32,7 +32,7 @@
              <li class="mb-2"><a href="{{ route('web.home_visits.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Home Visits') }}</a></li>
              <li class="mb-2"><a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Find Jobs') }}</a></li>
              <li class="mb-2"><a href="{{ route('web.courses.index') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Courses') }}</a></li>
-             <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Products') }}</a></li>
+             <li class="mb-2"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Products') }}</a></li>
           </ul>
         </div>
       </div>
@@ -64,7 +64,7 @@
                 @else
                  <li class="mb-2"><a href="{{ route('view_login.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Login') }} / {{ __('Register') }}</a></li>
                 @endif
-                 <li class="mb-2"><a href="{{ route('show') }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shop') }}</a></li>
+                 <li class="mb-2"><a href="{{ route('web.shop.show.' . app()->getLocale()) }}" style="color: rgba(255,255,255,0.8); text-decoration: none;">{{ __('Shop') }}</a></li>
             </ul>
 
             <h5 class="widget-title mb-3" style="font-weight: 700; font-size: 16px; color: white;">{{ __('Connect With Us') }}</h5>

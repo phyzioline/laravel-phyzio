@@ -374,7 +374,7 @@
                 </div>
 
                 <div class="btn-wrap text-center clearfix">
-                    <a href="{{ route('show') }}" class="btn btn-outline-primary btn-lg rounded-pill px-5 font-weight-bold" style="border-width: 2px;">
+                    <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="btn btn-outline-primary btn-lg rounded-pill px-5 font-weight-bold" style="border-width: 2px;">
                         {{ __('View All Products') }}
                     </a>
                 </div>

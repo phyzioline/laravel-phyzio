@@ -305,7 +305,7 @@
                     </div>
                     <h2>No Products to Compare</h2>
                     <p>Add products to compare by clicking the compare button on product cards</p>
-                    <a href="{{ route('show') }}" class="compare-empty-btn">
+                    <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="compare-empty-btn">
                         <i class="las la-shopping-bag"></i> Continue Shopping
                     </a>
                 </div>
