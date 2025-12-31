@@ -292,6 +292,30 @@
      .sidebar-nav .menu-title {
        font-size: 13px !important;
      }
+     
+     /* Ensure metisMenu collapse works for both LTR and RTL */
+     .sidebar-nav .metismenu ul {
+       display: none;
+     }
+     .sidebar-nav .metismenu ul.mm-show {
+       display: block !important;
+     }
+     .sidebar-nav .metismenu .mm-collapse {
+       display: none;
+     }
+     .sidebar-nav .metismenu .mm-collapse.mm-show {
+       display: block !important;
+     }
+     .sidebar-nav .metismenu .mm-collapsing {
+       position: relative;
+       height: 0;
+       overflow: hidden;
+       transition: height 0.35s ease;
+     }
+     /* Ensure has-arrow works in both directions */
+     .sidebar-nav .metismenu .has-arrow::after {
+       display: block !important;
+     }
 
      .top-header .nav-link i, .top-header .nav-link span, .top-header .user-name {
        color: #0d9488 !important;

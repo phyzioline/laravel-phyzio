@@ -1,6 +1,56 @@
 @extends('dashboard.layouts.app')
 @section('title', __('Orders Management'))
 
+@push('styles')
+<style>
+    /* Orders table responsive layout */
+    #example2 {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
+    
+    #example2 th,
+    #example2 td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 6px 8px !important;
+    }
+    
+    /* Ensure table fits within viewport accounting for sidebar */
+    .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    /* Adjust max-height to account for header, stats, and filters */
+    @media screen and (min-width: 992px) {
+        .table-responsive {
+            max-height: calc(100vh - 380px) !important;
+        }
+    }
+    
+    /* Ensure sticky header stays on top */
+    #example2 thead th {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background-color: #f8f9fa !important;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Better text wrapping for specific columns */
+    #example2 td:nth-child(4), /* Order # */
+    #example2 td:nth-child(5), /* Name */
+    #example2 td:nth-child(6), /* Phone */
+    #example2 td:nth-child(7) { /* Address */
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.3;
+    }
+</style>
+@endpush
+
 @section('content')
     <!--start main wrapper-->
     <main class="main-wrapper">
@@ -216,27 +266,44 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: 75vh; overflow-x: auto; overflow-y: auto; width: 100%;">
-                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; min-width: 1400px;">
-                                    <thead class="table-light" style="position: sticky; top: 0; z-index: 10; background-color: #f8f9fa;">
+                            <div class="table-responsive text-center" style="max-height: calc(100vh - 350px); overflow-x: auto; overflow-y: auto; width: 100%;">
+                                <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed;">
+                                    <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                         <tr>
-                                            <th style="min-width: 50px; width: 4%;">{{ __('ID') }}</th>
-                                            <th style="min-width: 70px; width: 5%;">{{ __('Product') }}</th>
                                             @if(auth()->user()->hasRole('admin'))
-                                                <th style="min-width: 100px; width: 7%;">{{ __('Vendor') }}</th>
+                                                {{-- Admin view: 15 columns --}}
+                                                <th style="width: 4%;">{{ __('ID') }}</th>
+                                                <th style="width: 5%;">{{ __('Product') }}</th>
+                                                <th style="width: 6%;">{{ __('Vendor') }}</th>
+                                                <th style="width: 7%;">{{ __('Order #') }}</th>
+                                                <th style="width: 6%;">{{ __('Name') }}</th>
+                                                <th style="width: 6%;">{{ __('Phone') }}</th>
+                                                <th style="width: 8%;">{{ __('Address') }}</th>
+                                                <th style="width: 5%;">{{ __('Total') }}</th>
+                                                <th style="width: 5%;">{{ __('Status') }}</th>
+                                                <th style="width: 6%;">{{ __('Pay Status') }}</th>
+                                                <th style="width: 5%;">{{ __('Method') }}</th>
+                                                <th style="width: 6.5%;">{{ __('Order Date') }}</th>
+                                                <th style="width: 6.5%;">{{ __('Updated') }}</th>
+                                                <th style="width: 5%;">{{ __('Returns') }}</th>
+                                                <th style="width: 8%;">{{ __('Actions') }}</th>
+                                            @else
+                                                {{-- Vendor view: 14 columns --}}
+                                                <th style="width: 4.5%;">{{ __('ID') }}</th>
+                                                <th style="width: 5.5%;">{{ __('Product') }}</th>
+                                                <th style="width: 8%;">{{ __('Order #') }}</th>
+                                                <th style="width: 7%;">{{ __('Name') }}</th>
+                                                <th style="width: 7%;">{{ __('Phone') }}</th>
+                                                <th style="width: 9%;">{{ __('Address') }}</th>
+                                                <th style="width: 5.5%;">{{ __('Total') }}</th>
+                                                <th style="width: 5.5%;">{{ __('Status') }}</th>
+                                                <th style="width: 6.5%;">{{ __('Pay Status') }}</th>
+                                                <th style="width: 5.5%;">{{ __('Method') }}</th>
+                                                <th style="width: 7%;">{{ __('Order Date') }}</th>
+                                                <th style="width: 7%;">{{ __('Updated') }}</th>
+                                                <th style="width: 5.5%;">{{ __('Returns') }}</th>
+                                                <th style="width: 8.5%;">{{ __('Actions') }}</th>
                                             @endif
-                                            <th style="min-width: 120px; width: 9%;">{{ __('Order #') }}</th>
-                                            <th style="min-width: 100px; width: 8%;">{{ __('Name') }}</th>
-                                            <th style="min-width: 110px; width: 8%;">{{ __('Phone') }}</th>
-                                            <th style="min-width: 150px; width: 12%;">{{ __('Address') }}</th>
-                                            <th style="min-width: 90px; width: 7%;">{{ __('Total') }}</th>
-                                            <th style="min-width: 90px; width: 7%;">{{ __('Status') }}</th>
-                                            <th style="min-width: 100px; width: 8%;">{{ __('Pay Status') }}</th>
-                                            <th style="min-width: 80px; width: 6%;">{{ __('Method') }}</th>
-                                            <th style="min-width: 120px; width: 8%;">{{ __('Order Date') }}</th>
-                                            <th style="min-width: 120px; width: 8%;">{{ __('Updated') }}</th>
-                                            <th style="min-width: 80px; width: 6%;">{{ __('Returns') }}</th>
-                                            <th style="min-width: 120px; width: 9%;">{{ __('Actions') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -256,12 +323,12 @@
                                                 @if(auth()->user()->hasRole('admin'))
                                                     <td style="font-size: 0.75rem;">{{ Str::limit($order->items->first()?->product?->user?->name ?? 'N/A', 12) }}</td>
                                                 @endif
-                                                <td style="font-size: 0.75rem;">
-                                                    <strong>{{ $order->order_number ?? 'N/A' }}</strong>
+                                                <td style="font-size: 0.75rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                    <strong>{{ Str::limit($order->order_number ?? 'N/A', 18) }}</strong>
                                                 </td>
-                                                <td style="font-size: 0.8rem;">{{ Str::limit($order->name, 15) }}</td>
-                                                <td style="font-size: 0.8rem;">{{ $order->phone }}</td>
-                                                <td style="font-size: 0.8rem;">{{ Str::limit($order->address, 25) }}</td>
+                                                <td style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ Str::limit($order->name, 15) }}</td>
+                                                <td style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $order->phone }}</td>
+                                                <td style="font-size: 0.8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ Str::limit($order->address, 25) }}</td>
                                                 <td style="font-size: 0.8rem;"><strong>{{ number_format($order->total, 0) }}</strong><br><small>EGP</small></td>
                                                 <td>
                                                     @php

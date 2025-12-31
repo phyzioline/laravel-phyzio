@@ -81,17 +81,36 @@
             height: 18px;
         }
         
-        /* Table container and scaling */
+        /* Table container and scaling - Optimized for laptop screens */
         .table-responsive {
             width: 100% !important;
             max-width: 100% !important;
+            max-height: 75vh;
             overflow-x: auto;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         
         #example2 {
             width: 100% !important;
-            table-layout: auto;
+            min-width: 1600px;
+            font-size: 0.85rem;
+            table-layout: fixed;
+        }
+        
+        #example2 th,
+        #example2 td {
+            padding: 6px 8px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        #example2 thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f8f9fa;
         }
         
         /* Ensure card uses full width */
@@ -103,13 +122,12 @@
         
         /* Responsive table adjustments */
         @media screen and (max-width: 1200px) {
-            .table-responsive {
-                font-size: 11px;
+            #example2 {
+                font-size: 0.75rem;
             }
             #example2 th,
             #example2 td {
                 padding: 4px 6px !important;
-                white-space: nowrap;
             }
         }
         
@@ -220,23 +238,23 @@
                         </div>
                         
                         <div class="card-body">
-                            <div class="table-responsive text-center">
-                                        <table id="example2" class="table table-striped table-bordered">
-                                            <thead>
+                            <div class="table-responsive text-center" style="max-height: 75vh; overflow-x: auto; overflow-y: auto; width: 100%;">
+                                        <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; min-width: 1600px;">
+                                            <thead class="table-light" style="position: sticky; top: 0; z-index: 10; background-color: #f8f9fa;">
                                                 <tr>
-                                                    <th class="checkbox-column">
+                                                    <th class="checkbox-column" style="min-width: 40px; width: 2%;">
                                                         <input type="checkbox" id="selectAll">
                                                     </th>
-                                                    <th>{{ __('ID') }}</th>
-                                                    <th>{{ __('Image') }}</th>
-                                                    <th>{{ __('Category') }}</th>
-                                                    <th>{{ __('Sub Category') }}</th>
-                                                    <th>{{ __('Product Name') }}</th>
-                                                    <th>{{ __('Price') }}</th>
-                                                    <th>{{ __('Amount') }}</th>
-                                                    <th>{{ __('SKU') }}</th>
-                                                    <th>{{ __('Status') }}</th>
-                                                    <th>{{ __('Actions') }}</th>
+                                                    <th style="min-width: 60px; width: 3%;">{{ __('ID') }}</th>
+                                                    <th style="min-width: 90px; width: 5%;">{{ __('Image') }}</th>
+                                                    <th style="min-width: 120px; width: 8%;">{{ __('Category') }}</th>
+                                                    <th style="min-width: 120px; width: 8%;">{{ __('Sub Category') }}</th>
+                                                    <th style="min-width: 300px; width: 25%;">{{ __('Product Name') }}</th>
+                                                    <th style="min-width: 90px; width: 6%;">{{ __('Price') }}</th>
+                                                    <th style="min-width: 80px; width: 5%;">{{ __('Amount') }}</th>
+                                                    <th style="min-width: 120px; width: 8%;">{{ __('SKU') }}</th>
+                                                    <th style="min-width: 90px; width: 6%;">{{ __('Status') }}</th>
+                                                    <th style="min-width: 150px; width: 10%;">{{ __('Actions') }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -249,44 +267,46 @@
                                                         <td class="checkbox-column">
                                                             <input type="checkbox" class="product-checkbox" value="{{ $product->id }}">
                                                         </td>
-                                                        <td>{{ $product->id }}</td>
+                                                        <td style="font-size: 0.8rem;">{{ $product->id }}</td>
                                                         <td>
-                                                            <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 8px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
+                                                            <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 6px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
                                                                 <img src="{{ asset($product->productImages->first()?->image) }}"
                                                                     alt="Product"
                                                                     style="width: 100%; height: 100%; object-fit: contain;">
                                                             </div>
                                                         </td>
-                                                        <td>{{ $product->category?->{'name_' . app()->getLocale()} }}</td>
-                                                        <td>{{ $product->sub_category?->{'name_' . app()->getLocale()} }}</td>
-                                                        <td>{{ $product->{'product_name_' . app()->getLocale()} }}</td>
-                                                        <td>{{ $product->product_price }}</td>
-                                                        <td>{{ $product->amount }}</td>
-                                                        <td>{{ $product->sku }}</td>
+                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
+                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->sub_category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
+                                                        <td style="font-size: 0.8rem;">{{ Str::limit($product->{'product_name_' . app()->getLocale()}, 50) }}</td>
+                                                        <td style="font-size: 0.8rem;"><strong>{{ number_format($product->product_price, 0) }}</strong><br><small>EGP</small></td>
+                                                        <td style="font-size: 0.8rem;">{{ $product->amount }}</td>
+                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->sku, 15) }}</td>
                                                         <td>
-                                                            <span class="badge bg-{{ $product->status === 'active' ? 'success' : 'secondary' }}">
+                                                            <span class="badge bg-{{ $product->status === 'active' ? 'success' : 'secondary' }}" style="font-size: 0.75rem;">
                                                                 {{ $product->status }}
                                                             </span>
                                                         </td>
                                                         <td>
+                                                            <div class="btn-group-vertical btn-group-sm" role="group" style="flex-wrap: wrap;">
                                                             @can('products-delete')
-                                                                <button type="button" class="btn btn-danger btn-sm delete-country-btn"
-                                                                    data-id="{{ $product->id }}">
+                                                                <button type="button" class="btn btn-danger btn-sm delete-country-btn mb-1"
+                                                                    data-id="{{ $product->id }}" title="{{ __('Delete') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                     <i class="far fa-trash-alt"></i>
                                                                 </button>
                                                             @endcan
                                                             @can('products-show')
                                                                 <a href="{{ route('dashboard.products.show', $product) }}"
-                                                                    class="btn btn-warning btn-sm">
+                                                                    class="btn btn-warning btn-sm mb-1" title="{{ __('View') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                     <i class="fas fa-eye"></i>
                                                                 </a>
                                                             @endcan
                                                             @can('products-update')
                                                                 <a href="{{ route('dashboard.products.edit', $product) }}"
-                                                                    class="btn btn-info btn-sm">
+                                                                    class="btn btn-info btn-sm mb-1" title="{{ __('Edit') }}" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
                                                                     <i class="fas fa-edit"></i>
                                                                 </a>
                                                             @endcan
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @empty
@@ -369,9 +389,10 @@
             
             // Initialize DataTable
             var table = $('#example2').DataTable({
-                responsive: true,
+                responsive: false,
                 autoWidth: false,
-                scrollX: false,
+                scrollX: true,
+                scrollCollapse: true,
                 order: [[1, 'asc']], // Sort by ID column (skip checkbox column)
                 pageLength: 25,
                 paging: true,
@@ -379,6 +400,17 @@
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 columnDefs: [
                     { orderable: false, targets: [0, 2, 10] }, // Checkbox, Image, and Actions columns not sortable
+                    { width: '2%', targets: 0 }, // Checkbox
+                    { width: '3%', targets: 1 }, // ID
+                    { width: '5%', targets: 2 }, // Image
+                    { width: '8%', targets: 3 }, // Category
+                    { width: '8%', targets: 4 }, // Sub Category
+                    { width: '25%', targets: 5 }, // Product Name
+                    { width: '6%', targets: 6 }, // Price
+                    { width: '5%', targets: 7 }, // Amount
+                    { width: '8%', targets: 8 }, // SKU
+                    { width: '6%', targets: 9 }, // Status
+                    { width: '10%', targets: 10 }, // Actions
                 ],
                 language: {
                     @if(app()->getLocale() == 'ar')

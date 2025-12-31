@@ -51,34 +51,62 @@ $(function () {
 
   /* menu - Enhanced for both LTR (English) and RTL (Arabic) */
 
-  // Initialize metisMenu after DOM and all scripts are ready
+  // Initialize metisMenu - works for both LTR and RTL
+  var metisMenuInitialized = false;
+  
   function initMetisMenu() {
+    // Prevent multiple initializations
+    if (metisMenuInitialized) {
+      return;
+    }
+    
     var $sidenav = $('#sidenav');
     if ($sidenav.length && typeof $.fn.metisMenu !== 'undefined') {
-      // Destroy existing instance if any to prevent conflicts
-      if ($sidenav.data('metisMenu')) {
-        $sidenav.metisMenu('dispose');
+      try {
+        // Destroy existing instance if any to prevent conflicts
+        if ($sidenav.data('metisMenu')) {
+          try {
+            $sidenav.metisMenu('dispose');
+          } catch(e) {
+            // Ignore dispose errors
+          }
+        }
+        
+        // Initialize with default configuration (works for both LTR and RTL)
+        $sidenav.metisMenu({
+          toggle: true,
+          doubleTapToGo: false,
+          preventDefault: true
+        });
+        
+        metisMenuInitialized = true;
+        console.log('metisMenu initialized successfully');
+      } catch(e) {
+        console.error('Error initializing metisMenu:', e);
       }
-      // Initialize with proper configuration for both LTR and RTL
-      $sidenav.metisMenu({
-        toggle: true,
-        doubleTapToGo: false,
-        preventDefault: true,
-        triggerElement: 'a.has-arrow',
-        parentTrigger: 'li',
-        subMenu: 'ul'
-      });
+    } else {
+      // Retry if not ready yet
+      if (typeof $.fn.metisMenu === 'undefined') {
+        setTimeout(initMetisMenu, 100);
+      }
     }
   }
 
-  // Initialize when jQuery is ready
+  // Initialize when DOM is ready
   $(document).ready(function() {
-    initMetisMenu();
+    // Small delay to ensure all CSS is loaded
+    setTimeout(function() {
+      initMetisMenu();
+    }, 50);
   });
 
-  // Also initialize on window load as backup (ensures all scripts are loaded)
+  // Backup initialization on window load
   $(window).on('load', function() {
-    initMetisMenu();
+    if (!metisMenuInitialized) {
+      setTimeout(function() {
+        initMetisMenu();
+      }, 100);
+    }
   });
 
   $(".sidebar-close").on("click", function () {
