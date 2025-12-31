@@ -224,19 +224,30 @@ class User extends Authenticatable
     public function getProfilePhotoUrlAttribute()
     {
         if ($this->image) {
-            // If image path already includes storage/, use it as is
-            if (str_starts_with($this->image, 'storage/')) {
-                return asset($this->image);
-            }
             // If it's a full URL, return as is
             if (filter_var($this->image, FILTER_VALIDATE_URL)) {
                 return $this->image;
             }
+            
+            // If image path already includes storage/, use it as is
+            if (str_starts_with($this->image, 'storage/')) {
+                return asset($this->image);
+            }
+            
+            // Try using Storage::url() first (for files in storage/app/public)
+            try {
+                if (\Illuminate\Support\Facades\Storage::disk('public')->exists($this->image)) {
+                    return \Illuminate\Support\Facades\Storage::disk('public')->url($this->image);
+                }
+            } catch (\Exception $e) {
+                // Fall through to asset() method
+            }
+            
             // Otherwise, assume it's a relative path and add storage/
             return asset('storage/' . $this->image);
         }
         
-        // Return default avatar
-        return asset('dashboard/images/Frame 127.svg');
+        // Return null so views can use their own fallback logic
+        return null;
     }
 }
