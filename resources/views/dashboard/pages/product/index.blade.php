@@ -104,9 +104,29 @@
         
         #example2 th,
         #example2 td {
-            padding: 6px 8px !important;
+            padding: 4px 6px !important;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+        
+        /* Remove hover shadows and effects */
+        #example2 tbody tr:hover {
+            box-shadow: none !important;
+        }
+        
+        /* Fix ID and Image columns - prevent collapsing */
+        #example2 td:first-child,
+        #example2 th:first-child {
+            width: 4% !important;
+            min-width: 50px !important;
+            padding: 4px !important;
+        }
+        
+        #example2 td:nth-child(2),
+        #example2 th:nth-child(2) {
+            width: 6% !important;
+            min-width: 70px !important;
+            padding: 4px !important;
         }
         
         #example2 thead {
@@ -114,7 +134,7 @@
             top: 0;
             z-index: 100;
             background-color: #f8f9fa !important;
-            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: none !important;
         }
         
         /* Ensure card uses full width and height */
@@ -260,8 +280,8 @@
                                         <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                             <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                                 <tr>
-                                                    <th style="width: 3%;">{{ __('ID') }}</th>
-                                                    <th style="width: 5%;">{{ __('Image') }}</th>
+                                                    <th style="width: 4%; min-width: 50px;">{{ __('ID') }}</th>
+                                                    <th style="width: 6%; min-width: 70px;">{{ __('Image') }}</th>
                                                     <th style="width: 7%;">{{ __('Category') }}</th>
                                                     <th style="width: 7%;">{{ __('Sub Category') }}</th>
                                                     <th style="width: 22%;">{{ __('Product Name') }}</th>
@@ -282,20 +302,20 @@
                                                         data-stock="{{ $product->amount }}"
                                                         data-category="{{ $product->category_id }}"
                                                         data-price="{{ $product->product_price }}">
-                                                        <td style="font-size: 0.8rem;">{{ $product->id }}</td>
-                                                        <td>
-                                                            <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 6px; border: 1px solid #eee; display: flex; align-items: center; justify-content: center; background: #fff;">
+                                                        <td style="font-size: 0.8rem; padding: 4px !important;">{{ $product->id }}</td>
+                                                        <td style="padding: 4px !important;">
+                                                            <div style="width: 50px; height: 50px; overflow: hidden; border-radius: 4px; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; background: #fff; margin: 0 auto;">
                                                                 <img src="{{ asset($product->productImages->first()?->image) }}"
                                                                     alt="Product"
-                                                                    style="width: 100%; height: 100%; object-fit: contain;">
+                                                                    style="width: 100%; height: 100%; object-fit: contain; display: block;">
                                                             </div>
                                                         </td>
-                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
-                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->sub_category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
-                                                        <td style="font-size: 0.8rem;">{{ Str::limit($product->{'product_name_' . app()->getLocale()}, 50) }}</td>
-                                                        <td style="font-size: 0.8rem;"><strong>{{ number_format($product->product_price, 0) }}</strong><br><small>EGP</small></td>
-                                                        <td style="font-size: 0.8rem;">{{ $product->amount }}</td>
-                                                        <td style="font-size: 0.75rem;">{{ Str::limit($product->sku, 15) }}</td>
+                                                        <td style="font-size: 0.75rem; padding: 4px 6px !important;">{{ Str::limit($product->category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
+                                                        <td style="font-size: 0.75rem; padding: 4px 6px !important;">{{ Str::limit($product->sub_category?->{'name_' . app()->getLocale()} ?? 'N/A', 20) }}</td>
+                                                        <td style="font-size: 0.8rem; padding: 4px 6px !important;">{{ Str::limit($product->{'product_name_' . app()->getLocale()}, 50) }}</td>
+                                                        <td style="font-size: 0.8rem; padding: 4px 6px !important;"><strong>{{ number_format($product->product_price, 0) }}</strong><br><small>EGP</small></td>
+                                                        <td style="font-size: 0.8rem; padding: 4px 6px !important;">{{ $product->amount }}</td>
+                                                        <td style="font-size: 0.75rem; padding: 4px 6px !important;">{{ Str::limit($product->sku, 15) }}</td>
                                                         <td>
                                                             <span class="badge bg-{{ $product->status === 'active' ? 'success' : 'secondary' }}" style="font-size: 0.75rem;">
                                                                 {{ $product->status }}
@@ -419,8 +439,8 @@
                 columnDefs: [
                     { orderable: false, targets: [0, 2, 10] }, // Checkbox, Image, and Actions columns not sortable
                     { width: '2%', targets: 0 }, // Checkbox
-                    { width: '3%', targets: 1 }, // ID
-                    { width: '5%', targets: 2 }, // Image
+                    { width: '4%', targets: 1, minWidth: '50px' }, // ID
+                    { width: '6%', targets: 2, minWidth: '70px' }, // Image
                     { width: '8%', targets: 3 }, // Category
                     { width: '8%', targets: 4 }, // Sub Category
                     { width: '25%', targets: 5 }, // Product Name
