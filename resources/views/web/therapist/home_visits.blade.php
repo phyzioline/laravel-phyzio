@@ -9,7 +9,7 @@
             <p class="text-muted">{{ __('View and manage your consultation schedule') }}</p>
         </div>
         <div>
-             <a href="#past" class="btn btn-outline-secondary mr-2 shadow-sm" data-toggle="tab" role="tab" aria-controls="past" aria-selected="false"><i class="las la-history"></i> {{ __('History') }}</a>
+             <button type="button" class="btn btn-outline-secondary mr-2 shadow-sm" id="historyBtn"><i class="las la-history"></i> {{ __('History') }}</button>
              <a href="{{ route('therapist.schedule.index') }}" class="btn btn-primary shadow-sm"><i class="las la-plus"></i> {{ __('New Visit') }}</a>
         </div>
     </div>
@@ -43,7 +43,7 @@
                                     <button class="btn btn-success btn-lg btn-block">{{ __('Arrived') }} <i class="las la-check-circle"></i></button>
                                 </form>
                             @elseif($activeVisit->status == 'in_session')
-                                <button class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#completeVisitModal">{{ __('Complete Session') }} <i class="las la-file-medical"></i></button>
+                                <button class="btn btn-info btn-lg btn-block" data-bs-toggle="modal" data-bs-target="#completeVisitModal">{{ __('Complete Session') }} <i class="las la-file-medical"></i></button>
                             @endif
                         </div>
                     </div>
@@ -121,16 +121,16 @@
         <div class="card-header py-3 bg-white border-bottom-0">
             <ul class="nav nav-pills" id="appointmentTabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="upcoming-tab" data-toggle="tab" href="#upcoming" role="tab" aria-controls="upcoming" aria-selected="true">{{ __('Upcoming') }}</a>
+                    <a class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" href="#upcoming" role="tab" aria-controls="upcoming" aria-selected="true">{{ __('Upcoming') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="past-tab" data-toggle="tab" href="#past" role="tab" aria-controls="past" aria-selected="false">{{ __('Past') }}</a>
+                    <a class="nav-link" id="past-tab" data-bs-toggle="tab" href="#past" role="tab" aria-controls="past" aria-selected="false">{{ __('Past') }}</a>
                 </li>
                  <li class="nav-item">
-                    <a class="nav-link" id="cancelled-tab" data-toggle="tab" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">{{ __('Cancelled') }}</a>
+                    <a class="nav-link" id="cancelled-tab" data-bs-toggle="tab" href="#cancelled" role="tab" aria-controls="cancelled" aria-selected="false">{{ __('Cancelled') }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="visits-tab" data-toggle="tab" href="#visits" role="tab" aria-controls="visits" aria-selected="false">{{ __('Home Visit Requests') }}</a>
+                    <a class="nav-link" id="visits-tab" data-bs-toggle="tab" href="#visits" role="tab" aria-controls="visits" aria-selected="false">{{ __('Home Visit Requests') }}</a>
                 </li>
             </ul>
         </div>
@@ -289,7 +289,7 @@
                 @csrf
                 <div class="modal-header bg-info text-white">
                     <h5 class="modal-title">{{ __('Complete Visit & Clinical Notes') }}</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -323,30 +323,101 @@
 
 @push('scripts')
 <script>
-    // Initialize Bootstrap tabs
-    $(document).ready(function() {
-        // Tab switching
-        $('#appointmentTabs a[data-toggle="tab"]').on('click', function (e) {
-            e.preventDefault();
-            $(this).tab('show');
+    // Function to switch tabs (works with both Bootstrap 4 and 5)
+    function switchToTab(tabName) {
+        // Remove active class from all tabs and panes
+        document.querySelectorAll('#appointmentTabs .nav-link').forEach(function(tab) {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
         });
-
-        // Handle History button click - switch to Past tab
-        $('a[href="#past"]').on('click', function(e) {
-            e.preventDefault();
-            $('#past-tab').tab('show');
-            // Scroll to tabs section
-            $('html, body').animate({
-                scrollTop: $('#appointmentTabs').offset().top - 100
-            }, 500);
+        document.querySelectorAll('.tab-pane').forEach(function(pane) {
+            pane.classList.remove('show', 'active');
         });
-
-        // Ensure tabs work on page load
-        var hash = window.location.hash;
-        if (hash) {
-            $('a[href="' + hash + '"]').tab('show');
+        
+        // Add active class to selected tab and pane
+        const targetTab = document.getElementById(tabName + '-tab');
+        const targetPane = document.getElementById(tabName);
+        
+        if (targetTab && targetPane) {
+            targetTab.classList.add('active');
+            targetTab.setAttribute('aria-selected', 'true');
+            targetPane.classList.add('show', 'active');
+            
+            // Scroll to tabs section smoothly
+            setTimeout(function() {
+                const tabsElement = document.getElementById('appointmentTabs');
+                if (tabsElement) {
+                    tabsElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }, 100);
         }
-    });
+    }
+
+    // Initialize when DOM is ready (works with both jQuery and vanilla JS)
+    (function() {
+        function initTabs() {
+            // Check if Bootstrap 5 is available
+            const isBootstrap5 = typeof bootstrap !== 'undefined';
+            
+            // Tab switching - works with both Bootstrap 4 and 5
+            const tabList = document.querySelectorAll('#appointmentTabs a[data-bs-toggle="tab"]');
+            tabList.forEach(function(tab) {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (isBootstrap5) {
+                        // Bootstrap 5 way
+                        try {
+                            const targetTab = new bootstrap.Tab(this);
+                            targetTab.show();
+                        } catch(err) {
+                            // Fallback if Bootstrap 5 not fully loaded
+                            const tabId = this.getAttribute('href').substring(1);
+                            switchToTab(tabId);
+                        }
+                    } else {
+                        // Bootstrap 4 way (jQuery)
+                        if (typeof $ !== 'undefined' && $.fn.tab) {
+                            $(this).tab('show');
+                        } else {
+                            // Fallback: manual tab switching
+                            const tabId = this.getAttribute('href').substring(1);
+                            switchToTab(tabId);
+                        }
+                    }
+                });
+            });
+
+            // Handle History button click - switch to Past tab
+            const historyBtn = document.getElementById('historyBtn');
+            if (historyBtn) {
+                historyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    switchToTab('past');
+                });
+            }
+
+            // Ensure tabs work on page load with hash
+            var hash = window.location.hash;
+            if (hash) {
+                const hashTab = hash.substring(1);
+                switchToTab(hashTab);
+            }
+        }
+
+        // Wait for DOM and scripts to load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTabs);
+        } else {
+            // DOM already loaded
+            if (typeof $ !== 'undefined') {
+                $(document).ready(initTabs);
+            } else {
+                initTabs();
+            }
+        }
+    })();
 </script>
 @endpush
 @endsection
