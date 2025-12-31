@@ -67,7 +67,34 @@ class HomeVisitController extends Controller
               ->where('profile_visibility', 'visible');
         })->findOrFail($id);
 
-        return view('web.pages.home_visits.show', compact('therapist'));
+        // Load therapist schedules for working hours
+        $schedules = \App\Models\TherapistSchedule::where('therapist_id', $therapist->user_id)
+            ->where('is_active', true)
+            ->get()
+            ->groupBy('day_of_week');
+
+        // Calculate next available slot
+        $nextAvailableSlot = null;
+        if ($schedules->count() > 0) {
+            $today = now();
+            for ($i = 0; $i < 7; $i++) {
+                $checkDate = $today->copy()->addDays($i);
+                $dayName = strtolower($checkDate->format('l'));
+                if ($schedules->has($dayName)) {
+                    $daySchedule = $schedules->get($dayName)->first();
+                    $startTime = \Carbon\Carbon::parse($daySchedule->start_time);
+                    if ($i == 0 && now()->format('H:i') < $startTime->format('H:i')) {
+                        $nextAvailableSlot = $checkDate->copy()->setTimeFromTimeString($daySchedule->start_time);
+                        break;
+                    } elseif ($i > 0) {
+                        $nextAvailableSlot = $checkDate->copy()->setTimeFromTimeString($daySchedule->start_time);
+                        break;
+                    }
+                }
+            }
+        }
+
+        return view('web.pages.home_visits.show', compact('therapist', 'schedules', 'nextAvailableSlot'));
     }
 
     public function book($id)
