@@ -174,33 +174,34 @@ class BillingController extends BaseClinicController
                             ];
                         });
 
-                $pendingPayments = DB::table('payments')
-                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
-                    ->where('patients.clinic_id', $clinic->id)
-                    ->where('payments.status', 'pending')
-                    ->sum('payments.amount');
+                    $pendingPayments = DB::table('payments')
+                        ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                        ->where('patients.clinic_id', $clinic->id)
+                        ->where('payments.status', 'pending')
+                        ->sum('payments.amount');
 
-                $totalRevenue = DB::table('payments')
-                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
-                    ->where('patients.clinic_id', $clinic->id)
-                    ->where('payments.status', 'paid')
-                    ->sum('payments.amount');
-                    
-                $thisMonthRevenue = DB::table('payments')
-                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
-                    ->where('patients.clinic_id', $clinic->id)
-                    ->where('payments.status', 'paid')
-                    ->whereMonth('payments.created_at', now()->month)
-                    ->whereYear('payments.created_at', now()->year)
-                    ->sum('payments.amount');
-                    
-                $lastMonthRevenue = DB::table('payments')
-                    ->join('patients', 'payments.patient_id', '=', 'patients.id')
-                    ->where('patients.clinic_id', $clinic->id)
-                    ->where('payments.status', 'paid')
-                    ->whereMonth('payments.created_at', now()->subMonth()->month)
-                    ->whereYear('payments.created_at', now()->subMonth()->year)
-                    ->sum('payments.amount');
+                    $totalRevenue = DB::table('payments')
+                        ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                        ->where('patients.clinic_id', $clinic->id)
+                        ->where('payments.status', 'paid')
+                        ->sum('payments.amount');
+                        
+                    $thisMonthRevenue = DB::table('payments')
+                        ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                        ->where('patients.clinic_id', $clinic->id)
+                        ->where('payments.status', 'paid')
+                        ->whereMonth('payments.created_at', now()->month)
+                        ->whereYear('payments.created_at', now()->year)
+                        ->sum('payments.amount');
+                        
+                    $lastMonthRevenue = DB::table('payments')
+                        ->join('patients', 'payments.patient_id', '=', 'patients.id')
+                        ->where('patients.clinic_id', $clinic->id)
+                        ->where('payments.status', 'paid')
+                        ->whereMonth('payments.created_at', now()->subMonth()->month)
+                        ->whereYear('payments.created_at', now()->subMonth()->year)
+                        ->sum('payments.amount');
+                }
             }
         }
 
