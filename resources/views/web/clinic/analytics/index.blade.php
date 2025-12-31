@@ -210,21 +210,30 @@
         });
     }
 
-    // Growth Chart - Use real data
+    // Growth Chart - Use real trend data
     var ctxG = document.getElementById('growthChart');
     if (ctxG) {
         new Chart(ctxG.getContext('2d'), {
-            type: 'doughnut',
+            type: 'bar',
             data: {
-                labels: ['{{ __('New') }}', '{{ __('Returning') }}'],
+                labels: @json($monthlyLabels ?? []),
                 datasets: [{
-                    data: [{{ $newPatients ?? 0 }}, {{ $returningPatients ?? 0 }}],
-                    backgroundColor: ['#00897b', '#e0f2f1']
+                    label: '{{ __('New Patients') }}',
+                    data: @json($patientGrowth ?? []),
+                    backgroundColor: '#80cbc4'
                 }]
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
             }
         });
     }

@@ -33,8 +33,10 @@ class AnalyticsController extends BaseClinicController
         $monthlyRevenue = [];
         $monthlyLabels = [];
         for ($i = 5; $i >= 0; $i--) {
-            $monthStart = now()->subMonths($i)->startOfMonth();
-            $monthEnd = now()->subMonths($i)->endOfMonth();
+            // Use startOfMonth() before subMonths() to avoid 31st day issues
+            $month = now()->startOfMonth()->subMonths($i);
+            $monthStart = $month->copy()->startOfMonth();
+            $monthEnd = $month->copy()->endOfMonth();
             $monthlyLabels[] = $monthStart->format('M');
             
             // Get revenue from WeeklyPrograms (primary source - has clinic_id and paid_amount)
@@ -45,17 +47,18 @@ class AnalyticsController extends BaseClinicController
             $monthlyRevenue[] = $revenue ?? 0;
         }
 
-        // Patient growth (last 6 months)
+        // Patient growth (last 6 months) - aligning with monthlyLabels
         $patientGrowth = [];
         for ($i = 5; $i >= 0; $i--) {
-            $monthStart = now()->subMonths($i)->startOfMonth();
-            $monthEnd = now()->subMonths($i)->endOfMonth();
+            $month = now()->startOfMonth()->subMonths($i);
+            $monthStart = $month->copy()->startOfMonth();
+            $monthEnd = $month->copy()->endOfMonth();
             
-            $newPatients = \App\Models\Patient::where('clinic_id', $clinic->id)
+            $newPatientsCount = \App\Models\Patient::where('clinic_id', $clinic->id)
                 ->whereBetween('created_at', [$monthStart, $monthEnd])
                 ->count();
             
-            $patientGrowth[] = $newPatients;
+            $patientGrowth[] = $newPatientsCount;
         }
 
         // Additional metrics
