@@ -78,6 +78,9 @@
                       <li><a href="{{ route('dashboard.orders.index', ['status' => 'completed']) }}"><i class="bi bi-arrow-right-short"></i>{{ __("Shipped Orders") }}</a></li>
                       <li><a href="{{ route('dashboard.order_cash') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Cash Orders") }}</a></li>
                       <li><a href="{{ route('dashboard.reports.orders') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Order Reports") }}</a></li>
+                      @can('orders-index')
+                      <li><a href="{{ route('dashboard.returns.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-arrow-return-left me-1"></i>{{ __("Return Management") }}</a></li>
+                      @endcan
                       @if(auth()->user()->type === 'vendor')
                       <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
                       @endif

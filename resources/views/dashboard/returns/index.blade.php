@@ -15,36 +15,97 @@
 
         <!-- Statistics Cards -->
         <div class="row mb-4">
-            <div class="col-md-3">
-                <div class="card bg-warning text-white">
+            <div class="col-md-2">
+                <div class="card bg-primary text-white">
                     <div class="card-body">
-                        <h5 class="card-title">{{ __('Requested') }}</h5>
-                        <h2 class="mb-0">{{ $stats['requested'] }}</h2>
+                        <h6 class="card-title">{{ __('Total Returns') }}</h6>
+                        <h3 class="mb-0">{{ $stats['total'] }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
+                <div class="card bg-warning text-dark">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ __('Requested') }}</h6>
+                        <h3 class="mb-0">{{ $stats['requested'] }}</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
                 <div class="card bg-info text-white">
                     <div class="card-body">
-                        <h5 class="card-title">{{ __('Approved') }}</h5>
-                        <h2 class="mb-0">{{ $stats['approved'] }}</h2>
+                        <h6 class="card-title">{{ __('Approved') }}</h6>
+                        <h3 class="mb-0">{{ $stats['approved'] }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card bg-danger text-white">
                     <div class="card-body">
-                        <h5 class="card-title">{{ __('Rejected') }}</h5>
-                        <h2 class="mb-0">{{ $stats['rejected'] }}</h2>
+                        <h6 class="card-title">{{ __('Rejected') }}</h6>
+                        <h3 class="mb-0">{{ $stats['rejected'] }}</h3>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="card bg-success text-white">
                     <div class="card-body">
-                        <h5 class="card-title">{{ __('Refunded') }}</h5>
-                        <h2 class="mb-0">{{ $stats['refunded'] }}</h2>
+                        <h6 class="card-title">{{ __('Refunded') }}</h6>
+                        <h3 class="mb-0">{{ $stats['refunded'] }}</h3>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body">
+                        <h6 class="card-title">{{ __('Total Refunded') }}</h6>
+                        <h3 class="mb-0">{{ number_format($stats['total_refund_amount'], 0) }}</h3>
+                        <small>EGP</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <button class="btn btn-link text-decoration-none" type="button" data-bs-toggle="collapse" data-bs-target="#filtersCollapse">
+                        <i class="fas fa-filter"></i> {{ __('Advanced Filters') }}
+                    </button>
+                </h5>
+            </div>
+            <div id="filtersCollapse" class="collapse {{ request()->hasAny(['search', 'date_from', 'date_to', 'order_id']) ? 'show' : '' }}">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('dashboard.returns.index') }}" class="row g-3">
+                        <input type="hidden" name="status" value="{{ $status }}">
+                        <div class="col-md-4">
+                            <label class="form-label">{{ __('Search') }}</label>
+                            <input type="text" name="search" class="form-control" 
+                                   value="{{ $search }}" 
+                                   placeholder="{{ __('Return ID, Order #, Customer, Product...') }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Date From') }}</label>
+                            <input type="date" name="date_from" class="form-control" value="{{ $dateFrom }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ __('Date To') }}</label>
+                            <input type="date" name="date_to" class="form-control" value="{{ $dateTo }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">{{ __('Order ID') }}</label>
+                            <input type="number" name="order_id" class="form-control" value="{{ $orderId }}" placeholder="Order ID">
+                        </div>
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> {{ __('Apply Filters') }}
+                            </button>
+                            <a href="{{ route('dashboard.returns.index', ['status' => $status]) }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> {{ __('Clear Filters') }}
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -90,48 +151,50 @@
         <!-- Returns Table -->
         <div class="card shadow-sm border-0">
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="bg-light">
+                <div class="table-responsive" style="max-height: 70vh; overflow-y: auto;">
+                    <table class="table table-hover mb-0 table-sm" style="font-size: 0.85rem;">
+                        <thead class="bg-light" style="position: sticky; top: 0; z-index: 10;">
                             <tr>
-                                <th>{{ __('ID') }}</th>
-                                <th>{{ __('Customer') }}</th>
-                                <th>{{ __('Product') }}</th>
-                                <th>{{ __('Order Number') }}</th>
-                                <th>{{ __('Reason') }}</th>
-                                <th>{{ __('Refund Amount') }}</th>
-                                <th>{{ __('Status') }}</th>
-                                <th>{{ __('Requested Date') }}</th>
-                                <th>{{ __('Actions') }}</th>
+                                <th style="width: 4%;">{{ __('ID') }}</th>
+                                <th style="width: 5%;">{{ __('Product') }}</th>
+                                <th style="width: 10%;">{{ __('Customer') }}</th>
+                                <th style="width: 8%;">{{ __('Order #') }}</th>
+                                <th style="width: 15%;">{{ __('Reason') }}</th>
+                                <th style="width: 8%;">{{ __('Refund Amount') }}</th>
+                                <th style="width: 7%;">{{ __('Status') }}</th>
+                                <th style="width: 8%;">{{ __('Requested') }}</th>
+                                <th style="width: 8%;">{{ __('Processed') }}</th>
+                                <th style="width: 10%;">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($returns as $return)
                                 <tr>
-                                    <td>#{{ $return->id }}</td>
-                                    <td>
-                                        {{ $return->orderItem->order->user->name ?? __('Guest') }}<br>
-                                        <small class="text-muted">{{ $return->orderItem->order->user->email ?? $return->orderItem->order->email ?? 'N/A' }}</small>
-                                    </td>
+                                    <td><strong>#{{ $return->id }}</strong></td>
                                     <td>
                                         @if($return->orderItem->product)
                                             <div class="d-flex align-items-center">
                                                 @if($return->orderItem->product->productImages->first())
                                                     <img src="{{ asset($return->orderItem->product->productImages->first()->image) }}" 
                                                          alt="{{ $return->orderItem->product->{'product_name_' . app()->getLocale()} }}" 
-                                                         class="mr-2" 
-                                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;">
+                                                         class="mr-2 img-thumbnail" 
+                                                         style="width: 35px; height: 35px; object-fit: cover;">
                                                 @endif
-                                                <span>{{ Str::limit($return->orderItem->product->{'product_name_' . app()->getLocale()}, 30) }}</span>
+                                                <span style="font-size: 0.75rem;">{{ Str::limit($return->orderItem->product->{'product_name_' . app()->getLocale()}, 20) }}</span>
                                             </div>
                                         @else
-                                            <span class="text-muted">{{ __('Product removed') }}</span>
+                                            <span class="badge bg-secondary" style="font-size: 0.7rem;">{{ __('Removed') }}</span>
                                         @endif
                                     </td>
-                                    <td>{{ $return->orderItem->order->order_number ?? 'N/A' }}</td>
-                                    <td>{{ Str::limit($return->reason, 40) }}</td>
-                                    <td>
-                                        <strong class="text-success">{{ number_format($return->refund_amount ?? 0, 2) }} {{ __('EGP') }}</strong>
+                                    <td style="font-size: 0.8rem;">
+                                        <strong>{{ Str::limit($return->orderItem->order->user->name ?? $return->orderItem->order->name ?? __('Guest'), 15) }}</strong><br>
+                                        <small class="text-muted">{{ Str::limit($return->orderItem->order->user->email ?? $return->orderItem->order->email ?? 'N/A', 20) }}</small>
+                                    </td>
+                                    <td style="font-size: 0.75rem;"><strong>{{ $return->orderItem->order->order_number ?? 'N/A' }}</strong></td>
+                                    <td style="font-size: 0.75rem;">{{ Str::limit($return->reason, 35) }}</td>
+                                    <td style="font-size: 0.8rem;">
+                                        <strong class="text-success">{{ number_format($return->refund_amount ?? 0, 0) }}</strong><br>
+                                        <small>EGP</small>
                                     </td>
                                     <td>
                                         @php
@@ -143,16 +206,36 @@
                                                 'cancelled' => 'secondary'
                                             ];
                                         @endphp
-                                        <span class="badge badge-{{ $statusColors[$return->status] ?? 'secondary' }}">
+                                        <span class="badge bg-{{ $statusColors[$return->status] ?? 'secondary' }}" style="font-size: 0.75rem;">
                                             {{ ucfirst($return->status) }}
                                         </span>
                                     </td>
-                                    <td>{{ $return->created_at->format('Y-m-d H:i') }}</td>
+                                    <td style="font-size: 0.75rem;">
+                                        {{ $return->created_at->format('Y-m-d') }}<br>
+                                        <small>{{ $return->created_at->format('H:i') }}</small>
+                                    </td>
+                                    <td style="font-size: 0.75rem;">
+                                        @if($return->approved_at)
+                                            {{ $return->approved_at->format('Y-m-d') }}<br>
+                                            <small>{{ $return->approved_at->format('H:i') }}</small>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
                                     <td>
-                                        <a href="{{ route('dashboard.returns.show', $return->id) }}" 
-                                           class="btn btn-sm btn-primary">
-                                            <i class="las la-eye"></i> {{ __('View') }}
-                                        </a>
+                                        <div class="btn-group-vertical btn-group-sm" role="group">
+                                            <a href="{{ route('dashboard.returns.show', $return->id) }}" 
+                                               class="btn btn-sm btn-primary mb-1" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;">
+                                                <i class="fas fa-eye"></i> {{ __('View') }}
+                                            </a>
+                                            @if($return->orderItem->order)
+                                            <a href="{{ route('dashboard.orders.show', $return->orderItem->order->id) }}" 
+                                               class="btn btn-sm btn-info" style="font-size: 0.7rem; padding: 0.2rem 0.4rem;" 
+                                               title="{{ __('View Order') }}">
+                                                <i class="fas fa-shopping-cart"></i> {{ __('Order') }}
+                                            </a>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -169,7 +252,14 @@
             </div>
             @if($returns->hasPages())
                 <div class="card-footer bg-white">
-                    {{ $returns->links() }}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted" style="font-size: 0.85rem;">
+                            {{ __('Showing') }} {{ $returns->firstItem() ?? 0 }} {{ __('to') }} {{ $returns->lastItem() ?? 0 }} {{ __('of') }} {{ $returns->total() }} {{ __('returns') }}
+                        </div>
+                        <div>
+                            {!! $returns->appends(request()->query())->links('pagination::bootstrap-5', ['class' => 'pagination-sm mb-0']) !!}
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>

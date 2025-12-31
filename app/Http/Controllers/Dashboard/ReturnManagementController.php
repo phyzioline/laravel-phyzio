@@ -17,10 +17,14 @@ class ReturnManagementController extends Controller
     {
         $status = $request->get('status', 'all');
         $orderId = $request->get('order_id');
+        $search = $request->get('search');
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
         
-        $query = ReturnModel::with(['orderItem.product', 'orderItem.order.user', 'approver'])
+        $query = ReturnModel::with(['orderItem.product.productImages', 'orderItem.order.user', 'approver'])
             ->orderBy('created_at', 'desc');
 
+        // Status filter
         if ($status !== 'all') {
             $query->where('status', $status);
         }
@@ -32,15 +36,56 @@ class ReturnManagementController extends Controller
             });
         }
 
-        $returns = $query->paginate(20);
+        // Search filter
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('id', 'like', "%{$search}%")
+                  ->orWhere('reason', 'like', "%{$search}%")
+                  ->orWhereHas('orderItem.order', function($q) use ($search) {
+                      $q->where('order_number', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('orderItem.product', function($q) use ($search) {
+                      $q->where('product_name_en', 'like', "%{$search}%")
+                        ->orWhere('product_name_ar', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Date range filter
+        if ($dateFrom) {
+            $query->whereDate('created_at', '>=', $dateFrom);
+        }
+        if ($dateTo) {
+            $query->whereDate('created_at', '<=', $dateTo);
+        }
+
+        $returns = $query->paginate(50);
+        
+        // Enhanced statistics
+        $baseQuery = ReturnModel::query();
+        if ($dateFrom || $dateTo) {
+            if ($dateFrom) {
+                $baseQuery->whereDate('created_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $baseQuery->whereDate('created_at', '<=', $dateTo);
+            }
+        }
+        
         $stats = [
-            'requested' => ReturnModel::where('status', 'requested')->count(),
-            'approved' => ReturnModel::where('status', 'approved')->count(),
-            'rejected' => ReturnModel::where('status', 'rejected')->count(),
-            'refunded' => ReturnModel::where('status', 'refunded')->count(),
+            'total' => (clone $baseQuery)->count(),
+            'requested' => (clone $baseQuery)->where('status', 'requested')->count(),
+            'approved' => (clone $baseQuery)->where('status', 'approved')->count(),
+            'rejected' => (clone $baseQuery)->where('status', 'rejected')->count(),
+            'refunded' => (clone $baseQuery)->where('status', 'refunded')->count(),
+            'total_refund_amount' => (clone $baseQuery)->where('status', 'refunded')->sum('refund_amount'),
+            'pending_refund_amount' => (clone $baseQuery)->where('status', 'approved')->sum('refund_amount'),
         ];
 
-        return view('dashboard.returns.index', compact('returns', 'stats', 'status'));
+        return view('dashboard.returns.index', compact('returns', 'stats', 'status', 'search', 'dateFrom', 'dateTo', 'orderId'));
     }
 
     /**
@@ -119,7 +164,6 @@ class ReturnManagementController extends Controller
         }
 
         return back()->with('success', 'Return request rejected');
-    }
     }
 
     /**
