@@ -2,30 +2,141 @@
 @section('title', 'Shipping Label')
 @section('content')
 <style>
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-        #printable-area, #printable-area * {
-            visibility: visible;
-        }
-        #printable-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-        }
-        .no-print {
-            display: none !important;
-        }
-    }
-    
+    /* Screen styles */
     .shipping-label {
         max-width: 800px;
         margin: 20px auto;
         padding: 30px;
         border: 2px solid #000;
         background: white;
+    }
+    
+    /* Print styles */
+    @media print {
+        /* Reset page settings */
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+        
+        /* Hide all dashboard elements */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+        }
+        
+        /* Hide sidebar, header, navigation, etc. */
+        .sidebar,
+        .main-header,
+        .navbar,
+        .breadcrumb,
+        header,
+        nav,
+        aside,
+        footer,
+        .no-print,
+        .btn,
+        button:not(.print-only) {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        /* Show only printable area */
+        .main-wrapper,
+        .main-content {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* Position printable area */
+        #printable-area {
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            padding: 20px !important;
+            border: 2px solid #000 !important;
+            background: white !important;
+            box-shadow: none !important;
+            page-break-inside: avoid;
+        }
+        
+        /* Ensure all content is visible */
+        #printable-area * {
+            visibility: visible !important;
+            display: block !important;
+        }
+        
+        /* Fix inline elements */
+        #printable-area span,
+        #printable-area p,
+        #printable-area strong,
+        #printable-area em {
+            display: inline !important;
+        }
+        
+        /* Fix table display */
+        #printable-area table {
+            display: table !important;
+            width: 100% !important;
+            page-break-inside: avoid;
+        }
+        
+        #printable-area tr {
+            display: table-row !important;
+        }
+        
+        #printable-area td,
+        #printable-area th {
+            display: table-cell !important;
+        }
+        
+        /* Ensure all sections print */
+        .label-section {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 15px !important;
+        }
+        
+        /* Text colors for print */
+        #printable-area {
+            color: #000 !important;
+        }
+        
+        /* Keep brand color for headers */
+        #printable-area .label-section h5,
+        #printable-area h2[style*="#02767F"] {
+            color: #02767F !important;
+        }
+        
+        /* Remove background colors except for specific sections */
+        #printable-area .label-section {
+            background: white !important;
+        }
+        
+        #printable-area .label-section[style*="background-color: #f8f9fa"] {
+            background: #f8f9fa !important;
+        }
+        
+        #printable-area .label-section[style*="background-color: #fff3cd"] {
+            background: #fff3cd !important;
+        }
+        
+        /* Fix badge display */
+        #printable-area .badge {
+            display: inline-block !important;
+            padding: 4px 8px !important;
+            border: 1px solid #000 !important;
+        }
     }
     
     .label-header {
@@ -64,17 +175,17 @@
     }
 </style>
 
+<div class="text-center mb-4 no-print" style="padding: 20px;">
+    <button onclick="window.print()" class="btn btn-primary btn-lg">
+        <i class="fa fa-print"></i> Print Label
+    </button>
+    <button onclick="window.close()" class="btn btn-secondary btn-lg">
+        <i class="fa fa-times"></i> Close
+    </button>
+</div>
+
 <main class="main-wrapper">
     <div class="main-content">
-        <div class="text-center mb-4 no-print">
-            <button onclick="window.print()" class="btn btn-primary btn-lg">
-                <i class="fa fa-print"></i> Print Label
-            </button>
-            <button onclick="window.close()" class="btn btn-secondary btn-lg">
-                <i class="fa fa-times"></i> Close
-            </button>
-        </div>
-
         <div id="printable-area" class="shipping-label">
             {{-- Header --}}
             <div class="label-header">
