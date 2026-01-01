@@ -320,7 +320,7 @@ $(document).ready(function() {
         }
         
         if (startTime && endTime && startTime >= endTime) {
-            alert('{{ __("End time must be after start time.") }}');
+            alert("{{ __('End time must be after start time.') }}");
             $('input[name="end_time"]').addClass('is-invalid');
             isValid = false;
         }

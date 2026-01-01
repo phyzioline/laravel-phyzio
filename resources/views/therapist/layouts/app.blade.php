@@ -146,7 +146,7 @@
    <!-- swiper -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
 
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 </head>
 
@@ -172,20 +172,11 @@
   
   
   
+  <!--plugins-->
+  <script src="{{ asset('dashboard/assets/js/jquery.min.js')}}"></script>
   <!--bootstrap js-->
   <script src="{{ asset('dashboard/assets/js/bootstrap.bundle.min.js')}}"></script>
 
-  <script>
-    // Simple footer toggle script from original layout
-    // Assuming footer element exists globally or in partials if needed.
-    // Preserving logic but footer-section is in sidebar.php in original, so it might need adjustment if moved.
-  </script>
-
-  @stack('scripts')
-
-  <!--plugins-->
-  <script src="{{ asset('dashboard/assets/js/jquery.min.js')}}"></script>
-  <!--plugins-->
   <script src="{{ asset('dashboard/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js')}}"></script>
   <script src="{{ asset('dashboard/assets/plugins/metismenu/metisMenu.min.js')}}"></script>
   <script src="{{ asset('dashboard/assets/plugins/apexchart/apexcharts.min.js')}}"></script>
@@ -194,6 +185,14 @@
   <script src="{{ asset('dashboard/assets/plugins/simplebar/js/simplebar.min.js')}}"></script>
   
   <script src="{{ asset('dashboard/assets/js/main.js')}}"></script>
+
+  <script>
+    // Simple footer toggle script from original layout
+    // Assuming footer element exists globally or in partials if needed.
+    // Preserving logic but footer-section is in sidebar.php in original, so it might need adjustment if moved.
+  </script>
+
+  @stack('scripts')
 
   <script>
     // Handle overlay click to close sidebar on mobile
