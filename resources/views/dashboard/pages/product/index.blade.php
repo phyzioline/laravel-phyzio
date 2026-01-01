@@ -42,6 +42,33 @@
             padding-top: 15px;
         }
         
+        /* DataTables controls row - sticky and stable */
+        #datatables-controls-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        #datatables-controls-left .dataTables_length,
+        #datatables-controls-left .dataTables_filter {
+            margin: 0;
+            padding: 0;
+        }
+        #datatables-controls-left .dataTables_length label,
+        #datatables-controls-left .dataTables_filter label {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Pagination - stable below table */
+        .dataTables_wrapper .dataTables_paginate {
+            position: relative;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #dee2e6;
+        }
+        
         /* Filter dropdowns styling */
         .form-select-sm {
             font-size: 0.875rem;
@@ -228,32 +255,6 @@
                                     <i class="fas fa-times"></i> {{ __('Clear') }}
                                 </button>
                             </div>
-                            
-                            <!-- Action Buttons -->
-                            <div class="d-flex gap-2">
-                                <!-- Export Dropdown -->
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fas fa-file-export"></i> {{ __('Export') }}
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'csv') }}">CSV</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xlsx') }}">Excel</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xml') }}">XML</a></li>
-                                    </ul>
-                                </div>
-
-                                <!-- Import Button -->
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
-                                    <i class="fas fa-file-import"></i> {{ __('Import') }}
-                                </button>
-
-                                @can('products-create')
-                                    <a href="{{ route('dashboard.products.create') }}" class="btn btn-primary">
-                                        <i class="fas fa-add"></i> {{ __('Add Product') }}
-                                    </a>
-                                @endcan
-                            </div>
                         </div>
                         
                         <!-- Bulk Actions Toolbar -->
@@ -272,6 +273,38 @@
                                 <button type="button" class="btn btn-sm btn-info" id="bulkExport">
                                     <i class="fas fa-download"></i> {{ __('Export') }}
                                 </button>
+                            </div>
+                        </div>
+                        
+                        <!-- DataTables Controls Row (Show entries, Search, Import/Export) -->
+                        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2" style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; padding: 0.75rem 1rem; position: sticky; top: 0; z-index: 100;">
+                            <!-- Left side: Show entries and Search (will be populated by DataTables) -->
+                            <div class="d-flex align-items-center gap-3 flex-wrap" id="datatables-controls-left"></div>
+                            
+                            <!-- Right side: Import/Export buttons -->
+                            <div class="d-flex gap-2">
+                                <!-- Export Dropdown -->
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-file-export"></i> {{ __('Export') }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'csv') }}">CSV</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xlsx') }}">Excel</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('dashboard.products.export', 'xml') }}">XML</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- Import Button -->
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
+                                    <i class="fas fa-file-import"></i> {{ __('Import') }}
+                                </button>
+
+                                @can('products-create')
+                                    <a href="{{ route('dashboard.products.create') }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-add"></i> {{ __('Add Product') }}
+                                    </a>
+                                @endcan
                             </div>
                         </div>
                         
@@ -435,7 +468,7 @@
                 pageLength: 25,
                 paging: true,
                 paginationType: 'full_numbers',
-                dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>rt<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                dom: '<"d-flex justify-content-between align-items-center mb-2"<l><f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 columnDefs: [
                     { orderable: false, targets: [0, 2, 10] }, // Checkbox, Image, and Actions columns not sortable
                     { width: '2%', targets: 0 }, // Checkbox
@@ -508,6 +541,16 @@
                     });
                 }
             });
+            
+            // Move DataTables length and filter controls to custom location
+            setTimeout(function() {
+                var lengthControl = $('.dataTables_length');
+                var filterControl = $('.dataTables_filter');
+                
+                if (lengthControl.length && filterControl.length && $('#datatables-controls-left').length) {
+                    $('#datatables-controls-left').append(lengthControl).append(filterControl);
+                }
+            }, 100);
             
             // Multi-select functionality
             var selectedProducts = [];
@@ -627,8 +670,10 @@
                 var categoryFilter = $('#filterCategory').val();
                 
                 // Price filter
-                var priceMin = parseFloat($('#price-min').val()) || 0;
-                var priceMax = parseFloat($('#price-max').val()) || Infinity;
+                var priceMinInput = $('#price-min').val();
+                var priceMaxInput = $('#price-max').val();
+                var priceMin = priceMinInput !== '' ? parseFloat(priceMinInput) : null;
+                var priceMax = priceMaxInput !== '' ? parseFloat(priceMaxInput) : null;
                 
                 // Custom filter function
                 $.fn.dataTable.ext.search.push(
@@ -658,9 +703,12 @@
                             if (categoryId !== categoryFilter) return false;
                         }
                         
-                        // Price filter
-                        var price = parseFloat($row.data('price')) || 0;
-                        if (price < priceMin || price > priceMax) return false;
+                        // Price filter - only apply if at least one value is provided
+                        if (priceMin !== null || priceMax !== null) {
+                            var price = parseFloat($row.data('price')) || 0;
+                            if (priceMin !== null && price < priceMin) return false;
+                            if (priceMax !== null && price > priceMax) return false;
+                        }
                         
                         return true;
                     }

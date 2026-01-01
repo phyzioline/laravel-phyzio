@@ -88,7 +88,7 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 font-weight-bold">{{ __('Payment Cycle Management') }}</h5>
-                        <form action="{{ route('dashboard.financials.earnings.process-settlements') }}" method="POST" class="d-inline">
+                        <form action="{{ route('dashboard.earnings.process-settlements') }}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-arrow-repeat"></i> {{ __('Process Settlements Now') }}
@@ -258,7 +258,7 @@
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         @if($transaction->status === 'pending')
-                                            <form action="{{ route('dashboard.financials.earnings.manual-settle', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to manually settle this transaction?') }}');">
+                                            <form action="{{ route('dashboard.earnings.manual-settle', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to manually settle this transaction?') }}');">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-success" title="{{ __('Settle Now') }}">
                                                     <i class="bi bi-check-circle"></i>
@@ -269,7 +269,7 @@
                                             </button>
                                         @endif
                                         @if($transaction->status === 'on_hold')
-                                            <form action="{{ route('dashboard.financials.earnings.release-from-hold', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to release this transaction from hold?') }}');">
+                                            <form action="{{ route('dashboard.earnings.release-from-hold', $transaction) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('Are you sure you want to release this transaction from hold?') }}');">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-outline-info" title="{{ __('Release from Hold') }}">
                                                     <i class="bi bi-play-circle"></i>
@@ -283,7 +283,7 @@
                                     <div class="modal fade" id="holdModal{{ $transaction->id }}" tabindex="-1">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form action="{{ route('dashboard.financials.earnings.put-on-hold', $transaction) }}" method="POST">
+                                                <form action="{{ route('dashboard.earnings.put-on-hold', $transaction) }}" method="POST">
                                                     @csrf
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">{{ __('Put Transaction on Hold') }}</h5>
