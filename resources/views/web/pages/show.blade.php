@@ -133,64 +133,112 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                min-width: 100px;
+                min-width: 110px;
                 cursor: pointer;
-                transition: all 0.3s ease;
-                padding: 10px;
-                border-radius: 12px;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                padding: 15px 12px;
+                border-radius: 16px;
                 text-decoration: none !important;
                 color: #333 !important;
+                position: relative;
             }
             
             .category-icon-item:hover {
-                background: #f8f9fa;
-                transform: translateY(-3px);
+                background: linear-gradient(135deg, #f8f9fa, #ffffff);
+                transform: translateY(-5px);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
             }
             
             .category-icon-item.active {
                 background: linear-gradient(135deg, #02767F, #04b8c4);
                 color: white !important;
+                box-shadow: 0 8px 24px rgba(2, 118, 127, 0.3);
+                transform: translateY(-3px);
             }
             
             .category-icon-circle {
-                width: 70px;
-                height: 70px;
+                width: 80px;
+                height: 80px;
                 border-radius: 50%;
-                background: linear-gradient(135deg, #f0f7f8, #e0eff0);
+                background: linear-gradient(135deg, #ffffff, #f8f9fa);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                margin-bottom: 10px;
-                transition: all 0.3s ease;
-                border: 2px solid transparent;
+                margin-bottom: 12px;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                border: 3px solid #e9ecef;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                position: relative;
+                overflow: hidden;
             }
             
-            .category-icon-item:hover .category-icon-circle,
-            .category-icon-item.active .category-icon-circle {
-                background: white;
+            .category-icon-circle::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(2, 118, 127, 0.05), rgba(4, 184, 196, 0.05));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .category-icon-item:hover .category-icon-circle::before {
+                opacity: 1;
+            }
+            
+            .category-icon-item:hover .category-icon-circle {
+                background: linear-gradient(135deg, #ffffff, #f0f7f8);
                 border-color: #04b8c4;
-                transform: scale(1.1);
+                transform: scale(1.15) translateY(-5px);
+                box-shadow: 0 8px 20px rgba(2, 118, 127, 0.2);
             }
             
             .category-icon-item.active .category-icon-circle {
-                background: rgba(255,255,255,0.2);
-                border-color: white;
+                background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+                border-color: rgba(255,255,255,0.5);
+                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
             }
             
             .category-icon-circle i {
-                font-size: 32px;
+                font-size: 36px;
                 color: #02767F;
+                transition: all 0.3s ease;
+                position: relative;
+                z-index: 1;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+            }
+            
+            .category-icon-item:hover .category-icon-circle i {
+                transform: scale(1.1);
+                filter: drop-shadow(0 4px 8px rgba(2, 118, 127, 0.3));
             }
             
             .category-icon-item.active .category-icon-circle i {
                 color: white;
+                filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
             }
             
             .category-icon-name {
                 font-size: 13px;
-                font-weight: 500;
-                margin-top: 5px;
-                line-height: 1.2;
+                font-weight: 600;
+                margin-top: 8px;
+                line-height: 1.3;
+                max-width: 100px;
+                word-wrap: break-word;
+                transition: all 0.3s ease;
+            }
+            
+            .category-icon-item:hover .category-icon-name {
+                font-weight: 700;
+                color: #02767F;
+            }
+            
+            .category-icon-item.active .category-icon-name {
+                color: white !important;
+                font-weight: 700;
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
             }
             
 
@@ -520,28 +568,85 @@ header,
                         <div class="category-icon-circle">
                             @php
                                 $catName = strtolower($category->{'name_en'});
+                                $iconClass = 'las la-briefcase-medical'; // Default icon
+                                $iconColor = '#02767F'; // Default color
+                                
+                                // Enhanced icon mapping with specific categories
+                                if(str_contains($catName, 'shock wave') || str_contains($catName, 'rpw') || str_contains($catName, 'shockwave')) {
+                                    $iconClass = 'las la-wave-square';
+                                    $iconColor = '#FF6F00';
+                                } elseif(str_contains($catName, 'sport') || str_contains($catName, 'athletic')) {
+                                    $iconClass = 'las la-dumbbell';
+                                    $iconColor = '#E91E63';
+                                } elseif(str_contains($catName, 'multi current') || str_contains($catName, 'electro') || str_contains($catName, 'tens') || str_contains($catName, 'current')) {
+                                    $iconClass = 'las la-bolt';
+                                    $iconColor = '#FFC107';
+                                } elseif(str_contains($catName, 'massage gun') || str_contains($catName, 'massage') || str_contains($catName, 'percussion')) {
+                                    $iconClass = 'las la-hand-holding';
+                                    $iconColor = '#9C27B0';
+                                } elseif(str_contains($catName, 'nutrition') || str_contains($catName, 'supplement') || str_contains($catName, 'vitamin')) {
+                                    $iconClass = 'las la-apple-alt';
+                                    $iconColor = '#4CAF50';
+                                } elseif(str_contains($catName, 'consumable') || str_contains($catName, 'supply') || str_contains($catName, 'clinic supply')) {
+                                    $iconClass = 'las la-boxes';
+                                    $iconColor = '#2196F3';
+                                } elseif(str_contains($catName, 'clinic bed') || str_contains($catName, 'bed') || str_contains($catName, 'table')) {
+                                    $iconClass = 'las la-bed';
+                                    $iconColor = '#607D8B';
+                                } elseif(str_contains($catName, 'cupping') || str_contains($catName, 'hijama')) {
+                                    $iconClass = 'las la-circle';
+                                    $iconColor = '#F44336';
+                                } elseif(str_contains($catName, 'lymphatic') || str_contains($catName, 'drainage') || str_contains($catName, 'lymph')) {
+                                    $iconClass = 'las la-tint';
+                                    $iconColor = '#00BCD4';
+                                } elseif(str_contains($catName, 'ortho') || str_contains($catName, 'bone') || str_contains($catName, 'musculoskeletal')) {
+                                    $iconClass = 'las la-bone';
+                                    $iconColor = '#795548';
+                                } elseif(str_contains($catName, 'neuro') || str_contains($catName, 'brain') || str_contains($catName, 'neurological')) {
+                                    $iconClass = 'las la-brain';
+                                    $iconColor = '#673AB7';
+                                } elseif(str_contains($catName, 'cardio') || str_contains($catName, 'heart') || str_contains($catName, 'pulmonary')) {
+                                    $iconClass = 'las la-heartbeat';
+                                    $iconColor = '#E91E63';
+                                } elseif(str_contains($catName, 'spine') || str_contains($catName, 'back') || str_contains($catName, 'vertebra')) {
+                                    $iconClass = 'las la-allergies';
+                                    $iconColor = '#FF9800';
+                                } elseif(str_contains($catName, 'pediatric') || str_contains($catName, 'child') || str_contains($catName, 'kid')) {
+                                    $iconClass = 'las la-baby';
+                                    $iconColor = '#FFC107';
+                                } elseif(str_contains($catName, 'manual') || str_contains($catName, 'therapy') || str_contains($catName, 'hands-on')) {
+                                    $iconClass = 'las la-hand-holding-heart';
+                                    $iconColor = '#E91E63';
+                                } elseif(str_contains($catName, 'exercise') || str_contains($catName, 'gym') || str_contains($catName, 'fitness')) {
+                                    $iconClass = 'las la-running';
+                                    $iconColor = '#4CAF50';
+                                } elseif(str_contains($catName, 'ultrasound') || str_contains($catName, 'ultrasonic')) {
+                                    $iconClass = 'las la-wave-square';
+                                    $iconColor = '#00BCD4';
+                                } elseif(str_contains($catName, 'laser') || str_contains($catName, 'light therapy')) {
+                                    $iconClass = 'las la-lightbulb';
+                                    $iconColor = '#FFC107';
+                                } elseif(str_contains($catName, 'ice') || str_contains($catName, 'cold') || str_contains($catName, 'cryo')) {
+                                    $iconClass = 'las la-snowflake';
+                                    $iconColor = '#00BCD4';
+                                } elseif(str_contains($catName, 'heat') || str_contains($catName, 'hot') || str_contains($catName, 'thermal')) {
+                                    $iconClass = 'las la-fire';
+                                    $iconColor = '#FF5722';
+                                } elseif(str_contains($catName, 'balance') || str_contains($catName, 'stability')) {
+                                    $iconClass = 'las la-balance-scale';
+                                    $iconColor = '#9E9E9E';
+                                } elseif(str_contains($catName, 'wheelchair') || str_contains($catName, 'mobility')) {
+                                    $iconClass = 'las la-wheelchair';
+                                    $iconColor = '#607D8B';
+                                } elseif(str_contains($catName, 'brace') || str_contains($catName, 'splint') || str_contains($catName, 'orthosis')) {
+                                    $iconClass = 'las la-shield-alt';
+                                    $iconColor = '#795548';
+                                } elseif(str_contains($catName, 'bandage') || str_contains($catName, 'tape') || str_contains($catName, 'kinesio')) {
+                                    $iconClass = 'las la-band-aid';
+                                    $iconColor = '#F44336';
+                                }
                             @endphp
-                            @if(str_contains($catName, 'ortho'))
-                                <i class="las la-bone"></i>
-                            @elseif(str_contains($catName, 'neuro') || str_contains($catName, 'brain'))
-                                <i class="las la-brain"></i>
-                            @elseif(str_contains($catName, 'cardio') || str_contains($catName, 'heart'))
-                                <i class="las la-heartbeat"></i>
-                            @elseif(str_contains($catName, 'spine') || str_contains($catName, 'back'))
-                                <i class="las la-allergies"></i> <!-- Closest spine-like or vertebrae visual if available, or universal access -->
-                            @elseif(str_contains($catName, 'sport'))
-                                <i class="las la-dumbbell"></i>
-                            @elseif(str_contains($catName, 'pediatric') || str_contains($catName, 'child'))
-                                <i class="las la-baby"></i>
-                            @elseif(str_contains($catName, 'electro') || str_contains($catName, 'tens'))
-                                <i class="las la-bolt"></i>
-                            @elseif(str_contains($catName, 'manual'))
-                                <i class="las la-hand-holding-heart"></i>
-                            @elseif(str_contains($catName, 'exercise') || str_contains($catName, 'gym'))
-                                <i class="las la-running"></i>
-                            @else
-                                <i class="las la-briefcase-medical"></i>
-                            @endif
+                            <i class="{{ $iconClass }}" style="color: {{ $iconColor }};"></i>
                         </div>
                     <span class="category-icon-name">{{ $category->{'name_' . app()->getLocale()} }}</span>
                 </a>
