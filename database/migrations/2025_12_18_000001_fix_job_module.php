@@ -46,13 +46,36 @@ return new class extends Migration
             });
         }
 
-        // 3. Job Requirements
+        // 3. Job Requirements - Check if table exists and has correct structure
         if (!Schema::hasTable('job_requirements')) {
             Schema::create('job_requirements', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('job_id')->constrained('clinic_jobs')->onDelete('cascade');
-                $table->text('requirement');
+                $table->boolean('license_required')->default(true);
+                $table->integer('min_years_experience')->default(0);
+                $table->string('gender_preference')->nullable();
+                $table->json('languages')->nullable();
+                $table->json('certifications')->nullable();
                 $table->timestamps();
+            });
+        } else {
+            // If table exists, add missing columns if they don't exist
+            Schema::table('job_requirements', function (Blueprint $table) {
+                if (!Schema::hasColumn('job_requirements', 'license_required')) {
+                    $table->boolean('license_required')->default(true)->after('job_id');
+                }
+                if (!Schema::hasColumn('job_requirements', 'min_years_experience')) {
+                    $table->integer('min_years_experience')->default(0)->after('license_required');
+                }
+                if (!Schema::hasColumn('job_requirements', 'gender_preference')) {
+                    $table->string('gender_preference')->nullable()->after('min_years_experience');
+                }
+                if (!Schema::hasColumn('job_requirements', 'languages')) {
+                    $table->json('languages')->nullable()->after('gender_preference');
+                }
+                if (!Schema::hasColumn('job_requirements', 'certifications')) {
+                    $table->json('certifications')->nullable()->after('languages');
+                }
             });
         }
 

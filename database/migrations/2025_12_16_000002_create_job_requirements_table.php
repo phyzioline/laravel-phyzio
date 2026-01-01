@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('job_requirements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('job_id')->constrained('jobs')->onDelete('cascade');
+            $table->foreignId('job_id')->constrained('clinic_jobs')->onDelete('cascade');
             $table->boolean('license_required')->default(true);
             $table->integer('min_years_experience')->default(0);
             $table->string('gender_preference')->nullable(); // male, female, no_preference

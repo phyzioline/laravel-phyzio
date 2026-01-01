@@ -108,16 +108,37 @@ class JobController extends BaseClinicController
                 'posted_by_type' => Auth::user()->type === 'clinic' ? 'clinic' : 'company',
             ]);
 
-            $job->requirements()->create([
-                'min_years_experience' => $request->min_years_experience ?? 0,
-                'gender_preference' => $request->gender_preference,
-                'license_required' => $request->has('license_required'),
-            ]);
+            // Create requirements if possible, but don't fail the whole job creation if it fails
+            try {
+                $job->requirements()->create([
+                    'min_years_experience' => $request->min_years_experience ?? 0,
+                    'gender_preference' => $request->gender_preference,
+                    'license_required' => $request->has('license_required'),
+                ]);
+            } catch (\Exception $reqException) {
+                \Log::warning('Failed to create job requirements', [
+                    'job_id' => $job->id,
+                    'error' => $reqException->getMessage()
+                ]);
+                // Continue - job is created, requirements can be added later
+            }
 
             return redirect()->route('clinic.jobs.index')->with('success', 'Job posted successfully!');
         } catch (\Exception $e) {
-            \Log::error('Job creation error: ' . $e->getMessage());
-            return back()->withInput()->with('error', 'Failed to create job. Please try again.');
+            \Log::error('Job creation error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            // If it's a database error, provide more specific message
+            if (str_contains($e->getMessage(), 'foreign key constraint') || 
+                str_contains($e->getMessage(), 'Base table or view not found')) {
+                return back()->withInput()->with('error', 'Database configuration error. Please contact support or run migrations.');
+            }
+            
+            return back()->withInput()->with('error', 'Failed to create job: ' . $e->getMessage());
         }
     }
 
