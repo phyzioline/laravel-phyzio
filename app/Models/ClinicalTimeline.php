@@ -11,6 +11,13 @@ class ClinicalTimeline extends Model
 {
     use HasFactory;
 
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'clinical_timeline';
+
     protected $fillable = [
         'patient_id',
         'clinic_id',
