@@ -65,6 +65,35 @@
               </li>
               @endcan
 
+              <!-- Inventory Management -->
+              @can('products-index')
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-boxes"></i></div>
+                      <div class="menu-title">{{ __("Inventory") }}</div>
+                  </a>
+                  <ul>
+                      <li><a href="{{ route('dashboard.inventory.manage') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Manage Inventory") }}</a></li>
+                      <li><a href="{{ route('dashboard.inventory.stock-levels') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Stock Levels") }}</a></li>
+                      <li><a href="{{ route('dashboard.inventory.reports') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Inventory Reports") }}</a></li>
+                  </ul>
+              </li>
+              @endcan
+
+              <!-- Pricing -->
+              @can('products-index')
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-tag"></i></div>
+                      <div class="menu-title">{{ __("Pricing") }}</div>
+                  </a>
+                  <ul>
+                      <li><a href="{{ route('dashboard.pricing.manage') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Manage Pricing") }}</a></li>
+                      <li><a href="{{ route('dashboard.pricing.rules') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Price Rules") }}</a></li>
+                  </ul>
+              </li>
+              @endcan
+
               <!-- 4. Orders (Core Business) -->
               @can('orders-index')
               <li>
@@ -81,9 +110,6 @@
                       @can('orders-index')
                       <li><a href="{{ route('dashboard.returns.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-arrow-return-left me-1"></i>{{ __("Return Management") }}</a></li>
                       @endcan
-                      @if(auth()->user()->type === 'vendor')
-                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
-                      @endif
                   </ul>
               </li>
               @endcan
@@ -106,6 +132,19 @@
                       @if(auth()->user()->hasRole('admin'))
                       <li><a href="{{ route('dashboard.payouts.settings') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Payout Settings") }}</a></li>
                       @endif
+                  </ul>
+              </li>
+              @endif
+
+              <!-- Vendor Hub (Only for Vendors) -->
+              @if(auth()->user()->type === 'vendor')
+              <li>
+                  <a href="javascript:;" class="has-arrow">
+                      <div class="parent-icon"><i class="bi bi-shop"></i></div>
+                      <div class="menu-title">{{ __("Vendor Hub") }}</div>
+                  </a>
+                  <ul style="font-size: 0.9em;">
+                      <li><a href="{{ route('dashboard.shipments.index') }}"><i class="bi bi-arrow-right-short"></i><i class="bi bi-truck me-1"></i>{{ __("My Shipments") }}</a></li>
                   </ul>
               </li>
               @endif
