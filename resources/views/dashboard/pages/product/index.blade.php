@@ -61,12 +61,25 @@
             gap: 0.5rem;
         }
         
-        /* Pagination - stable below table */
+        /* Pagination - stable below table, outside scrollable area */
+        .sticky-pagination {
+            position: sticky !important;
+            bottom: 0 !important;
+            background-color: #f8f9fa !important;
+            z-index: 99 !important;
+            padding: 1rem !important;
+            margin: 0 !important;
+            border-top: 2px solid #dee2e6 !important;
+        }
+        
+        .dataTables_wrapper .dataTables_info {
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
+        }
+        
         .dataTables_wrapper .dataTables_paginate {
-            position: relative;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #dee2e6;
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
         }
         
         /* Filter dropdowns styling */
@@ -157,11 +170,18 @@
         }
         
         #example2 thead {
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
             background-color: #f8f9fa !important;
-            box-shadow: none !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        #example2 thead th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 101 !important;
+            background-color: #f8f9fa !important;
         }
         
         /* Ensure card uses full width and height */
@@ -308,8 +328,8 @@
                             </div>
                         </div>
                         
-                        <div class="card-body" style="padding: 1rem; margin: 0;">
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 280px); min-height: 500px; height: calc(100vh - 280px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                        <div class="card-body" style="padding: 1rem; margin: 0; display: flex; flex-direction: column; height: calc(100vh - 380px); min-height: 500px;">
+                            <div class="table-responsive text-center" style="flex: 1; overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
                                         <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                             <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                                 <tr>
@@ -462,13 +482,14 @@
             var table = $('#example2').DataTable({
                 responsive: false,
                 autoWidth: false,
-                scrollX: true,
-                scrollCollapse: true,
+                scrollX: false,
+                scrollY: false,
+                scrollCollapse: false,
                 order: [[1, 'asc']], // Sort by ID column (skip checkbox column)
                 pageLength: 25,
                 paging: true,
                 paginationType: 'full_numbers',
-                dom: '<"d-flex justify-content-between align-items-center mb-2"<l><f>>rt<"row mt-3"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                dom: '<"d-flex justify-content-between align-items-center mb-2"<l><f>>rt<"row mt-3 sticky-pagination"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 columnDefs: [
                     { orderable: false, targets: [0, 2, 10] }, // Checkbox, Image, and Actions columns not sortable
                     { width: '2%', targets: 0 }, // Checkbox
