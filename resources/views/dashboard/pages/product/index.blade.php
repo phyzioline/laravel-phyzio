@@ -61,12 +61,9 @@
             gap: 0.5rem;
         }
         
-        /* Pagination - stable below table, outside scrollable area */
+        /* Pagination - normal flow, not sticky (scrolls with page) */
         .sticky-pagination {
-            position: sticky !important;
-            bottom: 0 !important;
             background-color: #f8f9fa !important;
-            z-index: 99 !important;
             padding: 1rem !important;
             margin: 0 !important;
             border-top: 2px solid #dee2e6 !important;
@@ -121,15 +118,12 @@
             height: 18px;
         }
         
-        /* Table container and scaling - Optimized for laptop screens - Increased height to fit more data */
+        /* Table container - Natural document flow scrolling */
         .table-responsive {
             width: 100% !important;
             max-width: 100% !important;
-            max-height: calc(100vh - 280px) !important;
-            min-height: 500px !important;
-            height: calc(100vh - 280px) !important;
             overflow-x: auto;
-            overflow-y: auto;
+            overflow-y: visible;
             -webkit-overflow-scrolling: touch;
             margin: 0 !important;
             padding: 0 !important;
@@ -169,6 +163,7 @@
             padding: 4px !important;
         }
         
+        /* Sticky header - sticks to top of viewport when scrolling */
         #example2 thead {
             position: sticky !important;
             top: 0 !important;
@@ -184,19 +179,23 @@
             background-color: #f8f9fa !important;
         }
         
-        /* Ensure card uses full width and height */
+        /* Ensure body allows natural scrolling */
+        body {
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure card uses full width - natural flow */
         .card {
             width: 100% !important;
             max-width: 100% !important;
             box-sizing: border-box;
             margin: 0 !important;
-            min-height: calc(100vh - 280px) !important;
         }
         
         .card-body {
             padding: 1rem !important;
             margin: 0 !important;
-            min-height: calc(100vh - 320px) !important;
         }
         
         /* Remove any left margin/padding that might create empty space */
@@ -328,8 +327,8 @@
                             </div>
                         </div>
                         
-                        <div class="card-body" style="padding: 1rem; margin: 0; display: flex; flex-direction: column; height: calc(100vh - 380px); min-height: 500px;">
-                            <div class="table-responsive text-center" style="flex: 1; overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0;">
+                        <div class="card-body" style="padding: 1rem; margin: 0;">
+                            <div class="table-responsive text-center" style="overflow-x: auto; overflow-y: visible; width: 100%; margin: 0; padding: 0;">
                                         <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                             <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                                 <tr>
