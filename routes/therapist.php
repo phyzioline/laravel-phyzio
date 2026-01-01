@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth', 'therapist', \App\Http\Middleware\SetDash
     Route::get('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'edit'])->name('availability.edit');
     Route::put('/availability', [\App\Http\Controllers\Therapist\AvailabilityController::class, 'update'])->name('availability.update');
     Route::get('/schedule', [\App\Http\Controllers\Therapist\ScheduleController::class, 'index'])->name('schedule.index');
+    Route::delete('/schedule/{id}', [\App\Http\Controllers\Therapist\ScheduleController::class, 'destroy'])->name('schedule.destroy');
 
     // Patients (New)
     Route::get('/patients', [\App\Http\Controllers\Therapist\PatientController::class, 'index'])->name('patients.index');

@@ -49,4 +49,13 @@ class ScheduleController extends Controller
 
         return view('web.therapist.schedule.index', compact('events', 'schedules', 'availableSlots', 'bookedSlots', 'blockedSlots', 'utilizationRate'));
     }
+    public function destroy($id)
+    {
+        $schedule = \App\Models\TherapistSchedule::where('therapist_id', auth()->id())
+            ->findOrFail($id);
+            
+        $schedule->delete();
+        
+        return redirect()->back()->with('success', __('Slot deleted successfully.'));
+    }
 }

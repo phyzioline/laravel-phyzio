@@ -830,5 +830,14 @@
     "Thursday": "الخميس",
     "Friday": "الجمعة",
     "Today": "اليوم",
-    "Closed": "مغلق"
+    "Closed": "مغلق",
+    "Manage your personal information and public profile appearance": "إدارة معلوماتك الشخصية ومظهر ملفك العام",
+    "Your bank details are securely stored and used only for processing your earnings payouts.": "يتم تخزين بياناتك المصرفية بشكل آمن وتستخدم فقط لمعالجة دفعات أرباحك.",
+    "Email cannot be changed directly.": "لا يمكن تغيير البريد الإلكتروني مباشرة.",
+    "Change Photo": "تغيير الصورة",
+    "Tell patients about your experience, certifications, and approach...": "أخبر المرضى عن خبرتك وشهاداتك ونهجك...",
+    "For international transfers": "للتحويلات الدولية",
+    "Full name as in bank account": "الاسم الكامل كما في الحساب البنكي",
+    "Show All Cities": "إظهار كل المدن",
+    "No location data available.": "لا توجد بيانات للموقع."
 }

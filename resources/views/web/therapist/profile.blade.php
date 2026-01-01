@@ -1,312 +1,276 @@
 @extends('therapist.layouts.app')
 
 @section('content')
-<div class="container-fluid py-4" style="background-color: #f8f9fa;">
-    <!-- Success/Error Messages -->
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="las la-check-circle mr-2"></i> {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-    
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="las la-exclamation-circle mr-2"></i> {{ session('error') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
-    
-    @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="las la-exclamation-circle mr-2"></i> 
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+<div class="container-fluid px-4 py-5" style="background-color: #f4f7f6;">
     
     <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-5">
         <div>
-            <h2 class="font-weight-bold text-dark mb-0">{{ __('My Profile') }}</h2>
-            <p class="text-muted">{{ __('Manage your personal and professional information') }}</p>
+            <h1 class="h3 font-weight-bold text-gray-800 mb-1" style="color: #2c3e50;">{{ __('My Profile') }}</h1>
+            <p class="text-muted mb-0" style="font-size: 0.95rem;">{{ __('Manage your personal information and public profile appearance') }}</p>
         </div>
-        <div>
-            <button type="submit" form="profile-form" class="btn btn-primary shadow-sm"><i class="las la-save"></i> {{ __('Save Changes') }}</button>
-        </div>
+        <button type="submit" form="profile-form" class="btn btn-primary px-4 py-2 shadow-sm d-flex align-items-center" style="background-color: #02767F; border-color: #02767F; border-radius: 8px;">
+            <i class="las la-save mr-2" style="font-size: 1.2rem;"></i> 
+            <span class="font-weight-bold">{{ __('Save Changes') }}</span>
+        </button>
     </div>
 
-    <div class="row">
-        <!-- Sidebar / Image Card -->
-        <div class="col-lg-4 mb-4">
-             <div class="card shadow border-0 text-center">
-                <div class="card-body">
-                        <div class="position-relative d-inline-block mb-3">
-                        <div class="avatar-circle rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px; border: 4px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); overflow: hidden;">
+    <!-- Success/Error Messages -->
+    @if(session('success'))
+        <div class="alert alert-success border-0 shadow-sm rounded-lg mb-4" role="alert" style="border-left: 5px solid #28a745;">
+            <div class="d-flex align-items-center">
+                <i class="las la-check-circle mr-3" style="font-size: 1.5rem;"></i>
+                <div>
+                    <h6 class="mb-0 font-weight-bold">{{ __('Success') }}</h6>
+                    <small>{{ session('success') }}</small>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger border-0 shadow-sm rounded-lg mb-4" role="alert" style="border-left: 5px solid #dc3545;">
+             <div class="d-flex align-items-center">
+                <i class="las la-exclamation-triangle mr-3" style="font-size: 1.5rem;"></i>
+                <div>
+                    <h6 class="mb-0 font-weight-bold">{{ __('Please correct the following errors:') }}</h6>
+                    <ul class="mb-0 small pl-3">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <div class="row g-4">
+        <!-- Sidebar: Profile Photo & Key Stats -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-body text-center p-5 position-relative">
+                    <div class="position-absolute w-100" style="height: 100px; background: linear-gradient(135deg, #02767F 0%, #039ba7 100%); top: 0; left: 0;"></div>
+                    
+                    <div class="position-relative d-inline-block mt-4 mb-3">
+                        <div class="avatar-circle rounded-circle bg-white d-flex align-items-center justify-content-center mx-auto shadow" style="width: 140px; height: 140px; border: 5px solid #fff; overflow: hidden; position: relative;">
                             @php
                                 use Illuminate\Support\Facades\Storage;
                                 $profileImage = null;
                                 if(isset($user)) {
-                                    // Try profile_photo first, then image
                                     $imagePath = $profile->profile_photo ?? $user->image ?? null;
                                     if($imagePath) {
-                                        // Handle different path formats
                                         if(strpos($imagePath, 'http') === 0) {
-                                            // Already a full URL
                                             $profileImage = $imagePath;
                                         } elseif(strpos($imagePath, 'storage/') === 0) {
-                                            // Path starts with storage/, use asset
                                             $profileImage = asset($imagePath);
                                         } else {
-                                            // Relative path, use Storage::url
                                             $profileImage = Storage::url($imagePath);
                                         }
                                     }
                                 }
                             @endphp
+                            
                             @if($profileImage)
-                                <img src="{{ $profileImage }}" id="profile-preview" class="rounded-circle w-100 h-100" style="object-fit: cover;" onerror="this.style.display='none'; document.getElementById('default-icon').style.display='block';">
-                                <i class="las la-user text-muted" id="default-icon" style="font-size: 60px; display: none;"></i>
+                                <img src="{{ $profileImage }}" id="profile-preview" class="w-100 h-100" style="object-fit: cover;" onerror="this.src='{{ asset('dashboard/images/avatar-placeholder.png') }}'; this.onerror=null;">
                             @else
-                                <img id="profile-preview" src="" style="display:none;" class="rounded-circle w-100 h-100" style="object-fit: cover;">
-                                <i class="las la-user text-muted" id="default-icon" style="font-size: 60px;"></i>
+                                <div id="default-avatar" class="w-100 h-100 d-flex align-items-center justify-content-center bg-light text-muted">
+                                    <i class="las la-user" style="font-size: 60px;"></i>
+                                </div>
+                                <img id="profile-preview" src="" style="display:none;" class="w-100 h-100" style="object-fit: cover;">
                             @endif
                         </div>
-                        <button type="button" onclick="document.getElementById('profile_image_input').click()" class="btn btn-sm btn-primary rounded-circle position-absolute" style="bottom: 0; right: 0; width: 35px; height: 35px; padding: 0;" title="Change Photo">
-                            <i class="las la-camera"></i>
+                        <button type="button" onclick="document.getElementById('profile_image_input').click()" class="btn btn-primary rounded-circle position-absolute shadow-sm d-flex align-items-center justify-content-center" style="bottom: 5px; right: 5px; width: 40px; height: 40px; background-color: #02767F; border-color: #fff; border-width: 3px;" title="{{ __('Change Photo') }}">
+                            <i class="las la-camera text-white"></i>
                         </button>
                     </div>
+
                     <h5 class="font-weight-bold text-dark mb-1">{{ Auth::user()->name }}</h5>
-                    <p class="text-muted mb-3">{{ $profile->specialization ?? 'Specialist' }}</p>
-                    
-                    <div class="d-flex justify-content-center mb-3">
-                         <div class="px-3 border-right">
-                             <div class="font-weight-bold text-dark h5 mb-0">{{ number_format($rating ?? 0, 1) }}</div>
-                             <small class="text-muted">{{ __('Rating') }}</small>
-                             @if($totalReviews > 0)
-                                 <small class="d-block text-muted" style="font-size: 0.7rem;">({{ $totalReviews }} {{ __('reviews') }})</small>
-                             @endif
-                         </div>
-                         <div class="px-3">
-                             <div class="font-weight-bold text-dark h5 mb-0">{{ $totalPatients ?? 0 }}</div>
-                             <small class="text-muted">{{ __('Patients') }}</small>
-                         </div>
+                    <p class="text-muted small mb-3 badge bg-light text-dark px-3 py-1 font-weight-normal">{{ $profile->specialization ?? __('Physiotherapist') }}</p>
+
+                    <div class="d-flex justify-content-center mt-4">
+                        <div class="px-4 border-right">
+                            <div class="h4 font-weight-bold text-dark mb-0">{{ number_format($rating ?? 0, 1) }} <i class="las la-star text-warning" style="font-size: 0.8em;"></i></div>
+                            <small class="text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">{{ __('Rating') }}</small>
+                        </div>
+                        <div class="px-4">
+                            <div class="h4 font-weight-bold text-dark mb-0">{{ $totalPatients ?? 0 }}</div>
+                            <small class="text-muted text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.5px;">{{ __('Patients') }}</small>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Account Health Widget -->
-            @if(in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
-                <div class="card shadow border-0 mt-4">
-                    @include('web.components.account-health')
+
+            <!-- Account Health Widget (if applicable) -->
+             @if(in_array(Auth::user()->type, ['vendor', 'company', 'therapist']))
+                <div class="card border-0 shadow-sm" style="border-radius: 12px;">
+                    <div class="card-body p-0">
+                        @include('web.components.account-health')
+                    </div>
                 </div>
             @endif
         </div>
 
         <!-- Main Form -->
         <div class="col-lg-8">
-            <div class="card shadow border-0 mb-4">
-                <div class="card-header bg-white">
-                    <h6 class="m-0 font-weight-bold text-primary">{{ __('Edit Details') }}</h6>
-                </div>
-                <div class="card-body">
-                    <form id="profile-form" method="POST" action="{{ route('therapist.profile.update') }}" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <input type="file" name="profile_image" id="profile_image_input" style="display: none;" accept="image/*" onchange="previewImage(this)">
+            <form id="profile-form" method="POST" action="{{ route('therapist.profile.update') }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <input type="file" name="profile_image" id="profile_image_input" style="display: none;" accept="image/*" onchange="previewImage(this)">
 
-                        <h6 class="text-uppercase text-muted small font-weight-bold mb-3 border-bottom pb-2">{{ __('Personal Information') }}</h6>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('Full Name') }}</label>
+                <!-- Personal Information -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                        <h6 class="font-weight-bold text-dark d-flex align-items-center">
+                            <i class="las la-user-circle mr-2 text-primary" style="font-size: 1.4rem;"></i>
+                            {{ __('Personal Information') }}
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Full Name') }}</label>
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-user"></i></span>
-                                    </div>
+                                    <span class="input-group-text bg-light border-right-0"><i class="las la-user"></i></span>
                                     <input type="text" name="name" class="form-control border-left-0" value="{{ old('name', $user->name) }}" required>
                                 </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('Phone Number') }}</label>
-                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-phone"></i></span>
-                                    </div>
+                            <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Phone Number') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-right-0"><i class="las la-phone"></i></span>
                                     <input type="text" name="phone" class="form-control border-left-0" value="{{ old('phone', $user->phone) }}" required>
                                 </div>
                             </div>
-                        </div>
-
-                         <div class="form-group">
-                            <label class="small font-weight-bold text-dark">{{ __('Email Address') }}</label>
-                             <div class="input-group">
-                                <div class="input-group-prepend">
+                            <div class="col-12">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Email Address') }}</label>
+                                <div class="input-group">
                                     <span class="input-group-text bg-light border-right-0"><i class="las la-envelope"></i></span>
+                                    <input type="email" class="form-control border-left-0 bg-light" value="{{ $user->email }}" disabled>
                                 </div>
-                                <input type="email" class="form-control border-left-0" value="{{ $user->email }}" disabled>
+                                <small class="text-muted ms-2"><i class="las la-lock"></i> {{ __('Email cannot be changed directly.') }}</small>
                             </div>
-                            <small class="text-muted ml-1">{{ __('Email cannot be changed directly.') }}</small>
                         </div>
+                    </div>
+                </div>
 
-                        <h6 class="text-uppercase text-muted small font-weight-bold mb-3 mt-4 border-bottom pb-2">{{ __('Professional Details') }}</h6>
-                         <div class="form-group">
-                            <label class="small font-weight-bold text-dark">{{ __('Specialization') }}</label>
-                            <input type="text" name="specialization" class="form-control" value="{{ old('specialization', $profile->specialization) }}" placeholder="e.g. Sports Physiotherapy" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="small font-weight-bold text-dark">{{ __('Professional Bio') }}</label>
-                            <textarea name="bio" class="form-control" rows="4" placeholder="Tell patients about your experience...">{{ old('bio', $profile->bio) }}</textarea>
-                        </div>
-                        
-                         <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('Home Visit Rate (EGP)') }}</label>
-                                 <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-tags"></i></span>
-                                    </div>
+                <!-- Professional Details -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                         <h6 class="font-weight-bold text-dark d-flex align-items-center">
+                            <i class="las la-briefcase mr-2 text-primary" style="font-size: 1.4rem;"></i>
+                            {{ __('Professional Details') }}
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Specialization') }}</label>
+                                <input type="text" name="specialization" class="form-control" value="{{ old('specialization', $profile->specialization) }}" placeholder="e.g. Sports Physiotherapy" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Professional Bio') }}</label>
+                                <textarea name="bio" class="form-control" rows="5" placeholder="{{ __('Tell patients about your experience, certifications, and approach...') }}">{{ old('bio', $profile->bio) }}</textarea>
+                            </div>
+                             <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Home Visit Rate (EGP)') }}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-right-0 fw-bold">{{ __('EGP') }}</span>
                                     <input type="number" name="home_visit_rate" class="form-control border-left-0" value="{{ old('home_visit_rate', $profile->home_visit_rate) }}" required>
                                 </div>
                             </div>
                         </div>
-
-                        <h6 class="text-uppercase text-muted small font-weight-bold mb-3 mt-4 border-bottom pb-2">{{ __('Bank Details') }}</h6>
-                        <div class="alert alert-info">
-                            <i class="las la-info-circle"></i> 
-                            <strong>{{ __('Payment Information') }}</strong><br>
-                            {{ __('Add your bank details to receive payments. This information is kept secure and confidential.') }}
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('Bank Name') }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-university"></i></span>
-                                    </div>
-                                    <input type="text" name="bank_name" class="form-control border-left-0" value="{{ old('bank_name', $profile->bank_name ?? '') }}" placeholder="{{ __('e.g. CIB, NBE, QNB') }}">
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('Account Holder Name') }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-user"></i></span>
-                                    </div>
-                                    <input type="text" name="bank_account_name" class="form-control border-left-0" value="{{ old('bank_account_name', $profile->bank_account_name ?? '') }}" placeholder="{{ __('Full name as in bank account') }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('IBAN') }}</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-credit-card"></i></span>
-                                    </div>
-                                    <input type="text" name="iban" class="form-control border-left-0" value="{{ old('iban', $profile->iban ?? '') }}" placeholder="{{ __('EG123456789...') }}">
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label class="small font-weight-bold text-dark">{{ __('SWIFT Code') }} <small class="text-muted">({{ __('Optional') }})</small></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text bg-light border-right-0"><i class="las la-globe"></i></span>
-                                    </div>
-                                    <input type="text" name="swift_code" class="form-control border-left-0" value="{{ old('swift_code', $profile->swift_code ?? '') }}" placeholder="{{ __('For international transfers') }}">
-                                </div>
-                            </div>
-                        </div>
-
-                        <h6 class="text-uppercase text-muted small font-weight-bold mb-3 mt-4 border-bottom pb-2">{{ __('Service Areas') }}</h6>
-                        <div class="form-group">
-                            <label class="small font-weight-bold text-dark d-block mb-3">{{ __('Select areas you cover for home visits') }}</label>
-                            
-                            <!-- Location Filters -->
-                            <div class="form-row mb-3">
-                                <div class="col-md-6">
-                                    <label class="small text-muted">{{ __('Country') }}</label>
-                                    <select class="form-control custom-select" id="countrySelect" disabled>
-                                        <option value="Egypt" selected>Egypt</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="small text-muted">{{ __('Governorate / City') }}</label>
-                                    <select class="form-control custom-select" id="citySelect">
-                                        <option value="all">{{ __('Show All') }}</option>
-                                        @if(isset($locations['Egypt']))
-                                            @foreach(array_keys($locations['Egypt']) as $city)
-                                                <option value="{{ $city }}">{{ $city }}</option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <hr class="my-3">
-
-                            <!-- Area Checkboxes -->
-                            <div id="areasContainer" style="max-height: 400px; overflow-y: auto;">
-                                @if(isset($locations['Egypt']))
-                                    @foreach($locations['Egypt'] as $city => $areas)
-                                        <div class="area-group" data-city="{{ $city }}">
-                                            <h6 class="font-weight-bold text-primary mb-2 mt-2 px-1">{{ $city }}</h6>
-                                            <div class="row px-1">
-                                                @foreach($areas as $area)
-                                                    <div class="col-md-4 mb-2">
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" name="available_areas[]" value="{{ $area }}" class="custom-control-input" id="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}" 
-                                                                {{ in_array($area, $profile->available_areas ?? []) ? 'checked' : '' }}>
-                                                            <label class="custom-control-label" for="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}">{{ $area }}</label>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <p class="text-muted text-center">No location data available.</p>
-                                @endif
-                            </div>
-                        </div>
-
-                        <!-- JS for Filtering -->
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const citySelect = document.getElementById('citySelect');
-                                const areaGroups = document.querySelectorAll('.area-group');
-
-                                citySelect.addEventListener('change', function() {
-                                    const selectedCity = this.value;
-
-                                    areaGroups.forEach(group => {
-                                        if (selectedCity === 'all' || group.getAttribute('data-city') === selectedCity) {
-                                            group.style.display = 'block';
-                                        } else {
-                                            group.style.display = 'none';
-                                        }
-                                    });
-                                });
-                            });
-                        </script>
-
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Bank Details -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                   <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                         <h6 class="font-weight-bold text-dark d-flex align-items-center">
+                            <i class="las la-university mr-2 text-primary" style="font-size: 1.4rem;"></i>
+                            {{ __('Payment Information') }}
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-light border-0 bg-light-primary mb-4">
+                            <div class="d-flex">
+                                <i class="las la-shield-alt text-primary mr-3" style="font-size: 1.5rem;"></i>
+                                <small class="text-muted" style="line-height: 1.4;">{{ __('Your bank details are securely stored and used only for processing your earnings payouts.') }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Bank Name') }}</label>
+                                <input type="text" name="bank_name" class="form-control" value="{{ old('bank_name', $profile->bank_name ?? '') }}" placeholder="{{ __('e.g. CIB') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Account Holder Name') }}</label>
+                                <input type="text" name="bank_account_name" class="form-control" value="{{ old('bank_account_name', $profile->bank_account_name ?? '') }}" placeholder="{{ __('Full Name') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('IBAN') }}</label>
+                                <input type="text" name="iban" class="form-control" value="{{ old('iban', $profile->iban ?? '') }}">
+                            </div>
+                             <div class="col-md-6">
+                                <label class="form-label small font-weight-bold text-muted">{{ __('Swift Code') }} <small>({{ __('Optional') }})</small></label>
+                                <input type="text" name="swift_code" class="form-control" value="{{ old('swift_code', $profile->swift_code ?? '') }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Service Areas -->
+                <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                    <div class="card-header bg-white border-bottom-0 pt-4 pb-0 px-4">
+                         <h6 class="font-weight-bold text-dark d-flex align-items-center">
+                            <i class="las la-map-marked-alt mr-2 text-primary" style="font-size: 1.4rem;"></i>
+                            {{ __('Service Areas') }}
+                        </h6>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="form-row mb-3">
+                            <div class="col-md-6">
+                                <label class="small font-weight-bold text-muted">{{ __('Governorate / City') }}</label>
+                                <select class="form-select" id="citySelect">
+                                    <option value="all">{{ __('Show All Cities') }}</option>
+                                    @if(isset($locations['Egypt']))
+                                        @foreach(array_keys($locations['Egypt']) as $city)
+                                            <option value="{{ $city }}">{{ $city }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-light p-3 rounded" id="areasContainer" style="max-height: 350px; overflow-y: auto; border: 1px solid #e9ecef;">
+                            @if(isset($locations['Egypt']))
+                                @foreach($locations['Egypt'] as $city => $areas)
+                                    <div class="area-group mb-3" data-city="{{ $city }}">
+                                        <h6 class="font-weight-bold text-primary border-bottom pb-2 mb-2 sticky-top bg-light" style="top: -1rem;">{{ $city }}</h6>
+                                        <div class="row g-2">
+                                            @foreach($areas as $area)
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="available_areas[]" value="{{ $area }}" id="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}" 
+                                                            {{ in_array($area, $profile->available_areas ?? []) ? 'checked' : '' }}>
+                                                        <label class="form-check-label small" for="area_{{ \Illuminate\Support\Str::slug($city) }}_{{ \Illuminate\Support\Str::slug($area) }}">{{ $area }}</label>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted text-center">{{ __('No location data available.') }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
-@endsection
 
 @push('scripts')
 <script>
@@ -316,20 +280,40 @@
             
             reader.onload = function(e) {
                 var preview = document.getElementById('profile-preview');
-                var icon = document.getElementById('default-icon');
+                var defaultAvatar = document.getElementById('default-avatar');
                 
                 if(preview) {
                     preview.src = e.target.result;
                     preview.style.display = 'block';
                 }
                 
-                if(icon) {
-                    icon.style.display = 'none';
+                if(defaultAvatar) {
+                    defaultAvatar.style.display = 'none';
                 }
             }
             
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelect = document.getElementById('citySelect');
+        const areaGroups = document.querySelectorAll('.area-group');
+
+        if(citySelect) {
+            citySelect.addEventListener('change', function() {
+                const selectedCity = this.value;
+
+                areaGroups.forEach(group => {
+                    if (selectedCity === 'all' || group.getAttribute('data-city') === selectedCity) {
+                        group.style.display = 'block';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
 </script>
 @endpush
+@endsection

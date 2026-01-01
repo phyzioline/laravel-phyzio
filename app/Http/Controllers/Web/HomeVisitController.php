@@ -433,4 +433,32 @@ class HomeVisitController extends Controller
         $visit = \App\Models\HomeVisit::findOrFail($id);
         return view('web.pages.home_visits.success', compact('visit'));
     }
+
+    /**
+     * Get cities by governorate/state (AJAX endpoint)
+     */
+    public function getCitiesByState(Request $request)
+    {
+        $stateId = $request->get('state_id');
+        
+        $citiesQuery = DB::table('cities');
+        
+        // If state_id is provided, filter by it; otherwise return all cities
+        if ($stateId) {
+            $citiesQuery->where('governorate_id', $stateId);
+        }
+
+        $cities = $citiesQuery
+            ->orderBy(app()->getLocale() === 'ar' ? 'name_ar' : 'name_en')
+            ->get()
+            ->map(function($city) {
+                return [
+                    'id' => $city->id,
+                    'name' => app()->getLocale() === 'ar' ? $city->name_ar : $city->name_en,
+                    'governorate_id' => $city->governorate_id
+                ];
+            });
+
+        return response()->json(['cities' => $cities]);
+    }
 }

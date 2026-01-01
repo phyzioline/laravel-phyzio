@@ -106,7 +106,13 @@
                                         </div>
                                         <div class="text-xs text-muted">{{ $schedule->slot_duration }} {{ __('min') }}</div>
                                     </div>
-                                    <i class="las la-check-circle text-success ms-2"></i>
+                                    <form action="{{ route('therapist.schedule.destroy', $schedule->id) }}" method="POST" class="d-inline-block" onsubmit="return confirm('{{ __('Are you sure you want to delete this slot?') }}');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link text-danger p-0 border-0" data-bs-toggle="tooltip" title="{{ __('Delete') }}">
+                                            <i class="las la-trash-alt" style="font-size: 1.2rem;"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             @empty
                                 <div class="text-center py-4 text-muted border border-dashed rounded bg-white">

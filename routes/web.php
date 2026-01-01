@@ -93,6 +93,7 @@ foreach ($supportedLocales as $locale) {
         
         // Home Visits Routes
         Route::get('/home_visits', [App\Http\Controllers\Web\HomeVisitController::class, 'index'])->name("web.home_visits.index.{$locale}");
+        Route::get('/home_visits/cities', [App\Http\Controllers\Web\HomeVisitController::class, 'getCitiesByState'])->name("web.home_visits.cities.{$locale}");
         Route::get('/home_visits/therapist/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'show'])->name("web.home_visits.show.{$locale}");
         Route::get('/home_visits/book/{id}', [App\Http\Controllers\Web\HomeVisitController::class, 'book'])->name("web.home_visits.book.{$locale}");
         Route::post('/home_visits/book', [App\Http\Controllers\Web\HomeVisitController::class, 'store'])->name("web.home_visits.store.{$locale}");
@@ -400,7 +401,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/appointments/available-slots', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableSlots'])->name('appointments.availableSlots');
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
-        Route::resource('invoices', \App\Http\Controllers\Clinic\InvoiceController::class);
+        // Invoices route is defined above (line 376) using PatientInvoiceController
         
         // Weekly Programs
         Route::get('/programs/get-template', [\App\Http\Controllers\Clinic\WeeklyProgramController::class, 'getTemplate'])->name('programs.getTemplate');

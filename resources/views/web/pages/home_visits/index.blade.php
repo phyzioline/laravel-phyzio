@@ -813,7 +813,7 @@ header,
         });
     });
     
-    // City/State Filter Logic
+    // City/State Filter Logic - Dynamic AJAX Loading
     function filterCitiesByState(stateSelectId, citySelectId) {
         const stateSelect = document.getElementById(stateSelectId);
         const citySelect = document.getElementById(citySelectId);
@@ -822,30 +822,16 @@ header,
         
         stateSelect.addEventListener('change', function() {
             const selectedStateId = this.value;
-            const selectedCity = citySelect.value;
             
-            // Show/hide city options based on selected state
-            Array.from(citySelect.options).forEach(option => {
-                if (option.value === '') {
-                    // Always show "All Cities" option
-                    option.style.display = '';
-                } else {
-                    const cityGovernorateId = option.getAttribute('data-governorate');
-                    if (selectedStateId === '' || cityGovernorateId === selectedStateId) {
-                        option.style.display = '';
-                    } else {
-                        option.style.display = 'none';
-                    }
-                }
-            });
+            // Clear existing city options except "All Cities"
+            citySelect.innerHTML = '<option value="">{{ __("All Cities") }}</option>';
             
-            // Reset city selection if current selection is not in the selected state
-            if (selectedStateId !== '') {
-                const selectedOption = citySelect.options[citySelect.selectedIndex];
-                const selectedCityGovernorateId = selectedOption ? selectedOption.getAttribute('data-governorate') : null;
-                if (selectedCityGovernorateId && selectedCityGovernorateId !== selectedStateId) {
-                    citySelect.value = '';
-                }
+            if (selectedStateId === '') {
+                // If no state selected, show all cities
+                loadAllCities(citySelectId);
+            } else {
+                // Load cities for selected state via AJAX
+                loadCitiesByState(selectedStateId, citySelectId);
             }
         });
         
@@ -853,6 +839,71 @@ header,
         if (stateSelect.value !== '') {
             stateSelect.dispatchEvent(new Event('change'));
         }
+    }
+    
+    // Load cities by state via AJAX
+    function loadCitiesByState(stateId, citySelectId) {
+        const citySelect = document.getElementById(citySelectId);
+        const locale = '{{ app()->getLocale() }}';
+        const url = `/${locale}/home_visits/cities?state_id=${stateId}`;
+        
+        // Show loading state
+        citySelect.disabled = true;
+        const loadingOption = document.createElement('option');
+        loadingOption.value = '';
+        loadingOption.textContent = '{{ __("Loading...") }}';
+        citySelect.appendChild(loadingOption);
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Clear loading option
+                citySelect.innerHTML = '<option value="">{{ __("All Cities") }}</option>';
+                
+                // Add cities from response
+                if (data.cities && data.cities.length > 0) {
+                    data.cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        option.setAttribute('data-governorate', city.governorate_id);
+                        citySelect.appendChild(option);
+                    });
+                }
+                
+                citySelect.disabled = false;
+            })
+            .catch(error => {
+                console.error('Error loading cities:', error);
+                citySelect.innerHTML = '<option value="">{{ __("All Cities") }}</option>';
+                citySelect.disabled = false;
+            });
+    }
+    
+    // Load all cities (when no state is selected)
+    function loadAllCities(citySelectId) {
+        const citySelect = document.getElementById(citySelectId);
+        const locale = '{{ app()->getLocale() }}';
+        const url = `/${locale}/home_visits/cities`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                citySelect.innerHTML = '<option value="">{{ __("All Cities") }}</option>';
+                
+                if (data.cities && data.cities.length > 0) {
+                    data.cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        option.setAttribute('data-governorate', city.governorate_id);
+                        citySelect.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading all cities:', error);
+            });
     }
     
     // Initialize filters for both search form and sidebar
