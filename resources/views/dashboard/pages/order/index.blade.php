@@ -19,38 +19,14 @@
         padding: 6px 8px !important;
     }
     
-    /* Ensure table fits within viewport accounting for sidebar */
+    /* Table container - Natural document flow scrolling */
     .table-responsive {
         width: 100% !important;
         max-width: 100% !important;
+        overflow-x: auto;
+        overflow-y: visible;
         margin: 0 !important;
         padding: 0 !important;
-    }
-    
-    /* Make row and col-12 expand to fill available space */
-    .row.mb-5 {
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: calc(100vh - 200px) !important;
-    }
-    
-    .row.mb-5 .col-12 {
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: calc(100vh - 200px) !important;
-    }
-    
-    /* Adjust max-height to account for header, stats, and filters - Increased to show more data */
-    @media screen and (min-width: 992px) {
-        .table-responsive {
-            max-height: calc(100vh - 100px) !important;
-            min-height: 700px !important;
-            height: calc(100vh - 100px) !important;
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
     }
     
     /* Filter container - fit content only */
@@ -67,30 +43,39 @@
         padding: 0.75rem 1rem !important;
     }
     
-    /* Ensure card and container use full available space */
+    /* Ensure card uses natural flow */
     .card {
-        min-height: calc(100vh - 200px) !important;
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        margin: 0 !important;
     }
     
     .card-body {
-        min-height: calc(100vh - 240px) !important;
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
         padding: 1rem !important;
         margin: 0 !important;
     }
     
-    /* Ensure sticky header stays on top */
-    #example2 thead th {
-        position: sticky;
-        top: 0;
-        z-index: 100;
+    /* Ensure body allows natural scrolling */
+    body {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Sticky header - sticks to top of viewport when scrolling */
+    #example2 thead {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 100 !important;
         background-color: #f8f9fa !important;
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    }
+    
+    #example2 thead th {
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 101 !important;
+        background-color: #f8f9fa !important;
     }
     
     /* Better text wrapping for specific columns */
@@ -154,8 +139,8 @@
 
             <div class="row mb-5">
                 <div class="col-12">
-                    <div class="card" style="width: 100%; overflow: hidden; margin: 0; min-height: calc(100vh - 200px); flex: 1; display: flex; flex-direction: column;">
-                        <div class="card-body" style="padding: 1rem; margin: 0; min-height: calc(100vh - 240px); flex: 1; display: flex; flex-direction: column;">
+                    <div class="card" style="width: 100%; overflow: hidden; margin: 0;">
+                        <div class="card-body" style="padding: 1rem; margin: 0;">
                             <!-- Orders by Status -->
                             <div class="mb-4">
                                 <h5 class="mb-3">Orders by Status</h5>
@@ -301,7 +286,7 @@
                                 </li>
                             </ul>
 
-                            <div class="table-responsive text-center" style="max-height: calc(100vh - 100px); min-height: 700px; height: calc(100vh - 100px); overflow-x: auto; overflow-y: auto; width: 100%; margin: 0; padding: 0; flex: 1; display: flex; flex-direction: column;">
+                            <div class="table-responsive text-center" style="overflow-x: auto; overflow-y: visible; width: 100%; margin: 0; padding: 0;">
                                 <table id="example2" class="table table-striped table-bordered table-sm" style="font-size: 0.85rem; width: 100%; table-layout: fixed; margin: 0;">
                                     <thead class="table-light" style="position: sticky; top: 0; z-index: 100; background-color: #f8f9fa !important;">
                                         <tr>
