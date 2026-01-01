@@ -34,4 +34,20 @@ class OrderRequest extends FormRequest
         
         return $rules;
     }
+
+    /**
+     * Get custom error messages for validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'payment_method.required' => __('The payment method field is required.'),
+            'payment_method.in' => __('Please select a valid payment method.'),
+            'name.required' => __('The name field is required.'),
+            'address.required' => __('The address field is required.'),
+            'phone.required' => __('The phone field is required.'),
+            'email.required' => __('The email field is required.'),
+            'email.email' => __('Please enter a valid email address.'),
+        ];
+    }
 }

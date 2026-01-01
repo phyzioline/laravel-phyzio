@@ -27,6 +27,15 @@
                     </h4>
                     
                     @if(count($items) > 0)
+                        {{-- Cart-level errors (out of stock) --}}
+                        @error('cart')
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="las la-exclamation-triangle me-2"></i>
+                                <strong>{{ __('Error!') }}</strong> {{ $message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @enderror
+                        
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="table-light">
@@ -70,6 +79,16 @@
                                                             {{ $item->product->{'product_name_' . app()->getLocale()} }}
                                                         </h6>
                                                         <small class="text-muted">Available: {{ $item->product->amount }} units</small>
+                                                        @if($item->product->amount < $item->quantity)
+                                                            <div class="text-danger small mt-1">
+                                                                <i class="las la-exclamation-circle me-1"></i>
+                                                                @if($item->product->amount == 0)
+                                                                    {{ __('This product is currently out of stock.') }}
+                                                                @else
+                                                                    {{ __('Only :count items available. Please update quantity.', ['count' => $item->product->amount]) }}
+                                                                @endif
+                                                            </div>
+                                                        @endif
                                                         @php
                                                             $options = is_string($item->options) ? json_decode($item->options, true) : $item->options;
                                                             $engineerSelected = $options['engineer_selected'] ?? false;
@@ -110,13 +129,13 @@
                                             <td class="text-center">
                                                 <div class="quantity-input d-flex align-items-center justify-content-center">
                                                     <input type="number"
-                                                           class="form-control text-center mx-2 input-number-1"
-                                                           style="width: 80px; border-radius: 20px;"
+                                                           class="form-control text-center mx-2 input-number-1 @if($item->product->amount < $item->quantity) is-invalid @endif"
+                                                           style="width: 80px; border-radius: 20px; @if($item->product->amount < $item->quantity) border-color: #dc3545; @endif"
                                                            value="{{ $item->quantity }}"
                                                            min="1"
                                                            max="{{ $item->product->amount }}"
                                                            name="quantity"
-                                                           data-id="{{ $item->id }}
+                                                           data-id="{{ $item->id }}"
                                                 </div>
                                             </td>
                                             
@@ -242,8 +261,14 @@
                                         <label for="email" class="form-label fw-bold">
                                             <i class="las la-envelope me-1"></i>Email Address <span class="text-danger">*</span>
                                         </label>
-                                        <input type="email" id="email" name="email" class="form-control" 
+                                        <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" 
+                                               value="{{ old('email') }}"
                                                placeholder="your.email@example.com" required>
+                                        @error('email')
+                                            <div class="text-danger small mt-1">
+                                                <i class="las la-exclamation-circle me-1"></i>{{ $message }}
+                                            </div>
+                                        @enderror
                                         <small class="text-muted">We'll use this to send order updates and help you create an account later.</small>
                                         <div class="invalid-feedback">Please enter a valid email address.</div>
                                     </div>
@@ -285,11 +310,16 @@
                                         <label for="payment_method" class="form-label fw-bold">
                                             <i class="las la-credit-card me-1"></i>Payment Method <span class="text-danger">*</span>
                                         </label>
-                                        <select name="payment_method" id="payment_method" class="form-select payment-method-select" required style="font-size: 18px; padding: 15px; border: 2px solid #02767F; border-radius: 10px; background: linear-gradient(135deg, #ffffff 0%, #f0f9fa 100%); transition: all 0.3s ease;">
+                                        <select name="payment_method" id="payment_method" class="form-select payment-method-select @error('payment_method') is-invalid @enderror" required style="font-size: 18px; padding: 15px; border: 2px solid #02767F; border-radius: 10px; background: linear-gradient(135deg, #ffffff 0%, #f0f9fa 100%); transition: all 0.3s ease;">
                                             <option value="" disabled selected>Select Payment Method</option>
-                                            <option value="card">💳 Credit/Debit Card</option>
-                                            <option value="cash">💰 Cash on Delivery</option>
+                                            <option value="card" {{ old('payment_method') == 'card' ? 'selected' : '' }}>💳 Credit/Debit Card</option>
+                                            <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>💰 Cash on Delivery</option>
                                         </select>
+                                        @error('payment_method')
+                                            <div class="text-danger small mt-1">
+                                                <i class="las la-exclamation-circle me-1"></i>{{ $message }}
+                                            </div>
+                                        @enderror
                                         <div class="invalid-feedback" id="payment_method_error">Please select a payment method.</div>
                                         <div class="text-danger small mt-1" id="payment_method_alert" style="display: none;">
                                             <i class="las la-exclamation-circle me-1"></i>Please select a payment method to continue.
@@ -300,9 +330,14 @@
                                         <label for="Name" class="form-label fw-bold">
                                             <i class="las la-user me-1"></i>Full Name
                                         </label>
-                                        <input type="text" id="Name" name="name" class="form-control" 
-                                               value="{{ auth()->check() ? auth()->user()->name : '' }}"
+                                        <input type="text" id="Name" name="name" class="form-control @error('name') is-invalid @enderror" 
+                                               value="{{ old('name', auth()->check() ? auth()->user()->name : '') }}"
                                                placeholder="Enter your full name" required>
+                                        @error('name')
+                                            <div class="text-danger small mt-1">
+                                                <i class="las la-exclamation-circle me-1"></i>{{ $message }}
+                                            </div>
+                                        @enderror
                                         <div class="invalid-feedback">Please enter your name.</div>
                                     </div>
                                 </div>
@@ -312,9 +347,14 @@
                                         <label for="phone" class="form-label fw-bold">
                                             <i class="las la-phone me-1"></i>Phone Number
                                         </label>
-                                        <input type="tel" id="phone" name="phone" class="form-control" 
-                                               value="{{ auth()->check() ? auth()->user()->phone : '' }}"
+                                        <input type="tel" id="phone" name="phone" class="form-control @error('phone') is-invalid @enderror" 
+                                               value="{{ old('phone', auth()->check() ? auth()->user()->phone : '') }}"
                                                placeholder="Enter phone number" required>
+                                        @error('phone')
+                                            <div class="text-danger small mt-1">
+                                                <i class="las la-exclamation-circle me-1"></i>{{ $message }}
+                                            </div>
+                                        @enderror
                                         <div class="invalid-feedback">Please enter a valid phone number.</div>
                                     </div>
                                     
@@ -322,8 +362,14 @@
                                         <label for="address" class="form-label fw-bold">
                                             <i class="las la-map-marker me-1"></i>Delivery Address
                                         </label>
-                                        <input type="text" id="address" name="address" class="form-control" 
+                                        <input type="text" id="address" name="address" class="form-control @error('address') is-invalid @enderror" 
+                                               value="{{ old('address') }}"
                                                placeholder="Enter delivery address" required>
+                                        @error('address')
+                                            <div class="text-danger small mt-1">
+                                                <i class="las la-exclamation-circle me-1"></i>{{ $message }}
+                                            </div>
+                                        @enderror
                                         <div class="invalid-feedback">Please enter your address.</div>
                                     </div>
                                 </div>
@@ -439,6 +485,38 @@
                 });
                 
                 // Remove error styling when payment method is selected
+                $('#payment_method').on('change', function() {
+                    if ($(this).val()) {
+                        $(this).removeClass('is-invalid');
+                        $(this).css('border-color', '#02767F');
+                        $('#payment_method_alert').hide();
+                        $('#payment_method_error').hide();
+                        
+                        // Reset button
+                        $('#btn_text').show();
+                        $('#btn_error').hide();
+                        $('#place_order_btn').css({
+                            'background-color': '#02767F',
+                            'border-color': '#02767F'
+                        });
+                    }
+                });
+                
+                // Remove error styling when other fields are changed
+                $('#email, #Name, #phone, #address').on('input change', function() {
+                    $(this).removeClass('is-invalid');
+                });
+                
+                // Prevent global toastr error on this page - show inline errors instead
+                if (typeof toastr !== 'undefined') {
+                    const originalError = toastr.error;
+                    toastr.error = function(message, title, options) {
+                        // Don't show toastr errors on cart page - errors are shown inline
+                        console.log('Error (shown inline):', message);
+                        return;
+                    };
+                }
+                
                 document.getElementById('payment_method').addEventListener('change', function() {
                     const placeOrderBtn = document.getElementById('place_order_btn');
                     const btnText = document.getElementById('btn_text');
