@@ -1,43 +1,6 @@
 @extends('therapist.layouts.app')
 
 @section('content')
-<style>
-    /* Fix modal z-index - must be higher than header (999) and everything else */
-    #addSlotModal {
-        z-index: 9999 !important;
-    }
-    #addSlotModal .modal-dialog {
-        z-index: 10000 !important;
-        pointer-events: auto !important;
-    }
-    #addSlotModal .modal-content {
-        z-index: 10001 !important;
-        pointer-events: auto !important;
-        position: relative;
-    }
-    .modal-backdrop {
-        z-index: 9998 !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        pointer-events: auto !important;
-    }
-    .modal.show {
-        display: block !important;
-        pointer-events: auto !important;
-    }
-    /* Prevent body scroll when modal is open */
-    body.modal-open {
-        overflow: hidden !important;
-        padding-right: 0 !important;
-    }
-    /* Hide overlay when modal is open */
-    body.modal-open .overlay {
-        display: none !important;
-        z-index: 1 !important;
-    }
-    body.toggled.modal-open .overlay {
-        display: none !important;
-    }
-</style>
 <div class="container-fluid py-4" style="background-color: #f8f9fa;">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -47,7 +10,7 @@
         </div>
         <div>
              <!-- Toggle Modal -->
-             <button class="btn btn-primary shadow-sm" type="button" id="openAvailabilityModal">
+             <button class="btn btn-primary shadow-sm" type="button" data-bs-toggle="modal" data-bs-target="#addAvailabilityModal">
                 <i class="las la-plus"></i> {{ __('Add Availability') }}
              </button>
         </div>
@@ -118,7 +81,6 @@
                                 <strong>{{ \Carbon\Carbon::parse($schedule->start_time)->format('g:i A') }}</strong> - 
                                 <strong>{{ \Carbon\Carbon::parse($schedule->end_time)->format('g:i A') }}</strong>
                             </div>
-                            <!-- Future: Add delete button here -->
                         </div>
                     @empty
                         <p class="text-muted small text-center mb-0 p-3 bg-light rounded">No slots available</p>
@@ -131,14 +93,14 @@
 </div>
 
 <!-- Add Availability Modal -->
-<div class="modal fade" id="addSlotModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="true" role="dialog" aria-labelledby="addSlotModalLabel" aria-modal="true">
+<div class="modal fade" id="addAvailabilityModal" tabindex="-1" aria-labelledby="addAvailabilityModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addSlotModalLabel">SET AVAILABILITY</h5>
+        <h5 class="modal-title" id="addAvailabilityModalLabel">{{ __('Set Availability') }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form action="{{ route('therapist.availability.update') }}" method="POST">
+      <form action="{{ route('therapist.availability.update') }}" method="POST" id="availabilityForm">
           @csrf
           @method('PUT')
           <div class="modal-body">
@@ -153,10 +115,10 @@
             @endif
             <!-- Days Selection -->
             <div class="mb-3">
-                <label class="form-label font-weight-bold">Select Days <span class="text-danger">*</span></label>
+                <label class="form-label font-weight-bold">{{ __('Select Days') }} <span class="text-danger">*</span></label>
                 <div class="row">
                     @foreach(['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as $day)
-                    <div class="col-6">
+                    <div class="col-6 col-md-4">
                         <div class="form-check">
                             <input class="form-check-input day-checkbox" type="checkbox" name="days[]" value="{{ $day }}" id="day_{{ $day }}">
                             <label class="form-check-label text-capitalize" for="day_{{ $day }}">
@@ -166,42 +128,43 @@
                     </div>
                     @endforeach
                 </div>
-                <small class="text-danger" id="days-error" style="display: none;">Please select at least one day.</small>
+                <div id="days-error" class="text-danger small mt-1" style="display:none;">{{ __('Please select at least one day.') }}</div>
             </div>
             
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">Start Time <span class="text-danger">*</span></label>
+                    <label class="form-label">{{ __('Start Time') }} <span class="text-danger">*</span></label>
                     <input type="time" name="start_time" class="form-control" value="09:00" required>
                 </div>
                 <div class="col-md-6 mb-3">
-                    <label class="form-label">End Time <span class="text-danger">*</span></label>
+                    <label class="form-label">{{ __('End Time') }} <span class="text-danger">*</span></label>
                     <input type="time" name="end_time" class="form-control" value="17:00" required>
                 </div>
             </div>
             
             <div class="mb-3">
-                <label class="form-label">Date Range (Optional Validity)</label>
-                <div class="d-flex gap-2">
+                <label class="form-label">{{ __('Date Range (Optional Validity)') }}</label>
+                <div class="input-group">
                     <input type="date" name="start_date" class="form-control" value="{{ date('Y-m-d') }}" required>
+                    <span class="input-group-text">{{ __('to') }}</span>
                     <input type="date" name="end_date" class="form-control" value="{{ date('Y-m-d', strtotime('+1 year')) }}" required>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Slot Duration (Minutes)</label>
-                 <select name="slot_duration" class="form-control">
-                     <option value="15">15 Minutes</option>
-                     <option value="30" selected>30 Minutes</option>
-                     <option value="45">45 Minutes</option>
-                     <option value="60">60 Minutes</option>
+                <label class="form-label">{{ __('Slot Duration (Minutes)') }}</label>
+                 <select name="slot_duration" class="form-select">
+                     <option value="15">15 {{ __('Minutes') }}</option>
+                     <option value="30" selected>30 {{ __('Minutes') }}</option>
+                     <option value="45">45 {{ __('Minutes') }}</option>
+                     <option value="60">60 {{ __('Minutes') }}</option>
                  </select>
             </div>
             
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save Availability</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
+            <button type="submit" class="btn btn-primary">{{ __('Save Availability') }}</button>
           </div>
       </form>
     </div>
@@ -210,134 +173,47 @@
 
 @push('scripts')
 <script>
-$(document).ready(function() {
-    var modalElement = $('#addSlotModal');
-    var modalInstance = null;
-    
-    // Check for Bootstrap 5
-    if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-        modalInstance = new bootstrap.Modal(modalElement[0], {
-            backdrop: true,
-            keyboard: true,
-            focus: true
-        });
-    }
-    
-    // Open modal button
-    $('#openAvailabilityModal').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('availabilityForm');
         
-        // Hide overlay immediately
-        $('.overlay').hide();
-        $('body').removeClass('toggled');
-        
-        // Remove any existing backdrops
-        $('.modal-backdrop').remove();
-        
-        // Reset form
-        modalElement.find('form')[0].reset();
-        $('#days-error').hide();
-        modalElement.find('.form-control').removeClass('is-invalid');
-        
-        // Show modal
-        if (modalInstance) {
-            modalInstance.show();
-        } else {
-            // Fallback for Bootstrap 4 or manual
-            modalElement.modal('show');
-        }
-        
-        // Force hide overlay after a short delay
-        setTimeout(function() {
-            $('.overlay').hide();
-            $('body').removeClass('toggled');
-        }, 100);
-    });
-    
-    // Close modal handlers
-    modalElement.find('.btn-close, [data-bs-dismiss="modal"], button.btn-secondary').on('click', function() {
-        if (modalInstance) {
-            modalInstance.hide();
-        } else {
-            modalElement.modal('hide');
-        }
-    });
-    
-    // Close on backdrop click
-    modalElement.on('click', function(e) {
-        if ($(e.target).is(modalElement)) {
-            if (modalInstance) {
-                modalInstance.hide();
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validate Days
+            const checkedDays = document.querySelectorAll('.day-checkbox:checked');
+            const daysError = document.getElementById('days-error');
+            
+            if (checkedDays.length === 0) {
+                daysError.style.display = 'block';
+                isValid = false;
             } else {
-                modalElement.modal('hide');
+                daysError.style.display = 'none';
             }
-        }
-    });
-    
-    // Ensure overlay is hidden when modal is shown
-    modalElement.on('shown.bs.modal show.bs.modal', function() {
-        $('.overlay').hide();
-        $('body').removeClass('toggled');
-        // Force z-index
-        $(this).css('z-index', '9999');
-        $(this).find('.modal-dialog').css('z-index', '10000');
-        $(this).find('.modal-content').css('z-index', '10001');
-    });
-    
-    // Clean up on hide
-    modalElement.on('hidden.bs.modal', function() {
-        $('.modal-backdrop').remove();
-        $('body').removeClass('modal-open');
-    });
-    
-    // Form validation
-    modalElement.find('form').on('submit', function(e) {
-        var daysChecked = $('.day-checkbox:checked').length;
-        var startTime = $('input[name="start_time"]').val();
-        var endTime = $('input[name="end_time"]').val();
-        var isValid = true;
+            
+            // Validate Time
+            const startTime = form.querySelector('input[name="start_time"]').value;
+            const endTime = form.querySelector('input[name="end_time"]').value;
+            
+            if (startTime && endTime && startTime >= endTime) {
+                alert("{{ __('End time must be after start time.') }}");
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
         
-        if (daysChecked === 0) {
-            $('#days-error').show();
-            isValid = false;
-        } else {
-            $('#days-error').hide();
-        }
-        
-        if (!startTime) {
-            $('input[name="start_time"]').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('input[name="start_time"]').removeClass('is-invalid');
-        }
-        
-        if (!endTime) {
-            $('input[name="end_time"]').addClass('is-invalid');
-            isValid = false;
-        } else {
-            $('input[name="end_time"]').removeClass('is-invalid');
-        }
-        
-        if (startTime && endTime && startTime >= endTime) {
-            alert("{{ __('End time must be after start time.') }}");
-            $('input[name="end_time"]').addClass('is-invalid');
-            isValid = false;
-        }
-        
-        if (!isValid) {
-            e.preventDefault();
-            return false;
-        }
+        // Clear error when a day is checked
+        const dayCheckboxes = document.querySelectorAll('.day-checkbox');
+        dayCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (document.querySelectorAll('.day-checkbox:checked').length > 0) {
+                    document.getElementById('days-error').style.display = 'none';
+                }
+            });
+        });
     });
-    
-    // Remove error on day selection
-    $('.day-checkbox').on('change', function() {
-        if ($('.day-checkbox:checked').length > 0) {
-            $('#days-error').hide();
-        }
-    });
-});
 </script>
 @endpush
 @endsection

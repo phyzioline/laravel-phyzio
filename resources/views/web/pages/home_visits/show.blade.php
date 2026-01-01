@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 
-@push('styles')
+@push('css')
 <style>
     /* Fix header overlap - Add proper padding for fixed header */
     body {
