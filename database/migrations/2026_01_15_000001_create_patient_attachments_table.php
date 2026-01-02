@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained('patients')->onDelete('cascade');
             $table->foreignId('clinic_id')->constrained('clinics')->onDelete('cascade');
-            $table->foreignId('uploaded_by')->constrained('users')->onDelete('set null');
+            $table->foreignId('uploaded_by')->nullable()->constrained('users')->onDelete('set null');
             
             // File information
             $table->string('file_name');
