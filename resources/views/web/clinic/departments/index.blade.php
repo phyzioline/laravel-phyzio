@@ -41,7 +41,7 @@
                     <span class="badge {{ $dept->status == 'Active' ? 'badge-success' : 'badge-warning' }}">{{ $dept->status }}</span>
                 </div>
                 <div class="mt-3 text-right">
-                    <a href="{{ route('clinic.specialty-selection.show') }}" class="btn btn-sm btn-outline-secondary">{{ __('Manage Settings') }}</a>
+                    <a href="{{ route('clinic.departments.index') }}#{{ $dept->specialty }}" class="btn btn-sm btn-outline-secondary">{{ __('View Details') }}</a>
                 </div>
             </div>
         </div>

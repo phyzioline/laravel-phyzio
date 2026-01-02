@@ -188,110 +188,186 @@
     // Revenue Chart - Use real data (Line chart)
     var ctxR = document.getElementById('revenueChart');
     if (ctxR) {
-        var revenueData = @json($monthlyRevenue ?? []);
-        new Chart(ctxR.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: @json($monthlyLabels ?? []),
-                datasets: [{
-                    label: '{{ __('Revenue (EGP)') }}',
-                    data: revenueData,
-                    borderColor: '#00897b',
-                    backgroundColor: 'rgba(0, 137, 123, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
+        try {
+            var revenueData = @json($monthlyRevenue ?? []);
+            var revenueLabels = @json($monthlyLabels ?? []);
+            
+            // Ensure data is valid array
+            if (!Array.isArray(revenueData)) revenueData = [];
+            if (!Array.isArray(revenueLabels)) revenueLabels = [];
+            
+            // Ensure arrays have same length
+            while (revenueData.length < revenueLabels.length) {
+                revenueData.push(0);
+            }
+            while (revenueLabels.length < revenueData.length) {
+                revenueLabels.push('');
+            }
+            
+            new Chart(ctxR, {
+                type: 'line',
+                data: {
+                    labels: revenueLabels,
+                    datasets: [{
+                        label: '{{ __('Revenue (EGP)') }}',
+                        data: revenueData,
+                        borderColor: '#00897b',
+                        backgroundColor: 'rgba(0, 137, 123, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'EGP ' + value.toLocaleString();
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'EGP ' + value.toLocaleString();
+                                }
                             }
                         }
                     }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error('Error rendering revenue chart:', error);
+            ctxR.parentElement.innerHTML = '<p class="text-muted text-center">Chart data unavailable</p>';
+        }
     }
 
     // Growth Chart - Use real trend data
     var ctxG = document.getElementById('growthChart');
     if (ctxG) {
-        new Chart(ctxG.getContext('2d'), {
-            type: 'bar',
-            data: {
-                labels: @json($monthlyLabels ?? []),
-                datasets: [{
-                    label: '{{ __('New Patients') }}',
-                    data: @json($patientGrowth ?? []),
-                    backgroundColor: '#80cbc4'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
+        try {
+            var growthLabels = @json($monthlyLabels ?? []);
+            var growthData = @json($patientGrowth ?? []);
+            
+            // Ensure data is valid array
+            if (!Array.isArray(growthLabels)) growthLabels = [];
+            if (!Array.isArray(growthData)) growthData = [];
+            
+            // Ensure arrays have same length
+            while (growthData.length < growthLabels.length) {
+                growthData.push(0);
+            }
+            while (growthLabels.length < growthData.length) {
+                growthLabels.push('');
+            }
+            
+            new Chart(ctxG, {
+                type: 'bar',
+                data: {
+                    labels: growthLabels,
+                    datasets: [{
+                        label: '{{ __('New Patients') }}',
+                        data: growthData,
+                        backgroundColor: '#80cbc4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1,
+                                precision: 0
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error('Error rendering growth chart:', error);
+            ctxG.parentElement.innerHTML = '<p class="text-muted text-center">Chart data unavailable</p>';
+        }
     }
 
     // Status Distribution Chart
     var ctxS = document.getElementById('statusChart');
     if (ctxS) {
-        var statusData = @json($statusDistribution ?? []);
-        new Chart(ctxS.getContext('2d'), {
-            type: 'pie',
-            data: {
-                labels: Object.keys(statusData).map(s => s.charAt(0).toUpperCase() + s.slice(1)),
-                datasets: [{
-                    data: Object.values(statusData),
-                    backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
+        try {
+            var statusData = @json($statusDistribution ?? []);
+            if (!statusData || Object.keys(statusData).length === 0) {
+                ctxS.parentElement.innerHTML = '<p class="text-muted text-center">No appointment data available</p>';
+            } else {
+                new Chart(ctxS, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(statusData).map(s => s.charAt(0).toUpperCase() + s.slice(1)),
+                        datasets: [{
+                            data: Object.values(statusData),
+                            backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.error('Error rendering status chart:', error);
+            ctxS.parentElement.innerHTML = '<p class="text-muted text-center">Chart data unavailable</p>';
+        }
     }
 
     // Specialty Distribution Chart
     var ctxSp = document.getElementById('specialtyChart');
     if (ctxSp) {
-        var specialtyData = @json($specialtyDistribution ?? []);
-        new Chart(ctxSp.getContext('2d'), {
-            type: 'doughnut',
-            data: {
-                labels: Object.keys(specialtyData).map(s => s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())),
-                datasets: [{
-                    data: Object.values(specialtyData),
-                    backgroundColor: ['#00897b', '#43a047', '#1e88e5', '#fb8c00', '#e91e63', '#9c27b0', '#00bcd4', '#795548']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
+        try {
+            var specialtyData = @json($specialtyDistribution ?? []);
+            if (!specialtyData || Object.keys(specialtyData).length === 0) {
+                ctxSp.parentElement.innerHTML = '<p class="text-muted text-center">No specialty data available</p>';
+            } else {
+                new Chart(ctxSp, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(specialtyData).map(s => s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())),
+                        datasets: [{
+                            data: Object.values(specialtyData),
+                            backgroundColor: ['#00897b', '#43a047', '#1e88e5', '#fb8c00', '#e91e63', '#9c27b0', '#00bcd4', '#795548']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
             }
-        });
+        } catch (error) {
+            console.error('Error rendering specialty chart:', error);
+            ctxSp.parentElement.innerHTML = '<p class="text-muted text-center">Chart data unavailable</p>';
+        }
     }
 </script>
 @endpush

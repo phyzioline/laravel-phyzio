@@ -75,11 +75,21 @@ class AnalyticsController extends BaseClinicController
             $monthStart = $month->copy()->startOfMonth();
             $monthEnd = $month->copy()->endOfMonth();
             
-            $newPatientsCount = \App\Models\Patient::where('clinic_id', $clinic->id)
-                ->whereBetween('created_at', [$monthStart, $monthEnd])
-                ->count();
-            
-            $patientGrowth[] = $newPatientsCount;
+            try {
+                $newPatientsCount = \App\Models\Patient::where('clinic_id', $clinic->id)
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->count();
+                
+                $patientGrowth[] = (int)$newPatientsCount;
+            } catch (\Exception $e) {
+                \Log::error('Error calculating patient growth', ['error' => $e->getMessage()]);
+                $patientGrowth[] = 0;
+            }
+        }
+        
+        // Ensure patientGrowth array has 6 elements
+        while (count($patientGrowth) < 6) {
+            $patientGrowth[] = 0;
         }
 
         // Additional metrics
