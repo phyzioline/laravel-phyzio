@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\FeedItem;
 use App\Models\FeedComment;
 use App\Models\CommentLike;
+use App\Services\Feed\VideoProcessingService;
 use App\Services\Feed\FeedTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -82,33 +83,65 @@ class FeedController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'content' => 'required|string|max:1000',
-            'image' => 'nullable|image|max:2048' // 2MB Max
+            'description' => 'required|string|max:1000',
+            'media' => 'nullable|image|max:5120', // 5MB for images
+            'video' => 'nullable|mimes:mp4,webm,mov,avi|max:102400', // 100MB for videos
+            'video_url' => 'nullable|url' // For YouTube/Vimeo links
         ]);
 
         $user = Auth::user();
         
         $post = new FeedItem();
         $post->type = 'post';
-        $post->title = $user->name; // User name as title for posts
-        $post->description = $request->content;
+        $post->title = $user->name;
+        $post->description = $request->description;
         $post->status = 'active';
-        $post->target_audience = ['all']; // Visible to everyone
+        $post->target_audience = ['all'];
         $post->ai_relevance_base_score = 1.0;
         $post->scheduled_at = now();
-
-        // Polymorphic link to user
         $post->sourceable_id = $user->id;
         $post->sourceable_type = get_class($user);
 
-        if ($request->hasFile('image')) {
-             $path = $request->file('image')->store('feed_uploads', 'public');
-             $post->media_url = asset('storage/' . $path);
+        // Handle image upload
+        if ($request->hasFile('media')) {
+             $path = $request->file('media')->store('feed_uploads', 'public');
+             $post->media_url = $path;
+        }
+
+        // Handle video upload
+        if ($request->hasFile('video')) {
+            $videoService = app(VideoProcessingService::class);
+            try {
+                $videoData = $videoService->processVideo($request->file('video'));
+                $post->video_url = $videoData['video_url'];
+                $post->video_thumbnail = $videoData['video_thumbnail'];
+                $post->video_duration = $videoData['video_duration'];
+                $post->video_provider = $videoData['video_provider'];
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors(['video' => $e->getMessage()]);
+            }
+        }
+
+        // Handle external video URL (YouTube/Vimeo)
+        if ($request->filled('video_url')) {
+            $videoService = app(VideoProcessingService::class);
+            try {
+                $videoData = $videoService->processExternalVideo($request->video_url);
+                $post->video_url = $videoData['video_url'];
+                $post->video_thumbnail = $videoData['video_thumbnail'];
+                $post->video_duration = $videoData['video_duration'];
+                $post->video_provider = $videoData['video_provider'];
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors(['video_url' => $e->getMessage()]);
+            }
         }
 
         $post->save();
 
-        return redirect()->back()->with('success', 'Post published successfully!');
+        return redirect()->route('feed.index.' . app()->getLocale())->with('message', [
+            'type' => 'success',
+            'text' => __('Post created successfully!')
+        ]);
     }
 
     /**

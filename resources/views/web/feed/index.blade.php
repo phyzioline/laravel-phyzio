@@ -226,7 +226,30 @@
                 @endif
             </div>
             @elseif($item->media_url)
-            <img src="{{ $item->media_url }}" class="img-fluid" alt="Post media">
+            <img src="{{ asset('storage/' . $item->media_url) }}" class="img-fluid" alt="Post media">
+            @endif
+
+            {{-- Video Player --}}
+            @if($item->video_url)
+            <div class="video-container position-relative" style="background: #000;">
+                @if($item->video_provider == 'upload')
+                    {{-- Uploaded Video --}}
+                    <video class="w-100" controls playsinline preload="metadata" poster="{{ $item->video_thumbnail ? asset('storage/' . $item->video_thumbnail) : '' }}">
+                        <source src="{{ asset('storage/' . $item->video_url) }}" type="video/mp4">
+                        {{ __('Your browser does not support the video tag.') }}
+                    </video>
+                @elseif($item->video_provider == 'youtube')
+                    {{-- YouTube Embed --}}
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{ $item->video_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                @elseif($item->video_provider == 'vimeo')
+                    {{-- Vimeo Embed --}}
+                    <div class="ratio ratio-16x9">
+                        <iframe src="{{ $item->video_url }}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                @endif
+            </div>
             @endif
 
             {{-- Actions --}}
@@ -298,10 +321,36 @@
                         <textarea name="description" class="form-control border-0 bg-light" rows="4" 
                                   placeholder="{{ __('Share your thoughts...') }}" required></textarea>
                     </div>
+                    
                     <div class="mb-3">
-                        <label class="form-label small fw-medium">{{ __('Add Image') }}</label>
-                        <input type="file" name="media" accept="image/*" class="form-control">
+                        <label class="form-label small fw-medium">{{ __('Add Media') }}</label>
+                        <div class="btn-group w-100 mb-2" role="group">
+                            <input type="radio" class="btn-check" name="media_type" id="media_type_image" value="image" checked>
+                            <label class="btn btn-outline-secondary btn-sm" for="media_type_image">📷 {{ __('Image') }}</label>
+                            
+                            <input type="radio" class="btn-check" name="media_type" id="media_type_video" value="video">
+                            <label class="btn btn-outline-secondary btn-sm" for="media_type_video">🎥 {{ __('Video') }}</label>
+                            
+                            <input type="radio" class="btn-check" name="media_type" id="media_type_link" value="link">
+                            <label class="btn btn-outline-secondary btn-sm" for="media_type_link">🔗 {{ __('Link') }}</label>
+                        </div>
+                        
+                        <div id="image_upload" class="media-upload-section">
+                            <input type="file" name="media" accept="image/*" class="form-control">
+                            <small class="text-muted">{{ __('Max size: 5MB') }}</small>
+                        </div>
+                        
+                        <div id="video_upload" class="media-upload-section" style="display: none;">
+                            <input type="file" name="video" accept="video/mp4,video/webm,video/mov,video/avi" class="form-control">
+                            <small class="text-muted">{{ __('Formats: MP4, WebM, MOV, AVI. Max size: 100MB') }}</small>
+                        </div>
+                        
+                        <div id="video_link" class="media-upload-section" style="display: none;">
+                            <input type="url" name="video_url" class="form-control" placeholder="https://youtube.com/watch?v=... or https://vimeo.com/...">
+                            <small class="text-muted">{{ __('Paste YouTube or Vimeo link') }}</small>
+                        </div>
                     </div>
+                    
                     <button type="submit" class="btn-teal">{{ __('Post Now') }}</button>
                 </form>
             </div>
@@ -314,5 +363,25 @@ function openCreateModal() {
     const modal = new bootstrap.Modal(document.getElementById('createModal'));
     modal.show();
 }
+
+// Handle media type switching
+document.addEventListener('DOMContentLoaded', function() {
+    const mediaTypeRadios = document.querySelectorAll('input[name="media_type"]');
+    const imageSect = document.getElementById('image_upload');
+    const videoSect = document.getElementById('video_upload');
+    const linkSect = document.getElementById('video_link');
+    
+    mediaTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            imageSect.style.display = 'none';
+            videoSect.style.display = 'none';
+            linkSect.style.display = 'none';
+            
+            if (this.value === 'image') imageSect.style.display = 'block';
+            else if (this.value === 'video') videoSect.style.display = 'block';
+            else if (this.value === 'link') linkSect.style.display = 'block';
+        });
+    });
+});
 </script>
 @endsection
