@@ -18,12 +18,30 @@ class FeedController extends Controller
         $this->trackingService = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         
-        // Fetch Feed Items relevant to user
-        $feedItems = FeedItem::forUser($user)->paginate(10);
+        // Start with base query scoped for user
+        $query = FeedItem::forUser($user);
+
+        // Apply filters
+        if ($request->has('type')) {
+            $type = $request->input('type');
+
+            if ($type === 'my_posts') {
+                // Determine if we should look for 'post' type authored by user, 
+                // or ANY content sourceable by user. 
+                // For now, let's assume 'post' type created by user.
+                // Or robustly: sourceable_id = user->id AND sourceable_type = User class
+                $query->where('sourceable_id', $user->id)
+                      ->where('sourceable_type', get_class($user));
+            } elseif (in_array($type, ['course', 'product', 'job', 'therapist'])) {
+                $query->where('type', $type);
+            }
+        }
+        
+        $feedItems = $query->paginate(10);
         
         return view('web.feed.index', compact('feedItems'));
     }

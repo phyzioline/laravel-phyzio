@@ -35,20 +35,31 @@
                         </div>
                         
                         <div class="nav flex-column nav-pills" id="feed-filters">
-                             <a href="#" class="nav-link active mb-1">
-                                <i class="las la-globe"></i> {{ __('All Updates') }}
+                             <a href="{{ route('feed.index.' . app()->getLocale()) }}" 
+                                class="nav-link mb-1 {{ !request('type') ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-globe {{ !request('type') ? '' : 'text-teal' }}"></i> {{ __('All Updates') }}
                              </a>
-                             <a href="#" class="nav-link mb-1">
-                                <i class="las la-graduation-cap"></i> {{ __('Courses') }}
+                             
+                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'my_posts']) }}" 
+                                class="nav-link mb-1 {{ request('type') == 'my_posts' ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-user {{ request('type') == 'my_posts' ? '' : 'text-teal' }}"></i> {{ __('My Posts') }}
                              </a>
-                             <a href="#" class="nav-link mb-1">
-                                <i class="las la-shopping-cart"></i> {{ __('Products') }}
+
+                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'course']) }}" 
+                                class="nav-link mb-1 {{ request('type') == 'course' ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-graduation-cap {{ request('type') == 'course' ? '' : 'text-teal' }}"></i> {{ __('Courses') }}
                              </a>
-                             <a href="#" class="nav-link mb-1">
-                                <i class="las la-briefcase"></i> {{ __('Jobs') }}
+                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'product']) }}" 
+                                class="nav-link mb-1 {{ request('type') == 'product' ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-shopping-cart {{ request('type') == 'product' ? '' : 'text-teal' }}"></i> {{ __('Products') }}
                              </a>
-                             <a href="#" class="nav-link mb-1">
-                                <i class="las la-user-nurse"></i> {{ __('Experts') }}
+                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'job']) }}" 
+                                class="nav-link mb-1 {{ request('type') == 'job' ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-briefcase {{ request('type') == 'job' ? '' : 'text-teal' }}"></i> {{ __('Jobs') }}
+                             </a>
+                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'therapist']) }}" 
+                                class="nav-link mb-1 {{ request('type') == 'therapist' ? 'active-teal font-weight-bold' : 'text-muted' }}">
+                                <i class="las la-user-nurse {{ request('type') == 'therapist' ? '' : 'text-teal' }}"></i> {{ __('Experts') }}
                              </a>
                         </div>
                     </div>

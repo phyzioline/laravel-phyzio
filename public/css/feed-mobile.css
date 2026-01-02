@@ -48,6 +48,24 @@
     align-items: center;
 }
 
+/* Brand Colors */
+.text-teal {
+    color: #02767F !important;
+}
+
+.active-teal {
+    color: #02767F !important;
+    background-color: rgba(2, 118, 127, 0.1) !important;
+    border-radius: 8px;
+}
+
+/* Ensure hover works nicely */
+.nav-link:hover {
+    color: #02767F !important;
+    background-color: rgba(2, 118, 127, 0.05);
+    border-radius: 8px;
+}
+
 .nav-pills .nav-link:hover {
     background-color: rgba(0, 137, 123, 0.05);
     /* Subtle teal tint */
