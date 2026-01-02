@@ -10,7 +10,7 @@
 
     {{-- Comment Form --}}
     <div id="comment-form-{{ $feedItem->id }}" class="mb-3" style="display: none;">
-        <form action="{{ route('feed.comments.store.' . app()->getLocale(), $feedItem->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url('/' . app()->getLocale() . '/feed/' . $feedItem->id . '/comments') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="d-flex gap-2 align-items-start">
                 <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white flex-shrink-0" 
@@ -50,7 +50,7 @@
                             <span class="text-muted small ms-2">{{ $comment->created_at->diffForHumans() }}</span>
                         </div>
                         @if($comment->user_id == auth()->id())
-                        <form action="{{ route('feed.comments.delete.' . app()->getLocale(), $comment->id) }}" method="POST" class="d-inline">
+                        <form action="{{ url('/' . app()->getLocale() . '/feed/comments/' . $comment->id) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-link btn-sm text-muted p-0" onclick="return confirm('{{ __('Delete this comment?') }}')">
@@ -70,7 +70,7 @@
 
                     {{-- Comment Actions --}}
                     <div class="d-flex gap-3 align-items-center">
-                        <form action="{{ route('feed.comments.like.' . app()->getLocale(), $comment->id) }}" method="POST" class="d-inline">
+                        <form action="{{ url('/' . app()->getLocale() . '/feed/comments/' . $comment->id . '/like') }}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-link btn-sm text-decoration-none p-0" 
                                     style="color: {{ $comment->liked_by_user ? '#ef4444' : '#6b7280' }};">
@@ -86,7 +86,7 @@
 
                     {{-- Reply Form --}}
                     <div id="reply-form-{{ $comment->id }}" class="mt-2" style="display: none;">
-                        <form action="{{ route('feed.comments.store.' . app()->getLocale(), $feedItem->id) }}" method="POST">
+                        <form action="{{ url('/' . app()->getLocale() . '/feed/' . $feedItem->id . '/comments') }}" method="POST">
                             @csrf
                             <input type="hidden" name="parent_id" value="{{ $comment->id }}">
                             <div class="d-flex gap-2">
@@ -113,7 +113,7 @@
                                         <span class="text-muted" style="font-size: 11px;">{{ $reply->created_at->diffForHumans() }}</span>
                                     </div>
                                     <p class="mb-1 small">{{ $reply->comment_text }}</p>
-                                    <form action="{{ route('feed.comments.like.' . app()->getLocale(), $reply->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ url('/' . app()->getLocale() . '/feed/comments/' . $reply->id . '/like') }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-link btn-sm text-decoration-none p-0" 
                                                 style="color: {{ $reply->liked_by_user ? '#ef4444' : '#6b7280' }}; font-size: 14px;">
