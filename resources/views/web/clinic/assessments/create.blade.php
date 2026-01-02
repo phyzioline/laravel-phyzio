@@ -6,7 +6,7 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+        <div class="card border-0 shadow-sm" style="border-radius: 15px;" data-specialty="{{ $specialty ?? 'orthopedic' }}">
             <div class="card-header bg-white border-0 pt-4 px-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -14,11 +14,14 @@
                             @if($template)
                                 {{ $template->name }}
                             @else
-                                {{ __('New Assessment') }}
+                                {{ __('New Assessment') }} - {{ ucfirst($specialty ?? 'orthopedic') }}
                             @endif
                         </h5>
                         <p class="text-muted mb-0 small">
                             {{ __('Episode') }}: {{ $episode->title ?? 'N/A' }}
+                            @if($previousAssessment)
+                                | {{ __('Previous') }}: {{ $previousAssessment->assessment_date->format('M d, Y') }}
+                            @endif
                         </p>
                     </div>
                     <a href="{{ route('clinic.episodes.show', $episode) }}" class="btn btn-secondary">
@@ -33,6 +36,7 @@
                     @if($template)
                         <input type="hidden" name="template_id" value="{{ $template->id }}">
                     @endif
+                    <input type="hidden" name="specialty" value="{{ $specialty ?? 'orthopedic' }}">
                     
                     <!-- Assessment Date & Type -->
                     <div class="row mb-4">
@@ -372,6 +376,8 @@
 @endpush
 
 @push('scripts')
+<script src="{{ asset('js/specialty-assessment-forms.js') }}"></script>
+<script>
 <script src="{{ asset('js/clinic-form-enhancements.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
