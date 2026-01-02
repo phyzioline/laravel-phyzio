@@ -32,6 +32,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'web_auth'              => RedirectIfNotAuthenticated::class,
             'admin'                 => AdminMiddleware::class,
             'therapist'             => \App\Http\Middleware\TherapistMiddleware::class,
+            'clinic.role'           => \App\Http\Middleware\ClinicRoleMiddleware::class,
+            'auto.logout'           => \App\Http\Middleware\AutoLogoutMiddleware::class,
             /**** OTHER MIDDLEWARE ALIASES ****/
             'localize'              => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
             'localizationRedirect'  => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
@@ -44,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\SetCurrencyMiddleware::class,
             \App\Http\Middleware\SetLocaleFromUrl::class, // Set locale from URL before routes
+            \App\Http\Middleware\AutoLogoutMiddleware::class, // Auto logout after 30 minutes inactivity
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

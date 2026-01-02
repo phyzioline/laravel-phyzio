@@ -396,6 +396,10 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/reports/daily-cash', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'dailyCashReport'])->name('reports.daily-cash');
         Route::get('/reports/export', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'export'])->name('reports.export');
         
+        // Activity Logs (Admin only)
+        Route::get('/activity-logs', [\App\Http\Controllers\Clinic\ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('clinic.role:admin');
+        Route::get('/activity-logs/{id}', [\App\Http\Controllers\Clinic\ActivityLogController::class, 'show'])->name('activity-logs.show')->middleware('clinic.role:admin');
+        
         // Insurance Claims (RCM)
         Route::post('/insurance-claims/{id}/submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'submit'])->name('insurance-claims.submit');
         Route::post('/insurance-claims/batch-submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'batchSubmit'])->name('insurance-claims.batchSubmit');

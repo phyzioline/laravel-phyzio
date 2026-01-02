@@ -98,6 +98,11 @@ class PatientController extends BaseClinicController
                 'insurance_number' => $validated['insurance_number'] ?? null,
             ]);
 
+            // Log activity
+            if (\Schema::hasTable('activity_logs')) {
+                \App\Models\ActivityLog::log('created', $patient, null, $patient->toArray(), 'Patient registered: ' . $patient->full_name);
+            }
+
             // Handle Save & Continue
             if ($request->has('_save_continue')) {
                 return redirect()->route('clinic.patients.create')
@@ -283,6 +288,8 @@ class PatientController extends BaseClinicController
             'gender' => 'nullable|in:male,female',
         ]);
 
+        $oldValues = $patient->toArray();
+        
         $patient->update([
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
@@ -295,6 +302,11 @@ class PatientController extends BaseClinicController
             'insurance_provider' => $request->insurance_provider,
             'insurance_number' => $request->insurance_number,
         ]);
+
+        // Log activity
+        if (\Schema::hasTable('activity_logs')) {
+            \App\Models\ActivityLog::log('updated', $patient, $oldValues, $patient->fresh()->toArray(), 'Patient updated: ' . $patient->full_name);
+        }
 
         return redirect()->route('clinic.patients.show', $patient->id)
             ->with('success', 'Patient updated successfully.');
