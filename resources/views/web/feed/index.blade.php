@@ -239,12 +239,15 @@
                             <small class="ms-1">{{ $item->likes_count ?? 0 }}</small>
                         </button>
                     </form>
-                    <button class="btn btn-sm btn-link text-muted text-decoration-none p-0">
+                    <button class="btn btn-sm btn-link text-muted text-decoration-none p-0" onclick="toggleCommentForm('{{ $item->id }}')">
                         <span style="font-size: 20px;">💬</span>
                         <small class="ms-1">{{ $item->comments_count ?? 0 }}</small>
                     </button>
                 </div>
             </div>
+
+            {{-- Comments Section --}}
+            @include('web.feed.partials.comments-section', ['feedItem' => $item])
         </div>
         @empty
         <div class="text-center py-5">

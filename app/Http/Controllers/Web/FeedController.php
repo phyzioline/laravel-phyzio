@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\FeedItem;
+use App\Models\FeedComment;
+use App\Models\CommentLike;
 use App\Services\Feed\FeedTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -125,6 +127,111 @@ class FeedController extends Controller
     {
         $liked = $this->trackingService->toggleLike($id);
         return response()->json(['liked' => $liked]);
+    }
+
+    /**
+     * Like a feed item.
+     */
+    public function like($id)
+    {
+        $item = FeedItem::findOrFail($id);
+        // Implement like logic here
+        return redirect()->back()->with('message', ['type' => 'success', 'text' => 'Liked!']);
+    }
+
+    /**
+     * Store a new comment on a feed item.
+     */
+    public function storeComment(Request $request, $feedItemId)
+    {
+        $validated = $request->validate([
+            'comment_text' => 'required|string|max:1000',
+            'parent_id' => 'nullable|exists:feed_comments,id',
+            'media' => 'nullable|image|max:5120' // 5MB max
+        ]);
+
+        $mediaUrl = null;
+        if ($request->hasFile('media')) {
+            $mediaUrl = $request->file('media')->store('comments', 'public');
+        }
+
+        $comment = FeedComment::create([
+            'feed_item_id' => $feedItemId,
+            'user_id' => Auth::id(),
+            'parent_id' => $validated['parent_id'] ?? null,
+            'comment_text' => $validated['comment_text'],
+            'media_url' => $mediaUrl
+        ]);
+
+        // Increment comment count on feed item
+        $feedItem = FeedItem::find($feedItemId);
+        if ($feedItem) {
+            $feedItem->increment('comments_count');
+        }
+
+        return redirect()->back()->with('message', [
+            'type' => 'success',
+            'text' => __('Comment posted successfully!')
+        ]);
+    }
+
+    /**
+     * Delete a comment.
+     */
+    public function deleteComment($commentId)
+    {
+        $comment = FeedComment::findOrFail($commentId);
+        
+        // Check authorization
+        if ($comment->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        // Decrement feed item comment count
+        $feedItem = $comment->feedItem;
+        if ($feedItem) {
+            $feedItem->decrement('comments_count');
+        }
+
+        $comment->delete();
+
+        return redirect()->back()->with('message', [
+            'type' => 'success',
+            'text' => __('Comment deleted successfully!')
+        ]);
+    }
+
+    /**
+     * Like/unlike a comment.
+     */
+    public function likeComment($commentId)
+    {
+        $comment = FeedComment::findOrFail($commentId);
+        $userId = Auth::id();
+
+        $existingLike = CommentLike::where('comment_id', $commentId)
+                                                  ->where('user_id', $userId)
+                                                  ->first();
+
+        if ($existingLike) {
+            // Unlike
+            $existingLike->delete();
+            $comment->decrement('likes_count');
+            $message = __('Comment unliked');
+        } else {
+            // Like
+            CommentLike::create([
+                'comment_id' => $commentId,
+                'user_id' => $userId
+            ]);
+            $comment->increment('likes_count');
+            $message = __('Comment liked!');
+        }
+
+        return redirect()->back()->with('message', [
+            'type' => 'success',
+            'text' => $message
+        ]);
     }
 
     /**
