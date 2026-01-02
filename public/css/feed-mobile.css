@@ -1,63 +1,131 @@
-/* Resources/css/feed-mobile.css */
+/* Resources/css/feed-mobile.css - Enhanced for Professional Social Feel */
 
-/* Mobile Enhancements for Feed */
+/* --- Global Feed Styles --- */
+.feed-card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+    overflow: hidden;
+}
+
+.feed-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    /* Lift effect */
+}
+
+/* Header & Typography */
+.feed-card .card-header {
+    background: transparent;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.font-weight-bold {
+    font-weight: 600 !important;
+}
+
+.text-primary-gradient {
+    background: linear-gradient(45deg, #00897b, #28a745);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #00897b 0%, #00796b 100%);
+}
+
+/* Sidebar Nav Pills */
+.nav-pills .nav-link {
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.nav-pills .nav-link:hover {
+    background-color: rgba(0, 137, 123, 0.05);
+    /* Subtle teal tint */
+    color: #00897b;
+    transform: translateX(4px);
+}
+
+.nav-pills .nav-link.active {
+    background-color: #e0f2f1;
+    /* Light teal */
+    color: #00897b;
+    font-weight: bold;
+}
+
+.nav-pills .nav-link i {
+    font-size: 1.25rem;
+    width: 30px;
+    text-align: center;
+}
+
+/* Buttons & CTAs */
+.btn-primary {
+    background: #00897b;
+    border-color: #00897b;
+    box-shadow: 0 2px 4px rgba(0, 137, 123, 0.2);
+}
+
+.btn-primary:hover {
+    background: #00796b;
+    border-color: #00796b;
+    box-shadow: 0 4px 8px rgba(0, 137, 123, 0.3);
+}
+
+.btn-rounded {
+    border-radius: 50px;
+}
+
+/* Empty State / Discovery */
+.empty-feed-hero {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.discovery-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 15px;
+    transition: transform 0.2s;
+}
+
+.discovery-card:hover .discovery-icon {
+    transform: scale(1.1);
+}
+
+/* --- Mobile Specifics --- */
 @media (max-width: 768px) {
     .feed-card {
-        border-radius: 0 !important; /* Full width approach similar to FB/Insta */
+        border-radius: 0 !important;
         margin-bottom: 8px !important;
-        border-top: 1px solid #e9ecef;
-        border-bottom: 1px solid #e9ecef;
         box-shadow: none !important;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
     }
 
-    .feed-card .card-header {
-        padding-top: 12px;
-        padding-bottom: 12px;
+    .container {
+        padding-left: 0;
+        padding-right: 0;
     }
 
-    .feed-card .icon-box {
-        width: 40px !important;
-        height: 40px !important;
-    }
-
-    .feed-card .card-body {
-        padding: 10px 15px;
-    }
-
-    .feed-card .card-footer {
-        padding: 10px 15px;
-    }
-
-    /* Make buttons full width on small screens */
-    .feed-card .btn {
-        width: 100%;
-        margin-bottom: 8px;
-    }
-
-    .feed-card .d-flex.justify-content-between {
-        flex-direction: column;
-        align-items: flex-start !important;
-    }
-
-    .feed-card .d-flex.justify-content-between > div {
-         width: 100%;
-         display: flex;
-         justify-content: space-between;
-         margin-bottom: 10px;
-    }
-    
-    .feed-card .like-btn, .feed-card .share-btn {
-        flex: 1;
-        margin-right: 5px;
-        margin-left: 5px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    /* Sticky bottom nav adjustment if existing */
-    /* Assuming a bottom nav exists or we add padding to body */
-    body {
-        padding-bottom: 60px;
+    .col-md-7 {
+        padding-left: 0;
+        padding-right: 0;
     }
 }

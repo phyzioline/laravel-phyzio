@@ -22,22 +22,33 @@
             
             <!-- Left Sidebar filters -->
             <div class="col-md-3 d-none d-lg-block">
-                <div class="card shadow-sm border-0 sticky-top" style="top: 80px;">
-                    <div class="card-body">
-                        <h6 class="text-uppercase text-muted mb-3 font-weight-bold" style="font-size: 12px;">{{ __('FILTERS') }}</h6>
+                <div class="card shadow-sm border-0 sticky-top" style="top: 90px; border-radius: 12px;">
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center mb-4 px-2">
+                             <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mr-3" style="width: 48px; height: 48px;">
+                                <i class="las la-stream text-primary" style="font-size: 24px;"></i>
+                             </div>
+                             <div>
+                                 <h6 class="mb-0 font-weight-bold text-dark">{{ __('Your Feed') }}</h6>
+                                 <small class="text-muted">{{ __('Professional Network') }}</small>
+                             </div>
+                        </div>
                         
-                        <div class="nav flex-column nav-pills">
-                             <a href="#" class="nav-link active rounded-pill mb-2">
-                                <i class="las la-globe mr-2"></i> {{ __('All Updates') }}
+                        <div class="nav flex-column nav-pills" id="feed-filters">
+                             <a href="#" class="nav-link active mb-1">
+                                <i class="las la-globe"></i> {{ __('All Updates') }}
                              </a>
-                             <a href="#" class="nav-link rounded-pill mb-2 text-dark">
-                                <i class="las la-graduation-cap mr-2 text-primary"></i> {{ __('Courses') }}
+                             <a href="#" class="nav-link mb-1">
+                                <i class="las la-graduation-cap"></i> {{ __('Courses') }}
                              </a>
-                             <a href="#" class="nav-link rounded-pill mb-2 text-dark">
-                                <i class="las la-shopping-cart mr-2 text-success"></i> {{ __('New Products') }}
+                             <a href="#" class="nav-link mb-1">
+                                <i class="las la-shopping-cart"></i> {{ __('Products') }}
                              </a>
-                             <a href="#" class="nav-link rounded-pill mb-2 text-dark">
-                                <i class="las la-briefcase mr-2 text-warning"></i> {{ __('Jobs') }}
+                             <a href="#" class="nav-link mb-1">
+                                <i class="las la-briefcase"></i> {{ __('Jobs') }}
+                             </a>
+                             <a href="#" class="nav-link mb-1">
+                                <i class="las la-user-nurse"></i> {{ __('Experts') }}
                              </a>
                         </div>
                     </div>
@@ -45,29 +56,36 @@
             </div>
 
             <!-- Main Feed -->
-            <div class="col-md-7">
+            <div class="col-md-7 col-lg-6">
 
                 <!-- Create Post Card -->
-                 <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-body">
+                 <div class="card shadow-sm border-0 mb-4 feed-card">
+                    <div class="card-body p-3">
                         <div class="d-flex">
                             <div class="icon-box rounded-circle d-flex align-items-center justify-content-center bg-light text-primary mr-3" style="width: 45px; height: 45px;">
-                                <i class="las la-user-edit la-lg"></i>
+                                @if(auth()->user()->profile_photo_url)
+                                    <img src="{{ auth()->user()->profile_photo_url }}" class="rounded-circle w-100 h-100 shadow-sm" style="object-fit:cover">
+                                @else
+                                    <i class="las la-user-circle la-2x text-muted"></i>
+                                @endif
                             </div>
                             <div class="w-100">
                                 <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <div class="form-group mb-2">
-                                        <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="{{ __('Share your medical insights, cases, or questions...') }}" style="resize: none;"></textarea>
+                                    <div class="form-group mb-2 position-relative">
+                                        <textarea name="content" class="form-control border-0 bg-light rounded-lg px-3 py-2" rows="2" placeholder="{{ __('Share your medical insights, cases, or questions...') }}" style="resize: none; font-size: 15px;"></textarea>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <label class="btn btn-sm btn-light mb-0 text-muted" style="cursor: pointer;">
-                                                <i class="las la-image"></i> Photo
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                        <div class="d-flex">
+                                            <label class="btn btn-sm btn-link text-decoration-none text-muted mb-0 mr-2 p-0 d-flex align-items-center" style="cursor: pointer;">
+                                                <i class="las la-image text-success font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Photo') }}</span>
                                                 <input type="file" name="image" class="d-none">
                                             </label>
+                                            <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted mb-0 p-0 d-flex align-items-center">
+                                                <i class="las la-video text-danger font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Video') }}</span>
+                                            </button>
                                         </div>
-                                        <button type="submit" class="btn btn-primary btn-sm px-4">Post</button>
+                                        <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill font-weight-bold shadow-sm">{{ __('Publish Post') }}</button>
                                     </div>
                                 </form>
                             </div>
@@ -88,34 +106,114 @@
                         @include('web.feed.partials.post-card', ['item' => $item])
                     @endif
                 @empty
-                    <div class="text-center py-5">
-                        <div class="mb-3"><i class="las la-stream display-4 text-muted"></i></div>
-                        <h4>{{ __('Your feed is empty') }}</h4>
-                        <p class="text-muted">{{ __('Follow more topics or wait for admin updates.') }}</p>
+                    <!-- Premium Empty State / Discovery Board -->
+                    <div class="empty-feed-hero mb-4">
+                        <div class="mb-4">
+                            <img src="{{ asset('assets/images/illustrations/feed_empty.svg') }}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/7486/7486744.png'" style="width: 120px; opacity: 0.8;" alt="Feed Empty">
+                        </div>
+                        <h4 class="font-weight-bold text-dark mb-2">{{ __('Welcome to your Professional Feed') }}</h4>
+                        <p class="text-muted mb-4 px-md-5">{{ __('Your customized stream of medical updates, career opportunities, and latest products starts here. Discover what is happening now.') }}</p>
+                        
+                        <div class="row px-2">
+                             <!-- Products Discovery -->
+                             <div class="col-6 mb-3">
+                                 <a href="{{ route('web.shop.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
+                                         <div class="discovery-icon bg-white text-success shadow-sm mx-auto">
+                                             <i class="las la-shopping-cart"></i>
+                                         </div>
+                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Shop') }}</h6>
+                                         <small class="text-muted">{{ __('Latest Equipment') }}</small>
+                                     </div>
+                                 </a>
+                             </div>
+                             <!-- Courses Discovery -->
+                             <div class="col-6 mb-3">
+                                 <a href="{{ route('web.courses.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
+                                         <div class="discovery-icon bg-white text-primary shadow-sm mx-auto">
+                                             <i class="las la-graduation-cap"></i>
+                                         </div>
+                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Learn') }}</h6>
+                                         <small class="text-muted">{{ __('New Courses') }}</small>
+                                     </div>
+                                 </a>
+                             </div>
+                             <!-- Jobs Discovery -->
+                             <div class="col-6 mb-3">
+                                 <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
+                                         <div class="discovery-icon bg-white text-warning shadow-sm mx-auto">
+                                             <i class="las la-briefcase"></i>
+                                         </div>
+                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Jobs') }}</h6>
+                                         <small class="text-muted">{{ __('Career Moves') }}</small>
+                                     </div>
+                                 </a>
+                             </div>
+                             <!-- Experts Discovery -->
+                             <div class="col-6 mb-3">
+                                 <a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
+                                         <div class="discovery-icon bg-white text-info shadow-sm mx-auto">
+                                             <i class="las la-user-nurse"></i>
+                                         </div>
+                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Experts') }}</h6>
+                                         <small class="text-muted">{{ __('Connect Now') }}</small>
+                                     </div>
+                                 </a>
+                             </div>
+                        </div>
                     </div>
                 @endforelse
 
                 <!-- Pagination -->
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-4">
                     {{ $feedItems->links() }}
                 </div>
             </div>
             
             <!-- Right Sidebar (Recommended) -->
-             <div class="col-md-2 d-none d-xl-block">
-                 <div class="card border-0 bg-transparent">
-                     <h6 class="text-muted mb-3 font-weight-bold" style="font-size: 11px; letter-spacing: 1px;">SUGGESTED FOR YOU</h6>
-                     <!-- Dummy Suggestions -->
-                     <ul class="list-group list-group-flush bg-transparent">
-                         <li class="list-group-item bg-transparent px-0 border-0">
-                             <div class="d-flex align-items-center">
-                                 <div class="bg-white p-2 rounded shadow-sm mr-2"><i class="las la-stethoscope text-primary"></i></div>
-                                 <div style="line-height: 1.2;">
-                                     <a href="#" class="text-dark font-weight-bold" style="font-size: 12px;">Manual Therapy Masterclass</a>
+             <div class="col-md-3 d-none d-xl-block">
+                 <div class="card border-0 shadow-sm sticky-top" style="top: 90px; border-radius: 12px;">
+                     <div class="card-header bg-white border-0 pb-0 pt-3">
+                        <h6 class="text-dark font-weight-bold mb-0" style="font-size: 14px;">{{ __('Trending Now') }} <i class="las la-fire text-danger ml-1"></i></h6>
+                     </div>
+                     <div class="card-body px-0 pt-2">
+                         <ul class="list-group list-group-flush">
+                             <li class="list-group-item border-0 py-2 px-3 action-item">
+                                 <div class="d-flex align-items-center">
+                                     <div class="bg-light rounded p-2 mr-3 text-center" style="width: 40px;"><i class="las la-hashtag"></i></div>
+                                     <div style="line-height:1.2">
+                                         <span class="d-block font-weight-bold text-dark" style="font-size: 13px;">#PhyziolineConf2026</span>
+                                         <small class="text-muted">2.4k posts</small>
+                                     </div>
                                  </div>
-                             </div>
-                         </li>
-                     </ul>
+                             </li>
+                             <li class="list-group-item border-0 py-2 px-3 action-item">
+                                 <div class="d-flex align-items-center">
+                                     <div class="bg-light rounded p-2 mr-3 text-center" style="width: 40px;"><i class="las la-hashtag"></i></div>
+                                     <div style="line-height:1.2">
+                                         <span class="d-block font-weight-bold text-dark" style="font-size: 13px;">#ManualTherapy</span>
+                                         <small class="text-muted">850 posts</small>
+                                     </div>
+                                 </div>
+                             </li>
+                         </ul>
+                     </div>
+                     <div class="card-footer bg-white border-0 text-center pb-3 pt-0">
+                         <a href="#" class="btn btn-sm btn-light btn-block rounded-pill text-primary font-weight-bold">{{ __('View All') }}</a>
+                     </div>
+                 </div>
+                 
+                 <!-- Footer Links -->
+                 <div class="mt-4 text-center px-3">
+                     <p class="small text-muted mb-2">
+                         <a href="#" class="text-muted mr-2">Privacy</a>
+                         <a href="#" class="text-muted mr-2">Terms</a>
+                         <a href="#" class="text-muted">Advertising</a>
+                     </p>
+                     <p class="small text-muted">© 2026 Phyzioline Inc.</p>
                  </div>
              </div>
 
