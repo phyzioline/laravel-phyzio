@@ -37,11 +37,27 @@ class FeedItem extends Model
     ];
 
     /**
-     * Get the parent sourceable model (Course, Product, etc).
+     * Get the feed item's source (User, Product, Job, etc.)
      */
     public function sourceable()
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Get all comments for this feed item
+     */
+    public function comments()
+    {
+        return $this->hasMany(\App\Models\FeedComment::class, 'feed_item_id');
+    }
+
+    /**
+     * Get all mentions in this feed item
+     */
+    public function mentions()
+    {
+        return $this->morphMany(\App\Models\FeedMention::class, 'mentionable');
     }
 
     public function interactions()
