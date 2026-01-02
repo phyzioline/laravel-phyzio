@@ -148,6 +148,12 @@ class PatientPaymentController extends BaseClinicController
 
         // Invoice status will be updated automatically via model events
 
+        // Handle Save & Continue
+        if ($request->has('_save_continue')) {
+            return redirect()->route('clinic.payments.create')
+                ->with('success', __('Payment recorded successfully. You can record another payment.'));
+        }
+
         return redirect()->route('clinic.payments.index')
             ->with('success', __('Payment recorded successfully'));
     }
