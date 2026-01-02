@@ -98,6 +98,12 @@ class PatientController extends BaseClinicController
                 'insurance_number' => $validated['insurance_number'] ?? null,
             ]);
 
+            // Handle Save & Continue
+            if ($request->has('_save_continue')) {
+                return redirect()->route('clinic.patients.create')
+                    ->with('success', 'Patient "' . $patient->full_name . '" registered successfully. You can add another patient.');
+            }
+
             return redirect()->route('clinic.patients.show', $patient->id)
                 ->with('success', 'Patient registered successfully.');
                 

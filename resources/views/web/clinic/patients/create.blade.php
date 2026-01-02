@@ -42,7 +42,8 @@
                     </div>
                 @endif
                 
-                <form action="{{ route('clinic.patients.store') }}" method="POST" id="patientForm">
+                <form action="{{ route('clinic.patients.store') }}" method="POST" id="patientForm" 
+                      data-inline-validation="true" data-save-continue="true" data-show-progress="true">
                     @csrf
                     
                     <h6 class="text-muted text-uppercase mb-3 small font-weight-bold">{{ __('Personal Information') }}</h6>
@@ -124,11 +125,18 @@
                         </div>
                     </div>
 
-                    <div class="mt-4 d-flex justify-content-end">
-                        <a href="{{ route('clinic.patients.index') }}" class="btn btn-light mr-3">{{ __('Cancel') }}</a>
-                        <button type="submit" class="btn btn-primary px-5" id="submitBtn" style="background-color: #00897b; border-color: #00897b;">
-                            {{ __('Register Patient') }}
-                        </button>
+                    <div class="mt-4 d-flex justify-content-between flex-wrap">
+                        <a href="{{ route('clinic.patients.index') }}" class="btn btn-light mb-2">
+                            <i class="las la-times"></i> {{ __('Cancel') }}
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary mr-2 mb-2 btn-save-continue" style="border-color: #00897b; color: #00897b;">
+                                <i class="las la-save"></i> {{ __('Save & Add Another') }}
+                            </button>
+                            <button type="submit" class="btn btn-primary px-5 mb-2" id="submitBtn" style="background-color: #00897b; border-color: #00897b;">
+                                <i class="las la-check"></i> {{ __('Register Patient') }}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -136,7 +144,28 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    .invalid-feedback-live {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #dc3545;
+        display: block;
+    }
+    .form-progress {
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .form-progress .progress {
+        margin-bottom: 8px;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="{{ asset('js/clinic-form-enhancements.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('patientForm');
@@ -144,6 +173,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (form && submitBtn) {
         form.addEventListener('submit', function(e) {
+            // Validate before submit
+            const isValid = form.checkValidity();
+            if (!isValid) {
+                e.preventDefault();
+                e.stopPropagation();
+                form.classList.add('was-validated');
+                // Focus first invalid field
+                const firstInvalid = form.querySelector(':invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                return false;
+            }
+            
             // Don't prevent default - let form submit normally
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="las la-spinner la-spin"></i> {{ __('Registering...') }}';

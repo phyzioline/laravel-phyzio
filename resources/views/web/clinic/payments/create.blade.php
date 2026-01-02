@@ -16,7 +16,8 @@
                 <h5 class="card-title font-weight-bold mb-0">{{ __('New Payment Entry') }}</h5>
             </div>
             <div class="card-body px-4">
-                <form action="{{ route('clinic.payments.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('clinic.payments.store') }}" method="POST" enctype="multipart/form-data"
+                      data-inline-validation="true" data-save-continue="true">
                     @csrf
                     
                     <div class="mb-3">
@@ -119,13 +120,18 @@
                         @enderror
                     </div>
                     
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ route('clinic.payments.index') }}" class="btn btn-secondary">
+                    <div class="d-flex justify-content-between mt-4 flex-wrap">
+                        <a href="{{ route('clinic.payments.index') }}" class="btn btn-secondary mb-2">
                             <i class="las la-times"></i> {{ __('Cancel') }}
                         </a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="las la-save"></i> {{ __('Record Payment') }}
-                        </button>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary mr-2 mb-2 btn-save-continue">
+                                <i class="las la-save"></i> {{ __('Save & Add Another') }}
+                            </button>
+                            <button type="submit" class="btn btn-primary mb-2">
+                                <i class="las la-check"></i> {{ __('Record Payment') }}
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -133,7 +139,20 @@
     </div>
 </div>
 
+@push('styles')
+<style>
+    .invalid-feedback-live {
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: 0.875rem;
+        color: #dc3545;
+        display: block;
+    }
+</style>
+@endpush
+
 @push('scripts')
+<script src="{{ asset('js/clinic-form-enhancements.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const invoiceSelect = document.getElementById('invoice_id');
