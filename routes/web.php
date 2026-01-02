@@ -419,6 +419,11 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/reports/parent/{patient}', [\App\Http\Controllers\Clinic\SpecialtyReportController::class, 'parentReport'])->name('reports.parent');
         Route::get('/reports/family/{patient}', [\App\Http\Controllers\Clinic\SpecialtyReportController::class, 'familyReport'])->name('reports.family');
         
+        // Treatment Plans
+        Route::get('/episodes/{episode}/treatment-plans', [\App\Http\Controllers\Clinic\TreatmentPlanController::class, 'index'])->name('episodes.treatment-plans.index');
+        Route::get('/episodes/{episode}/treatment-plans/create', [\App\Http\Controllers\Clinic\TreatmentPlanController::class, 'create'])->name('episodes.treatment-plans.create');
+        Route::post('/episodes/{episode}/treatment-plans', [\App\Http\Controllers\Clinic\TreatmentPlanController::class, 'store'])->name('episodes.treatment-plans.store');
+        
         // Insurance Claims (RCM)
         Route::post('/insurance-claims/{id}/submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'submit'])->name('insurance-claims.submit');
         Route::post('/insurance-claims/batch-submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'batchSubmit'])->name('insurance-claims.batchSubmit');

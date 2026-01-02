@@ -50,6 +50,11 @@ class Patient extends Model
         return $this->hasMany(PatientPayment::class);
     }
 
+    public function episodes()
+    {
+        return $this->hasMany(EpisodeOfCare::class);
+    }
+
     public function attachments()
     {
         return $this->hasMany(PatientAttachment::class);

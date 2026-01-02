@@ -34,6 +34,11 @@ class ClinicalAssessment extends Model
         return $this->belongsTo(EpisodeOfCare::class, 'episode_id');
     }
 
+    public function outcomeMeasures()
+    {
+        return $this->hasMany(OutcomeMeasure::class, 'assessment_id');
+    }
+
     public function therapist()
     {
         return $this->belongsTo(User::class, 'therapist_id');

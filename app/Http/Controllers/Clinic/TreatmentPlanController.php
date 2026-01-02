@@ -2,76 +2,85 @@
 
 namespace App\Http\Controllers\Clinic;
 
-use App\Models\TreatmentPlan;
-use App\Models\Patient;
+use App\Http\Controllers\Controller;
+use App\Models\EpisodeOfCare;
+use App\Models\Treatment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TreatmentPlanController extends BaseClinicController
 {
     /**
-     * Show the form for creating a new resource.
+     * Show treatment plan for episode
      */
-    public function create(Request $request)
+    public function index(EpisodeOfCare $episode)
     {
         $clinic = $this->getUserClinic();
         
-        // Get patients for this clinic
-        if ($clinic) {
-            $patients = Patient::where('clinic_id', $clinic->id)->get();
-        } else {
-            $patients = collect();
+        if (!$clinic || $episode->clinic_id !== $clinic->id) {
+            abort(403);
         }
-        
-        // Get pre-selected patient_id from query parameter
-        $selectedPatientId = $request->get('patient_id');
-        
-        return view('web.clinic.plans.create', compact('patients', 'selectedPatientId', 'clinic'));
+
+        $treatments = $episode->treatments()
+            ->orderBy('session_date', 'asc')
+            ->get();
+
+        // Group by treatment type
+        $treatmentGroups = $treatments->groupBy('treatment_type');
+
+        return view('web.clinic.treatment-plans.index', compact('episode', 'treatments', 'treatmentGroups'));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create new treatment session
      */
-    public function store(Request $request)
+    public function create(EpisodeOfCare $episode)
     {
         $clinic = $this->getUserClinic();
         
-        if (!$clinic) {
-            return back()->with('error', 'Clinic not found.');
+        if (!$clinic || $episode->clinic_id !== $clinic->id) {
+            abort(403);
         }
 
-        $request->validate([
-            'patient_id' => 'required|exists:patients,id',
-            'diagnosis' => 'required|string',
-            'treatment_goals' => 'nullable|string',
-            'frequency' => 'required|integer',
-            'duration' => 'required|integer',
+        return view('web.clinic.treatment-plans.create', compact('episode'));
+    }
+
+    /**
+     * Store treatment session
+     */
+    public function store(Request $request, EpisodeOfCare $episode)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic || $episode->clinic_id !== $clinic->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'session_date' => 'required|date',
+            'treatment_type' => 'required|string',
+            'exercises' => 'nullable|array',
+            'manual_therapy' => 'nullable|array',
+            'modalities' => 'nullable|array',
+            'notes' => 'nullable|string',
+            'duration_minutes' => 'nullable|integer|min:1'
         ]);
 
-        // Verify patient belongs to this clinic
-        $patient = Patient::where('clinic_id', $clinic->id)
-            ->findOrFail($request->patient_id);
+        $treatment = Treatment::create([
+            'episode_id' => $episode->id,
+            'therapist_id' => Auth::id(),
+            'session_date' => $validated['session_date'],
+            'treatment_type' => $validated['treatment_type'],
+            'treatment_data' => [
+                'exercises' => $validated['exercises'] ?? [],
+                'manual_therapy' => $validated['manual_therapy'] ?? [],
+                'modalities' => $validated['modalities'] ?? []
+            ],
+            'notes' => $validated['notes'] ?? null,
+            'duration_minutes' => $validated['duration_minutes'] ?? null
+        ]);
 
-        $plan = new TreatmentPlan();
-        // Note: treatment_plans table expects patient_id to be user_id, but we're using Patient model
-        // If the table structure is different, we may need to adjust this
-        $plan->patient_id = $patient->id; // This might need to be $patient->user_id if Patient has a user relationship
-        $plan->therapist_id = Auth::id();
-        $plan->diagnosis = $request->diagnosis;
-        
-        // Map treatment_goals to short_term_goals (or split if needed)
-        $goals = $request->treatment_goals ?? '';
-        $plan->short_term_goals = $goals;
-        $plan->long_term_goals = null; // Can be added later
-        
-        // Convert frequency (sessions/week) and duration (weeks) to planned_sessions
-        $plan->planned_sessions = $request->frequency * $request->duration;
-        $plan->frequency = $request->frequency . 'x per week';
-        $plan->status = 'active';
-        $plan->start_date = now();
-        
-        $plan->save();
-
-        return redirect()->route('clinic.patients.show', $patient->id)->with('success', 'Treatment Plan created successfully.');
+        return redirect()->route('clinic.episodes.treatment-plans.index', $episode)
+            ->with('success', __('Treatment session recorded successfully.'));
     }
 }
