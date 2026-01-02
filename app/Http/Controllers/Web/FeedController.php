@@ -165,6 +165,9 @@ class FeedController extends Controller
         $mentionService = app(MentionService::class);
         $mentionService->createMentions('App\Models\FeedItem', $post->id, $request->description);
 
+        // Broadcast new post event
+        broadcast(new \App\Events\Feed\NewPostCreated($post))->toOthers();
+
         return redirect()->route('feed.index.' . app()->getLocale())->with('message', [
             'type' => 'success',
             'text' => __('Post created successfully!')
@@ -232,6 +235,9 @@ class FeedController extends Controller
         // Parse and create mentions
         $mentionService = app(MentionService::class);
         $mentionService->createMentions('App\Models\FeedComment', $comment->id, $validated['comment_text']);
+
+        // Broadcast new comment event
+        broadcast(new \App\Events\Feed\NewCommentAdded($comment))->toOthers();
 
         return redirect()->back()->with('message', [
             'type' => 'success',
