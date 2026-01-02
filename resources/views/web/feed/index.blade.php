@@ -1,261 +1,544 @@
-@extends('web.layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phyzioline - Professional Social Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f3f4f6; /* Gray-100 */
+        }
+        
+        /* Mobile App Container Simulation */
+        #app-container {
+            max-width: 480px; /* Mobile width constraint */
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            position: relative;
+            padding-bottom: 80px; /* Space for bottom nav */
+        }
 
-@php
-    $isArabic = app()->getLocale() === 'ar';
-    $pageMeta = \App\Services\SEO\SEOService::getPageMeta('feed');
-@endphp
+        /* Hide scrollbar for smooth horizontal scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-@section('title', $pageMeta['title'])
+        /* Chart Container Styling - Mandatory per instructions */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 250px;
+            max-height: 300px;
+            margin: 0 auto;
+        }
 
-@push('meta')
-    <meta name="description" content="{{ $pageMeta['description'] }}">
-    <meta name="keywords" content="{{ $pageMeta['keywords'] }}">
-    <meta property="og:title" content="{{ $pageMeta['title'] }}">
-    <meta property="og:description" content="{{ $pageMeta['description'] }}">
-    <meta property="og:type" content="website">
-@endpush
+        /* Animations */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out forwards;
+        }
 
-@section('content')
-<div class="bg-light min-vh-100" style="padding-top: 190px; padding-bottom: 2rem;">
-    <div class="container">
-        <div class="row justify-content-center">
-            
-            <!-- Left Sidebar filters -->
-            <div class="col-md-3 d-none d-lg-block">
-                <div class="card shadow-sm border-0 sticky-top" style="top: 170px; border-radius: 12px;">
-                    <div class="card-body p-3">
-                        <div class="d-flex align-items-center mb-4 px-2">
-                             <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mr-3" style="width: 48px; height: 48px;">
-                                <i class="las la-stream text-primary" style="font-size: 24px;"></i>
-                             </div>
-                             <div>
-                                 <h6 class="mb-0 font-weight-bold text-dark">{{ __('Your Feed') }}</h6>
-                                 <small class="text-muted">{{ __('Professional Network') }}</small>
-                             </div>
-                        </div>
-                        
-                        <div class="nav flex-column nav-pills" id="feed-filters">
-                             <a href="{{ route('feed.index.' . app()->getLocale()) }}" 
-                                class="nav-link mb-1 {{ !request('type') ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-globe {{ !request('type') ? '' : 'text-teal' }}"></i> {{ __('All Updates') }}
-                             </a>
-                             
-                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'my_posts']) }}" 
-                                class="nav-link mb-1 {{ request('type') == 'my_posts' ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-user {{ request('type') == 'my_posts' ? '' : 'text-teal' }}"></i> {{ __('My Posts') }}
-                             </a>
+        @keyframes pulse-skeleton {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .skeleton {
+            background-color: #e5e7eb;
+            animation: pulse-skeleton 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
 
-                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'course']) }}" 
-                                class="nav-link mb-1 {{ request('type') == 'course' ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-graduation-cap {{ request('type') == 'course' ? '' : 'text-teal' }}"></i> {{ __('Courses') }}
-                             </a>
-                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'product']) }}" 
-                                class="nav-link mb-1 {{ request('type') == 'product' ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-shopping-cart {{ request('type') == 'product' ? '' : 'text-teal' }}"></i> {{ __('Products') }}
-                             </a>
-                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'job']) }}" 
-                                class="nav-link mb-1 {{ request('type') == 'job' ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-briefcase {{ request('type') == 'job' ? '' : 'text-teal' }}"></i> {{ __('Jobs') }}
-                             </a>
-                             <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'therapist']) }}" 
-                                class="nav-link mb-1 {{ request('type') == 'therapist' ? 'active-teal font-weight-bold' : 'text-muted' }}">
-                                <i class="las la-user-nurse {{ request('type') == 'therapist' ? '' : 'text-teal' }}"></i> {{ __('Experts') }}
-                             </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        /* Custom Scrollbar for desktop view of the container */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-slate-800">
 
-            <!-- Main Feed -->
-            <div class="col-md-7 col-lg-6">
-
-                <!-- Create Post Card -->
-                 <div class="card shadow-sm border-0 mb-4 feed-card">
-                    <div class="card-body p-3">
-                        <div class="d-flex">
-                            <div class="icon-box rounded-circle d-flex align-items-center justify-content-center bg-light text-primary mr-3" style="width: 45px; height: 45px;">
-                                @if(auth()->user()->profile_photo_url)
-                                    <img src="{{ auth()->user()->profile_photo_url }}" class="rounded-circle w-100 h-100 shadow-sm" style="object-fit:cover">
-                                @else
-                                    <i class="las la-user-circle la-2x text-muted"></i>
-                                @endif
-                            </div>
-                            <div class="w-100">
-                                <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="form-group mb-2 position-relative">
-                                        <textarea name="content" class="form-control border-0 bg-light rounded-lg px-3 py-2" rows="2" placeholder="{{ __('Share your medical insights, cases, or questions...') }}" style="resize: none; font-size: 15px;"></textarea>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                        <div class="d-flex">
-                                            <label class="btn btn-sm btn-link text-decoration-none text-muted mb-0 mr-2 p-0 d-flex align-items-center" style="cursor: pointer;">
-                                                <i class="las la-image text-success font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Photo') }}</span>
-                                                <input type="file" name="image" class="d-none">
-                                            </label>
-                                            <label class="btn btn-sm btn-link text-decoration-none text-muted mb-0 p-0 d-flex align-items-center" style="cursor: pointer;">
-                                                <i class="las la-video text-danger font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Video') }}</span>
-                                                <input type="file" name="video" class="d-none" accept="video/*">
-                                            </label>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill font-weight-bold shadow-sm">{{ __('Publish Post') }}</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                @forelse($feedItems as $item)
-                    @if($item->type == 'product')
-                        @include('web.feed.partials.product-card', ['item' => $item])
-                    @elseif($item->type == 'job')
-                        @include('web.feed.partials.job-card', ['item' => $item])
-                    @elseif($item->type == 'course')
-                        @include('web.feed.partials.course-card', ['item' => $item])
-                    @elseif($item->type == 'therapist')
-                        @include('web.feed.partials.therapist-card', ['item' => $item])
-                    @else
-                        @include('web.feed.partials.post-card', ['item' => $item])
-                    @endif
-                @empty
-                    <!-- Premium Empty State / Discovery Board -->
-                    <div class="empty-feed-hero mb-4">
-                        <div class="mb-4">
-                            <img src="{{ asset('assets/images/illustrations/feed_empty.svg') }}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/7486/7486744.png'" style="width: 120px; opacity: 0.8;" alt="Feed Empty">
-                        </div>
-                        <h4 class="font-weight-bold text-dark mb-2">{{ __('Welcome to your Professional Feed') }}</h4>
-                        <p class="text-muted mb-4 px-md-5">{{ __('Your customized stream of medical updates, career opportunities, and latest products starts here. Discover what is happening now.') }}</p>
-                        
-                        <div class="row px-2">
-                             <!-- Products Discovery -->
-                             <div class="col-6 mb-3">
-                                 <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
-                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
-                                         <div class="discovery-icon bg-white text-success shadow-sm mx-auto">
-                                             <i class="las la-shopping-cart"></i>
-                                         </div>
-                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Shop') }}</h6>
-                                         <small class="text-muted">{{ __('Latest Equipment') }}</small>
-                                     </div>
-                                 </a>
-                             </div>
-                             <!-- Courses Discovery -->
-                             <div class="col-6 mb-3">
-                                 <a href="{{ route('web.courses.index') }}" class="text-decoration-none discovery-card">
-                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
-                                         <div class="discovery-icon bg-white text-primary shadow-sm mx-auto">
-                                             <i class="las la-graduation-cap"></i>
-                                         </div>
-                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Learn') }}</h6>
-                                         <small class="text-muted">{{ __('New Courses') }}</small>
-                                     </div>
-                                 </a>
-                             </div>
-                             <!-- Jobs Discovery -->
-                             <div class="col-6 mb-3">
-                                 <a href="{{ route('web.jobs.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
-                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
-                                         <div class="discovery-icon bg-white text-warning shadow-sm mx-auto">
-                                             <i class="las la-briefcase"></i>
-                                         </div>
-                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Jobs') }}</h6>
-                                         <small class="text-muted">{{ __('Career Moves') }}</small>
-                                     </div>
-                                 </a>
-                             </div>
-                             <!-- Experts Discovery -->
-                             <div class="col-6 mb-3">
-                                 <a href="{{ route('web.home_visits.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
-                                     <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
-                                         <div class="discovery-icon bg-white text-info shadow-sm mx-auto">
-                                             <i class="las la-user-nurse"></i>
-                                         </div>
-                                         <h6 class="text-dark font-weight-bold mb-1">{{ __('Experts') }}</h6>
-                                         <small class="text-muted">{{ __('Connect Now') }}</small>
-                                     </div>
-                                 </a>
-                             </div>
-                        </div>
-                    </div>
-                @endforelse
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $feedItems->links() }}
-                </div>
-            </div>
-            
-            <!-- Right Sidebar (Recommended) -->
-             <div class="col-md-3 d-none d-xl-block">
-                 <div class="card border-0 shadow-sm sticky-top" style="top: 170px; border-radius: 12px;">
-                     <div class="card-header bg-white border-0 pb-0 pt-3">
-                        <h6 class="text-dark font-weight-bold mb-0" style="font-size: 14px;">{{ __('Trending Now') }} <i class="las la-fire text-danger ml-1"></i></h6>
-                     </div>
-                     <div class="card-body px-0 pt-2">
-                         <ul class="list-group list-group-flush">
-                             <li class="list-group-item border-0 py-2 px-3 action-item">
-                                 <div class="d-flex align-items-center">
-                                     <div class="bg-light rounded p-2 mr-3 text-center" style="width: 40px;"><i class="las la-hashtag"></i></div>
-                                     <div style="line-height:1.2">
-                                         <span class="d-block font-weight-bold text-dark" style="font-size: 13px;">#PhyziolineConf2026</span>
-                                         <small class="text-muted">2.4k posts</small>
-                                     </div>
-                                 </div>
-                             </li>
-                             <li class="list-group-item border-0 py-2 px-3 action-item">
-                                 <div class="d-flex align-items-center">
-                                     <div class="bg-light rounded p-2 mr-3 text-center" style="width: 40px;"><i class="las la-hashtag"></i></div>
-                                     <div style="line-height:1.2">
-                                         <span class="d-block font-weight-bold text-dark" style="font-size: 13px;">#ManualTherapy</span>
-                                         <small class="text-muted">850 posts</small>
-                                     </div>
-                                 </div>
-                             </li>
-                         </ul>
-                     </div>
-                     <div class="card-footer bg-white border-0 text-center pb-3 pt-0">
-                         <a href="#" class="btn btn-sm btn-light btn-block rounded-pill text-primary font-weight-bold">{{ __('View All') }}</a>
-                     </div>
-                 </div>
-                 
-                 <!-- Footer Links -->
-                 <div class="mt-4 text-center px-3">
-                     <p class="small text-muted mb-2">
-                         <a href="#" class="text-muted mr-2">Privacy</a>
-                         <a href="#" class="text-muted mr-2">Terms</a>
-                         <a href="#" class="text-muted">Advertising</a>
-                     </p>
-                     <p class="small text-muted">© 2026 Phyzioline Inc.</p>
-                 </div>
-             </div>
-
+    <!-- Desktop context wrapper (centering the mobile app) -->
+    <div class="hidden md:flex flex-col items-center justify-center min-h-screen p-4">
+        <div class="text-center mb-4">
+            <h1 class="text-2xl font-bold text-teal-700">Phyzioline Ecosystem</h1>
+            <p class="text-gray-500">{{ __('Interactive Mobile Experience') }}</p>
+        </div>
+        <!-- The Actual App Container -->
+        <div id="mobile-frame-wrapper" class="w-full max-w-[480px] h-[850px] overflow-hidden rounded-3xl border-8 border-gray-800 bg-white shadow-2xl relative">
+            <!-- App Content Injected Here -->
+            <div id="desktop-app-container" class="w-full h-full overflow-y-auto no-scrollbar bg-gray-50"></div>
         </div>
     </div>
-</div>
 
-@push('scripts')
-<script>
-    function toggleLike(id) {
-        $.post('{{ route("feed.like." . app()->getLocale(), ":id") }}'.replace(':id', id), {
-            _token: '{{ csrf_token() }}'
-        })
-        .done(function(data) {
-            let btn = $('.feed-card[data-id="'+id+'"] .like-btn');
-            let countSpan = btn.find('.like-count');
-            let currentCount = parseInt(countSpan.text());
+    <!-- Mobile View (Direct Render) -->
+    <div id="app-container" class="md:hidden">
+        <!-- Content injected via JS -->
+    </div>
+
+    <script>
+        // --- DATA & STATE ---
+        const state = {
+            currentUser: {
+                id: '{{ auth()->id() }}',
+                name: '{{ auth()->user()->name }}',
+                role: '{{ auth()->user()->type }}', // admin, vendor, company, therapist
+                avatar: '{{ auth()->user()->profile_photo_url }}',
+                verified: {{ auth()->user()->is_verified ? 'true' : 'false' }} 
+            },
+            currentTab: 'feed',
+            posts: [
+                @foreach($feedItems as $item)
+                {
+                    id: '{{ $item->id }}',
+                    type: '{{ $item->type }}', // post, product, job, course, therapist
+                    author: { 
+                        name: '{{ $item->sourceable ? $item->sourceable->name : "System" }}', 
+                        role: '{{ $item->sourceable_type == "App\\Models\\User" ? $item->sourceable->type : "system" }}', 
+                        avatar: '{{ $item->sourceable && method_exists($item->sourceable, "profile_photo_url") ? $item->sourceable->profile_photo_url : asset("images/logo.png") }}', 
+                        verified: true 
+                    },
+                    timestamp: '{{ $item->created_at->diffForHumans() }}',
+                    content: { 
+                        text: '{{ \Illuminate\Support\Str::limit($item->description, 150) }}',
+                        // Add specific fields based on type if available in your model or generic description
+                        @if($item->type == 'product' && $item->sourceable)
+                            title: '{{ $item->sourceable->product_name_en ?? $item->title }}',
+                            price: '{{ $item->sourceable->product_price ?? "" }} EGP',
+                        @elseif($item->type == 'course' && $item->sourceable)
+                            title: '{{ $item->sourceable->course_name_en ?? $item->title }}',
+                            duration: '{{ $item->sourceable->duration ?? "" }}',
+                        @elseif($item->type == 'job' && $item->sourceable)
+                             location: '{{ $item->sourceable->job_location ?? "" }}',
+                             salary: '{{ $item->sourceable->salary_range ?? "" }}',
+                        @endif
+                    },
+                    media: {{ $item->media_url ? json_encode(['type' => 'image', 'url' => $item->media_url]) : 'null' }},
+                     metrics: { likes: {{ $item->likes_count ?? 0 }}, comments: {{ $item->comments_count ?? 0 }} },
+                    action: { 
+                        label: '{{ $item->action_text ?? "View Details" }}', 
+                        type: 'view',
+                        link: '{{ $item->action_link }}'
+                    }
+                },
+                @endforeach
+            ]
+        };
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderApp() {
+            // Determine container based on view mode (Desktop vs Mobile)
+            const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+            const containerId = isDesktop ? 'desktop-app-container' : 'app-container';
+            const root = document.getElementById(containerId);
             
-            if(data.liked) {
-                btn.addClass('text-primary');
-                countSpan.text(currentCount + 1);
-            } else {
-                btn.removeClass('text-primary');
-                countSpan.text(currentCount - 1);
-            }
-        });
-    }
+            if (!root) return;
 
-    // Log view on scroll logic (Simple version)
-    // In production, use IntersectionObserver to log 'view' when 50% visible
-</script>
-@endpush
-@endsection
+            root.innerHTML = '';
+            // Ensure proper styling classes are on the container
+            root.className = "bg-gray-50 min-h-screen pb-20 font-sans text-right";
+            root.dir = "{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}";
+            @if(app()->getLocale() != 'ar')
+                root.classList.remove('text-right');
+                root.classList.add('text-left');
+            @endif
+
+            // 1. Header
+            root.appendChild(createHeader());
+
+            // 2. Main Content Area
+            const mainContent = document.createElement('main');
+            mainContent.id = 'main-content';
+            mainContent.className = 'w-full max-w-lg mx-auto';
+            root.appendChild(mainContent);
+
+            // 3. Bottom Nav
+            // For desktop view, we need to ensure the nav is positioned relative to the container frame, not the window
+            const nav = createBottomNav();
+            if(isDesktop) {
+                nav.style.position = 'absolute';
+                nav.style.bottom = '0';
+                nav.style.width = '100%';
+                nav.classList.remove('fixed');
+            }
+            root.appendChild(nav);
+
+            // 4. Modals Container
+            const modalContainer = document.createElement('div');
+            modalContainer.id = 'modal-container';
+            // Ensure modal container is within the root for desktop frame clipping
+            if(isDesktop) {
+                 modalContainer.className = "absolute inset-0 pointer-events-none z-50"; 
+                 // We'll handle pointer events in children
+            }
+            root.appendChild(modalContainer);
+
+            // Initial Render
+            navigateTo(state.currentTab);
+        }
+
+        function createHeader() {
+            const header = document.createElement('header');
+            header.className = "sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm px-4 py-3 flex justify-between items-center";
+            header.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 relative">
+                        🔔
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-bold text-teal-600 tracking-tight">Phyzioline</h1>
+                    <div class="w-6 h-6 bg-teal-600 rounded-md flex items-center justify-center text-white text-xs font-bold">P</div>
+                </div>
+            `;
+            return header;
+        }
+
+        function createBottomNav() {
+            const nav = document.createElement('nav');
+            nav.className = "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50 flex justify-around items-center max-w-[480px] mx-auto";
+            
+            const tabs = [
+                { id: 'profile', icon: '👤', label: '{{ __("Profile") }}' },
+                { id: 'jobs', icon: '💼', label: '{{ __("Jobs") }}' },
+                { id: 'create', icon: '➕', label: '{{ __("Post") }}', highlight: true },
+                { id: 'shop', icon: '🛍️', label: '{{ __("Shop") }}' },
+                { id: 'feed', icon: '🏠', label: '{{ __("Home") }}' },
+            ];
+
+            nav.innerHTML = tabs.map(tab => `
+                <button onclick="window.navigateTo('${tab.id}')" class="flex flex-col items-center gap-1 p-1 ${state.currentTab === tab.id ? 'text-teal-600' : 'text-gray-400'}">
+                    <div class="${tab.highlight ? 'bg-teal-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg -mt-4 border-4 border-gray-50' : 'text-2xl'}">
+                        ${tab.icon}
+                    </div>
+                    <span class="text-[10px] font-medium ${tab.highlight ? 'mt-1' : ''}">${tab.label}</span>
+                </button>
+            `).join('');
+            return nav;
+        }
+
+        window.navigateTo = function(tabId) {
+            state.currentTab = tabId;
+            // Update Nav UI
+            const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+            const existingNav = isDesktop ? document.getElementById('desktop-app-container').querySelector('nav') : document.querySelector('nav');
+            
+            if(existingNav) {
+                const newNav = createBottomNav();
+                if(isDesktop) {
+                    newNav.style.position = 'absolute';
+                    newNav.style.bottom = '0';
+                    newNav.style.width = '100%';
+                    newNav.classList.remove('fixed');
+                }
+                existingNav.replaceWith(newNav);
+            }
+
+            const main = document.getElementById('main-content');
+            if(main) {
+                main.innerHTML = '';
+
+                if (tabId === 'create') {
+                     openCreateModal();
+                    // Return to previous tab visually? Or stay on create? 
+                    // User flow typically: click create -> modal -> close -> stay on feed.
+                    // But here 'create' is a tab. Let's redirect back to feed after opening modal.
+                    state.currentTab = 'feed'; // visual reset
+                    return; 
+                }
+
+                if (tabId === 'feed') renderFeed(main);
+                else if (tabId === 'shop') renderShop(main);
+                else if (tabId === 'jobs') renderJobs(main);
+                else if (tabId === 'profile') renderProfile(main);
+            }
+        }
+
+        // --- FEED TAB ---
+
+        function renderFeed(container) {
+            // Intro
+            const intro = document.createElement('div');
+            intro.className = "px-4 py-3 bg-teal-50 border-b border-teal-100 mb-2";
+            intro.innerHTML = `
+                <p class="text-xs text-teal-800 font-medium text-center">
+                    {{ __('Welcome to Phyzioline Community') }}
+                </p>
+            `;
+            container.appendChild(intro);
+
+            // Stories / Quick Actions Bar
+            const stories = document.createElement('div');
+            stories.className = "flex gap-3 overflow-x-auto p-4 no-scrollbar bg-white mb-2 shadow-sm";
+            stories.innerHTML = `
+                <div class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full border-2 border-dashed border-teal-400 flex items-center justify-center bg-gray-50 text-2xl cursor-pointer" onclick="openCreateModal()">➕</div>
+                    <span class="text-xs font-medium truncate w-full text-center">{{ __('Add') }}</span>
+                </div>
+                 <!-- Static Stories for Demo -->
+                ${['Dr. Mohamed', 'Hope Clinic', 'Spot Sports', 'OrthoCare'].map(name => `
+                    <div class="flex flex-col items-center gap-1 min-w-[64px]">
+                        <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-yellow-400 to-teal-500">
+                            <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden">
+                                <img src="https://ui-avatars.com/api/?name=${name}&background=random" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <span class="text-xs text-gray-600 truncate w-full text-center">${name}</span>
+                    </div>
+                `).join('')}
+            `;
+            container.appendChild(stories);
+
+            // Posts
+            if(state.posts.length > 0) {
+                state.posts.forEach(post => {
+                    container.appendChild(createPostCard(post));
+                });
+            } else {
+                 container.innerHTML += `<div class="p-8 text-center text-gray-400">{{ __('No updates yet') }}</div>`;
+            }
+            
+            // Loading Spinner (Visual only)
+            const spinner = document.createElement('div');
+            spinner.className = "py-8 flex justify-center";
+            spinner.innerHTML = `<div class="w-6 h-6 border-2 border-gray-300 border-t-teal-600 rounded-full animate-spin"></div>`;
+            container.appendChild(spinner);
+        }
+
+        function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = "bg-white mb-3 shadow-sm animate-fade-in";
+            
+            // Header
+            let roleBadge = '';
+            if (post.author.role === 'therapist') roleBadge = '<span class="bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Therapist") }}</span>';
+            if (post.author.role === 'vendor') roleBadge = '<span class="bg-orange-100 text-orange-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Store") }}</span>';
+            if (post.author.role === 'company') roleBadge = '<span class="bg-purple-100 text-purple-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Company") }}</span>';
+            if (post.author.role === 'admin' || post.author.role === 'system') roleBadge = '<span class="bg-teal-100 text-teal-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("System") }}</span>';
+
+            const headerHtml = `
+                <div class="flex justify-between items-center p-3">
+                    <div class="flex items-center gap-2 cursor-pointer">
+                        <img src="${post.author.avatar}" class="w-10 h-10 rounded-full border border-gray-100 object-cover">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-gray-900">${post.author.name}</span>
+                                ${post.author.verified ? '<span class="text-blue-500 text-xs mr-1">☑️</span>' : ''}
+                                ${roleBadge}
+                            </div>
+                            <span class="text-xs text-gray-400">${post.timestamp}</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400">⋮</button>
+                </div>
+            `;
+
+            // Content
+            let contentHtml = `<div class="px-3 pb-2 text-sm text-gray-800 leading-relaxed">${post.content.text}</div>`;
+            
+            // Specific Layouts based on type
+            if (post.type === 'product') {
+                contentHtml += `
+                    <div class="bg-gray-50 p-3 mx-3 mb-2 rounded-lg flex gap-3 border border-gray-100">
+                        <div class="w-1/3 bg-gray-200 rounded h-20 overflow-hidden">
+                             ${post.media ? `<img src="${post.media.url}" class="w-full h-full object-cover">` : ''}
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <h3 class="font-bold text-gray-800">${post.content.title || ''}</h3>
+                            <div class="text-teal-600 font-bold mt-1">${post.content.price || ''}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (post.type === 'job') {
+                contentHtml += `
+                    <div class="mx-3 mb-2 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="flex items-center gap-2 mb-2 text-blue-800 font-bold">
+                            💼 ${post.content.location || ''}
+                        </div>
+                        <div class="text-sm text-gray-600">${post.content.salary || ''}</div>
+                    </div>
+                `;
+            } else if (post.type === 'course') {
+                contentHtml += `
+                    <div class="relative mx-3 mb-2 rounded-lg overflow-hidden h-40 group">
+                        ${post.media ? `<img src="${post.media.url}" class="w-full h-full object-cover">` : `<div class="w-full h-full bg-purple-100"></div>`}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
+                            <h3 class="text-white font-bold">${post.content.title || ''}</h3>
+                            <span class="text-gray-200 text-xs">⏱ ${post.content.duration || ''}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (post.media && post.media.type === 'image') {
+                 contentHtml += `
+                     <div class="relative mx-3 mb-2 rounded-lg overflow-hidden h-60">
+                        <img src="${post.media.url}" class="w-full h-full object-cover">
+                     </div>
+                 `;
+            }
+
+            // Action Button
+            let actionBtn = '';
+            if (post.action.link) {
+                let btnColor = 'bg-teal-600 hover:bg-teal-700';
+                if (post.type === 'book_visit') btnColor = 'bg-blue-600 hover:bg-blue-700';
+                
+                actionBtn = `
+                    <div class="px-3 pb-2">
+                        <a href="${post.action.link}" class="w-full block text-center ${btnColor} text-white font-medium py-2 rounded-lg shadow-sm active:scale-[0.98] transition-transform">
+                            ${post.action.label}
+                        </a>
+                    </div>
+                `;
+            }
+
+            // Footer (Engagement)
+            const footerHtml = `
+                <div class="px-3 py-2 border-t border-gray-100 flex justify-between items-center text-gray-500">
+                    <div class="flex gap-4">
+                        <button class="flex items-center gap-1 hover:text-red-500 transition-colors">
+                            <span>❤️</span> <span class="text-xs font-medium">${post.metrics.likes}</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            card.innerHTML = headerHtml + contentHtml + actionBtn + footerHtml;
+            return card;
+        }
+
+        // --- PROFILE TAB (Analytics Demo) ---
+
+        function renderProfile(container) {
+            container.innerHTML = `
+                <div class="bg-white p-6 shadow-sm mb-2">
+                    <div class="flex flex-col items-center">
+                        <div class="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-teal-400 to-blue-500 mb-2">
+                            <img src="${state.currentUser.avatar}" class="w-full h-full rounded-full border-2 border-white">
+                        </div>
+                        <h2 class="text-xl font-bold text-gray-900 flex items-center gap-1">
+                            ${state.currentUser.name} <span class="text-blue-500 text-sm">☑️</span>
+                        </h2>
+                        <span class="text-sm text-gray-500 mb-4">${state.currentUser.role}</span>
+                        
+                        <div class="flex gap-2 w-full mb-4">
+                            <a href="{{ route('profile.show', auth()->id()) }}" class="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-medium text-sm">{{ __('Profile') }}</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS SECTION -->
+                <div class="bg-white p-4 shadow-sm mb-20">
+                    <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        📊 {{ __('Dashboard') }}
+                    </h3>
+                    
+                    <div class="mb-6">
+                         <div class="chart-container">
+                            <canvas id="visitsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Chart
+            setTimeout(() => {
+                const ctx = document.getElementById('visitsChart');
+                if(ctx){
+                    new Chart(ctx.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                            datasets: [{
+                                label: 'Activity',
+                                data: [12, 19, 15, 25, 22, 30],
+                                borderColor: '#0d9488', // Teal-600
+                                backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                                fill: true,
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                             plugins: { legend: { display: false } }, // Hide legend to save space
+                            scales: {
+                                y: { beginAtZero: true, grid: { display: false } },
+                                x: { grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        // --- SHOP & JOBS TABS (Placeholders) ---
+        function renderShop(container) {
+             // Redirect or render partial
+             container.innerHTML = `<div class="p-8 text-center">{{ __('Loading Shop...') }}</div>`;
+             window.location.href = "{{ route('web.shop.show.' . app()->getLocale()) }}";
+        }
+
+        function renderJobs(container) {
+             container.innerHTML = `<div class="p-8 text-center">{{ __('Loading Jobs...') }}</div>`;
+             window.location.href = "{{ route('web.jobs.index.' . app()->getLocale()) }}";
+        }
+
+
+        // --- INTERACTION MODALS ---
+
+        function openCreateModal() {
+            const modal = document.getElementById('modal-container');
+            // Ensure pointer events are enabled for this child
+            modal.innerHTML = `
+                <div class="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/50 backdrop-blur-sm animate-fade-in pointer-events-auto">
+                    <div class="bg-white w-full max-w-[480px] rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-gray-800">{{ __('Create Post') }}</h3>
+                            <button onclick="document.getElementById('modal-container').innerHTML=''" class="text-gray-400 text-xl">✕</button>
+                        </div>
+                        
+                        <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <textarea name="content" class="w-full bg-gray-50 p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-teal-500 mb-4 h-32" placeholder="{{ __('Share your thoughts...') }}"></textarea>
+                            <input type="file" name="image" class="mb-4">
+                            <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-teal-600/20">{{ __('Publish Now') }}</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- INIT ---
+        window.addEventListener('load', () => {
+             renderApp();
+             
+             // Handle resize to switch modes
+             window.addEventListener('resize', renderApp);
+        });
+
+    </script>
+</body>
+</html>
