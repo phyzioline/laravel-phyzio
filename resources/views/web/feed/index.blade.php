@@ -444,7 +444,7 @@
                         <span class="text-sm text-gray-500 mb-4">${state.currentUser.role}</span>
                         
                         <div class="flex gap-2 w-full mb-4">
-                            <a href="{{ route('profile.show', auth()->id()) }}" class="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-medium text-sm">{{ __('Profile') }}</a>
+                            <a href="{{ route('web.profile.index.' . app()->getLocale()) }}" class="flex-1 text-center bg-gray-100 text-gray-700 py-2 rounded-lg font-medium text-sm">{{ __('Profile') }}</a>
                         </div>
                     </div>
                 </div>
