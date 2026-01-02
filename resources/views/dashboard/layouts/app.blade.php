@@ -330,9 +330,12 @@
        overflow: hidden;
        transition: height 0.35s ease;
      }
-     /* Ensure has-arrow works in both directions */
+     /* Ensure has-arrow works in both directions and fix arrow size */
      .sidebar-nav .metismenu .has-arrow::after {
        display: block !important;
+       width: 0.35em !important;
+       height: 0.35em !important;
+       border-width: 1px 0 0 1px !important;
      }
 
      .top-header .nav-link i, .top-header .nav-link span, .top-header .user-name {
