@@ -350,7 +350,9 @@
         <script type="text/javascript" defer>
             document.addEventListener('DOMContentLoaded', function() {
                 if (typeof toastr !== 'undefined' && typeof $ !== 'undefined') {
-                    toastr["error"]('{{ $errors->first() }}', "Error!");
+                    @foreach ($errors->all() as $error)
+                        toastr["error"]('{{ $error }}', "Error!");
+                    @endforeach
                 }
             });
         </script>
