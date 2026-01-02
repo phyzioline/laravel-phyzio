@@ -101,7 +101,7 @@ class PatientPaymentController extends BaseClinicController
             'invoice_id' => 'nullable|exists:patient_invoices,id',
             'payment_date' => 'required|date|before_or_equal:today',
             'payment_amount' => 'required|numeric|min:0.01',
-            'payment_method' => 'required|in:cash,bank_transfer,pos_card,mobile_wallet',
+            'payment_method' => 'required|in:cash,bank_transfer,pos_card,mobile_wallet,vodafone_cash,instapay',
             'notes' => 'nullable|string|max:1000',
             'receipt_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240'
         ]);
@@ -202,7 +202,7 @@ class PatientPaymentController extends BaseClinicController
             'invoice_id' => 'nullable|exists:patient_invoices,id',
             'payment_date' => 'required|date|before_or_equal:today',
             'payment_amount' => 'required|numeric|min:0.01',
-            'payment_method' => 'required|in:cash,bank_transfer,pos_card,mobile_wallet',
+            'payment_method' => 'required|in:cash,bank_transfer,pos_card,mobile_wallet,vodafone_cash,instapay',
             'notes' => 'nullable|string|max:1000',
             'receipt_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240'
         ]);

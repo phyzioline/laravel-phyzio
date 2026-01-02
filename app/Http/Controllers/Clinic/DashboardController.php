@@ -39,11 +39,50 @@ class DashboardController extends BaseClinicController
         $totalPrograms = 0;
         $monthlyRevenue = 0;
         $activeDoctors = 0;
+        
+        // NEW: Today's metrics
+        $todayPatients = 0;
+        $todaySessions = 0;
+        $todayIncome = 0;
+        $todayPatientsList = collect();
 
         if ($clinic) {
             try {
                 // Get REAL data filtered by clinic
                 $totalPatients = \App\Models\Patient::where('clinic_id', $clinic->id)->count();
+                
+                // Today's Patients (patients with appointments today)
+                $todayPatientsQuery = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereDate('appointment_date', today())
+                    ->with('patient')
+                    ->distinct('patient_id');
+                $todayPatients = $todayPatientsQuery->count('patient_id');
+                $todayPatientsList = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereDate('appointment_date', today())
+                    ->with('patient')
+                    ->get()
+                    ->pluck('patient')
+                    ->unique('id')
+                    ->take(5);
+                
+                // Today's Sessions (completed appointments today)
+                $todaySessions = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+                    ->whereDate('appointment_date', today())
+                    ->where('status', 'completed')
+                    ->count();
+                
+                // Today's Income (from payments made today)
+                if (\Schema::hasTable('patient_payments')) {
+                    $todayIncome = \App\Models\PatientPayment::where('clinic_id', $clinic->id)
+                        ->whereDate('payment_date', today())
+                        ->sum('payment_amount');
+                } elseif (\Schema::hasTable('payments')) {
+                    $todayIncome = \DB::table('payments')
+                        ->where('clinic_id', $clinic->id)
+                        ->whereDate('created_at', today())
+                        ->where('status', 'paid')
+                        ->sum('amount');
+                }
                 
                 // Active treatment plans
                 if (\Schema::hasTable('treatment_plans')) {
@@ -88,7 +127,12 @@ class DashboardController extends BaseClinicController
                     ->count();
                 
                 // Monthly revenue (from appointments or payments)
-                if (\Schema::hasTable('payments')) {
+                if (\Schema::hasTable('patient_payments')) {
+                    $monthlyRevenue = \App\Models\PatientPayment::where('clinic_id', $clinic->id)
+                        ->whereMonth('payment_date', now()->month)
+                        ->whereYear('payment_date', now()->year)
+                        ->sum('payment_amount');
+                } elseif (\Schema::hasTable('payments')) {
                     $monthlyRevenue = \DB::table('payments')
                         ->where('created_at', '>=', now()->startOfMonth())
                         ->where('created_at', '<=', now()->endOfMonth())
@@ -96,11 +140,18 @@ class DashboardController extends BaseClinicController
                         ->sum('amount');
                 }
                 
-                // Outstanding payments
-                if (\Schema::hasTable('invoices')) {
+                // Outstanding payments (unpaid invoices)
+                if (\Schema::hasTable('patient_invoices')) {
+                    $outstandingPayments = \App\Models\PatientInvoice::where('clinic_id', $clinic->id)
+                        ->whereIn('status', ['unpaid', 'partially_paid'])
+                        ->get()
+                        ->sum(function($invoice) {
+                            return $invoice->remaining_balance ?? ($invoice->final_amount - $invoice->total_paid);
+                        });
+                } elseif (\Schema::hasTable('invoices')) {
                     $outstandingPayments = \DB::table('invoices')
                         ->where('clinic_id', $clinic->id)
-                        ->where('status', 'pending')
+                        ->whereIn('status', ['pending', 'unpaid', 'partially_paid'])
                         ->sum('amount');
                 }
                 
@@ -166,7 +217,11 @@ class DashboardController extends BaseClinicController
             'totalPrograms',
             'monthlyRevenue',
             'activeDoctors',
-            'recentActivities'
+            'recentActivities',
+            'todayPatients',
+            'todaySessions',
+            'todayIncome',
+            'todayPatientsList'
         ));
     }
 

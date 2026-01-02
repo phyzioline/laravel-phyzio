@@ -50,6 +50,24 @@ class Patient extends Model
         return $this->hasMany(PatientPayment::class);
     }
 
+    public function attachments()
+    {
+        return $this->hasMany(PatientAttachment::class);
+    }
+
+    public function programSessions()
+    {
+        if (\Schema::hasTable('program_sessions')) {
+            return $this->hasManyThrough(
+                \App\Models\ProgramSession::class,
+                \App\Models\WeeklyProgram::class,
+                'patient_id',
+                'program_id'
+            );
+        }
+        return $this->newQuery()->whereRaw('1 = 0'); // Return empty query
+    }
+
     // Calculate total invoiced amount
     public function getTotalInvoicedAttribute()
     {

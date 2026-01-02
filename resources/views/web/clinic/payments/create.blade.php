@@ -76,10 +76,24 @@
                         <label class="form-label">{{ __('Payment Method') }} <span class="text-danger">*</span></label>
                         <select name="payment_method" class="form-select @error('payment_method') is-invalid @enderror" required>
                             <option value="">{{ __('Select Method') }}</option>
-                            <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>{{ __('Cash') }}</option>
-                            <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>{{ __('Bank Transfer') }}</option>
-                            <option value="pos_card" {{ old('payment_method') == 'pos_card' ? 'selected' : '' }}>{{ __('POS / Card') }}</option>
-                            <option value="mobile_wallet" {{ old('payment_method') == 'mobile_wallet' ? 'selected' : '' }}>{{ __('Mobile Wallet') }}</option>
+                            <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>
+                                <i class="las la-money-bill-wave"></i> {{ __('Cash') }}
+                            </option>
+                            <option value="pos_card" {{ old('payment_method') == 'pos_card' ? 'selected' : '' }}>
+                                <i class="las la-credit-card"></i> {{ __('POS / Card') }}
+                            </option>
+                            <option value="vodafone_cash" {{ old('payment_method') == 'vodafone_cash' ? 'selected' : '' }}>
+                                <i class="las la-mobile-alt"></i> {{ __('Vodafone Cash') }}
+                            </option>
+                            <option value="instapay" {{ old('payment_method') == 'instapay' ? 'selected' : '' }}>
+                                <i class="las la-mobile-alt"></i> {{ __('Instapay') }}
+                            </option>
+                            <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>
+                                <i class="las la-university"></i> {{ __('Bank Transfer') }}
+                            </option>
+                            <option value="mobile_wallet" {{ old('payment_method') == 'mobile_wallet' ? 'selected' : '' }}>
+                                <i class="las la-wallet"></i> {{ __('Other Mobile Wallet') }}
+                            </option>
                         </select>
                         @error('payment_method')
                             <div class="invalid-feedback">{{ $message }}</div>

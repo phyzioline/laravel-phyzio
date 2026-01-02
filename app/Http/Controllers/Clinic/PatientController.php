@@ -139,9 +139,12 @@ class PatientController extends BaseClinicController
         }
         
         // Load relationships
-        $appointments = $patient->appointments()->latest()->get();
+        $appointments = $patient->appointments()->with('doctor')->latest()->get();
         $treatmentPlans = collect([]);
         $invoices = collect([]);
+        $attachments = collect([]);
+        $payments = collect([]);
+        $sessionsTimeline = collect([]);
         
         // Check if relations exist dynamically
         if (method_exists($patient, 'treatmentPlans')) {
@@ -156,8 +159,78 @@ class PatientController extends BaseClinicController
                 ->latest()
                 ->get();
         }
+        
+        // Load payments
+        if ($clinic && class_exists(\App\Models\PatientPayment::class)) {
+            $payments = \App\Models\PatientPayment::where('patient_id', $patient->id)
+                ->where('clinic_id', $clinic->id)
+                ->with('invoice')
+                ->latest()
+                ->get();
+        }
+        
+        // Load attachments
+        if ($clinic && \Schema::hasTable('patient_attachments')) {
+            $attachments = \App\Models\PatientAttachment::where('patient_id', $patient->id)
+                ->where('clinic_id', $clinic->id)
+                ->with('uploadedBy')
+                ->latest()
+                ->get();
+        }
+        
+        // Build session timeline (combine appointments and program sessions chronologically)
+        $sessionsTimeline = collect();
+        
+        // Add appointments to timeline
+        foreach ($appointments as $appt) {
+            $sessionsTimeline->push((object)[
+                'type' => 'appointment',
+                'date' => $appt->appointment_date,
+                'title' => 'Appointment - ' . ($appt->specialty ?? 'General'),
+                'status' => $appt->status,
+                'data' => $appt
+            ]);
+        }
+        
+        // Add program sessions if available
+        if (\Schema::hasTable('program_sessions') && method_exists($patient, 'programSessions')) {
+            try {
+                $programSessions = \App\Models\ProgramSession::whereHas('program', function($q) use ($patient) {
+                    $q->where('patient_id', $patient->id);
+                })
+                ->with('program')
+                ->orderBy('scheduled_date', 'desc')
+                ->get();
+                
+                foreach ($programSessions as $session) {
+                    $sessionsTimeline->push((object)[
+                        'type' => 'session',
+                        'date' => $session->scheduled_date,
+                        'title' => 'Session #' . $session->session_in_program . ' - ' . ucfirst($session->session_type),
+                        'status' => $session->status,
+                        'data' => $session
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Ignore if tables don't exist
+            }
+        }
+        
+        // Sort timeline by date (newest first)
+        $sessionsTimeline = $sessionsTimeline->sortByDesc(function($item) {
+            return $item->date instanceof \Carbon\Carbon ? $item->date : \Carbon\Carbon::parse($item->date);
+        })->values();
 
-        return view('web.clinic.patients.show', compact('patient', 'appointments', 'treatmentPlans', 'invoices', 'clinic'));
+        return view('web.clinic.patients.show', compact(
+            'patient', 
+            'appointments', 
+            'treatmentPlans', 
+            'invoices', 
+            'clinic',
+            'attachments',
+            'payments',
+            'sessionsTimeline'
+        ));
     }
 
     /**
@@ -219,5 +292,55 @@ class PatientController extends BaseClinicController
 
         return redirect()->route('clinic.patients.show', $patient->id)
             ->with('success', 'Patient updated successfully.');
+    }
+
+    /**
+     * Store patient attachment
+     */
+    public function storeAttachment(Request $request, $id)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->back()->with('error', 'Clinic not found.');
+        }
+
+        $patient = Patient::where('clinic_id', $clinic->id)->findOrFail($id);
+
+        $validated = $request->validate([
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:10240', // 10MB max
+            'title' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'category' => 'nullable|in:xray,mri,lab_report,doctor_note,prescription,insurance,other',
+            'document_date' => 'nullable|date'
+        ]);
+
+        try {
+            $file = $request->file('file');
+            $path = $file->store('patient-attachments', 'public');
+            
+            $attachment = \App\Models\PatientAttachment::create([
+                'patient_id' => $patient->id,
+                'clinic_id' => $clinic->id,
+                'uploaded_by' => Auth::id(),
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'file_type' => $file->getClientOriginalExtension(),
+                'mime_type' => $file->getMimeType(),
+                'file_size' => $file->getSize(),
+                'title' => $validated['title'] ?? $file->getClientOriginalName(),
+                'description' => $validated['description'] ?? null,
+                'category' => $validated['category'] ?? 'other',
+                'document_date' => $validated['document_date'] ?? null
+            ]);
+
+            return redirect()->route('clinic.patients.show', $patient->id)
+                ->with('success', 'Attachment uploaded successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Attachment upload error: ' . $e->getMessage());
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to upload attachment. Please try again.');
+        }
     }
 }

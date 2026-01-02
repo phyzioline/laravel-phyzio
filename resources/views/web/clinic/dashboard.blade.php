@@ -49,9 +49,109 @@
     </div>
 </div>
 
-<!-- Key Metrics Overview -->
+<!-- Quick Actions Bar (Operational Dashboard) -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm" style="border-radius: 15px; background: linear-gradient(135deg, #00897b 0%, #00acc1 100%);">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5 class="text-white font-weight-bold mb-2">
+                            <i class="las la-bolt"></i> {{ __('Quick Actions') }}
+                        </h5>
+                        <p class="text-white-50 mb-0">{{ __('Common daily tasks - Get things done faster') }}</p>
+                    </div>
+                    <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                        <a href="{{ route('clinic.patients.create') }}" class="btn btn-light btn-lg mr-2 mb-2 mb-md-0" style="min-width: 140px;">
+                            <i class="las la-user-plus"></i> {{ __('Add Patient') }}
+                        </a>
+                        <a href="{{ route('clinic.appointments.create') }}" class="btn btn-light btn-lg mr-2 mb-2 mb-md-0" style="min-width: 140px;">
+                            <i class="las la-calendar-plus"></i> {{ __('Add Session') }}
+                        </a>
+                        <a href="{{ route('clinic.payments.create') }}" class="btn btn-light btn-lg mb-2 mb-md-0" style="min-width: 140px;">
+                            <i class="las la-money-bill-wave"></i> {{ __('Add Payment') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Metrics Overview - Operational Dashboard -->
 <div class="row">
-    <!-- Active Programs (NEW) -->
+    <!-- Today's Patients -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100" style="border-left: 4px solid #00897b;">
+            <div class="icon-box icon-primary">
+                <i class="las la-user-injured"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">{{ $todayPatients ?? 0 }}</h3>
+                <small class="text-muted">{{ __('Today\'s Patients') }}</small>
+                <div class="text-info small mt-1">
+                    <a href="{{ route('clinic.appointments.index', ['date' => today()->format('Y-m-d')]) }}" class="text-info">
+                        <i class="las la-eye"></i> {{ __('View Today') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Sessions -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100" style="border-left: 4px solid #43a047;">
+            <div class="icon-box icon-green">
+                <i class="las la-clipboard-check"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">{{ $todaySessions ?? 0 }}</h3>
+                <small class="text-muted">{{ __('Today\'s Sessions') }}</small>
+                <div class="text-info small mt-1">
+                    <i class="las la-check-circle"></i> {{ $completedToday ?? 0 }} {{ __('completed') }} / {{ $todayAppointments ?? 0 }} {{ __('total') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Income -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100" style="border-left: 4px solid #f57c00;">
+            <div class="icon-box icon-orange">
+                <i class="las la-coins"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">${{ number_format($todayIncome ?? 0, 2) }}</h3>
+                <small class="text-muted">{{ __('Today\'s Income') }}</small>
+                <div class="text-success small mt-1">
+                    <i class="las la-arrow-up"></i> {{ __('Cash collected today') }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outstanding / Unpaid Amount -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100" style="border-left: 4px solid #e53935;">
+            <div class="icon-box icon-red">
+                <i class="las la-exclamation-triangle"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">${{ number_format($outstandingPayments ?? 0, 2) }}</h3>
+                <small class="text-muted">{{ __('Outstanding Amount') }}</small>
+                <div class="text-warning small mt-1">
+                    <a href="{{ route('clinic.invoices.index', ['status' => 'unpaid']) }}" class="text-warning">
+                        <i class="las la-file-invoice-dollar"></i> {{ __('View Unpaid') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Secondary Metrics Row -->
+<div class="row mb-4">
+    <!-- Active Programs -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="stat-card h-100">
             <div class="icon-box icon-primary">
@@ -64,22 +164,6 @@
                     <a href="{{ route('clinic.programs.index') }}" class="text-info">
                         <i class="las la-eye"></i> {{ __('View All') }} ({{ $totalPrograms ?? 0 }})
                     </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Today's Appointments -->
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stat-card h-100">
-            <div class="icon-box icon-green">
-                <i class="las la-calendar-check"></i>
-            </div>
-            <div>
-                <h3 class="font-weight-bold mb-0">{{ $todayAppointments ?? 0 }}</h3>
-                <small class="text-muted">{{ __('Today\'s Appointments') }}</small>
-                <div class="text-info small mt-1">
-                    <i class="las la-check-circle"></i> {{ $completedToday ?? 0 }} {{ __('completed') }}
                 </div>
             </div>
         </div>
@@ -110,13 +194,29 @@
                 <i class="las la-dollar-sign"></i>
             </div>
             <div>
-                <h3 class="font-weight-bold mb-0">${{ number_format($monthlyRevenue ?? 0, 0) }}</h3>
+                <h3 class="font-weight-bold mb-0">${{ number_format($monthlyRevenue ?? 0, 2) }}</h3>
                 <small class="text-muted">{{ __('Monthly Revenue') }}</small>
-                @if($outstandingPayments > 0)
-                <div class="text-warning small mt-1">
-                    <i class="las la-exclamation-triangle"></i> ${{ number_format($outstandingPayments, 0) }} {{ __('pending') }}
+                <div class="text-info small mt-1">
+                    <i class="las la-chart-line"></i> {{ __('This month') }}
                 </div>
-                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Appointments -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="stat-card h-100">
+            <div class="icon-box icon-green">
+                <i class="las la-calendar-check"></i>
+            </div>
+            <div>
+                <h3 class="font-weight-bold mb-0">{{ $todayAppointments ?? 0 }}</h3>
+                <small class="text-muted">{{ __('Today\'s Appointments') }}</small>
+                <div class="text-info small mt-1">
+                    <a href="{{ route('clinic.appointments.index', ['date' => today()->format('Y-m-d')]) }}" class="text-info">
+                        <i class="las la-list"></i> {{ __('View Schedule') }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>

@@ -392,6 +392,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         // Clinic ERP - Financial Reports
         Route::get('/reports', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/daily-cash', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'dailyCashReport'])->name('reports.daily-cash');
         Route::get('/reports/export', [\App\Http\Controllers\Clinic\FinancialReportController::class, 'export'])->name('reports.export');
         
         // Insurance Claims (RCM)
@@ -407,6 +408,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);
+        Route::post('patients/{id}/attachments', [\App\Http\Controllers\Clinic\PatientController::class, 'storeAttachment'])->name('patients.attachments.store');
         
         // Appointments with specialty fields
         Route::get('/appointments/specialty-fields', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getSpecialtyFields'])->name('appointments.specialtyFields');

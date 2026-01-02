@@ -183,6 +183,67 @@ class FinancialReportController extends BaseClinicController
         ];
     }
 
+    /**
+     * Daily Cash Report (Printable)
+     */
+    public function dailyCashReport(Request $request)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->back()->with('error', __('Clinic not found'));
+        }
+
+        $date = $request->get('date', now()->format('Y-m-d'));
+        $reportDate = \Carbon\Carbon::parse($date);
+
+        // Get all payments for the day
+        $payments = PatientPayment::where('clinic_id', $clinic->id)
+            ->whereDate('payment_date', $reportDate)
+            ->with(['patient', 'invoice'])
+            ->orderBy('payment_date', 'asc')
+            ->get();
+
+        // Group by payment method
+        $paymentsByMethod = $payments->groupBy('payment_method');
+        
+        // Calculate totals by method
+        $totalsByMethod = [];
+        foreach ($paymentsByMethod as $method => $methodPayments) {
+            $totalsByMethod[$method] = [
+                'count' => $methodPayments->count(),
+                'total' => $methodPayments->sum('payment_amount'),
+                'payments' => $methodPayments
+            ];
+        }
+
+        // Total cash collected
+        $totalCash = $payments->sum('payment_amount');
+        
+        // Cash payments only (for cash drawer reconciliation)
+        $cashPayments = $payments->where('payment_method', 'cash')->sum('payment_amount');
+        
+        // Get expenses for the day (cash expenses)
+        $cashExpenses = DailyExpense::where('clinic_id', $clinic->id)
+            ->whereDate('expense_date', $reportDate)
+            ->where('payment_method', 'cash')
+            ->sum('amount');
+
+        // Net cash (collected - expenses)
+        $netCash = $cashPayments - $cashExpenses;
+
+        return view('web.clinic.reports.daily-cash', compact(
+            'clinic',
+            'reportDate',
+            'payments',
+            'totalsByMethod',
+            'totalCash',
+            'cashPayments',
+            'cashExpenses',
+            'netCash'
+        ));
+    }
+
     public function export(Request $request)
     {
         $clinic = $this->getUserClinic();
