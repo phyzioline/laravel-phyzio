@@ -102,41 +102,7 @@
                 verified: {{ auth()->user()->is_verified ? 'true' : 'false' }}
             },
             currentTab: 'feed',
-            posts: [
-                @foreach($feedItems as $item)
-                {
-                    id: '{{ $item->id }}',
-                    type: '{{ $item->type }}',
-                    author: { 
-                        name: '{{ $item->sourceable ? $item->sourceable->name : "Phyzioline System" }}', 
-                        role: '{{ $item->sourceable_type == "App\\Models\\User" ? $item->sourceable->type : "admin" }}',
-                        avatar: '{{ $item->sourceable && isset($item->sourceable->profile_photo) ? $item->sourceable->profile_photo : "https://placehold.co/100x100/02767F/white?text=P" }}',
-                        verified: true 
-                    },
-                    timestamp: '{{ $item->created_at->diffForHumans() }}',
-                    content: { 
-                        text: `{!! addslashes($item->description) !!}`,
-                        @if($item->type == 'product' && $item->sourceable)
-                            title: '{{ $item->sourceable->product_name_ar ?? $item->sourceable->product_name_en ?? $item->title }}',
-                            price: '{{ number_format($item->sourceable->product_price ?? 0, 0) }} {{ __("EGP") }}',
-                        @elseif($item->type == 'course' && $item->sourceable)
-                            title: '{{ $item->sourceable->course_name_ar ?? $item->sourceable->course_name_en ?? "" }}',
-                            duration: '{{ $item->sourceable->duration ?? "" }}',
-                        @elseif($item->type == 'job' && $item->sourceable)
-                            location: '{{ $item->sourceable->job_location ?? "" }}',
-                            salary: '{{ $item->sourceable->salary_range ?? "" }}',
-                        @endif
-                    },
-                    media: {{ $item->media_url ? json_encode(['type' => 'image', 'url' => $item->media_url]) : 'null' }},
-                    metrics: { likes: {{ $item->likes_count ?? 0 }}, comments: {{ $item->comments_count ?? 0 }} },
-                    action: { 
-                        label: '{{ $item->action_text ?? __("View Details") }}', 
-                        type: '{{ $item->type }}',
-                        link: '{{ $item->action_link ?? "#" }}'
-                    }
-                },
-                @endforeach
-            ]
+            posts: {!! json_encode($feedData) !!}
         };
 
         // --- RENDER FUNCTIONS ---

@@ -30,20 +30,48 @@ class FeedController extends Controller
             $type = $request->input('type');
 
             if ($type === 'my_posts') {
-                // Determine if we should look for 'post' type authored by user, 
-                // or ANY content sourceable by user. 
-                // For now, let's assume 'post' type created by user.
-                // Or robustly: sourceable_id = user->id AND sourceable_type = User class
-                $query->where('sourceable_id', $user->id)
-                      ->where('sourceable_type', get_class($user));
-            } elseif (in_array($type, ['course', 'product', 'job', 'therapist'])) {
+                $query->where('sourceable_type', 'App\Models\User')
+                      ->where('sourceable_id', $user->id);
+            } else {
                 $query->where('type', $type);
             }
         }
+
+        $feedItems = $query->with('sourceable')->paginate(15);
         
-        $feedItems = $query->paginate(10);
-        
-        return view('web.feed.index', compact('feedItems'));
+        // Prepare clean JSON data for JavaScript
+        $feedData = $feedItems->map(function($item) {
+            $author = $item->sourceable;
+            return [
+                'id' => $item->id,
+                'type' => $item->type,
+                'author' => [
+                    'name' => $author ? $author->name : 'Phyzioline System',
+                    'role' => $item->sourceable_type == 'App\Models\User' ? ($author->type ?? 'user') : 'admin',
+                    'avatar' => $author && isset($author->profile_photo) ? $author->profile_photo : 'https://placehold.co/100x100/02767F/white?text=P',
+                    'verified' => true
+                ],
+                'timestamp' => $item->created_at->diffForHumans(),
+                'content' => [
+                    'text' => $item->description ?? '',
+                    'title' => $item->title ?? '',
+                ],
+                'media' => $item->media_url ? ['type' => 'image', 'url' => $item->media_url] : null,
+                'metrics' => [
+                    'likes' => $item->likes_count ?? 0,
+                    'comments' => $item->comments_count ?? 0
+                ],
+                'action' => [
+                    'label' => $item->action_text ?? __('View Details'),
+                    'link' => $item->action_link ?? '#'
+                ]
+            ];
+        });
+
+        return view('web.feed.index', [
+            'feedItems' => $feedItems,
+            'feedData' => $feedData
+        ]);
     }
 
     /**
