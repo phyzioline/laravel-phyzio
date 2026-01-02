@@ -118,7 +118,7 @@
                         <div class="row px-2">
                              <!-- Products Discovery -->
                              <div class="col-6 mb-3">
-                                 <a href="{{ route('web.shop.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                 <a href="{{ route('web.shop.show.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
                                      <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
                                          <div class="discovery-icon bg-white text-success shadow-sm mx-auto">
                                              <i class="las la-shopping-cart"></i>
@@ -130,7 +130,7 @@
                              </div>
                              <!-- Courses Discovery -->
                              <div class="col-6 mb-3">
-                                 <a href="{{ route('web.courses.index.' . app()->getLocale()) }}" class="text-decoration-none discovery-card">
+                                 <a href="{{ route('web.courses.index') }}" class="text-decoration-none discovery-card">
                                      <div class="card border-0 bg-light h-100 p-3 text-center hover-lift">
                                          <div class="discovery-icon bg-white text-primary shadow-sm mx-auto">
                                              <i class="las la-graduation-cap"></i>
