@@ -221,6 +221,9 @@ foreach ($supportedLocales as $locale) {
         // Filter routes
         Route::post('/feed/filters', [App\Http\Controllers\Web\FeedController::class, 'saveFilter'])->name("feed.filters.save.{$locale}");
         Route::delete('/feed/filters/{filterId}', [App\Http\Controllers\Web\FeedController::class, 'deleteFilter'])->name("feed.filters.delete.{$locale}");
+        
+        // Mention autocomplete
+        Route::get('/feed/search-users', [App\Http\Controllers\Web\FeedController::class, 'searchUsers'])->name("feed.search-users.{$locale}");
         Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name("feed.interact.{$locale}");
         Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name("feed.like.{$locale}");
 

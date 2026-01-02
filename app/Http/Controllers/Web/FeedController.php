@@ -8,6 +8,7 @@ use App\Models\FeedComment;
 use App\Models\CommentLike;
 use App\Services\Feed\VideoProcessingService;
 use App\Services\Feed\FilterService;
+use App\Services\Feed\MentionService;
 use App\Services\Feed\FeedTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -160,6 +161,10 @@ class FeedController extends Controller
 
         $post->save();
 
+        // Parse and create mentions
+        $mentionService = app(MentionService::class);
+        $mentionService->createMentions('App\Models\FeedItem', $post->id, $request->description);
+
         return redirect()->route('feed.index.' . app()->getLocale())->with('message', [
             'type' => 'success',
             'text' => __('Post created successfully!')
@@ -223,6 +228,10 @@ class FeedController extends Controller
         if ($feedItem) {
             $feedItem->increment('comments_count');
         }
+
+        // Parse and create mentions
+        $mentionService = app(MentionService::class);
+        $mentionService->createMentions('App\Models\FeedComment', $comment->id, $validated['comment_text']);
 
         return redirect()->back()->with('message', [
             'type' => 'success',
@@ -317,6 +326,30 @@ class FeedController extends Controller
         $success = $filterService->deleteFilter($filterId);
 
         return response()->json(['success' => $success]);
+    }
+
+    /**
+     * Search users for mention autocomplete
+     */
+    public function searchUsers(Request $request)
+    {
+        $query = $request->input('q', '');
+        
+        if (strlen($query) < 2) {
+            return response()->json([]);
+        }
+
+        $mentionService = app(MentionService::class);
+        $users = $mentionService->searchUsers($query, 10);
+
+        return response()->json($users->map(function($user) {
+            return [
+                'id' => $user->id,
+                'username' => $user->username ?? $user->id,
+                'name' => $user->name,
+                'type' => $user->type
+            ];
+        }));
     }
 
     /**
