@@ -75,7 +75,6 @@
                                 <th>{{ __('Product Name') }}</th>
                                 <th>{{ __('SKU') }}</th>
                                 <th>{{ __('Current Price') }}</th>
-                                <th>{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,21 +89,42 @@
                                 </td>
                                 <td>{{ $product->{'product_name_' . app()->getLocale()} }}</td>
                                 <td>{{ $product->sku }}</td>
-                                <td><strong>{{ $product->product_price }}</strong> {{ __('EGP') }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary update-price-btn" 
-                                            data-bs-toggle="modal" 
-                                            data-bs-target="#priceModal"
-                                            data-product-id="{{ $product->id }}"
-                                            data-product-name="{{ $product->{'product_name_' . app()->getLocale()} }}"
-                                            data-current-price="{{ $product->product_price }}">
-                                        <i class="bi bi-pencil"></i> {{ __('Update Price') }}
-                                    </button>
+                                    <div class="price-editor" data-product-id="{{ $product->id }}">
+                                        <!-- Display Mode -->
+                                        <div class="price-display d-flex align-items-center gap-2">
+                                            <strong class="price-text">{{ $product->product_price }}</strong>
+                                            <span>{{ __('EGP') }}</span>
+                                            <button type="button" class="btn btn-sm btn-link p-0 edit-price-btn" title="{{ __('Edit Price') }}">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                        </div>
+                                        <!-- Edit Mode -->
+                                        <form class="price-edit-form d-none d-flex align-items-center gap-2" method="POST" action="{{ route('dashboard.pricing.update-price') }}">
+                                            @csrf
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                            <input type="number" 
+                                                   name="price" 
+                                                   class="form-control form-control-sm price-input" 
+                                                   value="{{ $product->product_price }}" 
+                                                   step="0.01" 
+                                                   min="0" 
+                                                   required 
+                                                   style="width: 100px;">
+                                            <span>{{ __('EGP') }}</span>
+                                            <button type="submit" class="btn btn-sm btn-success save-price-btn" title="{{ __('Save') }}">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-secondary cancel-price-btn" title="{{ __('Cancel') }}">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center">{{ __('No products found') }}</td>
+                                <td colspan="4" class="text-center">{{ __('No products found') }}</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -119,59 +139,130 @@
     </div>
 </main>
 
-<!-- Single Price Update Modal (Used for all products) -->
-<div class="modal fade" id="priceModal" tabindex="-1" aria-labelledby="priceModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="{{ route('dashboard.pricing.update-price') }}">
-                @csrf
-                <input type="hidden" name="product_id" id="modal-product-id" value="">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="priceModalLabel">{{ __('Update Price') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p><strong id="modal-product-name"></strong></p>
-                    <p class="text-muted">{{ __('Current price') }}: <span id="modal-current-price"></span> {{ __('EGP') }}</p>
-                    <div class="mb-3">
-                        <label class="form-label">{{ __('New Price (EGP)') }}</label>
-                        <input type="number" name="price" id="modal-new-price" class="form-control" step="0.01" min="0" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                    <button type="submit" class="btn btn-primary">{{ __('Update Price') }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 @endsection
+
+@push('styles')
+<style>
+    .price-editor {
+        min-width: 200px;
+    }
+    .price-display, .price-edit-form {
+        align-items: center;
+    }
+    .price-input {
+        width: 100px !important;
+    }
+    .edit-price-btn, .save-price-btn, .cancel-price-btn {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the single modal
-    var priceModal = document.getElementById('priceModal');
-    
-    // Handle modal show event to populate it with product data
-    if (priceModal) {
-        priceModal.addEventListener('show.bs.modal', function(event) {
-            // Get the button that triggered the modal
-            var button = event.relatedTarget;
+    // Handle edit button click - switch to edit mode
+    document.querySelectorAll('.edit-price-btn').forEach(function(editBtn) {
+        editBtn.addEventListener('click', function() {
+            var priceEditor = this.closest('.price-editor');
+            var displayDiv = priceEditor.querySelector('.price-display');
+            var editForm = priceEditor.querySelector('.price-edit-form');
+            var originalPrice = priceEditor.querySelector('.price-text').textContent;
             
-            // Get product data from button data attributes
-            var productId = button.getAttribute('data-product-id');
-            var productName = button.getAttribute('data-product-name');
-            var currentPrice = button.getAttribute('data-current-price');
+            // Store original price for cancel
+            editForm.dataset.originalPrice = originalPrice;
             
-            // Populate modal fields
-            document.getElementById('modal-product-id').value = productId;
-            document.getElementById('modal-product-name').textContent = productName;
-            document.getElementById('modal-current-price').textContent = currentPrice;
-            document.getElementById('modal-new-price').value = currentPrice;
+            // Switch to edit mode
+            displayDiv.classList.add('d-none');
+            editForm.classList.remove('d-none');
+            editForm.querySelector('.price-input').focus();
+            editForm.querySelector('.price-input').select();
         });
-    }
+    });
+    
+    // Handle cancel button click - switch back to display mode
+    document.querySelectorAll('.cancel-price-btn').forEach(function(cancelBtn) {
+        cancelBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var priceEditor = this.closest('.price-editor');
+            var displayDiv = priceEditor.querySelector('.price-display');
+            var editForm = priceEditor.querySelector('.price-edit-form');
+            var originalPrice = editForm.dataset.originalPrice;
+            
+            // Reset input to original price
+            editForm.querySelector('.price-input').value = originalPrice;
+            
+            // Switch back to display mode
+            editForm.classList.add('d-none');
+            displayDiv.classList.remove('d-none');
+        });
+    });
+    
+    // Handle form submission - update price via AJAX
+    document.querySelectorAll('.price-edit-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var priceEditor = this.closest('.price-editor');
+            var displayDiv = priceEditor.querySelector('.price-display');
+            var priceText = displayDiv.querySelector('.price-text');
+            var formData = new FormData(this);
+            var submitBtn = this.querySelector('.save-price-btn');
+            var originalBtnHtml = submitBtn.innerHTML;
+            
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+            
+            // Send AJAX request
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Update displayed price
+                    priceText.textContent = data.price || formData.get('price');
+                    
+                    // Switch back to display mode
+                    this.classList.add('d-none');
+                    displayDiv.classList.remove('d-none');
+                    
+                    // Show success message
+                    if (typeof toastr !== 'undefined') {
+                        toastr.success(data.message || '{{ __("Price updated successfully") }}');
+                    }
+                } else {
+                    throw new Error(data.message || 'Update failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('{{ __("Failed to update price") }}');
+                } else {
+                    alert('{{ __("Failed to update price") }}');
+                }
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHtml;
+            });
+        });
+    });
 });
 </script>
 @endpush

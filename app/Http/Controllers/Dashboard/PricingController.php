@@ -81,6 +81,15 @@ class PricingController extends Controller
 
         $product->update(['product_price' => $request->price]);
 
+        // Return JSON response for AJAX requests
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Price updated successfully',
+                'price' => $product->product_price
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Price updated successfully');
     }
 }
