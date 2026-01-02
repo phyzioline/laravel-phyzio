@@ -360,6 +360,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         // Episodes & Clinical Care (New ERP)
         Route::resource('episodes', \App\Http\Controllers\Clinic\EpisodeController::class);
+        Route::get('episodes/{episode}/assessments/select-template', [\App\Http\Controllers\Clinic\AssessmentController::class, 'selectTemplate'])->name('assessments.select-template');
         Route::resource('episodes.assessments', \App\Http\Controllers\Clinic\AssessmentController::class);
         
         Route::get('/doctors', [\App\Http\Controllers\Clinic\DoctorController::class, 'index'])->name('doctors.index');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Clinic;
 use App\Http\Controllers\Controller;
 use App\Models\EpisodeOfCare;
 use App\Models\ClinicalAssessment;
+use App\Models\AssessmentTemplate;
 use App\Services\Clinic\SpecialtyContextService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,10 +20,35 @@ class AssessmentController extends Controller
         $this->specialtyService = $service;
     }
 
-    public function create(EpisodeOfCare $episode)
+    /**
+     * Show template selection
+     */
+    public function selectTemplate(EpisodeOfCare $episode)
     {
-        $schema = $this->specialtyService->getAssessmentSchema($episode->specialty);
-        return view('clinic.erp.assessments.create', compact('episode', 'schema'));
+        $templates = AssessmentTemplate::getSystemTemplates()
+            ->merge(AssessmentTemplate::getClinicTemplates($episode->clinic_id ?? null));
+        
+        return view('web.clinic.assessments.select-template', compact('episode', 'templates'));
+    }
+
+    /**
+     * Create assessment with template
+     */
+    public function create(EpisodeOfCare $episode, Request $request)
+    {
+        $template = null;
+        $schema = null;
+        
+        // If template ID provided, load template
+        if ($request->has('template_id')) {
+            $template = AssessmentTemplate::findOrFail($request->template_id);
+            $template->incrementUsage();
+        } else {
+            // Fallback to specialty schema
+            $schema = $this->specialtyService->getAssessmentSchema($episode->specialty);
+        }
+        
+        return view('web.clinic.assessments.create', compact('episode', 'schema', 'template'));
     }
 
     public function store(Request $request, EpisodeOfCare $episode)
