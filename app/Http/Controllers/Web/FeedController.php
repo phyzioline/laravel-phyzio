@@ -389,7 +389,7 @@ class FeedController extends Controller
             $item->addChild('g:description', htmlspecialchars(strip_tags($desc ?? '')), 'http://base.google.com/ns/1.0');
             
             // Link
-            $item->addChild('g:link', route('product.show', $product->id), 'http://base.google.com/ns/1.0');
+            $item->addChild('g:link', route('product.show.' . $lang, $product->id), 'http://base.google.com/ns/1.0');
             
             // Image
             $imageUrl = $product->productImages->first() ? asset($product->productImages->first()->image) : asset('default/product.png');
