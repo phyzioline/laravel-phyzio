@@ -1,7 +1,7 @@
 @extends('web.layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 py-8" style="max-width: 1200px;">
+<div class="container mx-auto px-4 py-8" style="max-width: 1200px; padding-top: 190px;">
     <div class="row">
         {{-- Left Sidebar - Filters --}}
         <div class="col-md-3 d-none d-md-block">
