@@ -25,7 +25,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('web.profile.update') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('web.profile.update.' . app()->getLocale()) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
