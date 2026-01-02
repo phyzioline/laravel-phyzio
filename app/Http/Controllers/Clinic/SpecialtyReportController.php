@@ -191,6 +191,9 @@ class SpecialtyReportController extends BaseClinicController
             }
         }
 
+        return $milestones;
+    }
+
     /**
      * Get developmental scores
      */
