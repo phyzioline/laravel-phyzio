@@ -146,10 +146,23 @@
 </main>
 @endsection
 
+@push('styles')
+<style>
+    /* Position modal near the clicked button */
+    .modal-dialog.positioned {
+        position: fixed !important;
+        margin: 0 !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+    }
+</style>
+@endpush
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle modal show event to scroll it into view near the clicked button
+    // Handle modal show event to position it near the clicked button without scrolling
     document.querySelectorAll('[id^="priceModal"]').forEach(function(modalElement) {
         modalElement.addEventListener('show.bs.modal', function(event) {
             // Get the button that triggered the modal
@@ -161,30 +174,54 @@ document.addEventListener('DOMContentLoaded', function() {
                 var modalDialog = modalElement.querySelector('.modal-dialog');
                 
                 if (modalDialog && button) {
-                    // Calculate button position
+                    // Calculate button position relative to viewport
                     var buttonRect = button.getBoundingClientRect();
-                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    var buttonTop = buttonRect.top + scrollTop;
                     
-                    // Calculate desired scroll position (button position - some offset to show modal above button)
-                    var desiredScrollPosition = buttonTop - 100;
+                    // Calculate modal position (centered horizontally, above button vertically)
+                    var modalWidth = modalDialog.offsetWidth || 500; // Default modal width
+                    var modalHeight = modalDialog.offsetHeight || 300; // Default modal height
+                    var viewportWidth = window.innerWidth;
+                    var viewportHeight = window.innerHeight;
                     
-                    // Smooth scroll to position the modal near the button
-                    window.scrollTo({
-                        top: desiredScrollPosition,
-                        behavior: 'smooth'
-                    });
+                    // Position horizontally centered relative to button
+                    var left = buttonRect.left + (buttonRect.width / 2) - (modalWidth / 2);
                     
-                    // Also ensure modal is visible in viewport
-                    setTimeout(function() {
-                        modalDialog.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center',
-                            inline: 'nearest'
-                        });
-                    }, 100);
+                    // Ensure modal doesn't go off screen horizontally
+                    if (left < 20) left = 20;
+                    if (left + modalWidth > viewportWidth - 20) {
+                        left = viewportWidth - modalWidth - 20;
+                    }
+                    
+                    // Position vertically above button with some spacing
+                    var top = buttonRect.top - modalHeight - 20;
+                    
+                    // If not enough space above, position below button
+                    if (top < 20) {
+                        top = buttonRect.bottom + 20;
+                    }
+                    
+                    // Ensure modal doesn't go off screen vertically
+                    if (top + modalHeight > viewportHeight - 20) {
+                        top = viewportHeight - modalHeight - 20;
+                    }
+                    
+                    // Apply positioning
+                    modalDialog.classList.add('positioned');
+                    modalDialog.style.left = left + 'px';
+                    modalDialog.style.top = top + 'px';
+                    modalDialog.style.maxWidth = '500px';
                 }
-            }, 50);
+            }, 10);
+        });
+        
+        // Reset positioning when modal is hidden
+        modalElement.addEventListener('hidden.bs.modal', function() {
+            var modalDialog = modalElement.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.classList.remove('positioned');
+                modalDialog.style.left = '';
+                modalDialog.style.top = '';
+            }
         });
     });
 });
