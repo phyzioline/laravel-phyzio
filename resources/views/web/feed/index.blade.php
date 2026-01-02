@@ -16,13 +16,13 @@
 @endpush
 
 @section('content')
-<div class="bg-light min-vh-100" style="padding-top: 120px; padding-bottom: 2rem;">
+<div class="bg-light min-vh-100" style="padding-top: 190px; padding-bottom: 2rem;">
     <div class="container">
         <div class="row justify-content-center">
             
             <!-- Left Sidebar filters -->
             <div class="col-md-3 d-none d-lg-block">
-                <div class="card shadow-sm border-0 sticky-top" style="top: 90px; border-radius: 12px;">
+                <div class="card shadow-sm border-0 sticky-top" style="top: 170px; border-radius: 12px;">
                     <div class="card-body p-3">
                         <div class="d-flex align-items-center mb-4 px-2">
                              <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mr-3" style="width: 48px; height: 48px;">
@@ -187,7 +187,7 @@
             
             <!-- Right Sidebar (Recommended) -->
              <div class="col-md-3 d-none d-xl-block">
-                 <div class="card border-0 shadow-sm sticky-top" style="top: 90px; border-radius: 12px;">
+                 <div class="card border-0 shadow-sm sticky-top" style="top: 170px; border-radius: 12px;">
                      <div class="card-header bg-white border-0 pb-0 pt-3">
                         <h6 class="text-dark font-weight-bold mb-0" style="font-size: 14px;">{{ __('Trending Now') }} <i class="las la-fire text-danger ml-1"></i></h6>
                      </div>
