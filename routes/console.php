@@ -44,3 +44,11 @@ Schedule::command('visits:auto-cancel')
     ->hourly()
     ->withoutOverlapping()
     ->runInBackground();
+
+// Database backup (daily at 2 AM)
+Schedule::command('backup:database --compress')
+    ->daily()
+    ->at('02:00')
+    ->timezone('UTC')
+    ->withoutOverlapping()
+    ->runInBackground();
