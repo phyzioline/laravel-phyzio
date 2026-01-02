@@ -7,6 +7,7 @@ use App\Models\Clinic;
 use App\Services\Clinic\SpecialtySelectionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends BaseClinicController
 {
@@ -26,6 +27,12 @@ class DashboardController extends BaseClinicController
         if ($clinic && $this->specialtySelectionService->needsSpecialtySelection($clinic)) {
             return redirect()->route('clinic.specialty-selection.show')
                 ->with('info', 'Please select your physical therapy specialty to continue.');
+        }
+        
+        // Check if onboarding is needed
+        if ($clinic && !$clinic->onboarding_completed && !$clinic->onboarding_skipped) {
+            return redirect()->route('clinic.onboarding.index')
+                ->with('info', 'Complete the setup wizard to get started.');
         }
 
         // Initialize with zeros
@@ -48,6 +55,19 @@ class DashboardController extends BaseClinicController
 
         if ($clinic) {
             try {
+                // Cache key for dashboard metrics (5 minutes cache)
+                $cacheKey = "clinic_dashboard_{$clinic->id}_" . now()->format('Y-m-d-H-i');
+                
+                // Try to get from cache first
+                $cachedData = Cache::get($cacheKey);
+                if ($cachedData && false) { // Temporarily disable cache for testing
+                    return view('web.clinic.dashboard', array_merge($cachedData, [
+                        'clinic' => $clinic,
+                        'clinicSpecialty' => $clinic->primary_specialty ?? null,
+                        'specialtyDisplayName' => $clinic->getPrimarySpecialtyDisplayName() ?? 'General'
+                    ]));
+                }
+                
                 // Get REAL data filtered by clinic
                 $totalPatients = \App\Models\Patient::where('clinic_id', $clinic->id)->count();
                 
@@ -221,7 +241,8 @@ class DashboardController extends BaseClinicController
             }
         }
 
-        return view('web.clinic.dashboard', compact(
+        // Prepare view data
+        $viewData = compact(
             'totalPatients', 
             'activePlans', 
             'todayAppointments', 
@@ -243,7 +264,12 @@ class DashboardController extends BaseClinicController
             'todayPatientsList',
             'currentMonthProfit',
             'currentMonthExpenses'
-        ));
+        );
+        
+        // Cache the dashboard data for 5 minutes
+        Cache::put($cacheKey, $viewData, now()->addMinutes(5));
+        
+        return view('web.clinic.dashboard', $viewData);
     }
 
     /**

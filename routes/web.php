@@ -400,6 +400,16 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/activity-logs', [\App\Http\Controllers\Clinic\ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('clinic.role:admin');
         Route::get('/activity-logs/{id}', [\App\Http\Controllers\Clinic\ActivityLogController::class, 'show'])->name('activity-logs.show')->middleware('clinic.role:admin');
         
+        // Onboarding Wizard
+        Route::get('/onboarding', [\App\Http\Controllers\Clinic\OnboardingController::class, 'index'])->name('onboarding.index');
+        Route::post('/onboarding/complete-step/{step}', [\App\Http\Controllers\Clinic\OnboardingController::class, 'completeStep'])->name('onboarding.complete-step');
+        Route::post('/onboarding/skip', [\App\Http\Controllers\Clinic\OnboardingController::class, 'skip'])->name('onboarding.skip');
+        
+        // Help Center
+        Route::get('/help-center', [\App\Http\Controllers\Clinic\HelpCenterController::class, 'index'])->name('help-center.index');
+        Route::get('/help-center/search', [\App\Http\Controllers\Clinic\HelpCenterController::class, 'search'])->name('help-center.search');
+        Route::get('/help-center/{slug}', [\App\Http\Controllers\Clinic\HelpCenterController::class, 'show'])->name('help-center.show');
+        
         // Insurance Claims (RCM)
         Route::post('/insurance-claims/{id}/submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'submit'])->name('insurance-claims.submit');
         Route::post('/insurance-claims/batch-submit', [\App\Http\Controllers\Clinic\InsuranceClaimController::class, 'batchSubmit'])->name('insurance-claims.batchSubmit');

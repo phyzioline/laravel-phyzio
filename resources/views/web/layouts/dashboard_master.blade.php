@@ -247,6 +247,47 @@
             margin-right: 1rem;
         }
 
+        /* Tooltip Styles */
+        .help-tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .help-tooltip-bubble {
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            pointer-events: none;
+            max-width: 250px;
+            white-space: normal;
+        }
+        
+        .help-tooltip-bubble::after {
+            content: '';
+            position: absolute;
+            border: 5px solid transparent;
+        }
+        
+        .help-tooltip-bubble[style*="bottom: 100%"]::after {
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-top-color: #333;
+        }
+        
+        .help-tooltip-bubble[style*="top: 100%"]::after {
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-color: #333;
+        }
+
         /* Cards */
         .stat-card {
             background: #fff;
@@ -928,6 +969,8 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/clinic-form-enhancements.js') }}"></script>
+    <script src="{{ asset('js/clinic-tooltips.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#sidebarToggle').click(function() {
