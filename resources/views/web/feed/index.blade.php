@@ -1,414 +1,475 @@
-@extends('web.layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Phyzioline - Professional Social Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        #app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            position: relative;
+            padding-bottom: 80px;
+        }
 
-@section('content')
-<div class="feed-wrapper" style="padding-top: 190px;">
-    <div class="container-fluid px-0">
-        <div class="row g-0 justify-content-center">
-            <div class="col-12 col-lg-8 col-xl-6">
-                {{-- Mobile App Container --}}
-                <div class="feed-container bg-white">
-                    
-                    {{-- Category Filter Buttons (Horizontal Scroll) --}}
-                    <div class="category-scroll-wrapper bg-light py-3 sticky-top" style="top: 160px; z-index: 100;">
-                        <div class="container">
-                            <div class="category-pills d-flex gap-3 overflow-auto no-scrollbar pb-2">
-                                <a href="{{ route('feed.index.' . app()->getLocale()) }}" 
-                                   class="category-pill {{ !request('type') ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-grid-3x3-gap"></i>
-                                    </div>
-                                    <span>{{ __('All') }}</span>
-                                </a>
-                                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'product']) }}" 
-                                   class="category-pill {{ request('type') == 'product' ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-cart3"></i>
-                                    </div>
-                                    <span>{{ __('Products') }}</span>
-                                </a>
-                                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'job']) }}" 
-                                   class="category-pill {{ request('type') == 'job' ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-briefcase"></i>
-                                    </div>
-                                    <span>{{ __('Jobs') }}</span>
-                                </a>
-                                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'course']) }}" 
-                                   class="category-pill {{ request('type') == 'course' ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-book"></i>
-                                    </div>
-                                    <span>{{ __('Courses') }}</span>
-                                </a>
-                                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'therapist']) }}" 
-                                   class="category-pill {{ request('type') == 'therapist' ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-heart-pulse"></i>
-                                    </div>
-                                    <span>{{ __('Therapists') }}</span>
-                                </a>
-                                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'my_posts']) }}" 
-                                   class="category-pill {{ request('type') == 'my_posts' ? 'active' : '' }}">
-                                    <div class="pill-icon">
-                                        <i class="bi bi-person-circle"></i>
-                                    </div>
-                                    <span>{{ __('My Posts') }}</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-                    {{-- Feed Content --}}
-                    <div class="feed-content py-3" style="margin-bottom: 120px;">
-                        <div class="container">
-                            
-                            {{-- Create Post Box --}}
-                            <div class="card border-0 shadow-sm mb-3 rounded-3">
-                                <div class="card-body p-3">
-                                    <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
-                                        @csrf
-                                        <div class="d-flex gap-3 mb-3">
-                                            <div class="user-avatar-sm">
-                                                {{ substr(auth()->user()->name, 0, 1) }}
-                                            </div>
-                                            <textarea name="description" class="form-control border-0 bg-light" rows="2" 
-                                                      placeholder="{{ __('Share something with the community...') }}" required></textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <label for="media_upload" class="btn btn-sm btn-light rounded-pill">
-                                                <i class="bi bi-image text-teal"></i> {{ __('Photo') }}
-                                            </label>
-                                            <input type="file" id="media_upload" name="media" class="d-none" accept="image/*">
-                                            <button type="submit" class="btn btn-teal btn-sm rounded-pill px-4">
-                                                {{ __('Post') }}
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 250px;
+            max-height: 300px;
+            margin: 0 auto;
+        }
 
-                            {{-- Feed Items --}}
-                            @forelse($feedItems as $item)
-                                <div class="feed-card card border-0 shadow-sm mb-3 rounded-3 animate-fade-in">
-                                    <div class="card-body p-3">
-                                        {{-- Author Header --}}
-                                        <div class="d-flex align-items-center mb-3">
-                                            <div class="user-avatar me-3">
-                                                {{ substr($item->sourceable ? $item->sourceable->name : 'Phyzioline', 0, 1) }}
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <h6 class="mb-0 fw-semibold">
-                                                        {{ $item->sourceable ? $item->sourceable->name : 'Phyzioline System' }}
-                                                    </h6>
-                                                    <i class="bi bi-patch-check-fill text-teal" style="font-size: 0.9rem;"></i>
-                                                </div>
-                                                <small class="text-muted">{{ $item->created_at->diffForHumans() }}</small>
-                                            </div>
-                                            <span class="badge bg-teal-light text-teal rounded-pill px-3">
-                                                {{ __(ucfirst($item->type)) }}
-                                            </span>
-                                        </div>
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out forwards;
+        }
 
-                                        {{-- Content --}}
-                                        <div class="post-content mb-3">
-                                            @if($item->title)
-                                                <h6 class="fw-bold mb-2">{{ $item->title }}</h6>
-                                            @endif
-                                            <p class="mb-2" style="line-height: 1.6;">{{ $item->description }}</p>
-                                        </div>
+        @keyframes pulse-skeleton {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .skeleton {
+            background-color: #e5e7eb;
+            animation: pulse-skeleton 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
 
-                                        {{-- Type-Specific Content Cards --}}
-                                        @if($item->type == 'product' && $item->sourceable)
-                                            <div class="product-card bg-light rounded-3 p-3 mb-3">
-                                                <div class="row g-3 align-items-center">
-                                                    <div class="col-4">
-                                                        @if($item->media_url)
-                                                            <img src="{{ $item->media_url }}" class="img-fluid rounded-3" alt="Product">
-                                                        @else
-                                                            <div class="placeholder-img bg-white rounded-3 d-flex align-items-center justify-content-center" style="height: 100px;">
-                                                                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
-                                                            </div>
-                                                        @endif
-                                                    </div>
-                                                    <div class="col-8">
-                                                        <h6 class="fw-bold mb-2">{{ $item->sourceable->product_name_en ?? $item->sourceable->product_name_ar }}</h6>
-                                                        <p class="text-teal fw-bold mb-0" style="font-size: 1.1rem;">
-                                                            {{ __('EGP') }} {{ number_format($item->sourceable->product_price, 0) }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                @if($item->action_link)
-                                                    <a href="{{ $item->action_link }}" class="btn btn-teal w-100 rounded-pill mt-3">
-                                                        {{ __('Buy Now') }}
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        @elseif($item->type == 'job' && $item->sourceable)
-                                            <div class="job-card bg-light rounded-3 p-3 mb-3">
-                                                <h6 class="fw-bold text-teal mb-2">{{ $item->sourceable->job_title }}</h6>
-                                                <div class="d-flex flex-column gap-2">
-                                                    <small><i class="bi bi-geo-alt text-teal"></i> {{ $item->sourceable->job_location }}</small>
-                                                    @if($item->sourceable->salary_range)
-                                                        <small><i class="bi bi-cash text-teal"></i> {{ $item->sourceable->salary_range }}</small>
-                                                    @endif
-                                                </div>
-                                                @if($item->action_link)
-                                                    <a href="{{ $item->action_link }}" class="btn btn-teal w-100 rounded-pill mt-3">
-                                                        {{ __('Apply Now') }}
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        @elseif($item->type == 'course' && $item->sourceable)
-                                            <div class="course-card bg-light rounded-3 p-3 mb-3">
-                                                <h6 class="fw-bold text-teal mb-2">{{ $item->sourceable->course_name_en ?? $item->sourceable->course_name_ar }}</h6>
-                                                @if($item->sourceable->duration)
-                                                    <small class="text-muted"><i class="bi bi-clock"></i> {{ $item->sourceable->duration }}</small>
-                                                @endif
-                                                @if($item->action_link)
-                                                    <a href="{{ $item->action_link }}" class="btn btn-teal w-100 rounded-pill mt-3">
-                                                        {{ __('Enroll Now') }}
-                                                    </a>
-                                                @endif
-                                            </div>
-                                        @elseif($item->media_url)
-                                            {{-- Regular media post --}}
-                                            <img src="{{ $item->media_url }}" class="img-fluid rounded-3 mb-3" alt="Post media">
-                                        @endif
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-slate-800">
 
-                                        {{-- Action Bar --}}
-                                        <div class="action-bar d-flex justify-content-between align-items-center pt-3 border-top">
-                                            <div class="d-flex gap-4">
-                                                <form action="{{ route('feed.like.' . app()->getLocale(), $item->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-sm btn-link text-decoration-none p-0 {{ $item->liked_by_user ? 'text-danger' : 'text-muted' }}">
-                                                        <i class="bi {{ $item->liked_by_user ? 'bi-heart-fill' : 'bi-heart' }}"></i>
-                                                        <span class="ms-1">{{ $item->likes_count ?? 0 }}</span>
-                                                    </button>
-                                                </form>
-                                                <button class="btn btn-sm btn-link text-muted text-decoration-none p-0">
-                                                    <i class="bi bi-chat"></i>
-                                                    <span class="ms-1">{{ $item->comments_count ?? 0 }}</span>
-                                                </button>
-                                                <button class="btn btn-sm btn-link text-muted text-decoration-none p-0">
-                                                    <i class="bi bi-share"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-5">
-                                    <div class="empty-state-icon mb-3">
-                                        <i class="bi bi-inbox" style="font-size: 4rem; color: #02767F;"></i>
-                                    </div>
-                                    <h5 class="text-muted">{{ __('No posts yet') }}</h5>
-                                    <p class="text-muted">{{ __('Be the first to share something!') }}</p>
-                                </div>
-                            @endforelse
-
-                            {{-- Pagination --}}
-                            @if($feedItems->hasPages())
-                                <div class="mt-4">
-                                    {{ $feedItems->links() }}
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Desktop context wrapper -->
+    <div class="hidden md:flex flex-col items-center justify-center min-h-screen p-4">
+        <div class="text-center mb-4">
+            <h1 class="text-2xl font-bold text-teal-700">Phyzioline Ecosystem</h1>
+            <p class="text-gray-500">{{ __('Interactive Mobile Experience') }}</p>
+        </div>
+        <div id="mobile-frame-wrapper" class="w-full max-w-[480px] h-[850px] overflow-hidden rounded-3xl border-8 border-gray-800 bg-white shadow-2xl relative">
+            <div id="desktop-app-container" class="w-full h-full overflow-y-auto no-scrollbar bg-gray-50"></div>
         </div>
     </div>
-</div>
 
-<style>
-/* Teal Theme Colors */
-:root {
-    --teal-primary: #02767F;
-    --teal-dark: #015a62;
-    --teal-light: rgba(2, 118, 127, 0.1);
-}
+    <!-- Mobile View -->
+    <div id="app-container" class="md:hidden">
+        <!-- Content injected via JS -->
+    </div>
 
-/* Mobile App Container */
-.feed-container {
-    min-height: 100vh;
-    background: #f8f9fa;
-}
+    <script>
+        // --- DATA & STATE ---
+        const state = {
+            currentUser: {
+                id: '{{ auth()->id() }}',
+                name: '{{ auth()->user()->name }}',
+                role: '{{ auth()->user()->type }}',
+                avatar: '{{ auth()->user()->profile_photo ?? "https://placehold.co/150x150/02767F/white?text=" . substr(auth()->user()->name, 0, 1) }}',
+                verified: {{ auth()->user()->is_verified ? 'true' : 'false' }}
+            },
+            currentTab: 'feed',
+            posts: [
+                @foreach($feedItems as $item)
+                {
+                    id: '{{ $item->id }}',
+                    type: '{{ $item->type }}',
+                    author: { 
+                        name: '{{ $item->sourceable ? $item->sourceable->name : "Phyzioline System" }}', 
+                        role: '{{ $item->sourceable_type == "App\\Models\\User" ? $item->sourceable->type : "admin" }}',
+                        avatar: '{{ $item->sourceable && isset($item->sourceable->profile_photo) ? $item->sourceable->profile_photo : "https://placehold.co/100x100/02767F/white?text=P" }}',
+                        verified: true 
+                    },
+                    timestamp: '{{ $item->created_at->diffForHumans() }}',
+                    content: { 
+                        text: `{!! addslashes($item->description) !!}`,
+                        @if($item->type == 'product' && $item->sourceable)
+                            title: '{{ $item->sourceable->product_name_ar ?? $item->sourceable->product_name_en ?? $item->title }}',
+                            price: '{{ number_format($item->sourceable->product_price ?? 0, 0) }} {{ __("EGP") }}',
+                        @elseif($item->type == 'course' && $item->sourceable)
+                            title: '{{ $item->sourceable->course_name_ar ?? $item->sourceable->course_name_en ?? "" }}',
+                            duration: '{{ $item->sourceable->duration ?? "" }}',
+                        @elseif($item->type == 'job' && $item->sourceable)
+                            location: '{{ $item->sourceable->job_location ?? "" }}',
+                            salary: '{{ $item->sourceable->salary_range ?? "" }}',
+                        @endif
+                    },
+                    media: {{ $item->media_url ? json_encode(['type' => 'image', 'url' => $item->media_url]) : 'null' }},
+                    metrics: { likes: {{ $item->likes_count ?? 0 }}, comments: {{ $item->comments_count ?? 0 }} },
+                    action: { 
+                        label: '{{ $item->action_text ?? __("View Details") }}', 
+                        type: '{{ $item->type }}',
+                        link: '{{ $item->action_link ?? "#" }}'
+                    }
+                },
+                @endforeach
+            ]
+        };
 
-/* Category Pills (Horizontal Scroll) */
-.category-pills {
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-}
+        // --- RENDER FUNCTIONS ---
 
-.category-pill {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
+        function renderApp() {
+            const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+            const containerId = isDesktop ? 'desktop-app-container' : 'app-container';
+            const root = document.getElementById(containerId);
+            
+            if (!root) return;
 
-.pill-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    color: var(--teal-primary);
-    border: 2px solid #e9ecef;
-    transition: all 0.3s ease;
-}
+            root.innerHTML = '';
+            root.className = "bg-gray-50 min-h-screen pb-20 font-sans {{ app()->getLocale() == 'ar' ? 'text-right' : 'text-left' }}";
+            root.dir = "{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}";
 
-.category-pill span {
-    font-size: 0.75rem;
-    color: #6c757d;
-    font-weight: 500;
-}
+            root.appendChild(createHeader());
 
-.category-pill.active .pill-icon {
-    background: var(--teal-primary);
-    color: white;
-    border-color: var(--teal-primary);
-    transform: scale(1.05);
-}
+            const mainContent = document.createElement('main');
+            mainContent.id = 'main-content';
+            mainContent.className = 'w-full max-w-lg mx-auto';
+            root.appendChild(mainContent);
 
-.category-pill.active span {
-    color: var(--teal-primary);
-    font-weight: 600;
-}
+            const nav = createBottomNav();
+            if(isDesktop) {
+                nav.style.position = 'absolute';
+                nav.style.bottom = '0';
+                nav.style.width = '100%';
+                nav.classList.remove('fixed');
+            }
+            root.appendChild(nav);
 
-.category-pill:hover .pill-icon {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(2, 118, 127, 0.2);
-}
+            const modalContainer = document.createElement('div');
+            modalContainer.id = 'modal-container';
+            if(isDesktop) {
+                modalContainer.className = "absolute inset-0 pointer-events-none z-50";
+            }
+            root.appendChild(modalContainer);
 
-/* Hide Scrollbar */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+            navigateTo(state.currentTab);
+        }
 
-/* User Avatars */
-.user-avatar, .user-avatar-sm {
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--teal-primary), #04a5b8);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    text-transform: uppercase;
-}
+        function createHeader() {
+            const header = document.createElement('header');
+            header.className = "sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm px-4 py-3 flex justify-between items-center";
+            header.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 relative">
+                        🔔
+                        <span class="absolute top-0 {{ app()->getLocale() == 'ar' ? 'right-0' : 'left-0' }} w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">
+                        💬
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-xl font-bold text-teal-600 tracking-tight">Phyzioline</h1>
+                    <div class="w-6 h-6 bg-teal-600 rounded-md flex items-center justify-center text-white text-xs font-bold">P</div>
+                </div>
+            `;
+            return header;
+        }
 
-.user-avatar {
-    width: 48px;
-    height: 48px;
-    font-size: 1.2rem;
-}
+        function createBottomNav() {
+            const nav = document.createElement('nav');
+            nav.className = "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-4 py-2 z-50 flex justify-around items-center max-w-[480px] mx-auto";
+            
+            const tabs = {{ app()->getLocale() == 'ar' ? '[
+                { id: "profile", icon: "👤", label: "حسابي" },
+                { id: "jobs", icon: "💼", label: "وظائف" },
+                { id: "create", icon: "➕", label: "نشر", highlight: true },
+                { id: "shop", icon: "🛍️", label: "المتجر" },
+                { id: "feed", icon: "🏠", label: "الرئيسية" }
+            ]' : '[
+                { id: "feed", icon: "🏠", label: "Home" },
+                { id: "shop", icon: "🛍️", label: "Shop" },
+                { id: "create", icon: "➕", label: "Create", highlight: true },
+                { id: "jobs", icon: "💼", label: "Jobs" },
+                { id: "profile", icon: "👤", label: "Profile" }
+            ]' }};
 
-.user-avatar-sm {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-    flex-shrink: 0;
-}
+            nav.innerHTML = tabs.map(tab => `
+                <button onclick="window.navigateTo('${tab.id}')" class="flex flex-col items-center gap-1 p-1 ${state.currentTab === tab.id ? 'text-teal-600' : 'text-gray-400'}">
+                    <div class="${tab.highlight ? 'bg-teal-600 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg -mt-4 border-4 border-gray-50' : 'text-2xl'}">
+                        ${tab.icon}
+                    </div>
+                    <span class="text-[10px] font-medium ${tab.highlight ? 'mt-1' : ''}">${tab.label}</span>
+                </button>
+            `).join('');
+            return nav;
+        }
 
-/* Feed Cards */
-.feed-card {
-    transition: all 0.3s ease;
-}
+        window.navigateTo = function(tabId) {
+            state.currentTab = tabId;
+            const nav = document.querySelector('nav');
+            if(nav) nav.replaceWith(createBottomNav());
 
-.feed-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
-}
+            const main = document.getElementById('main-content');
+            main.innerHTML = '';
 
-/* Teal Button */
-.btn-teal {
-    background: var(--teal-primary);
-    color: white;
-    border: none;
-    font-weight: 500;
-}
+            if (tabId === 'create') {
+                openCreateModal();
+                return;
+            }
 
-.btn-teal:hover {
-    background: var(--teal-dark);
-    color: white;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(2, 118, 127, 0.3);
-}
+            if (tabId === 'feed') renderFeed(main);
+            else if (tabId === 'shop') window.location.href = '{{ route("web.shop.show." . app()->getLocale()) }}';
+            else if (tabId === 'jobs') window.location.href = '{{ route("web.jobs.index." . app()->getLocale()) }}';
+            else if (tabId === 'profile') window.location.href = '{{ route("web.profile.index." . app()->getLocale()) }}';
+            
+            window.scrollTo(0, 0);
+        }
 
-/* Teal Badge */
-.bg-teal-light {
-    background-color: var(--teal-light) !important;
-}
+        // --- FEED TAB ---
 
-.text-teal {
-    color: var(--teal-primary) !important;
-}
+        function renderFeed(container) {
+            const intro = document.createElement('div');
+            intro.className = "px-4 py-3 bg-teal-50 border-b border-teal-100 mb-2";
+            intro.innerHTML = `
+                <p class="text-xs text-teal-800 font-medium text-center">
+                    👋 {{ __('Welcome to Phyzioline community. Discover latest products, jobs, and expert insights.') }}
+                </p>
+            `;
+            container.appendChild(intro);
 
-.badge.bg-teal-light {
-    font-weight: 500;
-    font-size: 0.7rem;
-}
+            // Stories / Quick Actions Bar
+            const stories = document.createElement('div');
+            stories.className = "flex gap-3 overflow-x-auto p-4 no-scrollbar bg-white mb-2 shadow-sm";
+            stories.innerHTML = `
+                <div class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full border-2 border-dashed border-teal-400 flex items-center justify-center bg-gray-50 text-2xl cursor-pointer" onclick="openCreateModal()">➕</div>
+                    <span class="text-xs font-medium truncate w-full text-center">{{ __('Add') }}</span>
+                </div>
+                <a href="{{ route('feed.index.' . app()->getLocale()) }}" class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-teal-400 to-teal-500">
+                        <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden flex items-center justify-center text-2xl">
+                            🏠
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-600 truncate w-full text-center">{{ __('All') }}</span>
+                </a>
+                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'product']) }}" class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full p-[2px] {{ request('type') == 'product' ? 'bg-gradient-to-tr from-yellow-400 to-teal-500' : 'bg-gray-200' }}">
+                        <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden flex items-center justify-center text-2xl">
+                            🛍️
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-600 truncate w-full text-center">{{ __('Products') }}</span>
+                </a>
+                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'job']) }}" class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full p-[2px] {{ request('type') == 'job' ? 'bg-gradient-to-tr from-yellow-400 to-teal-500' : 'bg-gray-200' }}">
+                        <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden flex items-center justify-center text-2xl">
+                            💼
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-600 truncate w-full text-center">{{ __('Jobs') }}</span>
+                </a>
+                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'course']) }}" class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full p-[2px] {{ request('type') == 'course' ? 'bg-gradient-to-tr from-yellow-400 to-teal-500' : 'bg-gray-200' }}">
+                        <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden flex items-center justify-center text-2xl">
+                            📚
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-600 truncate w-full text-center">{{ __('Courses') }}</span>
+                </a>
+                <a href="{{ route('feed.index.' . app()->getLocale(), ['type' => 'therapist']) }}" class="flex flex-col items-center gap-1 min-w-[64px]">
+                    <div class="w-16 h-16 rounded-full p-[2px] {{ request('type') == 'therapist' ? 'bg-gradient-to-tr from-yellow-400 to-teal-500' : 'bg-gray-200' }}">
+                        <div class="w-full h-full rounded-full bg-white border-2 border-white overflow-hidden flex items-center justify-center text-2xl">
+                            🩺
+                        </div>
+                    </div>
+                    <span class="text-xs text-gray-600 truncate w-full text-center">{{ __('Therapists') }}</span>
+                </a>
+            `;
+            container.appendChild(stories);
 
-/* Animations */
-@keyframes fade-in {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+            // Posts
+            state.posts.forEach(post => {
+                container.appendChild(createPostCard(post));
+            });
+            
+            @if($feedItems->isEmpty())
+            const empty = document.createElement('div');
+            empty.className = "text-center py-12";
+            empty.innerHTML = `
+                <div class="text-6xl mb-4">📭</div>
+                <h3 class="font-bold text-gray-800 mb-2">{{ __('No posts yet') }}</h3>
+                <p class="text-gray-500 text-sm">{{ __('Be the first to share something!') }}</p>
+            `;
+            container.appendChild(empty);
+            @endif
+        }
 
-.animate-fade-in {
-    animation: fade-in 0.4s ease-out forwards;
-}
+        function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = "bg-white mb-3 shadow-sm animate-fade-in";
+            
+            let roleBadge = '';
+            if (post.author.role === 'therapist') roleBadge = '<span class="bg-blue-100 text-blue-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Therapist") }}</span>';
+            if (post.author.role === 'vendor') roleBadge = '<span class="bg-orange-100 text-orange-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Vendor") }}</span>';
+            if (post.author.role === 'company') roleBadge = '<span class="bg-purple-100 text-purple-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("Company") }}</span>';
+            if (post.author.role === 'admin') roleBadge = '<span class="bg-teal-100 text-teal-700 text-[10px] px-1.5 py-0.5 rounded mr-2">{{ __("System") }}</span>';
 
-/* Product/Job/Course Cards */
-.product-card, .job-card, .course-card {
-    transition: all 0.3s ease;
-}
+            const headerHtml = `
+                <div class="flex justify-between items-center p-3">
+                    <div class="flex items-center gap-2">
+                        <img src="${post.author.avatar}" class="w-10 h-10 rounded-full border border-gray-100 object-cover">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="text-sm font-bold text-gray-900">${post.author.name}</span>
+                                ${post.author.verified ? '<span class="text-blue-500 text-xs mr-1">☑️</span>' : ''}
+                                ${roleBadge}
+                            </div>
+                            <span class="text-xs text-gray-400">${post.timestamp}</span>
+                        </div>
+                    </div>
+                    <button class="text-gray-400">⋮</button>
+                </div>
+            `;
 
-/* Action Bar Icons */
-.action-bar button {
-    font-size: 0.95rem;
-}
+            let contentHtml = `<div class="px-3 pb-2 text-sm text-gray-800 leading-relaxed">${post.content.text}</div>`;
+            
+            if (post.type === 'product') {
+                contentHtml += `
+                    <div class="bg-gray-50 p-3 mx-3 mb-2 rounded-lg flex gap-3 border border-gray-100">
+                        <div class="w-1/3 bg-gray-200 rounded h-20 overflow-hidden">
+                            ${post.media ? `<img src="${post.media.url}" class="w-full h-full object-cover">` : ''}
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <h3 class="font-bold text-gray-800">${post.content.title || ''}</h3>
+                            <div class="text-teal-600 font-bold mt-1">${post.content.price || ''}</div>
+                        </div>
+                    </div>
+                `;
+            } else if (post.type === 'job') {
+                contentHtml += `
+                    <div class="mx-3 mb-2 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <div class="flex items-center gap-2 mb-2 text-blue-800 font-bold">
+                            💼 ${post.content.location || ''}
+                        </div>
+                        <div class="text-sm text-gray-600">${post.content.salary || ''}</div>
+                    </div>
+                `;
+            } else if (post.type === 'course') {
+                contentHtml += `
+                    <div class="relative mx-3 mb-2 rounded-lg overflow-hidden h-40 group">
+                        ${post.media ? `<img src="${post.media.url}" class="w-full h-full object-cover">` : '<div class="w-full h-full bg-purple-200"></div>'}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-3">
+                            <h3 class="text-white font-bold">${post.content.title || ''}</h3>
+                            <span class="text-gray-200 text-xs">⏱ ${post.content.duration || ''}</span>
+                        </div>
+                    </div>
+                `;
+            } else if (post.media) {
+                contentHtml += `
+                    <div class="w-full bg-black flex items-center justify-center relative overflow-hidden rounded">
+                        <img src="${post.media.url}" class="w-full object-cover">
+                    </div>
+                `;
+            }
 
-.action-bar i {
-    font-size: 1.2rem;
-}
+            let actionBtn = '';
+            if (post.action && post.action.link !== '#') {
+                let btnColor = 'bg-teal-600 hover:bg-teal-700';
+                if (post.type === 'job') btnColor = 'bg-blue-600 hover:bg-blue-700';
+                if (post.type === 'product') btnColor = 'bg-orange-500 hover:bg-orange-600';
 
-/* RTL Support */
-[dir="rtl"] .category-pills {
-    direction: rtl;
-}
+                actionBtn = `
+                    <div class="px-3 pb-2">
+                        <a href="${post.action.link}" class="block w-full ${btnColor} text-white font-medium py-2 rounded-lg shadow-sm text-center">
+                            ${post.action.label}
+                        </a>
+                    </div>
+                `;
+            }
 
-[dir="rtl"] .feed-card {
-    text-align: right;
-}
+            const footerHtml = `
+                <div class="px-3 py-2 border-t border-gray-100 flex justify-between items-center text-gray-500">
+                    <div class="flex gap-4">
+                        <form action="{{ url('/') }}/{{ app()->getLocale() }}/feed/${post.id}/like" method="POST" class="inline">
+                            @csrf
+                            <button type="submit" class="flex items-center gap-1 hover:text-red-500 transition-colors">
+                                <span>❤️</span> <span class="text-xs font-medium">${post.metrics.likes}</span>
+                            </button>
+                        </form>
+                        <button class="flex items-center gap-1 hover:text-blue-500 transition-colors">
+                            <span>💬</span> <span class="text-xs font-medium">${post.metrics.comments}</span>
+                        </button>
+                        <button class="hover:text-teal-500">🚀</button>
+                    </div>
+                    <button class="hover:text-yellow-500">🔖</button>
+                </div>
+            `;
 
-/* Responsive */
-@media (max-width: 768px) {
-    .feed-wrapper {
-        padding-top: 160px !important;
-    }
-    
-    .category-scroll-wrapper {
-        top: 140px !important;
-    }
-}
-</style>
-@endsection
+            card.innerHTML = headerHtml + contentHtml + actionBtn + footerHtml;
+            return card;
+        }
+
+        function openCreateModal() {
+            const modal = document.getElementById('modal-container');
+            modal.className = "pointer-events-auto";
+            modal.innerHTML = `
+                <div class="fixed inset-0 z-50 flex items-end justify-center sm:items-center bg-black/50 backdrop-blur-sm animate-fade-in">
+                    <div class="bg-white w-full max-w-[480px] rounded-t-2xl sm:rounded-2xl p-5 shadow-2xl">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg text-gray-800">{{ __('Create New Post') }}</h3>
+                            <button onclick="document.getElementById('modal-container').innerHTML='';document.getElementById('modal-container').className=''" class="text-gray-400 text-xl">✕</button>
+                        </div>
+                        
+                        <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <textarea name="description" class="w-full bg-gray-50 p-3 rounded-lg border border-gray-200 focus:outline-none focus:border-teal-500 mb-4 h-32" placeholder="{{ __('Share your thoughts...') }}" required></textarea>
+                            
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Add Image') }}</label>
+                                <input type="file" name="media" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100">
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-teal-600 text-white py-3 rounded-xl font-bold shadow-lg shadow-teal-600/20">{{ __('Post Now') }}</button>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- INIT ---
+        window.addEventListener('load', () => {
+            renderApp();
+        });
+
+        // Responsive re-render
+        window.addEventListener('resize', () => {
+            renderApp();
+        });
+    </script>
+</body>
+</html>
