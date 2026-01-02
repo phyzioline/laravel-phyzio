@@ -16,7 +16,7 @@
 @endpush
 
 @section('content')
-<div class="bg-light min-vh-100 py-4">
+<div class="bg-light min-vh-100" style="padding-top: 120px; padding-bottom: 2rem;">
     <div class="container">
         <div class="row justify-content-center">
             
