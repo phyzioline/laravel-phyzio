@@ -81,9 +81,10 @@
                                                 <i class="las la-image text-success font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Photo') }}</span>
                                                 <input type="file" name="image" class="d-none">
                                             </label>
-                                            <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted mb-0 p-0 d-flex align-items-center">
+                                            <label class="btn btn-sm btn-link text-decoration-none text-muted mb-0 p-0 d-flex align-items-center" style="cursor: pointer;">
                                                 <i class="las la-video text-danger font-size-18 mr-1"></i> <span class="small font-weight-bold">{{ __('Video') }}</span>
-                                            </button>
+                                                <input type="file" name="video" class="d-none" accept="video/*">
+                                            </label>
                                         </div>
                                         <button type="submit" class="btn btn-primary btn-sm px-4 rounded-pill font-weight-bold shadow-sm">{{ __('Publish Post') }}</button>
                                     </div>

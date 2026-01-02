@@ -28,6 +28,7 @@
 
 .text-primary-gradient {
     background: linear-gradient(45deg, #00897b, #28a745);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
