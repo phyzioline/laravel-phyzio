@@ -202,6 +202,25 @@ class DashboardController extends BaseClinicController
         // Recent activities (from new features)
         $recentActivities = $this->getRecentActivities($clinic);
 
+        // Net Profit Indicator (Current Month)
+        $currentMonthProfit = 0;
+        $currentMonthExpenses = 0;
+        if ($clinic) {
+            try {
+                if (\Schema::hasTable('daily_expenses')) {
+                    $currentMonthExpenses = \DB::table('daily_expenses')
+                        ->where('clinic_id', $clinic->id)
+                        ->whereMonth('expense_date', now()->month)
+                        ->whereYear('expense_date', now()->year)
+                        ->sum('amount');
+                }
+                
+                $currentMonthProfit = $monthlyRevenue - $currentMonthExpenses;
+            } catch (\Exception $e) {
+                \Log::error('Error calculating profit', ['error' => $e->getMessage()]);
+            }
+        }
+
         return view('web.clinic.dashboard', compact(
             'totalPatients', 
             'activePlans', 
@@ -221,7 +240,9 @@ class DashboardController extends BaseClinicController
             'todayPatients',
             'todaySessions',
             'todayIncome',
-            'todayPatientsList'
+            'todayPatientsList',
+            'currentMonthProfit',
+            'currentMonthExpenses'
         ));
     }
 

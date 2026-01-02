@@ -204,6 +204,54 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Profit Tracking Row -->
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 4px solid #f57c00;">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning text-white rounded-circle mr-3 d-flex align-items-center justify-content-center" 
+                         style="width: 50px; height: 50px;">
+                        <i class="las la-money-bill-wave fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="text-muted mb-1">{{ __('Monthly Expenses') }}</h6>
+                        <h4 class="font-weight-bold mb-0">${{ number_format($currentMonthExpenses ?? 0, 2) }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100" 
+             style="border-radius: 15px; border-left: 4px solid {{ ($currentMonthProfit ?? 0) >= 0 ? '#43a047' : '#e53935' }};">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle mr-3 d-flex align-items-center justify-content-center text-white" 
+                         style="width: 50px; height: 50px; background-color: {{ ($currentMonthProfit ?? 0) >= 0 ? '#43a047' : '#e53935' }};">
+                        <i class="las la-chart-line fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="text-muted mb-1">{{ __('Net Profit') }} ({{ __('This Month') }})</h6>
+                        <h4 class="font-weight-bold mb-0" style="color: {{ ($currentMonthProfit ?? 0) >= 0 ? '#43a047' : '#e53935' }};">
+                            ${{ number_format($currentMonthProfit ?? 0, 2) }}
+                        </h4>
+                        @if(($monthlyRevenue ?? 0) > 0)
+                        <small class="text-muted">
+                            {{ __('Margin') }}: {{ number_format((($currentMonthProfit ?? 0) / $monthlyRevenue) * 100, 1) }}%
+                        </small>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
 
     <!-- Today's Appointments -->
     <div class="col-xl-3 col-md-6 mb-4">
