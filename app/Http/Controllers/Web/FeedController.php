@@ -7,6 +7,7 @@ use App\Models\FeedItem;
 use App\Models\FeedComment;
 use App\Models\CommentLike;
 use App\Services\Feed\VideoProcessingService;
+use App\Services\Feed\FilterService;
 use App\Services\Feed\FeedTrackingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,8 +29,8 @@ class FeedController extends Controller
         // Start with base query scoped for user
         $query = FeedItem::forUser($user);
 
-        // Apply filters
-        if ($request->has('type')) {
+        // Apply basic type filter (for compatibility)
+        if ($request->has('type') && !$request->has('filters')) {
             $type = $request->input('type');
 
             if ($type === 'my_posts') {
@@ -40,7 +41,27 @@ class FeedController extends Controller
             }
         }
 
+        // Apply advanced filters if provided
+        if ($request->has('filters')) {
+            $filterService = app(FilterService::class);
+            $criteria = json_decode($request->input('filters'), true) ?? [];
+            $query = $filterService->applyFilters($query, $criteria);
+        }
+
+        // Load saved filter if requested
+        if ($request->has('filter_id')) {
+            $filterService = app(FilterService::class);
+            $criteria = $filterService->loadFilter($request->input('filter_id'));
+            if ($criteria) {
+                $query = $filterService->applyFilters($query, $criteria);
+            }
+        }
+
         $feedItems = $query->with('sourceable')->paginate(15);
+        
+        // Get user's saved filters for filter panel
+        $filterService = app(FilterService::class);
+        $savedFilters = $filterService->getUserFilters();
         
         // Prepare clean JSON data for JavaScript
         $feedData = $feedItems->map(function($item) {
@@ -65,7 +86,7 @@ class FeedController extends Controller
                     'comments' => $item->comments_count ?? 0
                 ],
                 'action' => [
-                    'label' => $item->action_text ?? __('View Details'),
+                    'label' => $item->action_text ?? __('ViewDetails'),
                     'link' => $item->action_link ?? '#'
                 ]
             ];
@@ -73,7 +94,8 @@ class FeedController extends Controller
 
         return view('web.feed.index', [
             'feedItems' => $feedItems,
-            'feedData' => $feedData
+            'feedData' => $feedData,
+            'savedFilters' => $savedFilters
         ]);
     }
 
@@ -265,6 +287,36 @@ class FeedController extends Controller
             'type' => 'success',
             'text' => $message
         ]);
+    }
+
+    /**
+     * Save a new filter preset
+     */
+    public function saveFilter(Request $request)
+    {
+        $filterService = app(FilterService::class);
+        
+        $filter = $filterService->saveFilter(
+            $request->input('name'),
+            $request->input('criteria'),
+            $request->boolean('is_default', false)
+        );
+
+        return response()->json([
+            'success' => true,
+            'filter' => $filter
+        ]);
+    }
+
+    /**
+     * Delete a saved filter
+     */
+    public function deleteFilter($filterId)
+    {
+        $filterService = app(FilterService::class);
+        $success = $filterService->deleteFilter($filterId);
+
+        return response()->json(['success' => $success]);
     }
 
     /**

@@ -127,6 +127,9 @@
         </p>
     </div>
 
+    {{-- Advanced Filters --}}
+    @include('web.feed.partials.advanced-filters')
+
     {{-- Stories / Categories --}}
     <div class="d-flex gap-3 overflow-auto p-3 bg-white" style="overflow-x: auto; white-space: nowrap;">
         <div class="story-pill">

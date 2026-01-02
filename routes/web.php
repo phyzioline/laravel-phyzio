@@ -217,6 +217,10 @@ foreach ($supportedLocales as $locale) {
         Route::post('/feed/{feedItemId}/comments', [App\Http\Controllers\Web\FeedController::class, 'storeComment'])->name("feed.comments.store.{$locale}");
         Route::delete('/feed/comments/{commentId}', [App\Http\Controllers\Web\FeedController::class, 'deleteComment'])->name("feed.comments.delete.{$locale}");
         Route::post('/feed/comments/{commentId}/like', [App\Http\Controllers\Web\FeedController::class, 'likeComment'])->name("feed.comments.like.{$locale}"); // New
+        
+        // Filter routes
+        Route::post('/feed/filters', [App\Http\Controllers\Web\FeedController::class, 'saveFilter'])->name("feed.filters.save.{$locale}");
+        Route::delete('/feed/filters/{filterId}', [App\Http\Controllers\Web\FeedController::class, 'deleteFilter'])->name("feed.filters.delete.{$locale}");
         Route::post('/feed/{id}/interact', [App\Http\Controllers\Web\FeedController::class, 'logInteraction'])->name("feed.interact.{$locale}");
         Route::post('/feed/{id}/like', [App\Http\Controllers\Web\FeedController::class, 'toggleLike'])->name("feed.like.{$locale}");
 
