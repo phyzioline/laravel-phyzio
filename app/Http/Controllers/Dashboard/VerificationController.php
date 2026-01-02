@@ -448,12 +448,16 @@ class VerificationController extends Controller
                 'clinic' => 'clinic_verified_at',
             ];
 
-            if (isset($fieldMap[$moduleType])) {
+                if (isset($fieldMap[$moduleType])) {
                 $therapistProfile->update([
                     $fieldMap[$moduleType] => true,
                     $dateFieldMap[$moduleType] => now(),
                 ]);
             }
+            
+            // Dispatch Feed Event (New Therapist / Home Visit Available)
+             \App\Events\TherapistVerified::dispatch($user);
+             
         } else {
             // Update status to under_review if documents are uploaded
             $hasUploaded = $moduleDocuments->contains(fn($doc) => in_array($doc->status, ['uploaded', 'under_review']));

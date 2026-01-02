@@ -64,6 +64,9 @@ class ProductService
             $product->tags()->attach($data['tags']);
         }
 
+        // Dispatch Feed Event
+        \App\Events\ProductCreated::dispatch($product);
+
         return $product;
     }
 

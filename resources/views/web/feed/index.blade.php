@@ -58,7 +58,7 @@
                                 <form action="{{ route('feed.store.' . app()->getLocale()) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group mb-2">
-                                        <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="Share your medical insights, cases, or questions..." style="resize: none;"></textarea>
+                                        <textarea name="content" class="form-control border-0 bg-light" rows="2" placeholder="{{ __('Share your medical insights, cases, or questions...') }}" style="resize: none;"></textarea>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
@@ -76,63 +76,22 @@
                 </div>
                 
                 @forelse($feedItems as $item)
-                <div class="card shadow-sm border-0 mb-4 feed-card" data-id="{{ $item->id }}">
-                    <!-- Header -->
-                    <div class="card-header bg-white border-0 d-flex align-items-center pt-3 pb-0">
-                        <div class="icon-box rounded-circle d-flex align-items-center justify-content-center text-white mr-3 shadow-sm"
-                             style="width: 45px; height: 45px; background: {{ $item->type == 'course' ? '#00897b' : ($item->type == 'job' ? '#ff9800' : '#43a047') }};">
-                            <i class="las {{ $item->type == 'course' ? 'la-graduation-cap' : ($item->type == 'job' ? 'la-briefcase' : 'la-shopping-bag') }} la-lg"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-0 font-weight-bold" style="color: #333;">{{ ucfirst($item->type) }} Update</h6>
-                            <small class="text-muted">{{ $item->created_at->diffForHumans() }}</small>
-                        </div>
-                        <div class="ml-auto">
-                            <button class="btn btn-sm btn-link text-muted"><i class="las la-ellipsis-h"></i></button>
-                        </div>
-                    </div>
-
-                    <!-- Body -->
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold text-dark mb-2">{{ $item->title }}</h5>
-                        <p class="card-text text-muted mb-3">{{ Str::limit($item->description, 150) }}</p>
-                        
-                        @if($item->media_url)
-                        <div class="rounded overflow-hidden mb-3 shadow-sm position-relative">
-                             <img src="{{ $item->media_url }}" class="img-fluid w-100" style="object-fit: cover; max-height: 400px;" alt="Feed Image">
-                             
-                             @if($item->type == 'course')
-                                <div class="position-absolute bg-primary text-white px-3 py-1 rounded-pill" style="top: 15px; right: 15px; font-size: 12px;">Enrolling Now</div>
-                             @endif
-                        </div>
-                        @endif
-                    </div>
-
-                    <!-- Action Area -->
-                    <div class="card-footer bg-white border-top-0 pt-0 pb-3">
-                         <a href="{{ $item->action_link }}" class="btn btn-block btn-primary shadow-sm font-weight-bold py-2 mb-3">
-                            {{ $item->action_text }} <i class="las la-arrow-right ml-2"></i>
-                         </a>
-                         
-                         <div class="d-flex justify-content-between align-items-center border-top pt-2">
-                             <!-- Interactions -->
-                             <div>
-                                 <button class="btn btn-light btn-sm rounded-pill px-3 mr-2 like-btn {{ $item->liked_by_user ? 'text-primary' : '' }}" onclick="toggleLike({{ $item->id }})">
-                                     <i class="las la-thumbs-up"></i> <span class="like-count">{{ $item->likes_count }}</span>
-                                 </button>
-                                 <button class="btn btn-light btn-sm rounded-pill px-3">
-                                     <i class="las la-share"></i> Share
-                                 </button>
-                             </div>
-                             <small class="text-muted">{{ $item->views_count }} Views</small>
-                         </div>
-                    </div>
-                </div>
+                    @if($item->type == 'product')
+                        @include('web.feed.partials.product-card', ['item' => $item])
+                    @elseif($item->type == 'job')
+                        @include('web.feed.partials.job-card', ['item' => $item])
+                    @elseif($item->type == 'course')
+                        @include('web.feed.partials.course-card', ['item' => $item])
+                    @elseif($item->type == 'therapist')
+                        @include('web.feed.partials.therapist-card', ['item' => $item])
+                    @else
+                        @include('web.feed.partials.post-card', ['item' => $item])
+                    @endif
                 @empty
                     <div class="text-center py-5">
                         <div class="mb-3"><i class="las la-stream display-4 text-muted"></i></div>
-                        <h4>Your feed is empty</h4>
-                        <p class="text-muted">Follow more topics or wait for admin updates.</p>
+                        <h4>{{ __('Your feed is empty') }}</h4>
+                        <p class="text-muted">{{ __('Follow more topics or wait for admin updates.') }}</p>
                     </div>
                 @endforelse
 

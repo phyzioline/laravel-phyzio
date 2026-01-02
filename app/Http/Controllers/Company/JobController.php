@@ -121,6 +121,9 @@ class JobController extends Controller
             'license_required' => $request->has('license_required'),
         ]);
 
+        // Dispatch Feed Event
+        \App\Events\JobCreated::dispatch($job);
+
         return redirect()->route('company.jobs.index')->with('success', 'Job posted successfully!');
     }
 
@@ -438,6 +441,9 @@ class JobController extends Controller
             'gender_preference' => $template->gender_preference,
             'license_required' => $template->license_required ?? false,
         ]);
+
+        // Dispatch Feed Event
+        \App\Events\JobCreated::dispatch($job);
 
         return redirect()->route('company.jobs.edit', $job->id)->with('success', 'Job created from template! You can now edit and publish it.');
     }

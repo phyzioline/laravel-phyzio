@@ -1,0 +1,63 @@
+/* Resources/css/feed-mobile.css */
+
+/* Mobile Enhancements for Feed */
+@media (max-width: 768px) {
+    .feed-card {
+        border-radius: 0 !important; /* Full width approach similar to FB/Insta */
+        margin-bottom: 8px !important;
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+        box-shadow: none !important;
+    }
+
+    .feed-card .card-header {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .feed-card .icon-box {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    .feed-card .card-body {
+        padding: 10px 15px;
+    }
+
+    .feed-card .card-footer {
+        padding: 10px 15px;
+    }
+
+    /* Make buttons full width on small screens */
+    .feed-card .btn {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .feed-card .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .feed-card .d-flex.justify-content-between > div {
+         width: 100%;
+         display: flex;
+         justify-content: space-between;
+         margin-bottom: 10px;
+    }
+    
+    .feed-card .like-btn, .feed-card .share-btn {
+        flex: 1;
+        margin-right: 5px;
+        margin-left: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Sticky bottom nav adjustment if existing */
+    /* Assuming a bottom nav exists or we add padding to body */
+    body {
+        padding-bottom: 60px;
+    }
+}
