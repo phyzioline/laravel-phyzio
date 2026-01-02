@@ -25,7 +25,11 @@ class Clinic extends Model
         'is_active',
         'primary_specialty',
         'specialty_selected',
-        'specialty_selected_at'
+        'specialty_selected_at',
+        'onboarding_completed',
+        'onboarding_completed_at',
+        'onboarding_completed_steps',
+        'onboarding_skipped'
     ];
 
     protected $casts = [
@@ -34,7 +38,11 @@ class Clinic extends Model
         'specialty_selected' => 'boolean',
         'subscription_start' => 'datetime',
         'subscription_end' => 'datetime',
-        'specialty_selected_at' => 'datetime'
+        'specialty_selected_at' => 'datetime',
+        'onboarding_completed' => 'boolean',
+        'onboarding_completed_at' => 'datetime',
+        'onboarding_skipped' => 'boolean',
+        'onboarding_completed_steps' => 'array'
     ];
 
     public function company()
