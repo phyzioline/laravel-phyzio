@@ -92,7 +92,10 @@
                                 <td>{{ $product->sku }}</td>
                                 <td><strong>{{ $product->product_price }}</strong> {{ __('EGP') }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#priceModal{{ $product->id }}">
+                                    <button class="btn btn-sm btn-primary update-price-btn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#priceModal{{ $product->id }}"
+                                            data-product-id="{{ $product->id }}">
                                         <i class="bi bi-pencil"></i> {{ __('Update Price') }}
                                     </button>
 
@@ -142,3 +145,48 @@
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle modal show event to scroll it into view near the clicked button
+    document.querySelectorAll('[id^="priceModal"]').forEach(function(modalElement) {
+        modalElement.addEventListener('show.bs.modal', function(event) {
+            // Get the button that triggered the modal
+            var button = event.relatedTarget;
+            
+            // Small delay to ensure modal is rendered
+            setTimeout(function() {
+                // Get the modal dialog element
+                var modalDialog = modalElement.querySelector('.modal-dialog');
+                
+                if (modalDialog && button) {
+                    // Calculate button position
+                    var buttonRect = button.getBoundingClientRect();
+                    var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    var buttonTop = buttonRect.top + scrollTop;
+                    
+                    // Calculate desired scroll position (button position - some offset to show modal above button)
+                    var desiredScrollPosition = buttonTop - 100;
+                    
+                    // Smooth scroll to position the modal near the button
+                    window.scrollTo({
+                        top: desiredScrollPosition,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Also ensure modal is visible in viewport
+                    setTimeout(function() {
+                        modalDialog.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center',
+                            inline: 'nearest'
+                        });
+                    }, 100);
+                }
+            }, 50);
+        });
+    });
+});
+</script>
+@endpush
