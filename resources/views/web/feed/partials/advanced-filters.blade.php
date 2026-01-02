@@ -142,7 +142,7 @@ function saveCurrentFilter() {
     });
 
     // Send AJAX request to save filter
-    fetch('{{ route("feed.filters.save." . app()->getLocale()) }}', {
+    fetch('{{ url("/" . app()->getLocale() . "/feed/filters") }}', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ function saveCurrentFilter() {
 function deleteFilter(filterId) {
     if (!confirm('{{ __("Delete this filter?") }}')) return;
 
-    fetch(`{{ url('/') }}/{{ app()->getLocale() }}/feed/filters/${filterId}`, {
+    fetch('{{ url("/" . app()->getLocale() . "/feed/filters") }}/' + filterId, {
         method: 'DELETE',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}'
