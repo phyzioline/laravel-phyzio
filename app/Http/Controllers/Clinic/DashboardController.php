@@ -29,10 +29,24 @@ class DashboardController extends BaseClinicController
                 ->with('info', 'Please select your physical therapy specialty to continue.');
         }
         
-        // Check if onboarding is needed
-        if ($clinic && !$clinic->onboarding_completed && !$clinic->onboarding_skipped) {
-            return redirect()->route('clinic.onboarding.index')
-                ->with('info', 'Complete the setup wizard to get started.');
+        // Check if onboarding is needed (only if not skipped and not already completed)
+        // Use the same logic as OnboardingController to avoid redirect loops
+        if ($clinic && !$clinic->onboarding_skipped && !$clinic->onboarding_completed) {
+            // Check if onboarding is actually complete (even if flag isn't set)
+            $onboardingComplete = $clinic->hasSelectedSpecialty() && 
+                                  $clinic->name && 
+                                  $clinic->phone;
+            
+            if (!$onboardingComplete) {
+                return redirect()->route('clinic.onboarding.index')
+                    ->with('info', 'Complete the setup wizard to get started.');
+            } else {
+                // Auto-complete onboarding if requirements are met
+                $clinic->update([
+                    'onboarding_completed' => true,
+                    'onboarding_completed_at' => now()
+                ]);
+            }
         }
 
         // Initialize with zeros
