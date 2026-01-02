@@ -313,6 +313,206 @@
 
     </style>
     @stack('styles')
+    
+    <!-- Mobile Optimization Styles -->
+    <style>
+        /* Mobile-First: Tables to Cards on Small Screens */
+        @media (max-width: 768px) {
+            /* Convert tables to card view */
+            .table-responsive table,
+            .table {
+                display: block;
+                width: 100%;
+            }
+            
+            .table thead {
+                display: none;
+            }
+            
+            .table tbody,
+            .table tr {
+                display: block;
+                width: 100%;
+            }
+            
+            .table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px;
+                border: none;
+                border-bottom: 1px solid #e9ecef;
+                text-align: right !important;
+            }
+            
+            .table td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #6c757d;
+                text-align: left;
+                flex: 0 0 40%;
+            }
+            
+            .table td:last-child {
+                border-bottom: 2px solid #dee2e6;
+            }
+            
+            /* Card-based table rows */
+            .table tbody tr {
+                background: white;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                margin-bottom: 12px;
+                padding: 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+            
+            /* Larger touch areas - minimum 44x44px */
+            .btn,
+            .btn-sm,
+            a.btn {
+                min-height: 44px;
+                min-width: 44px;
+                padding: 10px 16px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            .form-control,
+            .form-select,
+            select,
+            input[type="text"],
+            input[type="email"],
+            input[type="number"],
+            input[type="date"],
+            textarea {
+                min-height: 44px;
+                font-size: 16px; /* Prevent zoom on iOS */
+            }
+            
+            /* Sticky action buttons at bottom */
+            .mobile-sticky-actions {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                padding: 12px;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                z-index: 1000;
+                display: flex;
+                gap: 8px;
+            }
+            
+            .mobile-sticky-actions .btn {
+                flex: 1;
+                margin: 0;
+            }
+            
+            /* Add padding to body to prevent content from being hidden behind sticky buttons */
+            body {
+                padding-bottom: 80px;
+            }
+            
+            /* Responsive cards */
+            .card {
+                margin-bottom: 16px;
+            }
+            
+            .card-body {
+                padding: 16px;
+            }
+            
+            /* Stack columns on mobile */
+            .row > [class*="col-"] {
+                margin-bottom: 16px;
+            }
+            
+            /* Better spacing for stat cards */
+            .stat-card {
+                margin-bottom: 16px;
+            }
+            
+            /* Quick Actions - Stack on mobile */
+            .quick-actions-bar .btn-lg {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            /* Hide less important elements on mobile */
+            .d-mobile-none {
+                display: none !important;
+            }
+            
+            /* Better form layout */
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            /* Increase tap targets for links */
+            a {
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+            
+            /* Better navigation */
+            .nav-link {
+                min-height: 44px;
+                padding: 12px 16px;
+            }
+            
+            /* Dashboard metrics - stack on mobile */
+            .dashboard-metrics .col-md-3,
+            .dashboard-metrics .col-xl-3 {
+                margin-bottom: 16px;
+            }
+        }
+        
+        /* Tablet optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .btn,
+            .btn-sm {
+                min-height: 40px;
+                padding: 8px 14px;
+            }
+        }
+        
+        /* Desktop: Show tables normally */
+        @media (min-width: 769px) {
+            .mobile-sticky-actions {
+                display: none !important;
+            }
+            
+            body {
+                padding-bottom: 0;
+            }
+        }
+        
+        /* Utility class for mobile-only sticky buttons */
+        .mobile-action-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-action-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
 

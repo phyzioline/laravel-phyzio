@@ -124,7 +124,9 @@
                 <h3 class="font-weight-bold mb-0">${{ number_format($todayIncome ?? 0, 2) }}</h3>
                 <small class="text-muted">{{ __('Today\'s Income') }}</small>
                 <div class="text-success small mt-1">
-                    <i class="las la-arrow-up"></i> {{ __('Cash collected today') }}
+                    <a href="{{ route('clinic.reports.daily-cash', ['date' => today()->format('Y-m-d')]) }}" class="text-success">
+                        <i class="las la-file-invoice-dollar"></i> {{ __('View Daily Report') }}
+                    </a>
                 </div>
             </div>
         </div>

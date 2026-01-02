@@ -130,9 +130,9 @@
                 <tbody>
                     @forelse($payments as $payment)
                     <tr>
-                        <td><strong>{{ $payment->payment_number }}</strong></td>
-                        <td>{{ $payment->patient->full_name ?? '-' }}</td>
-                        <td>
+                        <td data-label="{{ __('Payment #') }}"><strong>{{ $payment->payment_number }}</strong></td>
+                        <td data-label="{{ __('Patient') }}">{{ $payment->patient->full_name ?? '-' }}</td>
+                        <td data-label="{{ __('Invoice') }}">
                             @if($payment->invoice)
                                 <a href="{{ route('clinic.invoices.show', $payment->invoice) }}">
                                     {{ $payment->invoice->invoice_number }}
@@ -141,11 +141,11 @@
                                 <span class="text-muted">-</span>
                             @endif
                         </td>
-                        <td>{{ $payment->payment_date->format('Y-m-d') }}</td>
-                        <td><strong class="text-success">{{ number_format($payment->payment_amount, 2) }} {{ __('EGP') }}</strong></td>
-                        <td><span class="badge bg-secondary">{{ $payment->payment_method_name }}</span></td>
-                        <td>{{ $payment->receivedBy->name ?? '-' }}</td>
-                        <td>
+                        <td data-label="{{ __('Date') }}">{{ $payment->payment_date->format('Y-m-d') }}</td>
+                        <td data-label="{{ __('Amount') }}"><strong class="text-success">{{ number_format($payment->payment_amount, 2) }} {{ __('EGP') }}</strong></td>
+                        <td data-label="{{ __('Method') }}"><span class="badge bg-secondary">{{ $payment->payment_method_name }}</span></td>
+                        <td data-label="{{ __('Received By') }}">{{ $payment->receivedBy->name ?? '-' }}</td>
+                        <td data-label="{{ __('Actions') }}">
                             <div class="btn-group btn-group-sm">
                                 <a href="{{ route('clinic.payments.show', $payment) }}" class="btn btn-info" title="{{ __('View') }}">
                                     <i class="las la-eye"></i>
@@ -177,6 +177,36 @@
         @endif
     </div>
 </div>
+
+<!-- Mobile Sticky Action Button -->
+<div class="mobile-action-button d-md-none">
+    <a href="{{ route('clinic.payments.create') }}" class="btn btn-primary btn-lg rounded-circle" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+        <i class="las la-plus fa-2x"></i>
+    </a>
+</div>
 @endif
+
+@push('styles')
+<style>
+    /* Additional mobile optimizations for payments page */
+    @media (max-width: 768px) {
+        .table td[data-label]:before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #6c757d;
+            margin-right: 12px;
+        }
+        
+        .btn-group {
+            width: 100%;
+            display: flex;
+        }
+        
+        .btn-group .btn {
+            flex: 1;
+        }
+    }
+</style>
+@endpush
 @endsection
 
