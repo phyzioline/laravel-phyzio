@@ -702,6 +702,17 @@
                     </a>
                 </li>
 
+                <!-- 12.5. Activity Logs (Admin Only) -->
+                @if(auth()->user()->hasRole('admin') || auth()->user()->type === 'company')
+                <li>
+                    <a href="{{ route('clinic.activity-logs.index') }}" class="{{ request()->routeIs('clinic.activity-logs.*') ? 'active' : '' }}">
+                        <span class="las la-history"></span>
+                        <span>{{ __('Activity Logs') }}</span>
+                        <span class="badge badge-warning ml-2">{{ __('Admin') }}</span>
+                    </a>
+                </li>
+                @endif
+
                 <!-- 12.5. Insurance Claims (RCM) -->
                 <li>
                     <a href="{{ route('clinic.insurance-claims.index') }}" class="{{ request()->routeIs('clinic.insurance-claims.*') ? 'active' : '' }}">
