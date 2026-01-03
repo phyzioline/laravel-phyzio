@@ -42,6 +42,45 @@ class ProductController extends Controller implements HasMiddleware
     }
 
     /**
+     * List Your Products - Landing page (Amazon-style)
+     */
+    public function list()
+    {
+        $draftCount = \App\Models\Product::where('user_id', auth()->id())
+            ->where('status', 'inactive')
+            ->count();
+        
+        return view('dashboard.pages.product.list', compact('draftCount'));
+    }
+
+    /**
+     * Search products in catalog
+     */
+    public function searchCatalog(\Illuminate\Http\Request $request)
+    {
+        $query = $request->get('q', '');
+        
+        if (empty($query)) {
+            return response()->json(['products' => []]);
+        }
+        
+        $products = \App\Models\Product::where('status', 'active')
+            ->where(function($q) use ($query) {
+                $q->where('product_name_en', 'like', "%{$query}%")
+                  ->orWhere('product_name_ar', 'like', "%{$query}%")
+                  ->orWhere('sku', 'like', "%{$query}%")
+                  ->orWhere('barcode', 'like', "%{$query}%")
+                  ->orWhere('ean', 'like', "%{$query}%")
+                  ->orWhere('upc', 'like', "%{$query}%");
+            })
+            ->with(['category', 'sub_category', 'productImages'])
+            ->limit(20)
+            ->get();
+        
+        return response()->json(['products' => $products]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -54,10 +93,12 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function store(StoreProductRequest $request)
     {
-        // dd($request->validated());
         $this->productService->store($request->validated());
-        return redirect()->route('dashboard.products.index')->with('success','Created product');
-
+        
+        $action = $request->input('action', 'publish');
+        $message = $action === 'draft' ? 'Product saved as draft' : 'Product created successfully';
+        
+        return redirect()->route('dashboard.products.index')->with('success', $message);
     }
 
     /**

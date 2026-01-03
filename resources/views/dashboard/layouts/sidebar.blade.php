@@ -50,7 +50,7 @@
                           <li><a href="{{ route('dashboard.products.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("All Products") }}</a></li>
                       @endcan
                       @can('products-create')
-                          <li><a href="{{ route('dashboard.products.create') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Add Product") }}</a></li>
+                          <li><a href="{{ route('dashboard.products.list') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Add Product") }}</a></li>
                       @endcan
                       @can('categories-index')
                           <li><a href="{{ route('dashboard.categories.index') }}"><i class="bi bi-arrow-right-short"></i>{{ __("Categories") }}</a></li>

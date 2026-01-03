@@ -36,7 +36,15 @@ class ProductService
         $categories     = Category::where('status', 'active')->get();
         $sub_categories = SubCategory::where('status', 'active')->get();
         $tags           = Tag::where('status', 'active')->get();
-        return view('dashboard.pages.product.create', compact('categories', 'sub_categories', 'tags'));
+        
+        // Check if copying from existing product
+        $copyFrom = request('copy_from');
+        $sourceProduct = null;
+        if ($copyFrom) {
+            $sourceProduct = $this->model->find($copyFrom);
+        }
+        
+        return view('dashboard.pages.product.create-enhanced', compact('categories', 'sub_categories', 'tags', 'sourceProduct'));
     }
 
     /**
@@ -45,19 +53,36 @@ class ProductService
     public function store($data)
     {
         $data['user_id'] = auth()->user()->id;
-        $product         = $this->model->create(\Illuminate\Support\Arr::except($data, ['images', 'tags']));
+        
+        // Handle action (draft vs publish)
+        if (isset($data['action']) && $data['action'] === 'draft') {
+            $data['status'] = 'inactive';
+        } elseif (isset($data['action']) && $data['action'] === 'publish') {
+            $data['status'] = 'active';
+        }
+        
+        // Handle variation attributes as JSON
+        if (isset($data['variation_attributes']) && is_array($data['variation_attributes'])) {
+            $data['variation_attributes'] = json_encode($data['variation_attributes']);
+        }
+        
+        $product = $this->model->create(\Illuminate\Support\Arr::except($data, ['images', 'tags', 'action']));
 
         if (! empty($data['images']) && is_array($data['images'])) {
             $imagesData = [];
 
             foreach ($data['images'] as $image) {
-                $fileName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/products'), $fileName);
+                if ($image && $image->isValid()) {
+                    $fileName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('uploads/products'), $fileName);
 
-                $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+                    $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+                }
             }
-
-            $product->productImages()->createMany($imagesData);
+            
+            if (!empty($imagesData)) {
+                $product->productImages()->createMany($imagesData);
+            }
         }
 
         if (! empty($data['tags']) && is_array($data['tags'])) {

@@ -241,6 +241,24 @@ $(document).ready(function() {
             $('#engineer_optional').prop('checked', true);
         }
     });
+
+    // Prevent scroll to top on form submission
+    $('form').on('submit', function(e) {
+        // Save current scroll position
+        var scrollPosition = $(window).scrollTop();
+        sessionStorage.setItem('productFormScrollPosition', scrollPosition);
+    });
+
+    // Restore scroll position after page load (if redirected back with errors)
+    var savedScrollPosition = sessionStorage.getItem('productFormScrollPosition');
+    if (savedScrollPosition !== null) {
+        // Clear the saved position
+        sessionStorage.removeItem('productFormScrollPosition');
+        // Restore scroll position after a short delay to ensure page is fully loaded
+        setTimeout(function() {
+            $(window).scrollTop(savedScrollPosition);
+        }, 100);
+    }
 });
 </script>
 @endpush

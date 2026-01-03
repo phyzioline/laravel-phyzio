@@ -54,6 +54,10 @@ Route::group(['middleware' => ['auth', 'notification', 'admin', \App\Http\Middle
             Route::resource('categories', CategoryController::class);
             Route::resource('sub_categories', SubCategoryController::class);
             Route::resource('tags', TagController::class);
+            Route::get('products/list', [ProductController::class, 'list'])->name('products.list');
+            Route::get('products/search-catalog', [ProductController::class, 'searchCatalog'])->name('products.search-catalog');
+            // Redirect old create route to list for Amazon-style flow
+            Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
             Route::get('products/export/{format?}', [ProductController::class, 'export'])->name('products.export');
             Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
             Route::post('products/bulk-action', [ProductController::class, 'bulkAction'])->name('products.bulk-action');
