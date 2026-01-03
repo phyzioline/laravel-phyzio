@@ -96,7 +96,7 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h5 class="card-title mb-3">{{ __('Add Product by Image') }}</h5>
-                            <p class="text-muted">{{ __('Upload a product image and we'll help you create a listing.') }}</p>
+                            <p class="text-muted">{{ __('Upload a product image and we\'ll help you create a listing.') }}</p>
                             <form action="{{ route('dashboard.products.create') }}" method="GET">
                                 <input type="hidden" name="method" value="image">
                                 <button type="submit" class="btn btn-primary">
@@ -130,7 +130,7 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h5 class="card-title mb-3">{{ __('Add Product by Web URL') }}</h5>
-                            <p class="text-muted">{{ __('Enter a product URL and we'll extract product information.') }}</p>
+                            <p class="text-muted">{{ __('Enter a product URL and we\'ll extract product information.') }}</p>
                             <form action="{{ route('dashboard.products.create') }}" method="GET">
                                 <input type="hidden" name="method" value="web-url">
                                 <button type="submit" class="btn btn-primary">
