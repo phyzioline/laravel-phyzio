@@ -9,26 +9,18 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Drop table if it exists (from previous failed migration)
-        // First drop foreign key constraint if it exists
-        if (Schema::hasTable('clinic_appointments')) {
-            Schema::table('clinic_appointments', function (Blueprint $table) {
-                // Check if foreign key exists before dropping
-                $foreignKeys = DB::select("
-                    SELECT CONSTRAINT_NAME 
-                    FROM information_schema.KEY_COLUMN_USAGE 
-                    WHERE TABLE_SCHEMA = DATABASE() 
-                    AND TABLE_NAME = 'clinic_appointments' 
-                    AND CONSTRAINT_NAME = 'clinic_appointments_treatment_plan_id_foreign'
-                ");
-                
-                if (count($foreignKeys) > 0) {
-                    $table->dropForeign('clinic_appointments_treatment_plan_id_foreign');
-                }
-            });
+        // Drop foreign key constraint first if it exists
+        if (Schema::hasTable('clinic_appointments') && Schema::hasColumn('clinic_appointments', 'treatment_plan_id')) {
+            try {
+                Schema::table('clinic_appointments', function (Blueprint $table) {
+                    $table->dropForeign(['treatment_plan_id']);
+                });
+            } catch (\Exception $e) {
+                // Foreign key might not exist, continue
+            }
         }
         
-        // Now drop the table if it exists
+        // Drop table if it exists (from previous failed migration)
         if (Schema::hasTable('treatment_plans')) {
             Schema::dropIfExists('treatment_plans');
         }
