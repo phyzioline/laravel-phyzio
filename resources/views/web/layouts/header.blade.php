@@ -978,8 +978,16 @@ body.has-hero .shop-hero-banner {
                             <li class="dropdown">
                                 @if (Auth::check())
                                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                        @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist')
-                                            <a class="dropdown-item text-primary font-weight-bold" href="{{ Auth::user()->type === 'therapist' ? route('therapist.dashboard') : route('dashboard.home') }}">
+                                        @if(Auth::user()->hasRole('vendor') || Auth::user()->hasRole('admin') || Auth::user()->type === 'therapist' || Auth::user()->hasRole('clinic'))
+                                            @php
+                                                $dashboardRoute = route('dashboard.home');
+                                                if (Auth::user()->hasRole('clinic')) {
+                                                    $dashboardRoute = route('clinic.dashboard');
+                                                } elseif (Auth::user()->type === 'therapist') {
+                                                    $dashboardRoute = route('therapist.dashboard');
+                                                }
+                                            @endphp
+                                            <a class="dropdown-item text-primary font-weight-bold" href="{{ $dashboardRoute }}">
                                                 <i class="las la-tachometer-alt mr-2"></i> {{ __('Dashboard') }}
                                             </a>
                                             <div class="dropdown-divider"></div>

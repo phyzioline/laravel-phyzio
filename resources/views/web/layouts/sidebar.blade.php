@@ -163,7 +163,15 @@
                     
                     {{-- Dashboard button for all logged-in users --}}
                     <li class="menu-item-box">
-                        <a href="{{ route('dashboard.' . app()->getLocale()) }}" style="display: flex; align-items: center; color: #02767F; font-weight: 600;">
+                        @php
+                            $dashboardRoute = route('dashboard.' . app()->getLocale());
+                            if (auth()->user()->hasRole('clinic')) {
+                                $dashboardRoute = route('clinic.dashboard');
+                            } elseif (auth()->user()->type === 'therapist') {
+                                $dashboardRoute = route('therapist.dashboard');
+                            }
+                        @endphp
+                        <a href="{{ $dashboardRoute }}" style="display: flex; align-items: center; color: #02767F; font-weight: 600;">
                             <i class="las la-tachometer-alt" style="margin-right: 8px; font-size: 18px;"></i>
                             {{ __('Dashboard') }}
                         </a>
