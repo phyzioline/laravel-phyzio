@@ -106,7 +106,7 @@ class DepartmentController extends BaseClinicController
         $clinic = $this->getUserClinic();
         
         if (!$clinic) {
-            return back()->with('error', 'Clinic not found.');
+            return back()->with('error', __('Clinic not found.'));
         }
 
         $validator = \Validator::make($request->all(), [
@@ -320,7 +320,7 @@ class DepartmentController extends BaseClinicController
         if (!$clinic) {
             return response()->json([
                 'success' => false,
-                'message' => 'Clinic not found.'
+                'message' => __('Clinic not found.')
             ], 404);
         }
         
