@@ -154,9 +154,46 @@ class DoctorController extends BaseClinicController
             'is_active' => true,
             'hired_date' => now(),
         ]);
+        
+        // Auto-assign doctor to specialty based on specialization
+        if ($request->specialization) {
+            // Map specialization to specialty if they match
+            $specialtyMap = [
+                'pediatric' => 'pediatric',
+                'orthopedic' => 'orthopedic',
+                'neurological' => 'neurological',
+                'sports' => 'sports',
+                'geriatric' => 'geriatric',
+                'womens_health' => 'womens_health',
+                'cardiorespiratory' => 'cardiorespiratory',
+                'home_care' => 'home_care',
+            ];
+            
+            $specialty = $specialtyMap[strtolower($request->specialization)] ?? null;
+            
+            if ($specialty) {
+                // Check if this specialty exists for the clinic
+                $clinicSpecialty = \App\Models\ClinicSpecialty::where('clinic_id', $clinic->id)
+                    ->where('specialty', $specialty)
+                    ->where('is_active', true)
+                    ->first();
+                
+                if ($clinicSpecialty) {
+                    // Auto-assign doctor to this specialty
+                    \App\Models\DoctorSpecialtyAssignment::create([
+                        'clinic_id' => $clinic->id,
+                        'doctor_id' => $doctor->id,
+                        'specialty' => $specialty,
+                        'is_head' => false,
+                        'priority' => 0,
+                        'is_active' => true,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('clinic.doctors.index')
-            ->with('success', 'Doctor registered successfully. They can now be assigned to appointments.');
+            ->with('success', 'Doctor registered successfully. They can now be assigned to appointments and departments.');
     }
 
     public function show($id)

@@ -36,12 +36,27 @@
                 <p class="text-muted small">{{ $dept->description }}</p>
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="small">
-                        <i class="las la-user-md text-primary"></i> <strong>{{ $dept->doctors_count }}</strong> {{ __('Doctors') }}
+                        <i class="las la-user-md text-primary"></i> 
+                        <strong>{{ $dept->doctors_count }}</strong> {{ __('Doctors') }}
+                        @if($dept->assigned_doctors && $dept->assigned_doctors->count() > 0)
+                            <div class="mt-1">
+                                @foreach($dept->assigned_doctors->take(2) as $doctor)
+                                    <small class="d-block text-muted">
+                                        <i class="las la-user"></i> {{ $doctor->name ?? 'N/A' }}
+                                    </small>
+                                @endforeach
+                                @if($dept->assigned_doctors->count() > 2)
+                                    <small class="text-muted">+{{ $dept->assigned_doctors->count() - 2 }} {{ __('more') }}</small>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                     <span class="badge {{ $dept->status == 'Active' ? 'badge-success' : 'badge-warning' }}">{{ $dept->status }}</span>
                 </div>
                 <div class="mt-3 text-right">
-                    <a href="{{ route('clinic.departments.index') }}#{{ $dept->specialty }}" class="btn btn-sm btn-outline-secondary">{{ __('View Details') }}</a>
+                    <a href="{{ route('clinic.departments.show', $dept->specialty) }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="las la-info-circle"></i> {{ __('View Details') }}
+                    </a>
                 </div>
             </div>
         </div>

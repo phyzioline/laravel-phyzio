@@ -41,21 +41,24 @@ class DepartmentController extends BaseClinicController
             
             $displayName = ClinicSpecialty::SPECIALTIES[$specialtyValue] ?? ucfirst(str_replace('_', ' ', $specialtyValue));
             
-            // Get head doctor for this specialty (query through therapist_profiles relationship)
-            $headDoctor = User::where('type', 'therapist')
-                ->whereHas('therapistProfile', function($q) use ($specialtyValue) {
-                    $q->where('specialization', $specialtyValue)
-                      ->orWhere('specialization', 'like', '%' . $specialtyValue . '%');
-                })
-                ->first();
+            // Get assigned doctors for this specialty (using doctor_specialty_assignments table)
+            $assignedDoctors = \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+                ->where('specialty', $specialtyValue)
+                ->where('is_active', true)
+                ->with('doctor')
+                ->orderBy('is_head', 'desc')
+                ->orderBy('priority', 'desc')
+                ->get();
             
-            // Count doctors in this specialty (query through therapist_profiles relationship)
-            $doctorsCount = User::where('type', 'therapist')
-                ->whereHas('therapistProfile', function($q) use ($specialtyValue) {
-                    $q->where('specialization', $specialtyValue)
-                      ->orWhere('specialization', 'like', '%' . $specialtyValue . '%');
-                })
-                ->count();
+            // Get head doctor
+            $headAssignment = $assignedDoctors->where('is_head', true)->first();
+            $headDoctor = $headAssignment ? $headAssignment->doctor : null;
+            
+            // Count assigned doctors
+            $doctorsCount = $assignedDoctors->count();
+            
+            // Get list of assigned doctors
+            $assignedDoctorsList = $assignedDoctors->pluck('doctor')->filter();
             
             // Get description based on specialty
             $descriptions = [
@@ -80,6 +83,7 @@ class DepartmentController extends BaseClinicController
                 'specialty' => $specialtyValue,
                 'head' => $headDoctor ? ($headDoctor->name ?? ($headDoctor->first_name . ' ' . $headDoctor->last_name)) : 'Not Assigned',
                 'doctors_count' => $doctorsCount,
+                'assigned_doctors' => $assignedDoctorsList,
                 'status' => $isActive ? 'Active' : 'Inactive',
                 'description' => $description,
                 'is_primary' => $isPrimary,
@@ -156,5 +160,183 @@ class DepartmentController extends BaseClinicController
 
         return redirect()->route('clinic.departments.index')
             ->with('success', 'Department added successfully.');
+    }
+
+    /**
+     * Show department/service details with assigned doctors
+     */
+    public function show($specialty)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return redirect()->route('clinic.departments.index')
+                ->with('error', 'Clinic not found.');
+        }
+        
+        // Get specialty info
+        $clinicSpecialty = ClinicSpecialty::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->first();
+        
+        if (!$clinicSpecialty && $clinic->primary_specialty === $specialty) {
+            // Use primary specialty if not in clinic_specialties table
+            $clinicSpecialty = (object)[
+                'specialty' => $specialty,
+                'is_primary' => true,
+                'is_active' => true,
+            ];
+        }
+        
+        if (!$clinicSpecialty) {
+            return redirect()->route('clinic.departments.index')
+                ->with('error', 'Department not found.');
+        }
+        
+        $displayName = ClinicSpecialty::SPECIALTIES[$specialty] ?? ucfirst(str_replace('_', ' ', $specialty));
+        
+        // Get assigned doctors
+        $assignedDoctors = \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->where('is_active', true)
+            ->with('doctor')
+            ->orderBy('is_head', 'desc')
+            ->orderBy('priority', 'desc')
+            ->get();
+        
+        // Get all available doctors (not yet assigned to this specialty)
+        $assignedDoctorIds = $assignedDoctors->pluck('doctor_id')->toArray();
+        $availableDoctors = \App\Models\User::whereHas('clinicStaff', function($q) use ($clinic) {
+            $q->where('clinic_id', $clinic->id)
+              ->whereIn('role', ['therapist', 'doctor'])
+              ->where('is_active', true);
+        })
+        ->whereIn('type', ['therapist', 'doctor'])
+        ->whereNotIn('id', $assignedDoctorIds)
+        ->get();
+        
+        // Get statistics
+        $totalAppointments = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->count();
+        
+        $totalPatients = \App\Models\ClinicAppointment::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->distinct('patient_id')
+            ->count('patient_id');
+        
+        return view('web.clinic.departments.show', compact(
+            'clinic',
+            'specialty',
+            'displayName',
+            'clinicSpecialty',
+            'assignedDoctors',
+            'availableDoctors',
+            'totalAppointments',
+            'totalPatients'
+        ));
+    }
+
+    /**
+     * Assign doctor to specialty
+     */
+    public function assignDoctor(Request $request, $specialty)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Clinic not found.'
+            ], 404);
+        }
+        
+        $request->validate([
+            'doctor_id' => 'required|exists:users,id',
+            'is_head' => 'nullable|boolean',
+            'priority' => 'nullable|integer|min:0|max:100'
+        ]);
+        
+        // Verify doctor belongs to clinic
+        $clinicStaff = \App\Models\ClinicStaff::where('clinic_id', $clinic->id)
+            ->where('user_id', $request->doctor_id)
+            ->whereIn('role', ['therapist', 'doctor'])
+            ->where('is_active', true)
+            ->first();
+        
+        if (!$clinicStaff) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Doctor is not assigned to this clinic.'
+            ], 422);
+        }
+        
+        // Check if already assigned
+        $existing = \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+            ->where('doctor_id', $request->doctor_id)
+            ->where('specialty', $specialty)
+            ->first();
+        
+        if ($existing) {
+            // Update existing assignment
+            $existing->update([
+                'is_head' => $request->is_head ?? false,
+                'priority' => $request->priority ?? 0,
+                'is_active' => true
+            ]);
+        } else {
+            // Create new assignment
+            \App\Models\DoctorSpecialtyAssignment::create([
+                'clinic_id' => $clinic->id,
+                'doctor_id' => $request->doctor_id,
+                'specialty' => $specialty,
+                'is_head' => $request->is_head ?? false,
+                'priority' => $request->priority ?? 0,
+                'is_active' => true
+            ]);
+        }
+        
+        // If setting as head, remove head status from others
+        if ($request->is_head) {
+            \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+                ->where('specialty', $specialty)
+                ->where('doctor_id', '!=', $request->doctor_id)
+                ->update(['is_head' => false]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor assigned successfully.'
+        ]);
+    }
+
+    /**
+     * Unassign doctor from specialty
+     */
+    public function unassignDoctor($specialty, $doctorId)
+    {
+        $clinic = $this->getUserClinic();
+        
+        if (!$clinic) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Clinic not found.'
+            ], 404);
+        }
+        
+        $assignment = \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->where('doctor_id', $doctorId)
+            ->first();
+        
+        if ($assignment) {
+            $assignment->update(['is_active' => false]);
+            // Or delete: $assignment->delete();
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor unassigned successfully.'
+        ]);
     }
 }
