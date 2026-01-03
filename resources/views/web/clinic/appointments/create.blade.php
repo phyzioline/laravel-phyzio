@@ -14,6 +14,48 @@
                 <form id="appointmentForm">
                     @csrf
 
+                    <!-- Booking Type Selection -->
+                    <div class="form-group">
+                        <label>{{ __('Booking Type') }} <span class="text-danger">*</span></label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="booking_type_regular" name="booking_type" value="regular" class="custom-control-input" checked>
+                                    <label class="custom-control-label" for="booking_type_regular">
+                                        <strong>{{ __('Regular Session') }}</strong>
+                                        <small class="d-block text-muted">{{ __('Standard appointment with one doctor') }}</small>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="booking_type_intensive" name="booking_type" value="intensive" class="custom-control-input">
+                                    <label class="custom-control-label" for="booking_type_intensive">
+                                        <strong>{{ __('Intensive Session') }}</strong>
+                                        <small class="d-block text-muted">{{ __('Children\'s Intensive Treatment (1-4 hours)') }}</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Intensive Session Configuration (Hidden by default) -->
+                    <div id="intensiveSessionConfig" style="display: none;" class="border rounded p-3 mb-3 bg-light">
+                        <h6 class="mb-3">{{ __('Intensive Session Configuration') }}</h6>
+                        <div class="form-group">
+                            <label>{{ __('Session Duration') }} <span class="text-danger">*</span></label>
+                            <select name="total_hours" id="total_hours" class="form-control">
+                                <option value="1">1 {{ __('hour') }}</option>
+                                <option value="2">2 {{ __('hours') }}</option>
+                                <option value="3">3 {{ __('hours') }}</option>
+                                <option value="4">4 {{ __('hours') }}</option>
+                            </select>
+                            <small class="form-text text-muted">
+                                {{ __('The session will be automatically divided into hourly slots. Doctors will be assigned per slot.') }}
+                            </small>
+                        </div>
+                    </div>
+
                     <!-- Basic Information -->
                     <div class="row">
                         <div class="col-md-6">
@@ -29,7 +71,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="regularTherapistField">
                             <div class="form-group">
                                 <label>{{ __('Therapist') }}</label>
                                 <select name="doctor_id" class="form-control">
@@ -38,6 +80,7 @@
                                         <option value="{{ $therapist->id }}">{{ $therapist->name }}</option>
                                     @endforeach
                                 </select>
+                                <small class="form-text text-muted">{{ __('For intensive sessions, doctors will be assigned per slot') }}</small>
                             </div>
                         </div>
                     </div>
@@ -171,6 +214,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const specialtySelect = document.getElementById('specialty');
     const specialtyFieldsContainer = document.getElementById('specialtyFieldsContainer');
     const pricePreview = document.getElementById('pricePreview');
+    
+    // Booking type toggle
+    const bookingTypeRadios = document.querySelectorAll('input[name="booking_type"]');
+    const intensiveConfig = document.getElementById('intensiveSessionConfig');
+    const regularTherapistField = document.getElementById('regularTherapistField');
+    
+    bookingTypeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'intensive') {
+                intensiveConfig.style.display = 'block';
+                regularTherapistField.querySelector('select[name="doctor_id"]').required = false;
+                regularTherapistField.querySelector('small').textContent = '{{ __("For intensive sessions, doctors will be assigned per slot") }}';
+            } else {
+                intensiveConfig.style.display = 'none';
+                regularTherapistField.querySelector('select[name="doctor_id"]').required = false;
+                regularTherapistField.querySelector('small').textContent = '';
+            }
+        });
+    });
     
     // Load specialty fields when specialty changes
     specialtySelect.addEventListener('change', function() {

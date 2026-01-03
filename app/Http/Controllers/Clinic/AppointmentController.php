@@ -13,6 +13,7 @@ use App\Services\Clinic\PaymentCalculatorService;
 use App\Services\Clinic\AppointmentOverlapService;
 use App\Services\Clinic\BillingAutomationService;
 use App\Services\Clinic\EquipmentAllocationService;
+use App\Services\Clinic\IntensiveSessionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Carbon\Carbon;
@@ -25,19 +26,22 @@ class AppointmentController extends BaseClinicController
     protected $overlapService;
     protected $billingAutomation;
     protected $equipmentAllocation;
+    protected $intensiveSessionService;
 
     public function __construct(
         SpecialtyReservationFieldsService $fieldsService,
         PaymentCalculatorService $paymentCalculator,
         AppointmentOverlapService $overlapService,
         BillingAutomationService $billingAutomation,
-        EquipmentAllocationService $equipmentAllocation
+        EquipmentAllocationService $equipmentAllocation,
+        IntensiveSessionService $intensiveSessionService
     ) {
         $this->fieldsService = $fieldsService;
         $this->paymentCalculator = $paymentCalculator;
         $this->overlapService = $overlapService;
         $this->billingAutomation = $billingAutomation;
         $this->equipmentAllocation = $equipmentAllocation;
+        $this->intensiveSessionService = $intensiveSessionService;
     }
 
     /**
@@ -191,7 +195,9 @@ class AppointmentController extends BaseClinicController
             'payment_method' => 'nullable|in:cash,card,insurance',
             'specialty' => 'required|string',
             'duration_minutes' => 'nullable|integer|min:15|max:120',
-            'session_type' => 'nullable|string'
+            'session_type' => 'nullable|string',
+            'booking_type' => 'nullable|in:regular,intensive',
+            'total_hours' => 'nullable|integer|min:1|max:4|required_if:booking_type,intensive'
         ]);
 
         if ($validator->fails()) {
@@ -239,20 +245,39 @@ class AppointmentController extends BaseClinicController
             $visitType = 'followup';
         }
         
+        // Determine booking type
+        $bookingType = $request->booking_type ?? 'regular';
+        $totalHours = $request->total_hours ?? null;
+        
+        // For intensive sessions, calculate total duration
+        $durationMinutes = $request->duration_minutes ?? 60;
+        if ($bookingType === 'intensive' && $totalHours) {
+            $durationMinutes = $totalHours * 60;
+        }
+        
         // Create appointment
-        $appointment = ClinicAppointment::create([
+        $appointmentData = [
             'clinic_id' => $clinic->id,
             'patient_id' => $request->patient_id,
-            'doctor_id' => $request->doctor_id,
+            'doctor_id' => $request->doctor_id, // May be null for intensive (assigned per slot)
             'appointment_date' => $start,
-            'duration_minutes' => $request->duration_minutes ?? 60,
+            'duration_minutes' => $durationMinutes,
             'status' => 'scheduled',
             'visit_type' => $visitType,
             'location' => $request->location,
             'payment_method' => $request->payment_method,
             'specialty' => $request->specialty,
-            'session_type' => $request->session_type ?? $request->input('type')
-        ]);
+            'session_type' => $request->session_type ?? $request->input('type'),
+            'booking_type' => $bookingType,
+            'total_hours' => $totalHours,
+        ];
+        
+        // Create appointment (regular or intensive)
+        if ($bookingType === 'intensive' && $totalHours) {
+            $appointment = $this->intensiveSessionService->createIntensiveSession($appointmentData, $totalHours);
+        } else {
+            $appointment = ClinicAppointment::create($appointmentData);
+        }
 
         // Save specialty-specific additional data
         $specialty = $request->specialty;
@@ -310,17 +335,28 @@ class AppointmentController extends BaseClinicController
         // Get the appointment date to preserve week view after redirect
         $appointmentDate = Carbon::parse($appointment->appointment_date);
         
+        // For intensive sessions, redirect to slot assignment page
+        $redirectRoute = route('clinic.appointments.index', ['date' => $appointmentDate->format('Y-m-d')]);
+        if ($bookingType === 'intensive') {
+            $redirectRoute = route('clinic.appointments.assignSlots', $appointment->id);
+        }
+        
         // Return JSON for AJAX requests, redirect for regular form submissions
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => 'Appointment scheduled successfully.',
-                'redirect' => route('clinic.appointments.index', ['date' => $appointmentDate->format('Y-m-d')])
+                'message' => $bookingType === 'intensive' 
+                    ? 'Intensive session created. Please assign doctors to slots.' 
+                    : 'Appointment scheduled successfully.',
+                'redirect' => $redirectRoute,
+                'is_intensive' => $bookingType === 'intensive'
             ]);
         }
 
-        return redirect()->route('clinic.appointments.index', ['date' => $appointmentDate->format('Y-m-d')])
-            ->with('success', 'Appointment scheduled successfully.');
+        return redirect($redirectRoute)
+            ->with('success', $bookingType === 'intensive' 
+                ? 'Intensive session created. Please assign doctors to slots.' 
+                : 'Appointment scheduled successfully.');
     }
 
     /**
@@ -532,6 +568,116 @@ class AppointmentController extends BaseClinicController
         return response()->json([
             'success' => true,
             'slots' => $availableSlots
+        ]);
+    }
+
+    /**
+     * Show slot assignment page for intensive session
+     */
+    public function assignSlots($appointmentId)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+        
+        $appointment = ClinicAppointment::with(['patient', 'bookingSlots.doctorAssignments.doctor'])
+            ->where('clinic_id', $clinic->id)
+            ->findOrFail($appointmentId);
+        
+        if ($appointment->booking_type !== 'intensive') {
+            return redirect()->route('clinic.appointments.index')
+                ->with('error', 'This appointment is not an intensive session.');
+        }
+        
+        $slots = $appointment->bookingSlots()->orderBy('slot_number')->get();
+        
+        return view('web.clinic.appointments.assign-slots', compact('appointment', 'slots', 'clinic'));
+    }
+
+    /**
+     * Assign doctor to a slot
+     */
+    public function assignSlotToDoctor(Request $request, $appointmentId, $slotId)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+        
+        $appointment = ClinicAppointment::where('clinic_id', $clinic->id)->findOrFail($appointmentId);
+        $slot = \App\Models\BookingSlot::where('appointment_id', $appointment->id)
+            ->findOrFail($slotId);
+        
+        $request->validate([
+            'doctor_id' => 'required|exists:users,id'
+        ]);
+        
+        try {
+            $assignment = $this->intensiveSessionService->assignDoctorToSlot(
+                $slotId,
+                $request->doctor_id,
+                $user->id
+            );
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Doctor assigned successfully.',
+                'assignment' => $assignment->load('doctor')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    /**
+     * Unassign doctor from a slot
+     */
+    public function unassignSlot($appointmentId, $slotId)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+        
+        $appointment = ClinicAppointment::where('clinic_id', $clinic->id)->findOrFail($appointmentId);
+        $slot = \App\Models\BookingSlot::where('appointment_id', $appointment->id)
+            ->findOrFail($slotId);
+        
+        $assignment = \App\Models\SlotDoctorAssignment::where('slot_id', $slotId)->first();
+        
+        if ($assignment) {
+            // Delete work log
+            \App\Models\DoctorWorkLog::where('assignment_id', $assignment->id)->delete();
+            $assignment->delete();
+        }
+        
+        $slot->update(['status' => 'pending']);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Doctor unassigned successfully.'
+        ]);
+    }
+
+    /**
+     * Get available doctors for a slot
+     */
+    public function getAvailableDoctorsForSlot($appointmentId, $slotId)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+        
+        $appointment = ClinicAppointment::where('clinic_id', $clinic->id)->findOrFail($appointmentId);
+        $slot = \App\Models\BookingSlot::where('appointment_id', $appointment->id)
+            ->findOrFail($slotId);
+        
+        $doctors = $this->intensiveSessionService->getAvailableDoctors(
+            $clinic->id,
+            $slot,
+            $appointment->specialty
+        );
+        
+        return response()->json([
+            'success' => true,
+            'doctors' => $doctors
         ]);
     }
 

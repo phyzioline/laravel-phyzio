@@ -443,6 +443,13 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::get('/appointments/specialty-fields', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getSpecialtyFields'])->name('appointments.specialtyFields');
         Route::post('/appointments/calculate-price', [\App\Http\Controllers\Clinic\AppointmentController::class, 'calculatePrice'])->name('appointments.calculatePrice');
         Route::get('/appointments/available-slots', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableSlots'])->name('appointments.availableSlots');
+        
+        // Intensive session slot assignment
+        Route::get('/appointments/{appointment}/assign-slots', [\App\Http\Controllers\Clinic\AppointmentController::class, 'assignSlots'])->name('appointments.assignSlots');
+        Route::post('/appointments/{appointment}/assign-slot/{slot}', [\App\Http\Controllers\Clinic\AppointmentController::class, 'assignSlotToDoctor'])->name('appointments.assignSlot');
+        Route::delete('/appointments/{appointment}/unassign-slot/{slot}', [\App\Http\Controllers\Clinic\AppointmentController::class, 'unassignSlot'])->name('appointments.unassignSlot');
+        Route::get('/appointments/{appointment}/available-doctors/{slot}', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableDoctorsForSlot'])->name('appointments.availableDoctorsForSlot');
+        
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         // Invoices route is defined above (line 376) using PatientInvoiceController

@@ -21,7 +21,10 @@ class ClinicAppointment extends Model
         'location',
         'payment_method',
         'specialty',
-        'session_type'
+        'session_type',
+        'booking_type',
+        'total_hours',
+        'treatment_plan_id'
     ];
 
     protected $casts = [
@@ -69,5 +72,44 @@ class ClinicAppointment extends Model
         }
 
         return $this->additionalData->getDataField($key, $default);
+    }
+
+    /**
+     * Relationships for intensive sessions
+     */
+    public function treatmentPlan()
+    {
+        return $this->belongsTo(TreatmentPlan::class);
+    }
+
+    public function bookingSlots()
+    {
+        return $this->hasMany(BookingSlot::class, 'appointment_id');
+    }
+
+    /**
+     * Check if this is an intensive session
+     */
+    public function isIntensive(): bool
+    {
+        return $this->booking_type === 'intensive';
+    }
+
+    /**
+     * Get all assigned doctors for this appointment (for intensive sessions)
+     */
+    public function getAssignedDoctors()
+    {
+        if (!$this->isIntensive()) {
+            return collect([$this->doctor])->filter();
+        }
+
+        return SlotDoctorAssignment::whereHas('slot', function($q) {
+            $q->where('appointment_id', $this->id);
+        })
+        ->with('doctor')
+        ->get()
+        ->pluck('doctor')
+        ->unique('id');
     }
 }
