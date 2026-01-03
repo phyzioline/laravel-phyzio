@@ -119,6 +119,8 @@ class DoctorController extends BaseClinicController
             'specialization' => 'required|string',
             'bio' => 'nullable|string',
             'password' => 'nullable|string|min:8',
+            'specialties' => 'nullable|array',
+            'specialties.*' => 'string',
         ]);
 
         if ($validator->fails()) {
@@ -155,16 +157,40 @@ class DoctorController extends BaseClinicController
             'hired_date' => now(),
         ]);
         
-        // Auto-assign doctor to specialty based on specialization
-        if ($request->specialization) {
-            // Map specialization to specialty if they match
+        // Assign doctor to selected specialties
+        if ($request->has('specialties') && is_array($request->specialties)) {
+            foreach ($request->specialties as $specialty) {
+                // Verify specialty exists for this clinic
+                $clinicSpecialty = \App\Models\ClinicSpecialty::where('clinic_id', $clinic->id)
+                    ->where('specialty', $specialty)
+                    ->where('is_active', true)
+                    ->first();
+                
+                if ($clinicSpecialty) {
+                    // Assign doctor to this specialty
+                    \App\Models\DoctorSpecialtyAssignment::create([
+                        'clinic_id' => $clinic->id,
+                        'doctor_id' => $doctor->id,
+                        'specialty' => $specialty,
+                        'is_head' => false,
+                        'priority' => 0,
+                        'is_active' => true,
+                    ]);
+                }
+            }
+        } else {
+            // Auto-assign doctor to specialty based on specialization (fallback)
             $specialtyMap = [
                 'pediatric' => 'pediatric',
+                'pediatrics' => 'pediatric',
                 'orthopedic' => 'orthopedic',
                 'neurological' => 'neurological',
+                'neurology' => 'neurological',
                 'sports' => 'sports',
+                'sports physiotherapy' => 'sports',
                 'geriatric' => 'geriatric',
                 'womens_health' => 'womens_health',
+                'women\'s health' => 'womens_health',
                 'cardiorespiratory' => 'cardiorespiratory',
                 'home_care' => 'home_care',
             ];
@@ -261,6 +287,15 @@ class DoctorController extends BaseClinicController
             }
         }
         
+        // Get assigned specialties/services
+        $assignedSpecialties = \App\Models\DoctorSpecialtyAssignment::where('clinic_id', $clinic->id)
+            ->where('doctor_id', $doctor->id)
+            ->where('is_active', true)
+            ->with('doctor')
+            ->orderBy('is_head', 'desc')
+            ->orderBy('priority', 'desc')
+            ->get();
+        
         $doctorData = (object)[
             'id' => $doctor->id,
             'name' => $doctor->name ?? ($doctor->first_name . ' ' . $doctor->last_name),
@@ -271,6 +306,7 @@ class DoctorController extends BaseClinicController
             'patients' => $patientCount,
             'appointments' => $appointmentCount,
             'status' => $status,
+            'assignedSpecialties' => $assignedSpecialties,
         ];
         
         return view('web.clinic.doctors.show', compact('doctor', 'doctorData', 'clinic'));

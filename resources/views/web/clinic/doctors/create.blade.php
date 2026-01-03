@@ -59,9 +59,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label>Specialization <span class="text-danger">*</span></label>
+                        <label>Primary Specialization <span class="text-danger">*</span></label>
                         <select name="specialization" class="form-control @error('specialization') is-invalid @enderror" required>
-                            <option value="">Select Specialization</option>
+                            <option value="">{{ __('Select Specialization') }}</option>
                             <option value="Orthopedic" {{ old('specialization') == 'Orthopedic' ? 'selected' : '' }}>Orthopedic</option>
                             <option value="Sports Physiotherapy" {{ old('specialization') == 'Sports Physiotherapy' ? 'selected' : '' }}>Sports Physiotherapy</option>
                             <option value="Neurology" {{ old('specialization') == 'Neurology' ? 'selected' : '' }}>Neurology</option>
@@ -74,6 +74,47 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    
+                    @php
+                        $clinicSpecialties = \App\Models\ClinicSpecialty::where('clinic_id', $clinic->id ?? 0)
+                            ->where('is_active', true)
+                            ->get();
+                    @endphp
+                    
+                    @if($clinic && $clinicSpecialties->count() > 0)
+                    <div class="form-group">
+                        <label>{{ __('Assign to Services/Departments') }}</label>
+                        <p class="text-muted small mb-2">{{ __('Select which services this doctor will be responsible for') }}</p>
+                        <div class="row">
+                            @foreach($clinicSpecialties as $clinicSpecialty)
+                            @php
+                                $specialtyName = \App\Models\ClinicSpecialty::SPECIALTIES[$clinicSpecialty->specialty] ?? ucfirst(str_replace('_', ' ', $clinicSpecialty->specialty));
+                            @endphp
+                            <div class="col-md-6 mb-2">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" 
+                                           id="specialty_{{ $clinicSpecialty->specialty }}" 
+                                           name="specialties[]" 
+                                           value="{{ $clinicSpecialty->specialty }}"
+                                           {{ in_array($clinicSpecialty->specialty, old('specialties', [])) ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="specialty_{{ $clinicSpecialty->specialty }}">
+                                        {{ $specialtyName }}
+                                        @if($clinicSpecialty->is_primary)
+                                            <span class="badge badge-primary badge-sm">Primary</span>
+                                        @endif
+                                    </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                        <small class="text-muted">{{ __('You can also assign doctors to services later from the Services page.') }}</small>
+                    </div>
+                    @else
+                    <div class="alert alert-info">
+                        <i class="las la-info-circle"></i> 
+                        {{ __('No services/departments configured yet. Add services first, then assign doctors to them.') }}
+                    </div>
+                    @endif
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label>Email <span class="text-danger">*</span></label>

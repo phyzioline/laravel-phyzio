@@ -59,6 +59,33 @@
                 </div>
             </div>
         </div>
+        
+        @if(isset($doctorData->assignedSpecialties) && $doctorData->assignedSpecialties->count() > 0)
+        <div class="card border-0 shadow-sm mt-4" style="border-radius: 15px;">
+            <div class="card-body">
+                <h6 class="font-weight-bold mb-3">
+                    <i class="las la-briefcase"></i> {{ __('Assigned Services') }}
+                </h6>
+                <div class="d-flex flex-wrap">
+                    @foreach($doctorData->assignedSpecialties as $assignment)
+                    @php
+                        $specialtyName = \App\Models\ClinicSpecialty::SPECIALTIES[$assignment->specialty] ?? ucfirst(str_replace('_', ' ', $assignment->specialty));
+                    @endphp
+                    <a href="{{ route('clinic.departments.show', $assignment->specialty) }}" 
+                       class="badge badge-primary mr-2 mb-2 p-2">
+                        {{ $specialtyName }}
+                        @if($assignment->is_head)
+                            <i class="las la-crown ml-1" title="{{ __('Head of Department') }}"></i>
+                        @endif
+                    </a>
+                    @endforeach
+                </div>
+                <small class="text-muted d-block mt-2">
+                    <i class="las la-info-circle"></i> {{ __('Click on a service to view details') }}
+                </small>
+            </div>
+        </div>
+        @endif
     </div>
 
     <!-- Main Content -->
