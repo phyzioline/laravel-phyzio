@@ -184,9 +184,39 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="stock-badge {{ $product->amount == 0 ? 'stock-out' : ($product->amount <= 10 ? 'stock-low' : 'stock-in') }}">
-                                        {{ $product->amount }}
-                                    </span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <input type="number" 
+                                               class="form-control form-control-sm stock-quantity-input" 
+                                               value="{{ $product->amount }}" 
+                                               min="0" 
+                                               data-product-id="{{ $product->id }}"
+                                               data-original-value="{{ $product->amount }}"
+                                               style="width: 80px; text-align: center;"
+                                               id="stock-input-{{ $product->id }}">
+                                        <button type="button" 
+                                                class="btn btn-sm btn-success update-stock-btn" 
+                                                data-product-id="{{ $product->id }}"
+                                                style="display: none;"
+                                                title="{{ __('Update') }}">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                        <button type="button" 
+                                                class="btn btn-sm btn-secondary cancel-stock-btn" 
+                                                data-product-id="{{ $product->id }}"
+                                                style="display: none;"
+                                                title="{{ __('Cancel') }}">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </div>
+                                    <small class="stock-status-badge d-block mt-1 {{ $product->amount == 0 ? 'text-danger' : ($product->amount <= 10 ? 'text-warning' : 'text-success') }}">
+                                        @if($product->amount == 0)
+                                            {{ __('Out of Stock') }}
+                                        @elseif($product->amount <= 10)
+                                            {{ __('Low Stock') }}
+                                        @else
+                                            {{ __('In Stock') }}
+                                        @endif
+                                    </small>
                                 </td>
                                 <td>{{ $product->product_price }} {{ __('EGP') }}</td>
                                 <td>{{ $product->updated_at->format('d/m/Y') }}</td>
@@ -195,37 +225,6 @@
                                         <a href="{{ route('dashboard.products.edit', $product) }}" class="btn btn-sm btn-info" title="{{ __('Edit') }}">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#updateStockModal{{ $product->id }}" title="{{ __('Update Stock') }}">
-                                            <i class="bi bi-box-seam"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Update Stock Modal -->
-                                    <div class="modal fade" id="updateStockModal{{ $product->id }}" tabindex="-1">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <form method="POST" action="{{ route('dashboard.inventory.update-stock') }}">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">{{ __('Update Stock') }}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p><strong>{{ $product->{'product_name_' . app()->getLocale()} }}</strong></p>
-                                                        <p class="text-muted">{{ __('Current stock') }}: {{ $product->amount }}</p>
-                                                        <div class="mb-3">
-                                                            <label class="form-label">{{ __('New Stock Quantity') }}</label>
-                                                            <input type="number" name="amount" class="form-control" value="{{ $product->amount }}" min="0" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                                                        <button type="submit" class="btn btn-primary">{{ __('Update Stock') }}</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -247,3 +246,110 @@
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Show update buttons when quantity input changes
+    $(document).on('input', '.stock-quantity-input', function() {
+        const productId = $(this).data('product-id');
+        const originalValue = $(this).data('original-value');
+        const currentValue = $(this).val();
+        
+        if (currentValue != originalValue) {
+            $('#stock-input-' + productId).addClass('border-warning');
+            $('.update-stock-btn[data-product-id="' + productId + '"]').show();
+            $('.cancel-stock-btn[data-product-id="' + productId + '"]').show();
+        } else {
+            $('#stock-input-' + productId).removeClass('border-warning');
+            $('.update-stock-btn[data-product-id="' + productId + '"]').hide();
+            $('.cancel-stock-btn[data-product-id="' + productId + '"]').hide();
+        }
+    });
+
+    // Update stock on button click
+    $(document).on('click', '.update-stock-btn', function() {
+        const productId = $(this).data('product-id');
+        const input = $('#stock-input-' + productId);
+        const newAmount = parseInt(input.val());
+        
+        if (newAmount < 0) {
+            alert('{{ __("Quantity cannot be negative") }}');
+            return;
+        }
+
+        // Disable input and show loading
+        input.prop('disabled', true);
+        $(this).prop('disabled', true).html('<i class="bi bi-hourglass-split"></i>');
+
+        $.ajax({
+            url: '{{ route("dashboard.inventory.update-stock") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                product_id: productId,
+                amount: newAmount
+            },
+            success: function(response) {
+                // Update original value
+                input.data('original-value', newAmount);
+                input.removeClass('border-warning').addClass('border-success');
+                
+                // Hide buttons
+                $('.update-stock-btn[data-product-id="' + productId + '"]').hide();
+                $('.cancel-stock-btn[data-product-id="' + productId + '"]').hide();
+                
+                // Update status badge
+                const statusBadge = input.closest('td').find('.stock-status-badge');
+                if (newAmount == 0) {
+                    statusBadge.removeClass('text-warning text-success').addClass('text-danger').text('{{ __("Out of Stock") }}');
+                } else if (newAmount <= 10) {
+                    statusBadge.removeClass('text-danger text-success').addClass('text-warning').text('{{ __("Low Stock") }}');
+                } else {
+                    statusBadge.removeClass('text-danger text-warning').addClass('text-success').text('{{ __("In Stock") }}');
+                }
+                
+                // Re-enable input
+                input.prop('disabled', false);
+                $('.update-stock-btn[data-product-id="' + productId + '"]').prop('disabled', false).html('<i class="bi bi-check"></i>');
+                
+                // Show success message
+                setTimeout(function() {
+                    input.removeClass('border-success');
+                }, 2000);
+                
+                // Show toast notification if available
+                if (typeof toastr !== 'undefined') {
+                    toastr.success('{{ __("Stock updated successfully") }}');
+                }
+            },
+            error: function(xhr) {
+                alert('{{ __("Error updating stock. Please try again.") }}');
+                input.prop('disabled', false);
+                $('.update-stock-btn[data-product-id="' + productId + '"]').prop('disabled', false).html('<i class="bi bi-check"></i>');
+            }
+        });
+    });
+
+    // Cancel changes
+    $(document).on('click', '.cancel-stock-btn', function() {
+        const productId = $(this).data('product-id');
+        const input = $('#stock-input-' + productId);
+        const originalValue = input.data('original-value');
+        
+        input.val(originalValue);
+        input.removeClass('border-warning border-success');
+        $('.update-stock-btn[data-product-id="' + productId + '"]').hide();
+        $('.cancel-stock-btn[data-product-id="' + productId + '"]').hide();
+    });
+
+    // Update on Enter key
+    $(document).on('keypress', '.stock-quantity-input', function(e) {
+        if (e.which === 13) { // Enter key
+            const productId = $(this).data('product-id');
+            $('.update-stock-btn[data-product-id="' + productId + '"]').click();
+        }
+    });
+});
+</script>
+@endpush
