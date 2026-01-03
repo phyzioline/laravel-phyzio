@@ -452,6 +452,28 @@ class AppointmentController extends BaseClinicController
             ];
 
             $pricing = $this->paymentCalculator->calculateSessionPrice($clinic, $params);
+            
+            // Get service names for display
+            $serviceDetails = [];
+            if (!empty($params['equipment'])) {
+                $pricingConfig = \App\Models\PricingConfig::where('clinic_id', $clinic->id)
+                    ->where('specialty', $params['specialty'])
+                    ->where('is_active', true)
+                    ->first();
+                
+                if ($pricingConfig && $pricingConfig->equipment_pricing) {
+                    foreach ($params['equipment'] as $equipmentKey) {
+                        if (isset($pricingConfig->equipment_pricing[$equipmentKey])) {
+                            $serviceDetails[] = [
+                                'name' => ucfirst(str_replace('_', ' ', $equipmentKey)),
+                                'price' => $pricingConfig->equipment_pricing[$equipmentKey]
+                            ];
+                        }
+                    }
+                }
+            }
+            
+            $pricing['service_details'] = $serviceDetails;
 
             return response()->json([
                 'success' => true,
