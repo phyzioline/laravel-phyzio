@@ -447,6 +447,7 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         // Appointments with specialty fields
         Route::get('/appointments/specialty-fields', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getSpecialtyFields'])->name('appointments.specialtyFields');
+        Route::get('/appointments/available-services', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableServices'])->name('appointments.availableServices');
         Route::post('/appointments/calculate-price', [\App\Http\Controllers\Clinic\AppointmentController::class, 'calculatePrice'])->name('appointments.calculatePrice');
         Route::get('/appointments/available-slots', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableSlots'])->name('appointments.availableSlots');
         

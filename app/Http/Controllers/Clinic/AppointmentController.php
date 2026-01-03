@@ -374,6 +374,50 @@ class AppointmentController extends BaseClinicController
     }
 
     /**
+     * Get available services for a specialty
+     */
+    public function getAvailableServices(Request $request)
+    {
+        $user = Auth::user();
+        $clinic = $this->getUserClinic($user);
+        
+        if (!$clinic) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Clinic not found.'
+            ], 404);
+        }
+        
+        $specialty = $request->get('specialty', $clinic->primary_specialty);
+        
+        // Get pricing config
+        $pricingConfig = \App\Models\PricingConfig::where('clinic_id', $clinic->id)
+            ->where('specialty', $specialty)
+            ->where('is_active', true)
+            ->first();
+        
+        if (!$pricingConfig) {
+            $pricingConfig = \App\Models\PricingConfig::createDefault($clinic, $specialty);
+        }
+        
+        $services = [];
+        if ($pricingConfig->equipment_pricing) {
+            foreach ($pricingConfig->equipment_pricing as $key => $price) {
+                $services[] = [
+                    'key' => $key,
+                    'name' => ucfirst(str_replace('_', ' ', $key)),
+                    'price' => (float) $price
+                ];
+            }
+        }
+        
+        return response()->json([
+            'success' => true,
+            'services' => $services
+        ]);
+    }
+
+    /**
      * Calculate appointment price preview
      */
     public function calculatePrice(Request $request)

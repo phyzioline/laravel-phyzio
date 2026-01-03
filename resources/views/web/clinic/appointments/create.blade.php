@@ -156,6 +156,15 @@
                         </select>
                     </div>
 
+                    <!-- Services Selection -->
+                    <div class="form-group" id="servicesContainer" style="display: none;">
+                        <label>{{ __('Additional Services') }}</label>
+                        <p class="text-muted small mb-2">{{ __('Select services to include (prices will be added to total)') }}</p>
+                        <div id="servicesList" class="row">
+                            <!-- Services will be loaded dynamically here -->
+                        </div>
+                    </div>
+
                     <!-- Specialty-Specific Fields (Dynamic) -->
                     <div id="specialtyFieldsContainer">
                         <!-- Fields will be loaded dynamically here -->
@@ -239,12 +248,56 @@ document.addEventListener('DOMContentLoaded', function() {
         const specialty = this.value;
         if (specialty) {
             loadSpecialtyFields(specialty);
+            loadAvailableServices(specialty);
             calculatePrice();
         } else {
             specialtyFieldsContainer.innerHTML = '';
+            document.getElementById('servicesContainer').style.display = 'none';
             pricePreview.innerHTML = '<div class="text-center py-4"><i class="las la-calculator fa-3x text-muted mb-3"></i><p class="text-muted">Fill in appointment details to see pricing</p></div>';
         }
     });
+    
+    // Load available services for specialty
+    function loadAvailableServices(specialty) {
+        fetch(`{{ route('clinic.appointments.availableServices') }}?specialty=${specialty}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.services && data.services.length > 0) {
+                const container = document.getElementById('servicesContainer');
+                const list = document.getElementById('servicesList');
+                list.innerHTML = '';
+                
+                data.services.forEach(service => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-4 mb-2';
+                    col.innerHTML = `
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" 
+                                   id="service_${service.key}" 
+                                   name="equipment[]" 
+                                   value="${service.key}"
+                                   onchange="calculatePrice()">
+                            <label class="custom-control-label" for="service_${service.key}">
+                                ${service.name} <strong class="text-primary">($${parseFloat(service.price).toFixed(2)})</strong>
+                            </label>
+                        </div>
+                    `;
+                    list.appendChild(col);
+                });
+                
+                container.style.display = 'block';
+            } else {
+                document.getElementById('servicesContainer').style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading services:', error);
+        });
+    }
     
     // Calculate price on field changes
     const priceFields = ['specialty', 'visit_type', 'location', 'duration_minutes'];
@@ -369,17 +422,35 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success && data.pricing) {
                 const pricing = data.pricing;
+                let servicesHtml = '';
+                
+                // Show individual services if available
+                if (pricing.service_details && pricing.service_details.length > 0) {
+                    servicesHtml = '<div class="mb-3"><small class="text-muted d-block mb-2">{{ __("Services") }}:</small>';
+                    pricing.service_details.forEach(service => {
+                        servicesHtml += `<div class="d-flex justify-content-between mb-1">
+                            <small>${service.name}</small>
+                            <small class="text-muted">+$${parseFloat(service.price).toFixed(2)}</small>
+                        </div>`;
+                    });
+                    servicesHtml += `<div class="mt-2 pt-2 border-top">
+                        <small class="text-muted">{{ __("Services Total") }}</small>
+                        <h6 class="mb-0">+$${pricing.equipment_total.toFixed(2)}</h6>
+                    </div></div>`;
+                } else if (pricing.equipment_total > 0) {
+                    servicesHtml = `
+                    <div class="mb-3">
+                        <small class="text-muted">{{ __('Services') }}</small>
+                        <h6 class="mb-0">+$${pricing.equipment_total.toFixed(2)}</h6>
+                    </div>`;
+                }
+                
                 pricePreview.innerHTML = `
                     <div class="mb-3">
                         <small class="text-muted">{{ __('Base Price') }}</small>
                         <h6 class="mb-0">$${pricing.base_price.toFixed(2)}</h6>
                     </div>
-                    ${pricing.equipment_total > 0 ? `
-                    <div class="mb-3">
-                        <small class="text-muted">{{ __('Equipment') }}</small>
-                        <h6 class="mb-0">+$${pricing.equipment_total.toFixed(2)}</h6>
-                    </div>
-                    ` : ''}
+                    ${servicesHtml}
                     ${pricing.discount_amount > 0 ? `
                     <div class="mb-3">
                         <small class="text-muted">{{ __('Discount') }}</small>
@@ -441,6 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load fields if specialty is pre-selected
     if (specialtySelect.value) {
         loadSpecialtyFields(specialtySelect.value);
+        loadAvailableServices(specialtySelect.value);
     }
 });
 </script>
