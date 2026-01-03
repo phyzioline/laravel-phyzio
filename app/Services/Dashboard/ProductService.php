@@ -14,18 +14,111 @@ class ProductService
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($sortBy = null)
     {
         // For admin users, show all products. For vendors, show only their products.
-        $query = $this->model->with(['category', 'sub_category', 'productImages']);
+        $baseQuery = $this->model->with(['category', 'sub_category', 'productImages', 'metrics']);
         
-        if (auth()->user()->hasRole('admin')) {
-            // Admin sees all products - no filter needed
-            return $query->get();
-        } else {
+        if (!auth()->user()->hasRole('admin')) {
             // Vendor sees only their products
-            return $query->where('user_id', auth()->user()->id)->get();
+            $baseQuery->where('user_id', auth()->user()->id);
         }
+        
+        // Apply sorting - this may need joins, so we'll handle it in applySorting
+        $query = $this->applySorting($baseQuery, $sortBy);
+        
+        return $query->get();
+    }
+    
+    /**
+     * Apply sorting to the query based on sort parameter
+     */
+    private function applySorting($query, $sortBy)
+    {
+        switch ($sortBy) {
+            case 'sales_highest':
+                $query->leftJoin('product_metrics', 'products.id', '=', 'product_metrics.product_id')
+                    ->select('products.*')
+                    ->orderByRaw('COALESCE(product_metrics.revenue, 0) DESC');
+                break;
+            case 'sales_lowest':
+                $query->leftJoin('product_metrics', 'products.id', '=', 'product_metrics.product_id')
+                    ->select('products.*')
+                    ->orderByRaw('COALESCE(product_metrics.revenue, 0) ASC');
+                break;
+            case 'units_sold_highest':
+                $query->orderByRaw('(SELECT COALESCE(SUM(quantity), 0) FROM items_orders WHERE items_orders.product_id = products.id) DESC');
+                break;
+            case 'units_sold_lowest':
+                $query->orderByRaw('(SELECT COALESCE(SUM(quantity), 0) FROM items_orders WHERE items_orders.product_id = products.id) ASC');
+                break;
+            case 'status_asc':
+                $query->orderBy('status', 'ASC');
+                break;
+            case 'status_desc':
+                $query->orderBy('status', 'DESC');
+                break;
+            case 'sku_az':
+                $query->orderBy('sku', 'ASC');
+                break;
+            case 'sku_za':
+                $query->orderBy('sku', 'DESC');
+                break;
+            case 'title_az':
+                $query->orderBy('product_name_en', 'ASC');
+                break;
+            case 'title_za':
+                $query->orderBy('product_name_en', 'DESC');
+                break;
+            case 'price_high_low':
+                $query->orderByRaw('CAST(product_price AS DECIMAL(10,2)) DESC');
+                break;
+            case 'price_low_high':
+                $query->orderByRaw('CAST(product_price AS DECIMAL(10,2)) ASC');
+                break;
+            case 'date_new_old':
+                $query->orderBy('created_at', 'DESC');
+                break;
+            case 'date_old_new':
+                $query->orderBy('created_at', 'ASC');
+                break;
+            case 'updated_last':
+                $query->orderBy('updated_at', 'DESC');
+                break;
+            case 'available_high_low':
+                $query->orderBy('amount', 'DESC');
+                break;
+            case 'available_low_high':
+                $query->orderBy('amount', 'ASC');
+                break;
+            case 'page_views_highest':
+                $query->leftJoin('product_metrics', 'products.id', '=', 'product_metrics.product_id')
+                    ->select('products.*')
+                    ->orderByRaw('COALESCE(product_metrics.views, 0) DESC');
+                break;
+            case 'page_views_lowest':
+                $query->leftJoin('product_metrics', 'products.id', '=', 'product_metrics.product_id')
+                    ->select('products.*')
+                    ->orderByRaw('COALESCE(product_metrics.views, 0) ASC');
+                break;
+            case 'inbound_high_low':
+            case 'inbound_low_high':
+            case 'reserved_high_low':
+            case 'reserved_low_high':
+            case 'unfulfillable_high_low':
+            case 'unfulfillable_low_high':
+                // These would require additional inventory tracking fields
+                // For now, sort by amount as placeholder
+                $direction = strpos($sortBy, 'high_low') !== false ? 'DESC' : 'ASC';
+                $query->orderBy('amount', $direction);
+                break;
+            default:
+                // Default: Sort by ID descending (newest first)
+                $query->orderBy('id', 'DESC');
+                break;
+        }
+        
+        return $query;
     }
 
     /**

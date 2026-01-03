@@ -273,6 +273,60 @@
                                 <button type="button" class="btn btn-sm btn-outline-secondary" id="clearFilters">
                                     <i class="fas fa-times"></i> {{ __('Clear') }}
                                 </button>
+                                
+                                <!-- Sort By Dropdown -->
+                                <div class="btn-group">
+                                    <label class="form-label me-2 align-self-center mb-0" style="white-space: nowrap;">{{ __('Sort by:') }}</label>
+                                    <select class="form-select form-select-sm" id="sortBy" style="min-width: 200px;">
+                                        <optgroup label="{{ __('Sales') }}">
+                                            <option value="sales_highest" {{ $sortBy == 'sales_highest' ? 'selected' : '' }}>{{ __('Sales: Highest on top') }}</option>
+                                            <option value="sales_lowest" {{ $sortBy == 'sales_lowest' ? 'selected' : '' }}>{{ __('Sales: Lowest on top') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Units Sold') }}">
+                                            <option value="units_sold_highest" {{ $sortBy == 'units_sold_highest' ? 'selected' : '' }}>{{ __('Units sold: Highest on top') }}</option>
+                                            <option value="units_sold_lowest" {{ $sortBy == 'units_sold_lowest' ? 'selected' : '' }}>{{ __('Units sold: Lowest on top') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Status') }}">
+                                            <option value="status_asc" {{ $sortBy == 'status_asc' ? 'selected' : '' }}>{{ __('Status: Ascending') }}</option>
+                                            <option value="status_desc" {{ $sortBy == 'status_desc' ? 'selected' : '' }}>{{ __('Status: Descending') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('SKU') }}">
+                                            <option value="sku_az" {{ $sortBy == 'sku_az' ? 'selected' : '' }}>{{ __('SKU: A to Z') }}</option>
+                                            <option value="sku_za" {{ $sortBy == 'sku_za' ? 'selected' : '' }}>{{ __('SKU: Z to A') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Title') }}">
+                                            <option value="title_az" {{ $sortBy == 'title_az' ? 'selected' : '' }}>{{ __('Title: A to Z') }}</option>
+                                            <option value="title_za" {{ $sortBy == 'title_za' ? 'selected' : '' }}>{{ __('Title: Z to A') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Price') }}">
+                                            <option value="price_high_low" {{ $sortBy == 'price_high_low' ? 'selected' : '' }}>{{ __('Price: High to Low') }}</option>
+                                            <option value="price_low_high" {{ $sortBy == 'price_low_high' ? 'selected' : '' }}>{{ __('Price: Low to High') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Date Created') }}">
+                                            <option value="date_new_old" {{ $sortBy == 'date_new_old' || !$sortBy ? 'selected' : '' }}>{{ __('Date Created: New to Old') }}</option>
+                                            <option value="date_old_new" {{ $sortBy == 'date_old_new' ? 'selected' : '' }}>{{ __('Date Created: Old to New') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Last Updated') }}">
+                                            <option value="updated_last" {{ $sortBy == 'updated_last' ? 'selected' : '' }}>{{ __('Last updated') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Available') }}">
+                                            <option value="available_high_low" {{ $sortBy == 'available_high_low' ? 'selected' : '' }}>{{ __('Available: High to Low') }}</option>
+                                            <option value="available_low_high" {{ $sortBy == 'available_low_high' ? 'selected' : '' }}>{{ __('Available: Low to High') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Page Views') }}">
+                                            <option value="page_views_highest" {{ $sortBy == 'page_views_highest' ? 'selected' : '' }}>{{ __('Page views: Highest on top') }}</option>
+                                            <option value="page_views_lowest" {{ $sortBy == 'page_views_lowest' ? 'selected' : '' }}>{{ __('Page views: Lowest on top') }}</option>
+                                        </optgroup>
+                                        <optgroup label="{{ __('Inventory') }}">
+                                            <option value="inbound_high_low" {{ $sortBy == 'inbound_high_low' ? 'selected' : '' }}>{{ __('Inbound: High to Low') }}</option>
+                                            <option value="inbound_low_high" {{ $sortBy == 'inbound_low_high' ? 'selected' : '' }}>{{ __('Inbound: Low to High') }}</option>
+                                            <option value="reserved_high_low" {{ $sortBy == 'reserved_high_low' ? 'selected' : '' }}>{{ __('Reserved: High to Low') }}</option>
+                                            <option value="reserved_low_high" {{ $sortBy == 'reserved_low_high' ? 'selected' : '' }}>{{ __('Reserved: Low to High') }}</option>
+                                            <option value="unfulfillable_high_low" {{ $sortBy == 'unfulfillable_high_low' ? 'selected' : '' }}>{{ __('Unfulfillable: High to Low') }}</option>
+                                            <option value="unfulfillable_low_high" {{ $sortBy == 'unfulfillable_low_high' ? 'selected' : '' }}>{{ __('Unfulfillable: Low to High') }}</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         
@@ -741,6 +795,14 @@
             function clearCustomFilters() {
                 $.fn.dataTable.ext.search.pop();
             }
+            
+            // Sort By change event
+            $('#sortBy').on('change', function() {
+                var sortValue = $(this).val();
+                var currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('sort_by', sortValue);
+                window.location.href = currentUrl.toString();
+            });
             
             // Filter change events
             $('#filterStatus, #filterStock, #filterCategory').on('change', function() {

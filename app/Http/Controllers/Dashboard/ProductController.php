@@ -33,12 +33,13 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
-        $data = $this->productService->index();
+        $sortBy = $request->get('sort_by', 'date_new_old');
+        $data = $this->productService->index($sortBy);
         $categories = Category::where('status', 'active')->get();
         $subCategories = SubCategory::where('status', 'active')->get();
-        return view('dashboard.pages.product.index', compact('data', 'categories', 'subCategories'));
+        return view('dashboard.pages.product.index', compact('data', 'categories', 'subCategories', 'sortBy'));
     }
 
     /**
