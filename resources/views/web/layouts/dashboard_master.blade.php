@@ -711,6 +711,23 @@
                     </a>
                 </li>
 
+                <!-- 10.5. My Schedule (Doctor Hourly Schedule) -->
+                @php
+                    $isDoctor = \App\Models\ClinicStaff::where('clinic_id', auth()->user()->clinic_id ?? 0)
+                        ->where('user_id', auth()->id())
+                        ->whereIn('role', ['therapist', 'doctor'])
+                        ->where('is_active', true)
+                        ->exists();
+                @endphp
+                @if($isDoctor)
+                <li>
+                    <a href="{{ route('clinic.doctor.schedule') }}" class="{{ request()->routeIs('clinic.doctor.schedule') ? 'active' : '' }}">
+                        <span class="las la-clock"></span>
+                        <span>{{ __('My Schedule') }}</span>
+                    </a>
+                </li>
+                @endif
+
                 <!-- 10.5. Waitlist (Manage Patient Waitlist) -->
                 <li>
                     <a href="{{ route('clinic.waitlist.index') }}" class="{{ request()->routeIs('clinic.waitlist.*') ? 'active' : '' }}">

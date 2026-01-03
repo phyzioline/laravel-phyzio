@@ -450,6 +450,13 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         Route::delete('/appointments/{appointment}/unassign-slot/{slot}', [\App\Http\Controllers\Clinic\AppointmentController::class, 'unassignSlot'])->name('appointments.unassignSlot');
         Route::get('/appointments/{appointment}/available-doctors/{slot}', [\App\Http\Controllers\Clinic\AppointmentController::class, 'getAvailableDoctorsForSlot'])->name('appointments.availableDoctorsForSlot');
         
+        // Doctor schedule (hourly view)
+        Route::get('/doctor/schedule', [\App\Http\Controllers\Clinic\DoctorScheduleController::class, 'index'])->name('doctor.schedule');
+        
+        // Doctor hours reports
+        Route::get('/reports/doctor-hours', [\App\Http\Controllers\Clinic\DoctorHoursReportController::class, 'index'])->name('reports.doctorHours');
+        Route::get('/reports/doctor-hours/export', [\App\Http\Controllers\Clinic\DoctorHoursReportController::class, 'export'])->name('reports.doctorHours.export');
+        
         Route::resource('appointments', \App\Http\Controllers\Clinic\AppointmentController::class);
         Route::resource('plans', \App\Http\Controllers\Clinic\TreatmentPlanController::class);
         // Invoices route is defined above (line 376) using PatientInvoiceController
