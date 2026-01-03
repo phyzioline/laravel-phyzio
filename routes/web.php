@@ -267,7 +267,6 @@ foreach ($supportedLocales as $locale) {
                 $user = Auth::user();
                 // Remove locale prefix and redirect to actual dashboard
                 $currentLocale = app()->getLocale();
-                $dashboardUrl = str_replace('/' . $currentLocale . '/dashboard', '/dashboard', request()->url());
                 
                 if ($user->hasRole('admin') || $user->hasRole('super-admin')) {
                     return redirect('/dashboard/home');
@@ -277,6 +276,8 @@ foreach ($supportedLocales as $locale) {
                     return redirect()->route('instructor.dashboard');
                 } elseif ($user->hasRole('clinic')) {
                     return redirect()->route('clinic.dashboard');
+                } elseif ($user->hasRole('vendor')) {
+                    return redirect()->route("vendor.{$currentLocale}.dashboard.{$currentLocale}");
                 } elseif ($user->type === 'company') {
                     // Recruitment company dashboard
                     return redirect()->route('company.dashboard');

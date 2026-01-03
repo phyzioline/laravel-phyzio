@@ -281,7 +281,9 @@ class DashboardController extends BaseClinicController
         );
         
         // Cache the dashboard data for 5 minutes
-        Cache::put($cacheKey, $viewData, now()->addMinutes(5));
+        if (isset($cacheKey)) {
+            Cache::put($cacheKey, $viewData, now()->addMinutes(5));
+        }
         
         return view('web.clinic.dashboard', $viewData);
     }
