@@ -212,22 +212,52 @@ class ProductService
     {
         $product = $this->model->findOrFail($id);
 
-        // Exclude 'tags' and 'images' from direct update - they're handled separately
-        $product->update(\Illuminate\Support\Arr::except($data, ['images', 'tags']));
+        // Handle action (draft vs publish)
+        if (isset($data['action']) && $data['action'] === 'draft') {
+            $data['status'] = 'inactive';
+        } elseif (isset($data['action']) && $data['action'] === 'publish') {
+            $data['status'] = 'active';
+        }
 
+        // Handle variation attributes as JSON
+        if (isset($data['variation_attributes']) && is_array($data['variation_attributes'])) {
+            $data['variation_attributes'] = json_encode($data['variation_attributes']);
+        }
+
+        // Handle image removal
+        if (isset($data['remove_images']) && !empty($data['remove_images'])) {
+            $imageIds = explode(',', $data['remove_images']);
+            foreach ($imageIds as $imageId) {
+                $image = \App\Models\ProductImage::find($imageId);
+                if ($image && $image->product_id == $product->id) {
+                    // Delete file if exists
+                    if (file_exists(public_path($image->image))) {
+                        @unlink(public_path($image->image));
+                    }
+                    $image->delete();
+                }
+            }
+        }
+
+        // Exclude 'tags', 'images', 'action', and 'remove_images' from direct update
+        $product->update(\Illuminate\Support\Arr::except($data, ['images', 'tags', 'action', 'remove_images']));
+
+        // Handle new images upload
         if (! empty($data['images']) && is_array($data['images'])) {
-            $product->productImages()->delete();
-
-             $imagesData = [];
+            $imagesData = [];
 
             foreach ($data['images'] as $image) {
-                $fileName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/products'), $fileName);
+                if ($image && $image->isValid()) {
+                    $fileName = time() . '_' . uniqid() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('uploads/products'), $fileName);
 
-                $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+                    $imagesData[] = ['image' => 'uploads/products/' . $fileName];
+                }
             }
-
-            $product->productImages()->createMany($imagesData);
+            
+            if (!empty($imagesData)) {
+                $product->productImages()->createMany($imagesData);
+            }
         }
 
         // Handle tags separately using the relationship

@@ -85,7 +85,17 @@
                             {{-- Price + FREE Delivery + Returns Policy - Amazon Style --}}
                             <div class="price-delivery-returns mb-30">
                                 <div class="d-flex align-items-baseline gap-3 mb-2">
+                                    @if($product->compare_at_price && $product->compare_at_price > $product->product_price)
+                                    <div>
+                                        <span class="text-muted text-decoration-line-through" style="font-size: 18px;">{{ number_format($product->compare_at_price, 2) }} EGP</span>
+                                        <span class="physio-item-price price-animated" style="font-size: 28px; font-weight: 700; color: #B12704; margin-left: 10px;">{{ number_format($product->product_price, 2) }} EGP</span>
+                                        <span class="badge bg-danger ms-2" style="font-size: 12px;">
+                                            {{ __('Save') }} {{ number_format((($product->compare_at_price - $product->product_price) / $product->compare_at_price) * 100, 0) }}%
+                                        </span>
+                                    </div>
+                                    @else
                                     <span class="physio-item-price price-animated" style="font-size: 28px; font-weight: 700; color: #B12704;">{{ number_format($product->product_price, 2) }} EGP</span>
+                                    @endif
                                 </div>
                                 
                                 {{-- FREE Delivery Message --}}
@@ -143,6 +153,38 @@
                             <p class="mb-40 description-text">
                                 {{ $product->{'short_description_' . app()->getLocale()} }}
                             </p>
+
+                            {{-- Brand & Manufacturer Info --}}
+                            @if($product->brand_name || $product->model_number || $product->manufacturer)
+                            <div class="brand-info mb-20" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                @if($product->brand_name)
+                                <p class="mb-2"><strong>{{ __('Brand') }}:</strong> <span style="color: #02767F;">{{ $product->brand_name }}</span></p>
+                                @endif
+                                @if($product->model_number)
+                                <p class="mb-2"><strong>{{ __('Model Number') }}:</strong> <span style="color: #02767F;">{{ $product->model_number }}</span></p>
+                                @endif
+                                @if($product->manufacturer)
+                                <p class="mb-0"><strong>{{ __('Manufacturer') }}:</strong> <span style="color: #02767F;">{{ $product->manufacturer }}</span></p>
+                                @endif
+                            </div>
+                            @endif
+
+                            {{-- Bullet Points / Key Features --}}
+                            @if($product->bullet_points)
+                            <div class="bullet-points mb-20" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                                <h6 class="mb-3" style="color: #02767F; font-weight: 600;">{{ __('Key Features') }}:</h6>
+                                <ul style="list-style: none; padding: 0;">
+                                    @foreach(explode("\n", $product->bullet_points) as $point)
+                                        @if(trim($point))
+                                        <li style="padding: 5px 0; padding-left: 20px; position: relative;">
+                                            <i class="fas fa-check-circle" style="position: absolute; left: 0; color: #02767F;"></i>
+                                            {{ trim($point) }}
+                                        </li>
+                                        @endif
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12">
@@ -277,17 +319,77 @@
                             <div class="physio-info-list ul-li-block physio-info-container">
                                 <ul class="clearfix">
                                     <li class="physio-info-item"><strong class="physio-list-title">SKU:</strong> {{ $product->sku }}</li>
+                                    
+                                    {{-- Product Identifiers --}}
+                                    @if($product->barcode)
+                                    <li class="physio-info-item"><strong class="physio-list-title">{{ __('Barcode') }}:</strong> {{ $product->barcode }}</li>
+                                    @endif
+                                    @if($product->ean)
+                                    <li class="physio-info-item"><strong class="physio-list-title">EAN:</strong> {{ $product->ean }}</li>
+                                    @endif
+                                    @if($product->upc)
+                                    <li class="physio-info-item"><strong class="physio-list-title">UPC:</strong> {{ $product->upc }}</li>
+                                    @endif
+                                    
                                     <li class="physio-info-item"><strong class="physio-list-title">Category:</strong> <a
                                             href="#!">{{ $product->category->{'name_' . app()->getLocale()} }}</a></li>
+                                    
+                                    {{-- Variations --}}
+                                    @if($product->has_variations && $product->variation_attributes)
+                                    <li class="physio-info-item">
+                                        <strong class="physio-list-title">{{ __('Variations') }}:</strong>
+                                        @php
+                                            $variations = is_string($product->variation_attributes) ? json_decode($product->variation_attributes, true) : $product->variation_attributes;
+                                        @endphp
+                                        @if(is_array($variations))
+                                            @foreach($variations as $variation)
+                                                <span class="badge bg-info ms-1">{{ $variation }}</span>
+                                            @endforeach
+                                        @endif
+                                    </li>
+                                    @endif
+                                    
                                     <li class="physio-tag-list ul-li physio-info-item">
                                         <strong class="physio-list-title">Tags:</strong>
                                         <ul class="clearfix">
-
                                             @foreach ($product->tags as $tag)
                                                 <li><a href="#!" class="physio-tag-link">{{ $tag->{'name_' . app()->getLocale()} }}</a></li>
                                             @endforeach
                                         </ul>
                                     </li>
+                                    
+                                    {{-- Safety & Compliance Info --}}
+                                    @if($product->country_of_origin)
+                                    <li class="physio-info-item">
+                                        <strong class="physio-list-title">{{ __('Country of Origin') }}:</strong> 
+                                        <span style="color: #02767F;">{{ $product->country_of_origin }}</span>
+                                    </li>
+                                    @endif
+                                    
+                                    @if($product->warranty_description)
+                                    <li class="physio-info-item">
+                                        <strong class="physio-list-title">{{ __('Warranty') }}:</strong> 
+                                        <span style="color: #02767F;">{{ $product->warranty_description }}</span>
+                                    </li>
+                                    @endif
+                                    
+                                    @if($product->batteries_required)
+                                    <li class="physio-info-item">
+                                        <strong class="physio-list-title">{{ __('Batteries Required') }}:</strong> 
+                                        <span style="color: #02767F;">{{ __('Yes') }}</span>
+                                        @if($product->battery_iec_code)
+                                            <span class="ms-2">({{ $product->battery_iec_code }})</span>
+                                        @endif
+                                    </li>
+                                    @endif
+                                    
+                                    @if($product->item_weight)
+                                    <li class="physio-info-item">
+                                        <strong class="physio-list-title">{{ __('Weight') }}:</strong> 
+                                        <span style="color: #02767F;">{{ $product->item_weight }} {{ $product->item_weight_unit ?? 'grams' }}</span>
+                                    </li>
+                                    @endif
+                                    
                                     <li class="physio-social-icon ul-li physio-info-item">
                                         <strong class="physio-list-title">Share:</strong>
                                         <ul class="clearfix">
@@ -312,7 +414,6 @@
                                                 </a>
                                             </li>
                                         </ul>
-
                                     </li>
                                 </ul>
                             </div>
@@ -338,6 +439,79 @@
                                 <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
                                     <div class="physio-description-content">
                                         {{ $product->{'long_description_' . app()->getLocale()} }}
+                                        
+                                        {{-- Additional Product Information Section --}}
+                                        <div class="mt-4 pt-4 border-top">
+                                            <h5 class="mb-3" style="color: #02767F; font-weight: 600;">{{ __('Additional Information') }}</h5>
+                                            
+                                            <div class="row">
+                                                @if($product->product_type)
+                                                <div class="col-md-6 mb-3">
+                                                    <strong>{{ __('Product Type') }}:</strong> 
+                                                    <span style="color: #666;">{{ $product->product_type }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->condition)
+                                                <div class="col-md-6 mb-3">
+                                                    <strong>{{ __('Condition') }}:</strong> 
+                                                    <span style="color: #666; text-transform: capitalize;">{{ $product->condition }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->special_features)
+                                                <div class="col-md-12 mb-3">
+                                                    <strong>{{ __('Special Features') }}:</strong> 
+                                                    <span style="color: #666;">{{ $product->special_features }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->generic_keywords)
+                                                <div class="col-md-12 mb-3">
+                                                    <strong>{{ __('Keywords') }}:</strong> 
+                                                    <span style="color: #666;">{{ $product->generic_keywords }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->min_quantity || $product->max_quantity)
+                                                <div class="col-md-6 mb-3">
+                                                    <strong>{{ __('Order Quantity') }}:</strong> 
+                                                    <span style="color: #666;">
+                                                        @if($product->min_quantity) {{ __('Min') }}: {{ $product->min_quantity }} @endif
+                                                        @if($product->max_quantity) {{ __('Max') }}: {{ $product->max_quantity }} @endif
+                                                    </span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->dangerous_goods_regulations && $product->dangerous_goods_regulations != 'not_applicable')
+                                                <div class="col-md-12 mb-3">
+                                                    <strong>{{ __('Dangerous Goods Regulations') }}:</strong> 
+                                                    <span class="badge bg-warning text-dark">{{ ucfirst($product->dangerous_goods_regulations) }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->age_restriction_required)
+                                                <div class="col-md-6 mb-3">
+                                                    <strong>{{ __('Age Restriction') }}:</strong> 
+                                                    <span class="badge bg-info">{{ __('Yes') }}</span>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->responsible_person_email)
+                                                <div class="col-md-6 mb-3">
+                                                    <strong>{{ __('Responsible Person Email') }}:</strong> 
+                                                    <a href="mailto:{{ $product->responsible_person_email }}" style="color: #02767F;">{{ $product->responsible_person_email }}</a>
+                                                </div>
+                                                @endif
+                                                
+                                                @if($product->seller_warranty_description)
+                                                <div class="col-md-12 mb-3">
+                                                    <strong>{{ __('Seller Warranty') }}:</strong> 
+                                                    <span style="color: #666;">{{ $product->seller_warranty_description }}</span>
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -120,7 +120,7 @@ class ProductController extends Controller implements HasMiddleware
         $categories     = Category::where('status', 'active')->get();
         $sub_categories = SubCategory::where('status', 'active')->get();
         $tags           = Tag::where('status', 'active')->get();
-        return view('dashboard.pages.product.edit',compact('product','categories', 'sub_categories', 'tags'));
+        return view('dashboard.pages.product.edit-enhanced',compact('product','categories', 'sub_categories', 'tags'));
     }
 
     /**
@@ -129,8 +129,11 @@ class ProductController extends Controller implements HasMiddleware
     public function update(UpdateProductRequest $request, string $id)
     {
         $this->productService->update($id, $request->validated());
-         return redirect()->route('dashboard.products.index')->with('success','Updated product');
-
+        
+        $action = $request->input('action', 'publish');
+        $message = $action === 'draft' ? 'Product saved as draft' : 'Product updated successfully';
+        
+        return redirect()->route('dashboard.products.index')->with('success', $message);
     }
 
     /**

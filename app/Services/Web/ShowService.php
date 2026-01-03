@@ -66,7 +66,7 @@ class ShowService
 
     public function product($id)
     {
-        $product = Product::with(['badges', 'metrics', 'productReviews.user'])->where('id', $id)->firstOrFail();
+        $product = Product::with(['badges', 'metrics', 'productReviews.user', 'category', 'sub_category', 'tags', 'productImages', 'user'])->where('id', $id)->firstOrFail();
         
         // Track product view
         $this->trackProductView($id);
