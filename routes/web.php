@@ -434,6 +434,12 @@ Route::controller(SocialLoginController::class)->prefix('auth')->as('auth.social
         
         Route::get('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'index'])->name('profile.index');
         Route::put('/profile', [\App\Http\Controllers\Clinic\ProfileController::class, 'update'])->name('profile.update');
+        
+        // Service Pricing Management
+        Route::get('/service-pricing', [\App\Http\Controllers\Clinic\ServicePricingController::class, 'index'])->name('servicePricing.index');
+        Route::post('/service-pricing/{specialty}', [\App\Http\Controllers\Clinic\ServicePricingController::class, 'update'])->name('servicePricing.update');
+        Route::post('/service-pricing/{specialty}/add', [\App\Http\Controllers\Clinic\ServicePricingController::class, 'addService'])->name('servicePricing.addService');
+        Route::post('/service-pricing/{specialty}/remove', [\App\Http\Controllers\Clinic\ServicePricingController::class, 'removeService'])->name('servicePricing.removeService');
 
         // Existing Resources (keep if needed, or replace)
         Route::resource('patients', \App\Http\Controllers\Clinic\PatientController::class);

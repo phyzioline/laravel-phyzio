@@ -646,6 +646,14 @@
                         <span>{{ __('Profile & Settings') }}</span>
                     </a>
                 </li>
+                
+                <!-- 3.5. Service Pricing (Manage Service Prices) -->
+                <li>
+                    <a href="{{ route('clinic.servicePricing.index') }}" class="{{ request()->routeIs('clinic.servicePricing.*') ? 'active' : '' }}">
+                        <span class="las la-dollar-sign"></span>
+                        <span>{{ __('Service Pricing') }}</span>
+                    </a>
+                </li>
 
                 <!-- 4. Staff Management (Hire and Manage Staff) -->
                 <li>
