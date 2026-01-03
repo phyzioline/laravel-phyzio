@@ -51,7 +51,7 @@
                             </div>
                         @endif
                     </div>
-                    <span class="badge {{ $dept->status == 'Active' ? 'badge-success' : 'badge-warning' }}">{{ $dept->status }}</span>
+                    <span class="badge {{ $dept->status == 'Active' ? 'badge-success' : 'badge-warning' }}">{{ __($dept->status) }}</span>
                 </div>
                 <div class="mt-3 text-right">
                     <a href="{{ route('clinic.departments.show', $dept->specialty) }}" class="btn btn-sm btn-outline-secondary">

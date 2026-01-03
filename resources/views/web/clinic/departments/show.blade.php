@@ -90,7 +90,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{ $doctor->specialization ?? 'General' }}</td>
+                                <td>{{ $doctor->specialization ?? __('General') }}</td>
                                 <td>
                                     @if($assignment->is_head)
                                         <span class="badge badge-warning">{{ __('Head of Department') }}</span>
@@ -108,7 +108,7 @@
                                         $status = $todayAppointments > 0 ? 'Busy' : 'Available';
                                     @endphp
                                     <span class="badge {{ $status === 'Busy' ? 'badge-danger' : 'badge-success' }}">
-                                        {{ $status }}
+                                        {{ __($status) }}
                                     </span>
                                 </td>
                                 <td>
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     location.reload();
                 } else {
-                    alert(result.message || 'Error assigning doctor');
+                    alert(result.message || '{{ __("Error assigning doctor") }}');
                 }
             })
             .catch(error => {
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Unassign doctor
     document.querySelectorAll('.unassign-doctor').forEach(btn => {
         btn.addEventListener('click', function() {
-            if (!confirm('Are you sure you want to remove this doctor from this department?')) {
+            if (!confirm('{{ __("Are you sure you want to remove this doctor from this department?") }}')) {
                 return;
             }
             
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     location.reload();
                 } else {
-                    alert(result.message || 'Error removing doctor');
+                    alert(result.message || '{{ __("Error removing doctor") }}');
                 }
             })
             .catch(error => {

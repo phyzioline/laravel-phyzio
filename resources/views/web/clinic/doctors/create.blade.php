@@ -62,13 +62,13 @@
                         <label>Primary Specialization <span class="text-danger">*</span></label>
                         <select name="specialization" class="form-control @error('specialization') is-invalid @enderror" required>
                             <option value="">{{ __('Select Specialization') }}</option>
-                            <option value="Orthopedic" {{ old('specialization') == 'Orthopedic' ? 'selected' : '' }}>Orthopedic</option>
-                            <option value="Sports Physiotherapy" {{ old('specialization') == 'Sports Physiotherapy' ? 'selected' : '' }}>Sports Physiotherapy</option>
-                            <option value="Neurology" {{ old('specialization') == 'Neurology' ? 'selected' : '' }}>Neurology</option>
-                            <option value="Pediatrics" {{ old('specialization') == 'Pediatrics' ? 'selected' : '' }}>Pediatrics</option>
-                            <option value="Geriatric" {{ old('specialization') == 'Geriatric' ? 'selected' : '' }}>Geriatric</option>
-                            <option value="Women's Health" {{ old('specialization') == 'Women\'s Health' ? 'selected' : '' }}>Women's Health</option>
-                            <option value="Cardiorespiratory" {{ old('specialization') == 'Cardiorespiratory' ? 'selected' : '' }}>Cardiorespiratory</option>
+                            <option value="Orthopedic" {{ old('specialization') == 'Orthopedic' ? 'selected' : '' }}>{{ __('Orthopedic') }}</option>
+                            <option value="Sports Physiotherapy" {{ old('specialization') == 'Sports Physiotherapy' ? 'selected' : '' }}>{{ __('Sports Physiotherapy') }}</option>
+                            <option value="Neurology" {{ old('specialization') == 'Neurology' ? 'selected' : '' }}>{{ __('Neurology') }}</option>
+                            <option value="Pediatrics" {{ old('specialization') == 'Pediatrics' ? 'selected' : '' }}>{{ __('Pediatrics') }}</option>
+                            <option value="Geriatric" {{ old('specialization') == 'Geriatric' ? 'selected' : '' }}>{{ __('Geriatric') }}</option>
+                            <option value="Women's Health" {{ old('specialization') == 'Women\'s Health' ? 'selected' : '' }}>{{ __('Women\'s Health') }}</option>
+                            <option value="Cardiorespiratory" {{ old('specialization') == 'Cardiorespiratory' ? 'selected' : '' }}>{{ __('Cardiorespiratory') }}</option>
                         </select>
                         @error('specialization')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -134,7 +134,7 @@
                     
                     <div class="form-group">
                         <label>Professional Bio</label>
-                        <textarea name="bio" class="form-control @error('bio') is-invalid @enderror" rows="4" placeholder="Brief professional background...">{{ old('bio') }}</textarea>
+                        <textarea name="bio" class="form-control @error('bio') is-invalid @enderror" rows="4" placeholder="{{ __('Brief professional background...') }}">{{ old('bio') }}</textarea>
                         @error('bio')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -143,7 +143,7 @@
                     <div class="form-group">
                         <label>Password (Optional)</label>
                         <input type="password" name="password" class="form-control" placeholder="Leave blank for default password">
-                        <small class="text-muted">Default password will be 'password' if left blank. Doctor should change it on first login.</small>
+                        <small class="text-muted">{{ __('Default password will be \'password\' if left blank. Doctor should change it on first login.') }}</small>
                     </div>
 
                     <div class="text-right mt-4">

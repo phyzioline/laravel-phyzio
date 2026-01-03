@@ -13,9 +13,9 @@
                     <i class="las la-user-md text-muted" style="font-size: 60px;"></i>
                 </div>
                 <h4 class="font-weight-bold mb-1">{{ $doctorData->name ?? $doctor->name }}</h4>
-                <p class="text-muted">{{ $doctorData->specialty ?? $doctor->specialization ?? 'General' }}</p>
+                <p class="text-muted">{{ $doctorData->specialty ?? $doctor->specialization ?? __('General') }}</p>
                 <div class="badge {{ ($doctorData->status ?? 'Available') == 'Available' ? 'badge-success' : (($doctorData->status ?? 'Available') == 'Busy' ? 'badge-danger' : 'badge-info') }} px-3 py-2 mt-2">
-                    {{ $doctorData->status ?? 'Available' }}
+                    {{ __($doctorData->status ?? 'Available') }}
                 </div>
                 
                 <div class="d-flex justify-content-center mt-4">

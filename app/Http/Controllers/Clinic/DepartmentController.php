@@ -132,9 +132,9 @@ class DepartmentController extends BaseClinicController
                     'activated_at' => now()
                 ]);
                 return redirect()->route('clinic.departments.index')
-                    ->with('success', 'Department reactivated successfully.');
+                    ->with('success', __('Department reactivated successfully.'));
             } else {
-                return back()->with('error', 'This department already exists.');
+                return back()->with('error', __('This department already exists.'));
             }
         }
 
@@ -159,7 +159,7 @@ class DepartmentController extends BaseClinicController
         }
 
         return redirect()->route('clinic.departments.index')
-            ->with('success', 'Department added successfully.');
+            ->with('success', __('Department added successfully.'));
     }
 
     /**
@@ -171,7 +171,7 @@ class DepartmentController extends BaseClinicController
         
         if (!$clinic) {
             return redirect()->route('clinic.departments.index')
-                ->with('error', 'Clinic not found.');
+                ->with('error', __('Clinic not found.'));
         }
         
         // Get specialty info
@@ -190,7 +190,7 @@ class DepartmentController extends BaseClinicController
         
         if (!$clinicSpecialty) {
             return redirect()->route('clinic.departments.index')
-                ->with('error', 'Department not found.');
+                ->with('error', __('Department not found.'));
         }
         
         $displayName = ClinicSpecialty::SPECIALTIES[$specialty] ?? ucfirst(str_replace('_', ' ', $specialty));
@@ -267,7 +267,7 @@ class DepartmentController extends BaseClinicController
         if (!$clinicStaff) {
             return response()->json([
                 'success' => false,
-                'message' => 'Doctor is not assigned to this clinic.'
+                'message' => __('Doctor is not assigned to this clinic.')
             ], 422);
         }
         
@@ -306,7 +306,7 @@ class DepartmentController extends BaseClinicController
         
         return response()->json([
             'success' => true,
-            'message' => 'Doctor assigned successfully.'
+            'message' => __('Doctor assigned successfully.')
         ]);
     }
 
@@ -336,7 +336,7 @@ class DepartmentController extends BaseClinicController
         
         return response()->json([
             'success' => true,
-            'message' => 'Doctor unassigned successfully.'
+            'message' => __('Doctor unassigned successfully.')
         ]);
     }
 }
